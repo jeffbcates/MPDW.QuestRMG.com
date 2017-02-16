@@ -39,20 +39,18 @@
                 { name: 'TODO', label: 'TODO: FILTERS GO IN HERE', labelonly: true },
             ],
             operations: [
-                { name: 'List', label: 'List', type: 'tab' },
-                { name: 'Entities', label: 'Entities', type: 'tab' },
-                { name: 'Values', label: 'Items', type: 'tab' },
-                { name: 'Save', label: 'Save', method: 'POST', callback: cbSaveFilterPanel },
-                { name: 'SQL', label: 'SQL', method: 'POST', type: 'tab', callback: cbGetFilterSQL },
-                { name: 'Run', label: 'Run', method: 'POST', callback: cbRunFilter },
-                { name: 'Procedures', label: 'Procedures', type: 'tab' },
+                { name: 'List', label: 'List', type: 'tab', title: 'Create a new filter' },
+                { name: 'Entities', label: 'Entities', type: 'tab', title: 'Assign tableset entities to a filter' },
+                { name: 'Values', label: 'Items', type: 'tab', title: 'Designate entity columns and operations' },
+                { name: 'Save', label: 'Save', method: 'POST', callback: cbSaveFilterPanel, title: 'Save the filter SQL' },
+                { name: 'SQL', label: 'SQL', method: 'POST', type: 'tab', callback: cbGetFilterSQL, title: 'View filter SQL' },
+                { name: 'Run', label: 'Run', method: 'POST', callback: cbRunFilter, title: 'Run the filter' },
+                { name: 'Procedures', label: 'Procedures', type: 'tab', title: 'Establish stored procedures to invoke' },
             ],
             actions: [
-                { name: 'RowLimit', label: 'Row Limit', type: 'text', value: '200' },
-                { name: 'ColLimit', label: 'Column Limit', type: 'text', value: '100' },
-                { name: 'Copy', label: 'Copy SQL', callback: cbCopySQLToClipboard },
-                { name: 'CustomFilter', label: 'Custom Filter', type: 'tab' },
-                { name: 'Restore', label: 'Restore', callback: cbRestoreTreeviews },
+                { name: 'RowLimit', label: 'Row Limit', type: 'text', value: '200', title: 'Set max # of rows to return' },
+                { name: 'ColLimit', label: 'Column Limit', type: 'text', value: '100', title: 'Set max # of columns to return' },
+                { name: 'Copy', label: 'Copy SQL', callback: cbCopySQLToClipboard, title: 'Copy filter formatted SQL to clipboard' },
             ],
             tabs: [
                 { name: 'List', callback: cbTabList, defaultTab: true },
@@ -781,13 +779,12 @@
                 { name: 'TODO', label: 'TODO: A WAY TO BULK INSERTS', labelonly: true },
             ],
             operations: [
-                { name: 'Rows', label: 'Rows', type: 'tab' },
                 { name: 'Save', label: 'Save', method: 'POST', callback: cbSaveBulkInserts },
                 { name: 'Refresh', label: 'Refresh', method: 'POST', type: 'tab', callback: RefreshResults },
             ],
             actions: [
-                { name: 'NumRows', label: '# Rows', type: 'text', value: '10' },
-                { name: 'New', label: 'New', callback: cbBulkInsertNewRows },
+                { name: 'NumRows', label: '# Rows', type: 'text', value: '1', title: 'Specify # of rows to auto-generate' },
+                { name: 'New', label: 'New', callback: cbBulkInsertNewRows, title: 'Auto-generate # Rows rows' },
             ],
             tabs: [
                 { name: 'Rows', callback: cbBulkInsertRowsTab, defaultTab: true },
@@ -801,7 +798,7 @@
     function cbBulkInsertRowsTab(ud, d) {
         if (ud.Init) {
             var _h = [], _i = 0;
-            _h[_i++] = '<div id="pnlBulkInsertData" class="bulkinsertgrid">';
+            _h[_i++] = '<div id="pnlBulkInsertData" class="bulkgrid">';
             _h[_i++] = '</div>';
             return (_h.join(''));
         }
@@ -859,7 +856,7 @@
         _h[_i++] = '<tbody>';
         for (idx = 0; idx < num; idx++) {
             _h[_i++] = '<tr>';
-            _h[_i++] = '<td class="_tblrsel text-center nowrap row-delete" title="Remove this row"><span class="no-sort fa fa-times"></td>';
+            _h[_i++] = '<td class="_tblrsel text-center nowrap row-action row-delete" title="Remove this row"><span class="no-sort fa fa-times"></td>';
             $.each(_viewstate.Results.Columns, function (i, c) {
                 var itm = getFilterItemByName(c.Name);
                 if (!itm) {
@@ -939,7 +936,7 @@
         _h[_i++] = '<tbody>';
         for (idx = 0; idx < num; idx++) {
             _h[_i++] = '<tr>';
-            _h[_i++] = '<td class="_tblrsel text-center nowrap row-delete" title="Remove this row"><span class="no-sort fa fa-times"></td>';
+            _h[_i++] = '<td class="_tblrsel text-center nowrap row-action row-delete" title="Remove this row"><span class="no-sort fa fa-times"></td>';
             $.each(proc.Parameters, function (i, p) {
                 if (p.Direction != 'Input') {
                     return;
@@ -1204,7 +1201,7 @@
     function cbBulkUpdateColumnsTab(ud, d) {
         if (ud.Init) {
             var _h = [], _i = 0;
-            _h[_i++] = '<div id="pnlBulkUpdateColumns" class="bulkupdategrid">';
+            _h[_i++] = '<div id="pnlBulkUpdateColumns" class="bulktable">';
             _h[_i++] = '</div>';
             return (_h.join(''));
         }
@@ -1409,10 +1406,7 @@
                 { name: 'TODO', label: 'TODO: AN EDITABLE RESULTS GRID GOES IN HERE', labelonly: true },
             ],
             operations: [
-                { name: 'Data', label: 'Data', type: 'tab' },
-                { name: 'Edit', label: 'Edit', callback: cbEditResults },
-                { name: 'Save', label: 'Save', method: 'POST', callback: cbSaveResults },
-                { name: 'Refresh', label: 'Refresh', method: 'POST', type: 'tab', callback: RefreshResults },
+                { name: 'Refresh', label: 'Refresh', method: 'POST', type: 'tab', callback: RefreshResults, title: 'Rerun filter to refresh results' },
             ],
             actions: [
                 { name: 'RowLimit', label: 'Row Limit', type: 'text', value: '200' },
@@ -1428,12 +1422,6 @@
     }
     function cbPanelResults(ud, d) {
         initGrdResults();
-    }
-    function cbEditResults(ud, d) {
-        DisplayUserMessage('W|Not implemented yet');
-        return (true);
-    }
-    function cbSaveResults(ud, d) {
     }
     function cbResultsTabData(ud, d) {
         if (ud.Init) {

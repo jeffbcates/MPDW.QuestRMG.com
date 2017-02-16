@@ -68,11 +68,11 @@ function qrmgNavbar(model) {
     _self._render = function () {
         var _h = [], _i = 0;
         if (_self._bX) {
-            _h[_i++] = '<div class="questNavbarHeader"><span class="questNavbarTack fa fa-thumb-tack "></span></div>';
+            _h[_i++] = '<div class="questNavbarHeader"><span class="questNavbarTack fa fa-thumb-tack " title="Pin navbar open"></span></div>';
             _h[_i++] = '<div class="questNavbarFrame">';
         }
         else {
-            _h[_i++] = '<div class="questNavbarHeader"><span class="questNavbarTack fa fa-reorder"></span></div>';
+            _h[_i++] = '<div class="questNavbarHeader"><span class="questNavbarTack fa fa-reorder" title="Pin navbar open"></span></div>';
             _h[_i++] = '<div class="questNavbarFrame" style="display: none;">';
         }
         _h[_i++] = '<ul class="">';

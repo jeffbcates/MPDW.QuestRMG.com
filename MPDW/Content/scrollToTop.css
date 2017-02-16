@@ -1,13 +1,14 @@
 ﻿#toTop {
   background-repeat: no-repeat;
-  bottom: 60px;
+  bottom: 50px;
   display: none;
   font-size: 4em;
   height: 64px;
   opacity: 0.4;
   position: fixed;
-  right: 5px;
+  right: 15px;
   width: 64px;
+  z-index: 1000;
 }
 #toTop:hover {
     opacity: 0.8;

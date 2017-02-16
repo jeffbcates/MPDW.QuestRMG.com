@@ -171,10 +171,10 @@ function qrmgTreeview(model) {
             _h[_i++] = '        <input type="text" class="tvwFilter">';
             _h[_i++] = '    </div>';
         }
+        _h[_i++] = '</div>';
         _h[_i++] = '    <div class="questTreeviewCommands">';
         _h[_i++] = _self._rndrcmds();
         _h[_i++] = '    </div>';
-        _h[_i++] = '</div>';
         $(_self._e).before(_h.join(''));
     }
     _self._rndrcmds = function () {

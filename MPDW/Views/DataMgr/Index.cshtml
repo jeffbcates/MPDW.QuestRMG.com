@@ -4,8 +4,30 @@
     Layout = "~/Views/Shared/_LayoutDataMgr.cshtml";
 }
 
-<div class="questTableTitle">Data Management Overview</div>
+<div class="questHelpTitle">Manage Data</div>
 
-<div id="tblTablesets" class="qrmgTable"></div>
-
-<p>Landing page for tiles, etc. for data management.  Shortcuts, instructions, etc..</p>
+<div class="mpdw-help">
+    <p>You manage data in MPDW after you perform your Setup:</p>
+    <ol>
+        <li><b>Filter</b> - You create a new filter, incrementally in steps:
+            <ol type="A" class="sublist">
+                <li><b>Basic Info</b> - You designate a name, an optional summary and a tableset for the filter.</li>
+                <li><b>Entities</b> - Specify the tableset entities (tables, views, stored procedures) the filter will use.</li>
+                <li><b>Items</b> - Specify the columns in the filter results grid by selection whole tables/views or individual columns in each.</li>
+                <li><b>Operations</b> - Specify operations on each item.  For example, you can specify a given item is equal to, greater than, less than, etc. than a specified value(s).</li>
+                <li><b>Label</b> - Optional.  You can label a result column rather than have it default to the name of the column.</li>
+                <li><b>Parameter Name</b> - Optional.  You can map the filter item to a stored procedure parameter.  See 'Stored Procedures' further down for more details.</li>
+                <li><b>Join</b> - Optional.  You can join a column to another filter item.  Currently, only one join per-item is supported.</li>
+                <li><b>Filter/Sub-Select</b> - Currently, this is not implemented.  This will allow you to feed one filter's results to another.</li>
+                <li><b>Lookup</b> - Optional.  You can designate a Lookup you created in Setup for the item.  Bulk Insert/Update operations will render a selec box with that lookup's options.</li>
+                <li><b>Type List</b> - Optional.  You can designed a TypeList you created in Setup for the item.  These work like Lookups with the added feature you can enter a new value if you don't want to select any of the TypeList values.</li>
+            </ol>
+        </li>
+        <li><b>Entities</b> - Specify only the entities (tables/views) you want to work with for a given filter.</li>
+        <li><b>Items</b> - Specify the columns in the filter.  Do this by dragging whole entities or individual columns.  If you drag a whole entity into the filter all the entity's columns will be in the filter results.</li>
+        <li><b>Save</b> - As you make changes to the filter, you may want to run it first to make sure it has the results you expect.  Then, Save the filter for subsequent use.</li>
+        <li><b>Procedures</b> - Optional.  Specify a stored procedure to run for a Create, Update or Delete operation.  By default, filters auto-generate the SQL to perform these operations.  But, you can bypass that and call a stored procedure instead.  The stored procedure name just start with 'Quest' for MPDW to recognize it as an option in the dropdown options.  If you specify a stored procedure, you must map filter items to it using the 'Parameter Name' cog option for the filter item.</li>
+        <li><b>Bulk Insert</b> - After you run a filter you can perform bulk inserts of 1-to-N rows.</li>
+        <li><b>Bulk Update</b> - After you run a filter you can perform a bulk update on all the filter results.</li>
+    </ol>
+</div>

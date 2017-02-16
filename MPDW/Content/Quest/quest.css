@@ -81,13 +81,7 @@
   bottom: 30px;
   background-color: #002F63;
 }
-/*.qrmgNavbar:hover {
-    width: 180px;
-    -webkit-transition: width 0.25s ease-in-out;
-    -moz-transition: width 0.25s ease-in-out;
-    -o-transition: width 0.25s ease-in-out;
-    transition: width 0.25s ease-in-out;
-}*/
+
 .questNavbarHeader {
   position: relative;
   display: block;
@@ -103,6 +97,7 @@
   padding-top: 10px;
   text-align: center;
   width: 30px;
+  cursor: pointer;
 }
 .questNavbarTack:hover {
     cursor: pointer;
@@ -237,6 +232,19 @@ footer {
   margin-bottom: 20px;
   position: relative;
 }
+.questHelpTitle {
+  clear: both;
+  display: block;
+  font-size: 2em;
+  margin-bottom: 20px;
+  position: relative;
+  color: #c04b34 !important;
+  margin-top: 24px;
+}
+.sublist {
+  padding-top: 20px;
+}
+
 .questTableFrame {
   clear: both;
   display: block;
@@ -256,8 +264,21 @@ footer {
 .questTableBodyFrame {
     overflow: auto;
 }
+.pnlbtn {
+  background-color: #AACCDD;
+}
+.pnlbtn:hover {
+  background-color: #70B3D6;
+}
+pnlbtn:active {
+  background-color: #70B3D6;
+}
 .qrmgTable {
   margin-bottom: 0 !important;
+}
+.qrmgTable thead {
+  background-color: #d5e8fc;
+  border: 1px solid #add4f4;
 }
 .no-sort {
     font-size: 20px;
@@ -327,9 +348,9 @@ footer {
     float: left;
     height: 50px;
     min-height: 20px;
+    padding-left: 10px;
+    padding-top: 18px;
     position: relative;
-    width: 100%;
-    padding-top: 25px;
 }
 .questTableInlineHeaderInfo {
     padding-top: 3px;
@@ -431,7 +452,7 @@ footer {
   width: auto;
   min-height: 20px;
   font-weight: bold;
-  margin-top: -10px;
+  margin-top: 10px;
   margin-left: 30px;
   margin-right: 10px;
   float: right;
@@ -448,7 +469,7 @@ footer {
   /*border: 1px solid green;*/
 }
 .questTablePagerButton {
-  border: 1px solid #002F63;
+  border: 1px solid #6883a3;
   color: #f04f50;
   display: inline-block;
   margin: 4px;
@@ -462,8 +483,8 @@ footer {
     background-color: #EAF3F1;
 }
 .questPagerFirst {
-  margin-left: 2px;
-  margin-top: 4px;
+  margin-left: 4px;
+  margin-top: 6px;
   padding-left: 2px;
 }
 .questPagerFirst:before {
@@ -471,15 +492,16 @@ footer {
     content: "\f048";
 }
 .questPagerPrev {
-  padding-left: 5px;
   font-size: 1.4em;
+  padding-left: 6px;
+  padding-top: 1px;
 }
 .questPagerPrev:before {
     font-family:'FontAwesome';
     content: "\f0d9";
 }
 .questTablePagerNofM {
-  border: 1px solid #002F63;
+  border: 1px solid #6883a3;
   color: #f04f50;
   display: inline-block;
   font-size: 1em;
@@ -492,16 +514,17 @@ footer {
   vertical-align: middle;
 }
 .questPagerNext {
-  padding-left: 6px;
   font-size: 1.4em;
+  padding-left: 8px;
+  padding-top: 1px;
 }
 .questPagerNext:before {
     font-family:'FontAwesome';
     content: "\f0da";
 }
 .questPagerLast {
-  margin-left: 4px;
-  margin-top: 4px;
+  margin-left: 5px;
+  margin-top: 6px;
   padding-left: 2px;
 }
 .questPagerLast:before {
@@ -635,6 +658,8 @@ footer {
 }
 .portlet-toolbar-text {
   border: 1px solid #aaaaaa;
+  margin-right: 15px;
+  margin-top: 10px;
   width: 60px;
 }
 
@@ -875,7 +900,7 @@ footer {
     padding: 15px;
 }
 
-.bulkupdategrid {
+.bulktable {
     padding: 5px;
 }
 .bulkUpdateTable {
@@ -896,8 +921,9 @@ td.td-label {
 td.td-input {
     width: 99%;
 }
-.bulkinsertgrid {
+.bulkgrid {
     width: 100%;
+    margin-top: 10px;
 }
 .bulkInsertTable {
     table-layout: auto;
@@ -907,7 +933,7 @@ td.td-input {
 }
 .bulkInsertTable thead th {
   background-color: #EEEEEE;
-  padding: 4px 4px 4px 10px;
+  padding: 4px 10px 4px 10px;
   border: 1px solid #cccccc;
 }
 .bulkInsertTable tbody tr td {
@@ -915,14 +941,27 @@ td.td-input {
 }
 .bulkTable tbody tr td input:required {
     border: 1px solid #3598dc;
-
-td.row-delete {
+}
+.row-action {
     cursor: pointer;
     font-weight: bold;
 }
-td.row-delete:hover {
+.row-action:hover {
     border: 1px solid red;
 }
 .bold {
     font-weight: bold;
+}
+.mpdw-help {
+  color: #091a09;
+  font-size: 1.3em;
+}
+.mpdw-help p {
+  color: #091a09;
+  font-size: 1.3em;
+}
+.mpdw-help ol {
+}
+.mpdw-help ol li {
+    padding-bottom: 20px;
 }

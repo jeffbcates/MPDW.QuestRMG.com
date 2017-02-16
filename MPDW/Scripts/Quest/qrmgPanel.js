@@ -332,7 +332,11 @@ function qrmgPanel(model) {
         o._id = _self._pfx + '_btn' + o.name;
         o._lbl = o.label ? o.label : o.name;
         var _h = [], _i = 0;
-        _h[_i++] = '<button id="' + o._id + '" class="btn ' + (o.class ? o.class : 'grey') + '" type="button">' + o._lbl + '</button>';
+        _h[_i++] = '<button id="' + o._id + '" class="btn ' + (o.class ? o.class : 'pnlbtn') + '" type="button"';
+        if (o.title) {
+            _h[_i++] = ' title="' + o.title + '" ';
+        }
+        _h[_i++] = ' >' + o._lbl + '</button>';
         return (_h.join(''));
     }
     _self._rndracts = function () {
@@ -350,14 +354,23 @@ function qrmgPanel(model) {
         var _h = [], _i = 0;
         if (a.type) {
             if (a.type == 'text') {
-                _h[_i++] = '<label class="portlet-toolbar-label">' + a._lbl + ':&nbsp;</label><input id="' + a._id + '" type="text" class="portlet-toolbar-text text-right" value="' + (a.value ? a.value : '') + '"/>';
+                _h[_i++] = '<label class="portlet-toolbar-label" ' + (a.title ? ' title="' + a.title + '" ' : '') + '>' + a._lbl + ':&nbsp;</label>';
+                _h[_i++] = '<input id="' + a._id + '" type="text" class="portlet-toolbar-text text-right" ' + (a.title ? ' title="' + a.title + '" ' : '') + ' value="' + (a.value ? a.value : '') + '"/>';
             }
             else if (a.type == 'tab') {
-                _h[_i++] = '<button id="' + a._id + '" class="btn ' + (a.class ? a.class : 'grey') + '" type="button">' + a._lbl + '</button>';
+                _h[_i++] = '<button id="' + a._id + '" class="btn ' + (a.class ? a.class : 'grey') + '" type="button" ';
+                if (a.title) {
+                    _h[_i++] = ' title="' + a.title + '" ';
+                }
+                _h[_i++] = '>' + a._lbl + '</button>';
             }
         }
         else {
-            _h[_i++] = '<button id="' + a._id + '" class="btn ' + (a.class ? a.class : 'grey') + '" type="button">' + a._lbl + '</button>';
+            _h[_i++] = '<button id="' + a._id + '" class="btn ' + (a.class ? a.class : 'grey') + '" type="button" ';
+            if (a.title) {
+                _h[_i++] = ' title="' + a.title + '" ';
+            }
+            _h[_i++] = '>' + a._lbl + '</button>';
         }
         return (_h.join(''));
     }
