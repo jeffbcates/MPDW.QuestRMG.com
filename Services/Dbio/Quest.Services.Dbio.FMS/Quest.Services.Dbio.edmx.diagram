@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="871a61b6265d48baa0b0f49819af58cb" Name="Diagram1">
+        <EntityTypeShape EntityType="Quest.Services.Dbio.FMS.GroupPrivileges" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.FMS.Groups" Width="1.5" PointX="2.75" PointY="0.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.FMS.GroupUsers" Width="1.5" PointX="0.75" PointY="3.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.FMS.Privileges" Width="1.5" PointX="2.75" PointY="3.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.FMS.UserPrivileges" Width="1.5" PointX="4.75" PointY="0.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.FMS.Users" Width="1.5" PointX="4.75" PointY="3.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.FMS.UserSessionPrivileges" Width="1.5" PointX="6.75" PointY="0.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.FMS.UserSessions" Width="1.5" PointX="0.75" PointY="6.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.FMS.EmailFolders" Width="1.5" PointX="6.75" PointY="3.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.FMS.EmailMessageAttachments" Width="1.5" PointX="6.75" PointY="6.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.FMS.EmailMessages" Width="1.5" PointX="2.75" PointY="7.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.FMS.EmailRecipients" Width="1.5" PointX="8.75" PointY="0.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.FMS.Events" Width="1.5" PointX="8.75" PointY="3.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.FMS.ProfileEventCategories" Width="1.5" PointX="8.75" PointY="6.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.FMS.ProfileEvents" Width="1.5" PointX="4.75" PointY="9.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.FMS.Countries" Width="1.5" PointX="6.75" PointY="9.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.FMS.Languages" Width="1.5" PointX="8.75" PointY="9.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.FMS.Timezones" Width="1.5" PointX="10.75" PointY="0.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.FMS.USStates" Width="1.5" PointX="0.75" PointY="10.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.FMS.ZipCodes" Width="1.5" PointX="10.75" PointY="3.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.FMS.Zones" Width="1.5" PointX="10.75" PointY="8.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.FMS.ChatRooms" Width="1.5" PointX="10.75" PointY="11.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.FMS.ChatRoomUsers" Width="1.5" PointX="12.75" PointY="0.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.FMS.InstantMessageAttachments" Width="1.5" PointX="2.75" PointY="12.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.FMS.InstantMessageContacts" Width="1.5" PointX="12.75" PointY="3.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.FMS.InstantMessageContactStates" Width="1.5" PointX="4.75" PointY="12.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.FMS.InstantMessageFolders" Width="1.5" PointX="12.75" PointY="6.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.FMS.InstantMessageRecipients" Width="1.5" PointX="6.75" PointY="12.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.FMS.InstantMessages" Width="1.5" PointX="12.75" PointY="9.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.FMS.InstantMessageStates" Width="1.5" PointX="12.75" PointY="12.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.FMS.ProfileEventConfigurations" Width="1.5" PointX="14.75" PointY="0.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.FMS.vwInstantMessageContactsList2" Width="1.5" PointX="14.75" PointY="3.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.FMS.vwInstantMessageThreadList" Width="1.5" PointX="14.75" PointY="7.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.FMS.vwLanguagesList" Width="1.5" PointX="8.75" PointY="14.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.FMS.vwTimezoneList" Width="1.5" PointX="14.75" PointY="11.75" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

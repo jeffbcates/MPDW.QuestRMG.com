@@ -1,0 +1,206 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{397C929D-8F62-4317-A9CF-0B3BE1305EE8}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Quest.Services.Dbio.MasterPricing</RootNamespace>
+    <AssemblyName>Quest.Services.Dbio.MasterPricing</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Columns.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Databases.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EntityTypes.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FilterColumns.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FilterEntityTypes.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FilterItemJoins.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FilterItems.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FilterOperations.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FilterOperators.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FilterProcedureParameters.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FilterProcedures.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Filters.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FilterTables.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FilterValues.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="FilterViews.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Lookups.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Quest.Services.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Quest.Services.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Quest.Services.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Quest.Services.Dbio.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Quest.Services.Dbio.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="StoredProcedureParameters.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="StoredProcedures.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Tables.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TablesetColumns.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Tablesets.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TablesetTables.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TablesetViews.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="TypeLists.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Views.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="vwLookupsList4.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="vwTablesetsList3.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="vwTablesetTablesList2.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="vwTablesetViewsList2.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="vwTypeListsList.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <EntityDeploy Include="Quest.Services.Dbio.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>Quest.Services.Dbio.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.Config" />
+    <None Include="packages.config" />
+    <None Include="Quest.Services.Dbio.edmx.diagram">
+      <DependentUpon>Quest.Services.Dbio.edmx</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Database\MasterPricing_20170116001.txt" />
+    <Content Include="Database\MasterPricing_20170118001.txt" />
+    <Content Include="Database\MasterPricing_20170118002.txt" />
+    <Content Include="Database\MasterPricing_20170119001.txt" />
+    <Content Include="Database\MasterPricing_20170131001.txt" />
+    <Content Include="Database\MasterPricing_20170201001.txt" />
+    <Content Include="Database\MasterPricing_20170208001.txt" />
+    <Content Include="Database\MasterPricing_20170209001.txt" />
+    <Content Include="Quest.Services.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Quest.Services.Dbio.edmx</DependentUpon>
+      <LastGenOutput>Quest.Services.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Quest.Services.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Quest.Services.Dbio.edmx</DependentUpon>
+      <LastGenOutput>Quest.Services.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

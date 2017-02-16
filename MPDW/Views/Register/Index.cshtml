@@ -1,0 +1,49 @@
+﻿@model FMS.Models.LoginViewModel
+
+@{
+    ViewBag.Title = "Register";
+}
+
+<hgroup class="title">
+    <h1>Welcome!  Please register.</h1>
+</hgroup>
+
+
+<p>I want to register as:</p>
+<table>
+    <tbody>
+        <tr>
+            <td><input type="radio" id="radRegistrationType" name="radRegistrationType" value="E"></td>
+            <td>An employer</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>I am going to hire frameworkrs and/or solution shops.</td>
+        </tr>
+        <tr>
+            <td><input type="radio" id="radRegistrationType" name="radRegistrationType" value="F"></td>
+            <td>A frameworkr</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>I am going to work as an independent contractor.</td>
+        </tr>
+        <tr>
+            <td><input type="radio" id="radRegistrationType" name="radRegistrationType" value="S"></td>
+            <td>A solution shop</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>We are a group of one or more frameworkrs working together as a business.</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+            <td>&nbsp;</td>
+        </tr>
+        <tr>
+            <td></td>
+            <td><button id="btnNext" name="btnNext" class="btn btn-success">Next</button></td>
+            <td><button id="btnCancel" name="btnCancel" class="btn btn-secondary">Cancel</button></td>
+        </tr>
+    </tbody>
+</table>

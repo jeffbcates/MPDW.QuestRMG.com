@@ -1,0 +1,134 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{47CE02F3-5475-40D9-A83D-ED0B584BE22A}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Avid.Functional.FMS</RootNamespace>
+    <AssemblyName>Avid.Functional.FMS</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Application.cs" />
+    <Compile Include="ApplicationAttachment.cs" />
+    <Compile Include="ApplicationAttachmentId.cs" />
+    <Compile Include="ApplicationId.cs" />
+    <Compile Include="EmployerRegistration.cs" />
+    <Compile Include="TreenodeOption.cs" />
+    <Compile Include="ProfileId.cs" />
+    <Compile Include="EmployerRegistrationId.cs" />
+    <Compile Include="Payment.cs" />
+    <Compile Include="Invoice.cs" />
+    <Compile Include="InvoiceId.cs" />
+    <Compile Include="PaymentId.cs" />
+    <Compile Include="InvoiceLineItem.cs" />
+    <Compile Include="JobLineItem.cs" />
+    <Compile Include="EmployerUserId.cs" />
+    <Compile Include="EmployerUser.cs" />
+    <Compile Include="FreelancerSkill.cs" />
+    <Compile Include="FreelancerSkillId.cs" />
+    <Compile Include="FreelancerId.cs" />
+    <Compile Include="Freelancer.cs" />
+    <Compile Include="IRS1099.cs" />
+    <Compile Include="IRS1099Id.cs" />
+    <Compile Include="IRS1099TaxStatus.cs" />
+    <Compile Include="IRS1099TaxStatusId.cs" />
+    <Compile Include="Job.cs" />
+    <Compile Include="JobBudget.cs" />
+    <Compile Include="JobBudgetId.cs" />
+    <Compile Include="ProfileType.cs" />
+    <Compile Include="ProfileTypeId.cs" />
+    <Compile Include="JobId.cs" />
+    <Compile Include="FreelancerRatings.cs" />
+    <Compile Include="Requisition.cs" />
+    <Compile Include="RequisitionAttachment.cs" />
+    <Compile Include="RequisitionAttachmentId.cs" />
+    <Compile Include="RequisitionAuxillarySkill.cs" />
+    <Compile Include="RequisitionAuxillarySkillId.cs" />
+    <Compile Include="FreelancerRatingId.cs" />
+    <Compile Include="RequisitionId.cs" />
+    <Compile Include="RequisitionMessage.cs" />
+    <Compile Include="RequisitionMessageId.cs" />
+    <Compile Include="RequisitionMilestone.cs" />
+    <Compile Include="RequisitionMilestoneAttachment.cs" />
+    <Compile Include="RequisitionMilestoneAttachmentId.cs" />
+    <Compile Include="RequisitionMilestoneId.cs" />
+    <Compile Include="RequisitionSkill.cs" />
+    <Compile Include="RequisitionSkillId.cs" />
+    <Compile Include="RequisitionStates.cs" />
+    <Compile Include="RequisitionState.cs" />
+    <Compile Include="RequisitionStateId.cs" />
+    <Compile Include="RequisitionType.cs" />
+    <Compile Include="RequisitionTypeId.cs" />
+    <Compile Include="RequisitionUserReport.cs" />
+    <Compile Include="RequisitionUserReportId.cs" />
+    <Compile Include="RequisitionUserReportType.cs" />
+    <Compile Include="RequisitionUserReportTypeId.cs" />
+    <Compile Include="RequisitionUserReportTypeOption.cs" />
+    <Compile Include="RequisitionUserReportTypeOptionId.cs" />
+    <Compile Include="RequisitionVisibilityScope.cs" />
+    <Compile Include="RequisitionVisibilityScopeId.cs" />
+    <Compile Include="RequisitionWatchList.cs" />
+    <Compile Include="RequisitionWatchListId.cs" />
+    <Compile Include="SectorId.cs" />
+    <Compile Include="Sector.cs" />
+    <Compile Include="SkillCategory.cs" />
+    <Compile Include="SkillCategoryId.cs" />
+    <Compile Include="Employer.cs" />
+    <Compile Include="EmployerId.cs" />
+    <Compile Include="OptionValuePair.cs" />
+    <Compile Include="Skill.cs" />
+    <Compile Include="SkillId.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="AuthorId.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Utilities\Quest.Util.Data\Quest.Util.Data.csproj">
+      <Project>{dd1de1c3-c7fc-4f67-aef0-a443ba63d8c0}</Project>
+      <Name>Quest.Util.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Quest.Functional.ASM\Quest.Functional.ASM.csproj">
+      <Project>{2fabe5d5-3871-405c-a9c5-3e95e1f68bb1}</Project>
+      <Name>Quest.Functional.ASM</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

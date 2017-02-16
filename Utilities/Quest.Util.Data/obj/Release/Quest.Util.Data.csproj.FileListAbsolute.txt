@@ -1,0 +1,4 @@
+C:\Quest\dev\Template\FMS\Utilities\Quest.Util.Data\bin\Release\Quest.Util.Data.dll
+C:\Quest\dev\Template\FMS\Utilities\Quest.Util.Data\bin\Release\Quest.Util.Data.pdb
+C:\Quest\dev\Template\FMS\Utilities\Quest.Util.Data\obj\Release\Quest.Util.Data.dll
+C:\Quest\dev\Template\FMS\Utilities\Quest.Util.Data\obj\Release\Quest.Util.Data.pdb

@@ -1,0 +1,95 @@
+﻿@media (max-width: 768px) {
+    .logo {
+      background-color: #f05f40;
+      border: 3px solid #ffffff;
+      color: #ffffff;
+      display: inline-block;
+      float: left;
+      font-family: "Raleway",sans-serif;
+      font-size: 9px;
+      font-weight: 500;
+      height: 24px;
+      line-height: 24px;
+      margin: -3px 10px auto auto;
+      padding-top: 1px;
+      text-align: center;
+      width: 24px;
+    }
+    .coname {
+        font-size: 12px;
+    }
+    #mainMenuFrame {
+        margin-top: -1px;
+        margin-right: 0;
+        background-color: #F8F8F8;
+        border-top: 0;
+        box-shadow: none;
+    }
+    #mainMenu {
+        margin-top: 50px;
+    }
+    ul#mainMenu li a:hover {
+        background-color: #345983;
+        color: #FFFFFF !important;
+    }
+}
+
+
+@media (max-width: 480px) {
+    .coname {
+        display: none;
+    }
+}
+
+/* Smartphones (landscape) ----------- */
+@media only screen 
+and (min-width : 321px) {
+}
+
+/* Smartphones (portrait) ----------- */
+@media only screen 
+and (max-width : 320px) {
+/* Styles */
+}
+
+/* iPads (portrait and landscape) ----------- */
+@media only screen 
+and (min-device-width : 768px) 
+and (max-device-width : 1024px) {
+/* Styles */
+}
+
+/* iPads (landscape) ----------- */
+@media only screen 
+and (min-device-width : 768px) 
+and (max-device-width : 1024px) 
+and (orientation : landscape) {
+
+}
+
+/* iPads (portrait) ----------- */
+@media only screen 
+and (min-device-width : 768px) 
+and (max-device-width : 1024px) 
+and (orientation : portrait) {
+/* Styles */
+}
+
+/* Desktops and laptops ----------- */
+@media only screen 
+and (min-width : 1224px) {
+/* Styles */
+}
+
+/* Large screens ----------- */
+@media only screen 
+and (min-width : 1824px) {
+/* Styles */
+}
+
+/* iPhone 4 ----------- */
+@media
+only screen and (-webkit-min-device-pixel-ratio : 1.5),
+only screen and (min-device-pixel-ratio : 1.5) {
+/* Styles */
+}

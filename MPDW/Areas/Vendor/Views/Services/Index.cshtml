@@ -1,0 +1,42 @@
+﻿@model Quest.MPDW.Vendor.Models.VendorServicesListViewModel
+@{
+    ViewBag.Title = "Vendor Services";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="questTableTitle">Vendor Services</div>
+
+<div id="tblVendorServices" class="qrmgTable"></div>
+
+<script type="text/javascript">
+    $(function () {
+        var _tblVendorServices;
+        var tblVendorServices = {
+            name: 'tblVendorServices',
+            element: 'tblVendorServices',
+            prefix: 'cusloc',
+            uri: '/Vendor/Services',
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb']
+            },
+            autoLoad: true,
+            editor: false,
+            columns: [
+                { name: 'Id', hidden: true, key: true },
+                { name: 'Location', label: 'Location', width: '400px' },
+                { name: 'StartDate', label: 'City' },
+                { name: 'EndDate', label: 'State' },
+            ],
+            operations: [
+                { name: 'Terminate', label: 'Terminate', tooltip: 'Terminate a service', uri: '/Services/Editor', classes: 'btn-new' },
+            ],
+            commands: [
+            ],
+            events: [
+            ],
+            contextMenu: [
+            ]
+        }
+        _tblVendorServices = new qrmgTable(tblVendorServices);
+    });
+</script>

@@ -1,0 +1,46 @@
+﻿@model Quest.MPDW.Account.Models.AccountHomeViewModel
+@{
+    ViewBag.Title = "User Information";
+    Layout = "~/Views/Shared/_LayoutAccount.cshtml";
+}
+
+<h1>User Information</h1>
+
+<input type="hidden" id="__frmUserInfoVIEW_STATE" value="@Html.Raw(Json.Encode(Model))" />
+<div id="frmUserInfo"></div>
+
+<script type="text/javascript">
+    var _frmUserInfo = null;
+    var frmUserInfo = {
+        element: 'frmUserInfo',
+        prefix: '',
+        uri: '/Account/UserInfo',
+        callback: cbUserInfo,
+        ctx: {
+            elements: ['_questctx', '_questmm', '_questnb']
+        },
+        fields: [
+            { name: 'Id', type: 'hidden', key: true },
+            { name: 'Username', label: 'Username', required: true, maxlength: 50, size: 55 },
+            { name: 'FirstName', label: 'First Name', required: true, maxlength: 50, size: 55 },
+            { name: 'LastName', label: 'Last Name', required: true, maxlength: 50, size: 55 },
+            { name: 'Created', label: 'Created', readonly: true, maxlength: 10, size: 10 },
+        ],
+        bNoDefaultOptions: true,
+        operations: [
+            { name: 'Edit', label: 'Make Changes', classes: "btn btn-primary" },
+            { name: 'Save', label: 'Save', classes: "btn btn-success" },
+            { name: 'ChangePassword', label: 'Change Password', classes: "btn btn-danger" },
+        ]
+    }
+    function initForm() {
+        _frmUserInfo = new qrmgEditor(frmUserInfo);
+    }
+    function cbUserInfo() {
+    }
+    $(function () {
+        initForm();
+    });
+</script>
+
+

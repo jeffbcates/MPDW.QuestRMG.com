@@ -1,0 +1,42 @@
+﻿@model Quest.MPDW.Service.Models.ServicesListViewModel
+@{
+    ViewBag.Title = "Services";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="questTableTitle">Services</div>
+
+<div id="tblServices" class="qrmgTable"></div>
+
+<script type="text/javascript">
+    $(function () {
+        var _tblServices;
+        var tblServices = {
+            name: 'tblServices',
+            element: 'tblServices',
+            prefix: 'svcs',
+            uri: '/Service',
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb']
+            },
+            autoLoad: true,
+            editor: false,
+            columns: [
+                { name: 'Id', hidden: true, key: true },
+                { name: 'Name', label: 'Name', width: '400px' },
+                { name: 'Personal', label: 'Personal' },
+                { name: 'CreateDate', label: 'Create Date' },
+            ],
+            operations: [
+                { name: 'New', label: '&nbsp;&nbsp;New&nbsp;&nbsp;', tooltip: 'Create a new service', uri: '/Service/Editor', classes: 'btn-new' },
+            ],
+            commands: [
+            ],
+            events: [
+            ],
+            contextMenu: [
+            ]
+        }
+        _tblServices = new qrmgTable(tblServices);
+    });
+</script>

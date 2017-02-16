@@ -1,0 +1,213 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F6FDF645-EFE6-40C4-B94C-0CB60B3B4192}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Quest.Services.Dbio.FMS</RootNamespace>
+    <AssemblyName>Quest.Services.Dbio.FMS</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\..\..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="ChatRooms.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ChatRoomUsers.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Countries.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EmailFolders.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EmailMessageAttachments.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EmailMessages.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="EmailRecipients.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Events.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GroupPrivileges.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Groups.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="GroupUsers.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InstantMessageAttachments.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InstantMessageContacts.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InstantMessageContactStates.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InstantMessageFolders.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InstantMessageRecipients.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InstantMessages.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="InstantMessageStates.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Languages.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Privileges.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProfileEventCategories.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProfileEventConfigurations.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ProfileEvents.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Quest.Services.Context.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Quest.Services.Context.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Quest.Services.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Quest.Services.Dbio.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Quest.Services.Dbio.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="Timezones.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserPrivileges.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Users.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserSessionPrivileges.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UserSessions.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="USStates.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="vwInstantMessageContactsList2.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="vwInstantMessageThreadList.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="vwLanguagesList.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="vwTimezoneList.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ZipCodes.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="Zones.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.Config" />
+    <None Include="packages.config" />
+    <EntityDeploy Include="Quest.Services.Dbio.edmx">
+      <Generator>EntityModelCodeGenerator</Generator>
+      <LastGenOutput>Quest.Services.Dbio.Designer.cs</LastGenOutput>
+    </EntityDeploy>
+    <None Include="Quest.Services.Dbio.edmx.diagram">
+      <DependentUpon>Quest.Services.Dbio.edmx</DependentUpon>
+    </None>
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Database\FMS_20161208001.txt" />
+    <Content Include="Database\FMS_20170112001.txt" />
+    <Content Include="Quest.Services.Context.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Quest.Services.Dbio.edmx</DependentUpon>
+      <LastGenOutput>Quest.Services.Context.cs</LastGenOutput>
+    </Content>
+    <Content Include="Quest.Services.tt">
+      <Generator>TextTemplatingFileGenerator</Generator>
+      <DependentUpon>Quest.Services.Dbio.edmx</DependentUpon>
+      <LastGenOutput>Quest.Services.cs</LastGenOutput>
+    </Content>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

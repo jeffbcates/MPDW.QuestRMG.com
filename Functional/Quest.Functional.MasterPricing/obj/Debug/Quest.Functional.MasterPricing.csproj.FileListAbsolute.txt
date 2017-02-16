@@ -1,0 +1,14 @@
+C:\Quest\dev\FMS_20170213001\FMS\Functional\Quest.Functional.MasterPricing\bin\Debug\Quest.Functional.MasterPricing.dll
+C:\Quest\dev\FMS_20170213001\FMS\Functional\Quest.Functional.MasterPricing\bin\Debug\Quest.Functional.MasterPricing.pdb
+C:\Quest\dev\FMS_20170213001\FMS\Functional\Quest.Functional.MasterPricing\bin\Debug\Quest.Util.Data.dll
+C:\Quest\dev\FMS_20170213001\FMS\Functional\Quest.Functional.MasterPricing\bin\Debug\Quest.Util.Data.pdb
+C:\Quest\dev\FMS_20170213001\FMS\Functional\Quest.Functional.MasterPricing\obj\Debug\Quest.Functional.MasterPricing.csprojResolveAssemblyReference.cache
+C:\Quest\dev\FMS_20170213001\FMS\Functional\Quest.Functional.MasterPricing\obj\Debug\Quest.Functional.MasterPricing.dll
+C:\Quest\dev\FMS_20170213001\FMS\Functional\Quest.Functional.MasterPricing\obj\Debug\Quest.Functional.MasterPricing.pdb
+C:\Quest\src\MPDW\Functional\Quest.Functional.MasterPricing\bin\Debug\Quest.Functional.MasterPricing.dll
+C:\Quest\src\MPDW\Functional\Quest.Functional.MasterPricing\bin\Debug\Quest.Functional.MasterPricing.pdb
+C:\Quest\src\MPDW\Functional\Quest.Functional.MasterPricing\bin\Debug\Quest.Util.Data.dll
+C:\Quest\src\MPDW\Functional\Quest.Functional.MasterPricing\bin\Debug\Quest.Util.Data.pdb
+C:\Quest\src\MPDW\Functional\Quest.Functional.MasterPricing\obj\Debug\Quest.Functional.MasterPricing.csprojResolveAssemblyReference.cache
+C:\Quest\src\MPDW\Functional\Quest.Functional.MasterPricing\obj\Debug\Quest.Functional.MasterPricing.dll
+C:\Quest\src\MPDW\Functional\Quest.Functional.MasterPricing\obj\Debug\Quest.Functional.MasterPricing.pdb

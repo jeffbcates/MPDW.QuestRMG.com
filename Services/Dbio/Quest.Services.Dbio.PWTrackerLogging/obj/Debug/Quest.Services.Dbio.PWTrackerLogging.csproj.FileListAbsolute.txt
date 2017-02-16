@@ -1,0 +1,9 @@
+C:\Quest\src\MPDW\Services\Dbio\Quest.Services.Dbio.PWTrackerLogging\bin\Debug\Quest.Services.Dbio.PWTrackerLogging.dll.config
+C:\Quest\src\MPDW\Services\Dbio\Quest.Services.Dbio.PWTrackerLogging\bin\Debug\Quest.Services.Dbio.PWTrackerLogging.dll
+C:\Quest\src\MPDW\Services\Dbio\Quest.Services.Dbio.PWTrackerLogging\bin\Debug\Quest.Services.Dbio.PWTrackerLogging.pdb
+C:\Quest\src\MPDW\Services\Dbio\Quest.Services.Dbio.PWTrackerLogging\bin\Debug\EntityFramework.dll
+C:\Quest\src\MPDW\Services\Dbio\Quest.Services.Dbio.PWTrackerLogging\bin\Debug\EntityFramework.SqlServer.dll
+C:\Quest\src\MPDW\Services\Dbio\Quest.Services.Dbio.PWTrackerLogging\bin\Debug\EntityFramework.xml
+C:\Quest\src\MPDW\Services\Dbio\Quest.Services.Dbio.PWTrackerLogging\bin\Debug\EntityFramework.SqlServer.xml
+C:\Quest\src\MPDW\Services\Dbio\Quest.Services.Dbio.PWTrackerLogging\obj\Debug\Quest.Services.Dbio.PWTrackerLogging.dll
+C:\Quest\src\MPDW\Services\Dbio\Quest.Services.Dbio.PWTrackerLogging\obj\Debug\Quest.Services.Dbio.PWTrackerLogging.pdb

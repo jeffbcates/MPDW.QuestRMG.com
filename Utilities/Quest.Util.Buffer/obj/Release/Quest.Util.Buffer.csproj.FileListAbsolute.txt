@@ -1,0 +1,4 @@
+C:\Quest\dev\Template\FMS\Utilities\Quest.Util.Buffer\bin\Release\Quest.Util.Buffer.dll
+C:\Quest\dev\Template\FMS\Utilities\Quest.Util.Buffer\bin\Release\Quest.Util.Buffer.pdb
+C:\Quest\dev\Template\FMS\Utilities\Quest.Util.Buffer\obj\Release\Quest.Util.Buffer.dll
+C:\Quest\dev\Template\FMS\Utilities\Quest.Util.Buffer\obj\Release\Quest.Util.Buffer.pdb

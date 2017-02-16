@@ -1,0 +1,123 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{E91F43E8-159B-428C-8C60-36440DC6EA29}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Quest.MasterPricing.Services.Business</RootNamespace>
+    <AssemblyName>Quest.MasterPricing.Services.Business</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="autogen\Filters\FilterItemJoinsMgr.cs" />
+    <Compile Include="autogen\Filters\FilterOperationsMgr.cs" />
+    <Compile Include="autogen\Filters\FilterProcedureParametersMgr.cs" />
+    <Compile Include="autogen\Filters\FilterProceduresMgr.cs" />
+    <Compile Include="autogen\Filters\FilterViewsMgr.cs" />
+    <Compile Include="autogen\Filters\FilterValuesMgr.cs" />
+    <Compile Include="autogen\Filters\FilterItemsMgr.cs" />
+    <Compile Include="autogen\Filters\FilterOperatorMgr.cs" />
+    <Compile Include="autogen\Filters\FilterColumnsMgr.cs" />
+    <Compile Include="autogen\Filters\FilterTablesMgr.cs" />
+    <Compile Include="autogen\Filters\FiltersMgr.cs" />
+    <Compile Include="autogen\Setup\ColumnsMgr.cs" />
+    <Compile Include="autogen\Setup\DatabasesMgr.cs" />
+    <Compile Include="autogen\Setup\TypeListsMgr.cs" />
+    <Compile Include="autogen\Setup\StoredProcedureParametersMgr.cs" />
+    <Compile Include="autogen\Setup\StoredProceduresMgr.cs" />
+    <Compile Include="autogen\Setup\LookupsMgr.cs" />
+    <Compile Include="autogen\Setup\TablesetsMgr.cs" />
+    <Compile Include="autogen\Setup\ViewsMgr.cs" />
+    <Compile Include="autogen\Setup\TablesMgr.cs" />
+    <Compile Include="DatabaseMgr.cs" />
+    <Compile Include="TypeListMgr.cs" />
+    <Compile Include="LookupMgr.cs" />
+    <Compile Include="BulkDeleteMgr.cs" />
+    <Compile Include="BulkUpdateMgr.cs" />
+    <Compile Include="BulkInsertMgr.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="FilterMgr.cs" />
+    <Compile Include="TablesetMgr.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Functional\Avid.Functional.FMS\Avid.Functional.FMS.csproj">
+      <Project>{47ce02f3-5475-40d9-a83d-ed0b584be22a}</Project>
+      <Name>Avid.Functional.FMS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Functional\Quest.Functional.ASM\Quest.Functional.ASM.csproj">
+      <Project>{2fabe5d5-3871-405c-a9c5-3e95e1f68bb1}</Project>
+      <Name>Quest.Functional.ASM</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Functional\Quest.Functional.MasterPricing\Quest.Functional.MasterPricing.csproj">
+      <Project>{81321b6d-3b5a-41b7-b587-b9b844da0678}</Project>
+      <Name>Quest.Functional.MasterPricing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Utilities\Quest.Util.Buffer\Quest.Util.Buffer.csproj">
+      <Project>{3f8277cc-a9da-493e-b824-9d525e837fd2}</Project>
+      <Name>Quest.Util.Buffer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Utilities\Quest.Util.Data\Quest.Util.Data.csproj">
+      <Project>{dd1de1c3-c7fc-4f67-aef0-a443ba63d8c0}</Project>
+      <Name>Quest.Util.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Utilities\Quest.Util.Status\Quest.Util.Status.csproj">
+      <Project>{eb3bc5d2-eb3d-4f28-8184-6e1dcada534b}</Project>
+      <Name>Quest.Util.Status</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Data\Quest.MasterPricing.Services.Data\Quest.MasterPricing.Services.Data.csproj">
+      <Project>{f6725741-207f-4195-8d1a-9e2dbd27b2b4}</Project>
+      <Name>Quest.MasterPricing.Services.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Data\Quest.Services.Data\Quest.Services.Data.csproj">
+      <Project>{483b1cd9-22b5-4361-89e5-5a0492acad43}</Project>
+      <Name>Quest.Services.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Quest.Services.Business\Quest.Services.Business.csproj">
+      <Project>{47336c82-ddcd-4565-a9df-9e2eff6a4336}</Project>
+      <Name>Quest.Services.Business</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Rules\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

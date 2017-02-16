@@ -1,0 +1,79 @@
+﻿@model Quest.MPDW.Models.LoginResponseViewModel
+@{
+    ViewBag.Title = "Login";
+    Layout = "~/Views/Shared/_LayoutNoSession.cshtml";
+}
+
+
+<h1>
+    Welcome!  Please login
+</h1>
+<h3>
+    Master Pricing
+</h3>
+ 
+<div id="forgotPassword" class="pwdopt">
+    <a href="/Password/Forgot">Forgot my password</a>
+</div>
+<div id="changePassword" class="pwdopt">
+    <a href="/Password/Change">Change my password</a>
+</div>
+
+<input type="hidden" id="__frmLoginVIEW_STATE" value="@Html.Raw(Json.Encode(Model))" />
+<div id="frmLogin">
+</div>
+
+
+
+<script type="text/javascript">
+    var _frmLogin = null;
+    var frmLogin = {
+        element: 'frmLogin',
+        prefix: '',
+        uri: '/Session',
+        callback: cbRegisterEmployer,
+        viewstate: '',
+        fields: [
+            { name: 'Username', label: 'Username', type: 'email', required: true, maxlength: 80, size: 80 },
+            { name: 'Password', label: 'Password', type: "password", required: true, maxlength: 50, size: 55 },
+            { name: 'bRememberMe', label: 'Remember Me', type: "checkbox" },
+        ],
+        operations: [
+            { name: 'Login', classes: "btn btn-danger", submit: true },
+        ],
+        actions: [
+        ]
+    }
+    function cbRegisterEmployer() {
+    }
+    $(function () {
+        var _viewstate = JSON.parse($('#__frmLoginVIEW_STATE').val());
+        _frmLogin = new qrmgForm(frmLogin);
+        if (!_frmLogin.DisplayFormMessages()) {
+            if (_viewstate.UserMessages.length) {
+                if (IsUserMessage(_viewstate.UserMessages[0])) {
+                    if (!IsAppSuccess(_viewstate.UserMessages[0])) {
+                        DisplayUserMessage(_viewstate.UserMessages[0]);
+                    }
+                }
+            }
+        }
+        $('#Username').focus();
+    });
+</script>
+
+<div style="margin-top: 50px; display: none;">
+    <p>Social media logins here</p>
+</div>
+<script type="text/javascript">
+    $('.pwdopt').click(function (e) {
+        qrmgmvc.Global.Mask();
+        e.stopPropagation();
+        e.preventDefault();
+        var _io = new qrmgio(cbLogin);
+        _io.ShowView($(e.currentTarget).find('a').attr('href'));
+    });
+    function cbLogin() {
+        qrmgmvc.Global.Unmask();
+    }
+</script>

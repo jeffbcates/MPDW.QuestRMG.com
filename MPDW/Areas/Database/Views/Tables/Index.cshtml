@@ -1,0 +1,58 @@
+﻿@model Quest.MasterPricing.Database.Models.TablesListViewModel
+@{
+    ViewBag.Title = "Database Tables List";
+    Layout = "~/Views/Shared/_LayoutDatabase.cshtml";
+}
+
+<input type="hidden" id="__tblTablesVIEW_STATE" value="@Html.Raw(Json.Encode(Model))" />
+
+<div class="questTableTitle">Database Tables List</div>
+
+<div id="tblTables" class="qrmgTable"></div>
+
+<script type="text/javascript">
+    var _tblTables;
+    $(function () {
+        var tblTables = {
+            name: 'tblTables',
+            element: 'tblTables',
+            prefix: 'tt',
+            uri: '/Database/Tables',
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb'],
+                master: { viewstate: true, field: 'DatabaseId' },
+                ////master: { element: true, name: 'DatabaseId', value: '#DatabaseId' }
+            },
+            autoLoad: true,
+            ////editor: { uri: '/Database/Table' },
+            callback: cbTblTables,
+            columns: [
+                { name: 'Id', hidden: true, key: true },
+                { name: 'Schema', label: 'Schema' },
+                { name: 'Name', label: 'Database Name' },
+                { name: 'Summary', label: 'Summary', width: '800px' },
+            ],
+            paging: {
+                Top: true,
+                Bottom: true,
+                PageSize: 100,
+                PageSizeOptions: [100, 200, 300, 1000],
+            },
+            operations: [
+            ],
+            commands: [
+                ////{ name: 'Read', label: 'Details', edit: true },
+            ],
+            events: [
+            ],
+            contextMenu: [
+            ]
+        }
+        _tblTables = new qrmgTable(tblTables);
+    });
+    function cbTblTables(ud, d) {
+
+    }
+</script>
+
+

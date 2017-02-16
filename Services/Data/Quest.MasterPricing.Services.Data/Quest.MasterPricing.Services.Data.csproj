@@ -1,0 +1,136 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{F6725741-207F-4195-8D1A-9E2DBD27B2B4}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Quest.MasterPricing.Services.Data</RootNamespace>
+    <AssemblyName>Quest.MasterPricing.Services.Data</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="EntityFramework">
+      <HintPath>..\..\..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Linq.Dynamic">
+      <HintPath>..\..\..\packages\System.Linq.Dynamic.1.0.6\lib\net40\System.Linq.Dynamic.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="autogen\Filters\DbFilterItemJoinsMgr.cs" />
+    <Compile Include="autogen\Filters\DbFilterOperationsMgr.cs" />
+    <Compile Include="autogen\Filters\DbFilterProcedureParametersMgr.cs" />
+    <Compile Include="autogen\Filters\DbFilterProceduresMgr.cs" />
+    <Compile Include="autogen\Filters\DbFilterViewsMgr.cs" />
+    <Compile Include="autogen\Filters\DbFilterValuesMgr.cs" />
+    <Compile Include="autogen\Filters\DbFilterItemsMgr.cs" />
+    <Compile Include="autogen\Filters\DbFilterOperatorsMgr.cs" />
+    <Compile Include="autogen\Filters\DbFilterColumnsMgr.cs" />
+    <Compile Include="autogen\Filters\DbFilterTablesMgr.cs" />
+    <Compile Include="autogen\Filters\DbFiltersMgr.cs" />
+    <Compile Include="autogen\Setup\DbColumnsMgr.cs" />
+    <Compile Include="autogen\Setup\DbDatabasesMgr.cs" />
+    <Compile Include="autogen\Setup\DbTablesetColumnsMgr.cs" />
+    <Compile Include="autogen\Setup\DbTablesetViewsMgr.cs" />
+    <Compile Include="autogen\Setup\DbTablesetTablesMgr.cs" />
+    <Compile Include="autogen\Setup\DbTypeListsMgr.cs" />
+    <Compile Include="autogen\Setup\DbStoredProcedureParametersMgr.cs" />
+    <Compile Include="autogen\Setup\DbStoredProceduresMgr.cs" />
+    <Compile Include="autogen\Setup\DbLookupsMgr.cs" />
+    <Compile Include="autogen\Setup\DbTablesetsMgr.cs" />
+    <Compile Include="autogen\Setup\DbViewsMgr.cs" />
+    <Compile Include="autogen\Setup\DbTablesMgr.cs" />
+    <Compile Include="DbDatabaseMgr.cs" />
+    <Compile Include="DbTypeListMgr.cs" />
+    <Compile Include="DbLookupMgr.cs" />
+    <Compile Include="DbBulkDeleteMgr.cs" />
+    <Compile Include="DbBulkUpdateMgr.cs" />
+    <Compile Include="DbBulkInsertMgr.cs" />
+    <Compile Include="DbSprocMgr.cs" />
+    <Compile Include="DbSQLMgr.cs" />
+    <Compile Include="DbResultsMgr.cs" />
+    <Compile Include="DbFilterSQLMgr.cs" />
+    <Compile Include="DbFilterMgr.cs" />
+    <Compile Include="DbTablesetMgr.cs" />
+    <Compile Include="FilterEntity.cs" />
+    <Compile Include="JoinTable.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ClauseGenerationResult.cs" />
+    <Compile Include="StoredProcedureRequest.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Functional\Avid.Functional.FMS\Avid.Functional.FMS.csproj">
+      <Project>{47ce02f3-5475-40d9-a83d-ed0b584be22a}</Project>
+      <Name>Avid.Functional.FMS</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Functional\Quest.Functional.ASM\Quest.Functional.ASM.csproj">
+      <Project>{2fabe5d5-3871-405c-a9c5-3e95e1f68bb1}</Project>
+      <Name>Quest.Functional.ASM</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Functional\Quest.Functional.MasterPricing\Quest.Functional.MasterPricing.csproj">
+      <Project>{81321b6d-3b5a-41b7-b587-b9b844da0678}</Project>
+      <Name>Quest.Functional.MasterPricing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Utilities\Quest.Util.Buffer\Quest.Util.Buffer.csproj">
+      <Project>{3f8277cc-a9da-493e-b824-9d525e837fd2}</Project>
+      <Name>Quest.Util.Buffer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Utilities\Quest.Util.Data\Quest.Util.Data.csproj">
+      <Project>{dd1de1c3-c7fc-4f67-aef0-a443ba63d8c0}</Project>
+      <Name>Quest.Util.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Utilities\Quest.Util.Status\Quest.Util.Status.csproj">
+      <Project>{eb3bc5d2-eb3d-4f28-8184-6e1dcada534b}</Project>
+      <Name>Quest.Util.Status</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Dbio\Quest.Services.Dbio.MasterPricing\Quest.Services.Dbio.MasterPricing.csproj">
+      <Project>{397c929d-8f62-4317-a9cf-0b3be1305ee8}</Project>
+      <Name>Quest.Services.Dbio.MasterPricing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Quest.Services.Data\Quest.Services.Data.csproj">
+      <Project>{483b1cd9-22b5-4361-89e5-5a0492acad43}</Project>
+      <Name>Quest.Services.Data</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Rules\" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

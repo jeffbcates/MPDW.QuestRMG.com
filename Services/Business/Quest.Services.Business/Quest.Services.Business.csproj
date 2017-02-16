@@ -1,0 +1,78 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{47336C82-DDCD-4565-A9DF-9E2EFF6A4336}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Quest.Services.Business</RootNamespace>
+    <AssemblyName>Quest.Services.Business</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+    <TargetFrameworkProfile />
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Mgr.cs" />
+    <Compile Include="MgrSessionBased.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\Functional\Quest.Functional.ASM\Quest.Functional.ASM.csproj">
+      <Project>{2fabe5d5-3871-405c-a9c5-3e95e1f68bb1}</Project>
+      <Name>Quest.Functional.ASM</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Utilities\Quest.Util.Buffer\Quest.Util.Buffer.csproj">
+      <Project>{3f8277cc-a9da-493e-b824-9d525e837fd2}</Project>
+      <Name>Quest.Util.Buffer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Utilities\Quest.Util.Data\Quest.Util.Data.csproj">
+      <Project>{dd1de1c3-c7fc-4f67-aef0-a443ba63d8c0}</Project>
+      <Name>Quest.Util.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Utilities\Quest.Util.Status\Quest.Util.Status.csproj">
+      <Project>{eb3bc5d2-eb3d-4f28-8184-6e1dcada534b}</Project>
+      <Name>Quest.Util.Status</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Data\Quest.Services.Data\Quest.Services.Data.csproj">
+      <Project>{483b1cd9-22b5-4361-89e5-5a0492acad43}</Project>
+      <Name>Quest.Services.Data</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

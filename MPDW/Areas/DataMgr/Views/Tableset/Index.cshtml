@@ -1,0 +1,1560 @@
+﻿@model Quest.MasterPricing.DataMgr.Models.DataMgrTablesetViewModel
+@{
+    ViewBag.Title = "Tableset Data Manager";
+    Layout = "~/Views/Shared/_LayoutDataMgr.cshtml";
+}
+
+<h3 id="pageTitle">Data Manager</h3>
+
+<input type="hidden" id="__frmDataMgrTablesetVIEW_STATE" value="@Html.Raw(Json.Encode(Model))" />
+
+<div id="pnlFilters"></div>
+
+<div id="pnlResults"></div>
+
+<div id="pnlBulkInserts"></div>
+
+<div id="pnlBulkUpdates"></div>
+
+
+
+
+<script type="text/javascript">
+    var _pnlFilters = null;
+    function initFilters() {
+        var pnlFilters = {
+            element: 'pnlFilters',
+            title: 'Filters',
+            name: 'Filters',
+            prefix: 'pnlflt',
+            colmd: 12,
+            uri: '/DataMgr/Filters',
+            callback: cbPanelFilters,
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb']
+            },
+            fields: [
+                { name: 'Id', key: true, hidden: true },
+                { name: 'TablesetId', hidden: true },
+                { name: 'TODO', label: 'TODO: FILTERS GO IN HERE', labelonly: true },
+            ],
+            operations: [
+                { name: 'List', label: 'List', type: 'tab' },
+                { name: 'Entities', label: 'Entities', type: 'tab' },
+                { name: 'Values', label: 'Items', type: 'tab' },
+                { name: 'Save', label: 'Save', method: 'POST', callback: cbSaveFilterPanel },
+                { name: 'SQL', label: 'SQL', method: 'POST', type: 'tab', callback: cbGetFilterSQL },
+                { name: 'Run', label: 'Run', method: 'POST', callback: cbRunFilter },
+                { name: 'Procedures', label: 'Procedures', type: 'tab' },
+            ],
+            actions: [
+                { name: 'RowLimit', label: 'Row Limit', type: 'text', value: '200' },
+                { name: 'ColLimit', label: 'Column Limit', type: 'text', value: '100' },
+                { name: 'Copy', label: 'Copy SQL', callback: cbCopySQLToClipboard },
+                { name: 'CustomFilter', label: 'Custom Filter', type: 'tab' },
+                { name: 'Restore', label: 'Restore', callback: cbRestoreTreeviews },
+            ],
+            tabs: [
+                { name: 'List', callback: cbTabList, defaultTab: true },
+                { name: 'Entities', callback: cbTabEntities, classes: 'overflow-hidden' },
+                { name: 'Values', callback: cbTabValues },
+                { name: 'SQL', callback: cbTabSQL },
+                { name: 'CustomFilter', callback: cbTabCustomFilter },
+                { name: 'Procedures', callback: cbTabProcedures },
+            ],
+            events: [
+                { name: 'BeforeSave', callback: cbPnlFiltersBeforeSave },
+            ],
+            minHeight: '600px'
+        }
+        _pnlFilters = new qrmgPanel(pnlFilters);
+        _pnlFilters.SetField('Id', _viewstate.Tableset.Id);
+        _pnlFilters.SetField('TablesetId', _viewstate.Tableset.Id);
+    }
+    function cbPanelFilters(ud, d) {
+        initTablesetFiltersEditor();
+        initTreeviewTablesetEntities();
+        initTreeviewFilterEntities();
+        initTreeviewValueEntities();
+        initFilterProcedures();
+    }
+    function cbTabList(ud, d) {
+        if (ud.Init) {
+            var _h = [], _i = 0;
+            _h[_i++] = '<div id="frmFilter">';
+            _h[_i++] = '</div>';
+            return (_h.join(''));
+        }
+    }
+    function cbTabEntities(ud, d) {
+        if (ud.Init) {
+            var _h = [], _i = 0;
+            _h[_i++] = '<div id="hdrCurrentEntitiesFilter" class="panel-tab-banner">';
+            _h[_i++] = '    <div class="panel-tab-banner-title">Filter:&nbsp;</div>';
+            _h[_i++] = '    <div class="panel-title-select">';
+            _h[_i++] = '       <select id="selCurrentEntitiesFilter" class="form-control filter-select"></select>';
+            _h[_i++] = '    </div>';
+            _h[_i++] = '</div>';
+            _h[_i++] = '<div id="tvwTablesetTablesFrame" class="panel-half-tab panel-tab-banner-space pull-left disabled">';
+            _h[_i++] = '    <div id="tvwTablesetEntities" class="panel-full-frame-40header">';
+            _h[_i++] = '    </div>';
+            _h[_i++] = '</div>';
+            _h[_i++] = '<div id="tvwFilterTablesFrame" class="panel-half-tab panel-tab-banner-space pull-right disabled">';
+            _h[_i++] = '    <div id="tvwFilterEntities" class="panel-full-frame-40header">';
+            _h[_i++] = '    </div>';
+            _h[_i++] = '</div>';
+            return (_h.join(''));
+        }
+    }
+    function cbTabValues(ud, d) {
+        if (ud.Init) {
+            var _h = [], _i = 0;
+            _h[_i++] = '<div id="hdrCurrentValuesFilter" class="panel-tab-banner">';
+            _h[_i++] = '    <div class="panel-tab-banner-title">Filter:&nbsp;</div>';
+            _h[_i++] = '    <div class="panel-title-select">';
+            _h[_i++] = '       <select id="selCurrentValuesFilter" class="form-control filter-select"></select>';
+            _h[_i++] = '    </div>';
+            _h[_i++] = '</div>';
+            _h[_i++] = '<div id="tvwConfigureTablesFrame" class="panel-quarter-tab panel-tab-banner-space pull-left disabled">';
+            _h[_i++] = '    <div id="tvwValueEntities" class="panel-full-frame-40header">';
+            _h[_i++] = '    </div>';
+            _h[_i++] = '</div>';
+            _h[_i++] = '<div id="pnlFilterItemsFrame" class="panel-three-quarter-tab panel-tab-banner-space pull-right disabled">';
+            _h[_i++] = '    <div id="pnlFilterItems" class="panel-full-frame-header">';
+            _h[_i++] = '    </div>';
+            _h[_i++] = '</div>';
+            return (_h.join(''));
+        }
+    }
+    function cbTabSQL(ud, d) {
+        if (ud.Init) {
+            var _h = [], _i = 0;
+            _h[_i++] = '<div id="hdrCurrentSQLFilter" class="panel-tab-banner">';
+            _h[_i++] = '    <div class="panel-tab-banner-title">Filter:&nbsp;</div>';
+            _h[_i++] = '    <div class="panel-title-select">';
+            _h[_i++] = '       <select id="selCurrentSQLFilter" class="form-control filter-select"></select>';
+            _h[_i++] = '    </div>';
+            _h[_i++] = '</div>';
+            _h[_i++] = '<div id="tvwSQLFrame" class="panel-full-tab panel-tab-banner-space">';
+            _h[_i++] = 'Filter SQL goes in here.';
+            _h[_i++] = '</div>';
+            return (_h.join(''));
+        }
+    }
+    function cbTabCustomFilter(ud, d) {
+        if (ud.Init) {
+            return ('<h1>Tab' + d.name + '</h1>');
+        }
+    }
+    function cbTabProcedures(ud, d) {
+        if (ud.Init) {
+            var _h = [], _i = 0;
+            _h[_i++] = '<div id="hdrFilterProcedures" class="panel-tab-banner">';
+            _h[_i++] = '    <div class="panel-tab-banner-title">Filter Procedures:&nbsp;</div>';
+            _h[_i++] = '    <div class="panel-title-select">';
+            _h[_i++] = '       <select id="selCurrentProceduresFilter" class="form-control filter-select"></select>';
+            _h[_i++] = '    </div>';
+            _h[_i++] = '</div>';
+            _h[_i++] = '<div id="frmFilterProcedures" class="panel-tab-banner-space">';
+            _h[_i++] = 'Filter procedures go in here.';
+            _h[_i++] = '</div>';
+            return (_h.join(''));
+        }
+    }
+    function cbPnlFiltersBeforeSave(ud, d) {
+
+    }
+    function cbRestoreTreeviews(ud, d) {
+        loadTreeviewTablesetEntities();
+        loadTreeviewFilterEntities();
+        loadTreeviewConfigureTables();
+        return (false);
+    }
+    function cbSaveFilterPanel(ud, d) {
+        if (d.questStatus) {
+            if (IsAppSuccess(d)) {
+                var _d = _frmFilter.GetData();
+                cbChangeFilter({ Change: true }, _d.FilterId);
+            }
+            return;
+        }
+        $('#tvwSQLFrame').text('');
+        var _d = {};
+        _d.TablesetId = _viewstate.TablesetId;
+        _d.CurrentTab = _pnlFilters.Tab();
+        _d.Editor = _frmFilter.GetData();
+        if (_d.Editor.FilterId < 1) {
+            DisplayUserMessage('E|Please select a filter');
+            return;
+        }
+        _d.Entities = _tvwFilterEntities.GetData();
+        _d.Items = _fltFilterItems.GetData();
+        _d.Procedures = [];
+        var procInsert = { Action: 'Insert', Name: $('#fltprocsInsert option:selected').text(), Id: $('#fltprocsInsert').val() };
+        _d.Procedures.push(procInsert);
+        var procUpdate = { Action: 'Update', Name: $('#fltprocsUpdate option:selected').text(), Id: $('#fltprocsUpdate').val() };
+        _d.Procedures.push(procUpdate);
+        var procDelete = { Action: 'Delete', Name: $('#fltprocsDelete option:selected').text(), Id: $('#fltprocsDelete').val() };
+        _d.Procedures.push(procDelete);
+
+        $.extend(d, _d);
+        return (true);
+    }
+    function cbGetFilterSQL(ud, d) {
+        if (d.questStatus) {
+            $('#tvwSQLFrame').empty().text(d.SQL);
+        }
+        else {
+            var _d = {};
+            _d.Editor = _frmFilter.GetData();
+            if (parseInt(_d.Editor.FilterId) < 1) { return; }
+            $.extend(d, _d);
+            return (true);
+        }
+    }
+    function cbRunFilter(ud, d) {
+        if (d.questStatus) {
+            if (IsAppSuccess(d)) {
+                $('#tvwSQLFrame').empty().text(d.SQL);
+                $('.questTableTotalRecordCount').text('');
+                _grdResults.Load(d);
+                $('.questTableTotalRecordCount').text(d.Results.Items.length);
+                loadBulkUpdates(d);
+                _viewstate.Results = d.Results;
+            }
+            else {
+                $('#tvwSQLFrame').empty();
+                DisplayUserMessage(d);
+            }
+        }
+        else {
+            ClearUserMessage();
+            clearBulkInsertsGrid();
+            clearBulkUpdatesGrid();
+            delete _viewstate.Results;
+            var _d = {};
+            _d.Editor = _frmFilter.GetData();
+            if (parseInt(_d.Editor.FilterId) < 1) {
+                DisplayUserMessage('E|Select a filter to run');
+                return;
+            }
+            d.FilterId = _d.Editor.FilterId;
+
+            var _rd = _pnlResults.GetData();
+            d._ResultsOptions = {};
+            d._ResultsOptions.RowLimit = _rd.RowLimit;
+            d._ResultsOptions.ColLimit = _rd.ColLimit;
+            return (true);
+        }
+
+    }
+    function cbCopySQLToClipboard() {
+        ClipboardHelper.copyText($('#tvwSQLFrame').text());
+        DisplayUserMessage('I|SQL copied to clipboard');
+    }
+</script>
+<script type="text/javascript">
+    var _frmFilter = null;
+    function initTablesetFiltersEditor() {
+        var frmFilter = {
+            element: 'frmFilter',
+            prefix: 'flt',
+            uri: '/DataMgr/Filter',
+            callback: cbTablesetFilterEditor,
+            classes: 'panelForm',
+            bNoLoad: true,
+            bAutoFocus: false,
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb']
+            },
+            fields: [
+                { name: 'Id', type: 'hidden', key: true },
+                { name: 'TablesetId', type: 'hidden' },
+                { name: 'FilterId', label: 'Filters', type: 'select', args: [{ TablesetId: _viewstate.TablesetId, type: 'value' }], callback: cbChangeFilter, classes: 'filter-select' },
+                { name: 'Filler0', label: '', type: 'labelOnly' },
+                { name: 'Name', label: 'Name', required: true, maxlength: 256, size: 55 },
+                { name: 'Summary', label: 'Summary', maxlength: 256, size: 55 },
+            ],
+            opframe: 'pnlfrmbtns',
+            operations: [
+            ],
+            actions: [
+            ],
+            events: [
+                { name: 'AfterLoaded', callback: cbAfterLoadedFrmTablesetFilters },
+            ]
+        }
+        _frmFilter = new qrmgEditor(frmFilter);
+        _frmFilter.SetField('TablesetId', _viewstate.TablesetId);
+        _frmFilter.GetOptions();
+    }
+    function cbTablesetFilterEditor(ud, d) {
+        if (ud.PostClear) {
+            _frmFilter.SetField('TablesetId', _viewstate.TablesetId);
+        }
+        else if (ud.Save) {
+            if (d.questStatus) {
+                DisplayUserMessage(d);
+            }
+            if (IsAppSuccess(d)) {
+                _frmFilter.GetOptions();
+                enadisPanels(true);
+            }      
+        }
+        else if (ud.Read) {
+            if (IsAppSuccess(d)) {
+                _viewstate.Entities = d.Entities;
+                _viewstate.Items = d.Items;
+                _viewstate.Procedures = d.Procedures;
+                setPanelContext(d.Id);
+                enadisPanels(true);
+            }
+            else {
+                _viewstate.Entities = [];
+                _viewstate.Items = [];
+                _viewstate.Procedures = {};
+                return;
+            }
+            loadTreeviewTablesetEntities();
+            loadTreeviewFilterEntities(d.Entities);
+            loadTreeviewConfigureTables(d.Entities);
+            loadFilterItems(d.Items);
+            loadFilterProcedures(d.Procedures);
+        }
+    }
+    function cbAfterLoadedFrmTablesetFilters(ud, d) {
+        _frmFilter.SetField('FilterId', parseInt(d.Id || ''));
+    }
+    function cbChangeFilter(ud, d) {
+        qrmgmvc.Global.Mask($('#pnlFilters'));
+        if (ud.Change) {
+            if (d == -1) {
+                // TODO: Clear/disable accordingly.
+                _frmFilter.Clear();
+                _frmFilter.SetField('FilterId', -1);
+                _tvwTablesetEntities.Clear();
+                _tvwFilterEntities.Clear();
+                _tvwValueEntities.Clear();
+                _fltFilterItems.Clear();
+                qrmgmvc.Global.Unmask($('#pnlFilters'));
+                return;
+            }
+            else {
+                loadTreeviewTablesetEntities();
+            }
+            $('#tvwSQLFrame').text('');
+            clearFilterProcedures();
+            _frmFilter.Read(d, true);
+            enadisPanels(false);
+            return;
+        }
+        else if (ud.PostLoad) {
+            var _s = $('#fltFilterId');
+            var _ss = $('.filter-select');
+            $.each(_ss, function (i, s) {
+                if (s.id === _s[0].id) { return; }
+                var foo = $(_s).find('option').clone();
+                $(s).empty().append(foo);
+            });
+        }
+        qrmgmvc.Global.Unmask($('#pnlFilters'));
+    }
+    function enadisPanels(bEnable) {
+        if (bEnable) {
+            $('#tvwTablesetTablesFrame').removeClass('disabled');
+            $('#tvwFilterTablesFrame').removeClass('disabled');
+            $('#tvwConfigureTablesFrame').removeClass('disabled');
+            $('#pnlFilterItemsFrame').removeClass('disabled');
+        }
+        else {
+            $('#tvwTablesetTablesFrame').addClass('disabled');
+            $('#tvwFilterTablesFrame').addClass('disabled');
+            $('#tvwConfigureTablesFrame').addClass('disabled');
+            $('#pnlFilterItemsFrame').addClass('disabled');
+        }
+    }
+    function cbTablesetFilter(ud, d) {
+        if (d.UserMessage) {
+            DisplayUserMessage(d.UserMessage);
+        }
+        else {
+            _frmFilter.Load(d, true);
+            _frmFilter.SetField('FilterId', d.Id);
+        }
+        qrmgmvc.Global.Unmask();
+    }
+</script>
+
+<script type="text/javascript">
+    var _tvwTablesetEntities = null;
+    function initTreeviewTablesetEntities() {
+        var tvwTablesetEntities = {
+            element: 'tvwTablesetEntities',
+            pfx: 'tblsee',
+            uri: '/DataMgr/Tables',
+            keyname: 'TablesetId',
+            header: {
+                bInlineHeader: true,
+                count: true,
+                label: 'Tableset Entities: ',
+                filter: true
+            },
+            draggable: true,
+            droppable: true,
+            sortable: true,
+            multiSelect: true,
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb'],
+            },
+            viewstate: { element: '__frmDataMgrTablesetVIEW_STATE' },
+            callback: cbTvwTablesetEntities,
+            events: [
+                { name: 'AfterLoaded', callback: cbTvwTablesetEntitiesAfterLoaded },
+                { name: 'NodeSelected', callback: cbTvwTablesetEntitiesNodeSelected },
+                { name: 'OnTreeRender', callback: cbOnTvwTablesetEntitiesRender },
+                { name: 'OnDrop', callback: cbTvwTablesetEntitiesOnDrop },
+                { name: 'Refresh', callback: cbTvwTablesetEntitiesRefresh },
+            ],
+            operations: [
+                { name: 'Remove', label: 'Remove', classes: "btn btn-primary" },
+            ],
+        }
+        _tvwTablesetEntities = new qrmgTreeview(tvwTablesetEntities);
+        loadTreeviewTablesetEntities();
+    }
+    function loadTreeviewTablesetEntities(tt) {
+        var _ee = _viewstate.TableList.concat(_viewstate.ViewList);
+        var _d = { questStatus: _viewstate.questStatus, Items: _ee };
+        _tvwTablesetEntities.Fill(_d);
+        if (tt) {
+            $.each(tt, function (i, t) {
+                _tvwTablesetEntities.Remove(t.Id, 'Id');
+            });
+        }
+    }
+    function cbTvwTablesetEntities(op, msg, n, d) {
+    }
+    function cbTvwTablesetEntitiesAfterLoaded() {
+    }
+    function cbTvwTablesetEntitiesNodeSelected(evt, d, e) {
+        e.stopPropagation();
+    }
+    function cbOnTvwTablesetEntitiesRender(e) {
+        if (!_tvwTablesetEntities) { return; }
+        $(_tvwTablesetEntities._e + ' ul li span.fa-table').closest('li').addClass('tvwTable');
+        $(_tvwTablesetEntities._e + ' ul li span.fa-th').closest('li').addClass('tvwView');
+        _tvwTablesetEntities.Draggable();
+        _tvwTablesetEntities.Droppable();
+    }
+    function cbTvwTablesetEntitiesOnDrop(e, ui) {
+    }
+    function cbTvwTablesetEntitiesRefresh(e) {
+        $('#draggingContainer').remove();
+    }
+</script>
+<script type="text/javascript">
+    var _tvwFilterEntities = null;
+    function initTreeviewFilterEntities() {
+        var tvwFilterEntities = {
+            element: 'tvwFilterEntities',
+            pfx: 'fltents',
+            uri: '/DataMgr/Filter',
+            keyname: 'FilterId',
+            header: {
+                bInlineHeader: true,
+                count: true,
+                label: 'Filter Entities: ',
+                filter: true
+            },
+            draggable: true,
+            droppable: true,
+            sortable: true,
+            multiSelect: true,
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb'],
+            },
+            viewstate: { element: '__frmDataMgrTablesetVIEW_STATE' },
+            callback: cbTvwFilterEntities,
+            events: [
+                { name: 'AfterLoaded', callback: cbTvwFilterEntitiesAfterLoaded },
+                { name: 'NodeSelected', callback: cbTvwFilterEntitiesNodeSelected },
+                { name: 'OnTreeRender', callback: cbOnTvwFilterEntitiesRender },
+                { name: 'OnDrop', callback: cbTvwFilterEntitiesOnDrop },
+                { name: 'Refresh', callback: cbTvwFilterEntitiesRefresh },
+            ],
+            operations: [
+                { name: 'Add', label: 'Add', classes: "btn btn-primary" },
+            ],
+        }
+        _tvwFilterEntities = new qrmgTreeview(tvwFilterEntities);
+        loadTreeviewFilterEntities();
+    }
+    function loadTreeviewFilterEntities(tt) {
+        _tvwFilterEntities.Clear();
+        var _d = { questStatus: _viewstate.questStatus, Items: tt ? tt : _viewstate.Entities };
+        _tvwFilterEntities.Fill(_d);
+    }
+    function cbTvwFilterEntities(op, msg, n, d) {
+    }
+    function cbTvwFilterEntitiesAfterLoaded() {
+    }
+    function cbTvwFilterEntitiesNodeSelected(evt, d, e) {
+        e.stopPropagation();
+    }
+    function cbOnTvwFilterEntitiesRender(e) {
+        if (!_tvwFilterEntities) { return; }
+        $(_tvwFilterEntities._e + ' ul li span.fa-table').closest('li').addClass('tvwTable');
+        $(_tvwFilterEntities._e + ' ul li span.fa-th').closest('li').addClass('tvwView');
+        _tvwFilterEntities.Draggable();
+        _tvwFilterEntities.Droppable();
+    }
+    function cbTvwFilterEntitiesOnDrop(e, ui) {
+        var _nn = [];
+        var _idd = [];
+        $.each(ui.draggable, function (i, d) {
+            var _nodeId = parseInt(d.dataset.nodeid);
+            var n = _tvwTablesetEntities.GetNode('nodeId', _nodeId);
+            _nn.push(n);
+            _idd.push(_nodeId);
+        });
+        var _d = { questStatus: _viewstate.questStatus, Items: _nn };
+        _tvwFilterEntities.Insert(_d);
+        $.each(_idd, function (i, id) {
+            _tvwTablesetEntities.Remove(id);
+        });
+        return (true);
+    }
+    function cbTvwFilterEntitiesRefresh(e) {
+        $('#draggingContainer').remove();
+    }
+</script>
+
+<script type="text/javascript">
+    var _tvwValueEntities = null;
+    function initTreeviewValueEntities() {
+        var tvwValueEntities = {
+            element: 'tvwValueEntities',
+            pfx: 'valents',
+            uri: '/DataMgr/Filter',
+            keyname: 'FilterId',
+            header: {
+                bInlineHeader: true,
+                count: false,
+                label: 'Filter Entities: ',
+                filter: true
+            },
+            draggable: true,
+            droppable: false,
+            sortable: true,
+            multiSelect: false,
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb'],
+            },
+            viewstate: { element: '__frmDataMgrTablesetVIEW_STATE' },
+            callback: cbTvwConfigureTables,
+            events: [
+                { name: 'AfterLoaded', callback: cbTvwValueEntitiesAfterLoaded },
+                { name: 'NodeSelected', callback: cbTvwValueEntitiesNodeSelected },
+                { name: 'OnTreeRender', callback: cbTvwValueEntitiesOnTreeRender },
+                { name: 'OnDrop', callback: cbTvwValueEntitiesOnDrop },
+                { name: 'Refresh', callback: cbTvwValueEntitiesRefresh },
+            ],
+            operations: [
+                { name: 'Add', label: 'Add', classes: "btn btn-primary" },
+            ],
+        }
+        _tvwValueEntities = new qrmgTreeview(tvwValueEntities);
+        loadTreeviewConfigureTables();
+    }
+    function loadTreeviewConfigureTables(tt) {
+        _tvwValueEntities.Clear();
+        var _d = { questStatus: _viewstate.questStatus, Items: tt ? tt : _viewstate.Entities };
+        _tvwValueEntities.Fill(_d);
+    }
+    function cbTvwConfigureTables(op, msg, n, d) {
+    }
+    function cbTvwValueEntitiesAfterLoaded() {
+    }
+    function cbTvwValueEntitiesNodeSelected(evt, d, e) {
+        e.stopPropagation();
+    }
+    function cbTvwValueEntitiesOnTreeRender(e) {
+        if (!_tvwValueEntities) { return; }
+        $(_tvwValueEntities._e + ' ul li span.fa-table').closest('li').addClass('tvwTable');
+        $(_tvwValueEntities._e + ' ul li span.fa-th').closest('li').addClass('tvwView');
+        _tvwValueEntities.Draggable();
+        _tvwValueEntities.Droppable();
+    }
+    function cbTvwValueEntitiesOnDrop(e, ui) {
+        var _nn = [];
+        var _idd = [];
+        $.each(ui.draggable, function (i, d) {
+            var _nodeId = parseInt(d.dataset.nodeid);
+            var n = _tvwValueEntities.GetNode('nodeId', _nodeId);
+            _nn.push(n);
+            _idd.push(_nodeId);
+        });
+        var _d = { questStatus: _viewstate.questStatus, Items: _nn };
+        _tvwValueEntities.Insert(_d);
+        $.each(_idd, function (i, id) {
+            // TODO: ONLY FULL TABLE NODES GET REMOVED.
+            //       COLUMNS, TABLE REMAINS SANS THE COLUMN THAT WAS DROPPED.
+            _tvwValueEntities.Remove(id);
+        })
+        return (true);
+    }
+    function cbTvwValueEntitiesRefresh(e) {
+        $('#draggingContainer').remove();
+    }
+</script>
+<script type="text/javascript">
+    var _fltFilterItems = null;
+    function initFilterItems() {
+        var fltFilterItems = {
+            element: 'pnlFilterItems',
+            pfx: 'cfgtt',
+            uri: '/Filter/Items',
+            draggable: false,
+            droppable: true,
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb'],
+            },
+            viewstate: { element: '__frmDataMgrTablesetVIEW_STATE' },
+            callback: cbFilterItems,
+            events: [
+                { name: 'AfterLoaded', callback: cbFilterItemAfterLoaded },
+                { name: 'ItemSelected', callback: cbFilterItemSelected },
+                { name: 'OnDrop', callback: cbFilterItemDrop },
+                { name: 'OnClose', callback: cbFilterItemClose },
+                { name: 'OnNew', callback: cbFilterItemNew },
+            ],
+            fields: [
+                { name: 'OperationId', type: 'select', hidden: true },
+            ],
+            source: _tvwFilterEntities
+        }
+        _fltFilterItems = new qrmgFilter(fltFilterItems);
+    }
+    function cbFilterItems(ud, d) {
+    }
+    function cbFilterItemAfterLoaded(ud, d) {
+    }
+    function cbFilterItemSelected(ud, d) {
+    }
+    function cbFilterItemDrop(e, ui) {
+        var lbl = ui.draggable.text();
+        if (lbl.indexOf('.') > -1) {
+            var id = $(ui.draggable).attr('data-nodeid');
+            var n = _tvwValueEntities.GetNode('nodeId', parseInt(id));
+            insertFilterItem(n);
+            return (true);
+        }
+        if (lbl.indexOf(':') > -1) {
+            var pp = lbl.split(':');
+            lbl = pp[0].trim();
+        }
+        var id = $(ui.draggable).attr('data-nodeid');
+        var n = _tvwValueEntities.GetNode('nodeId', parseInt(id));
+        insertFilterItem(n);
+        return (true);
+    }
+    function insertFilterItem(n) {
+        var lbl = extractName(n.text);
+        if (n.ParentId > 0) {
+            var pn = _tvwValueEntities.GetNode('Id', n.ParentId);
+            var _key = pn.text + '.' + lbl;
+            _key = _key.replace(/[\[\]']+/g, '').replace(/\./g, '_');
+            var itm = { Id: n.Id, key: _key, name: lbl, title: lbl, data: n, Parent: pn, Operations: n.Operations, Joins: n.Joins, Label: n.Label, ParameterName: n.ParameterName };
+            if (n.Lookup) { itm.Lookup = n.Lookup; }
+            if (n.TypeList) { itm.TypeList = n.TypeList; }
+            _fltFilterItems.Insert(itm);
+        }
+        else {
+            var _key = n.text;
+            _key = _key.replace(/[\[\]']+/g, '').replace(/\./g, '_');
+            var itm = { Id: n.Id, key: _key, name: lbl, title: lbl, data: n, Operations: n.Operations, Joins: n.Joins };
+            _fltFilterItems.Insert(itm);
+        }
+    }
+    function cbFilterItemClose() {
+    }
+    function cbFilterItemNew() {
+    }
+    function loadFilterItems(items) {
+        _fltFilterItems.Clear();
+        $.each(items, function (i, itm) {
+            var n = _tvwValueEntities.GetNodeKlugie(itm);
+            if (!n) {
+                alert('Filter Item entity Id ' + itm.Entity.Id + ' not found in Filter Entities');
+                return;
+            }
+            n.Joins = itm.Joins;
+            n.Operations = itm.Operations;
+            if (itm.Lookup) { n.Lookup = itm.Lookup; }
+            if (itm.TypeList) { n.TypeList = itm.TypeList; }
+            if (itm.Label) { n.Label = itm.Label; }
+            if (itm.ParameterName) { n.ParameterName = itm.ParameterName; }
+            insertFilterItem(n);
+        });
+    }
+    function extractName(txt) {
+        if (txt.indexOf(':') > -1) {
+            var pp = txt.split(':');
+            txt = pp[0].trim();
+        }
+        return (txt);
+    }
+</script>
+
+
+<script type="text/javascript">
+    var _frmFilterProcedures = null;
+    function initFilterProcedures() {
+        var frmFilterProcedures = {
+            element: 'frmFilterProcedures',
+            prefix: 'fltprocs',
+            uri: '/DataMgr/FilterProcedures',
+            callback: cbFilterProceduresEditor,
+            classes: 'panelForm',
+            bAutoFocus: false,
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb']
+            },
+            fields: [
+                { name: 'Id', type: 'hidden', key: true },
+                { name: 'FilterId', type: 'hidden' },
+                { name: 'Insert', label: 'Insert', type: 'select', NoLoad: true },
+                { name: 'Update', label: 'Update', type: 'select', NoLoad: true },
+                { name: 'Delete', label: 'Delete', type: 'select', NoLoad: true },
+            ],
+            options: [
+                { name: 'Procedure', args: [{ TablesetId: _viewstate.TablesetId, type: 'value' }], callback: cbProcedureOptions, mask: '#pnlfltProceduresTab' },
+            ],
+            opframe: 'pnlfrmbtns',
+            bNoDefaultOptions: true,
+            operations: [
+            ],
+            actions: [
+            ],
+            events: [
+            ]
+        }
+        _frmFilterProcedures = new qrmgEditor(frmFilterProcedures);
+    }
+    function cbFilterProceduresEditor(ud, d) {
+    }
+    function cbProcedureOptions(ud, dd) {
+        _frmFilterProcedures.LoadOptions({ name: 'Insert', id: 'fltprocsInsert' }, dd);
+        _frmFilterProcedures.LoadOptions({ name: 'Update', id: 'fltprocsUpdate' }, dd);
+        _frmFilterProcedures.LoadOptions({ name: 'Delete', id: 'fltprocsDelete' }, dd);
+        clearFilterProcedures();
+    }
+    function clearFilterProcedures() {
+        _frmFilterProcedures.SetField('Insert', '-1');
+        _frmFilterProcedures.SetField('Update', '-1');
+        _frmFilterProcedures.SetField('Delete', '-1');
+    }
+    function loadFilterProcedures(pp) {
+        $.each(pp, function (i, p) {
+            _frmFilterProcedures.SetField(p.Action, null, p.Name);
+        });
+    }
+</script>
+
+
+
+<script type="text/javascript">
+    var _pnlBulkInserts = null;
+    function initBulkInserts() {
+        var pnlBulkInserts = {
+            element: 'pnlBulkInserts',
+            title: 'Bulk Inserts',
+            name: 'BulkInserts',
+            prefix: 'blkins',
+            colmd: 12,
+            uri: '/DataMgr/BulkInserts',
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb']
+            },
+            fields: [
+                { name: 'Id', key: true, hidden: true },
+                { name: 'TODO', label: 'TODO: A WAY TO BULK INSERTS', labelonly: true },
+            ],
+            operations: [
+                { name: 'Rows', label: 'Rows', type: 'tab' },
+                { name: 'Save', label: 'Save', method: 'POST', callback: cbSaveBulkInserts },
+                { name: 'Refresh', label: 'Refresh', method: 'POST', type: 'tab', callback: RefreshResults },
+            ],
+            actions: [
+                { name: 'NumRows', label: '# Rows', type: 'text', value: '10' },
+                { name: 'New', label: 'New', callback: cbBulkInsertNewRows },
+            ],
+            tabs: [
+                { name: 'Rows', callback: cbBulkInsertRowsTab, defaultTab: true },
+                { name: 'Output', callback: cbResultsOutput },
+            ],
+            minHeight: '400px'
+        }
+        _pnlBulkInserts = new qrmgPanel(pnlBulkInserts);
+        ////_pnlBulkInserts.Collapse();
+    }
+    function cbBulkInsertRowsTab(ud, d) {
+        if (ud.Init) {
+            var _h = [], _i = 0;
+            _h[_i++] = '<div id="pnlBulkInsertData" class="bulkinsertgrid">';
+            _h[_i++] = '</div>';
+            return (_h.join(''));
+        }
+    }
+    function cbBulkInsertNewRows(a, d) {
+        ClearUserMessage();
+        var num;
+        try {
+            num = parseInt(d.NumRows);
+        }
+        catch (e) {
+            DisplayUserMessage('E|Enter a valid integer number of rows');
+            $('#flt_btnNumRows').addClass('validationError').focus();
+            return;
+        }
+        if (! _viewstate.Results) {
+            DisplayUserMessage('E|Run the filter first, then you can do bulk inserts.');
+            return;
+        }
+        var _h = [], _i = 0;
+        var proc;
+        $.each(_viewstate.Procedures, function (i, p) {
+            if ((p.Action == 'Insert') && (p.Id > -1)) {
+                proc = p;
+                return (false);
+            }
+        });
+        if (proc) {
+            _h[_i++] = buildSprocBulkInsert(proc, num);
+        }
+        else {
+            _h[_i++] = buildResultsBulkInsert(num);
+        }
+        clearBulkInsertsGrid();
+        $('#pnlBulkInsertData').html(_h.join(''));
+        $('#pnlBulkInsertData').find('td.row-delete').click(function (e) {
+            $(this).closest('tr').remove();
+        });
+        bindBulkInsertGrid();
+        loadBulkInsertLookups();
+        loadBulkInsertTypeLists();
+    }
+    function clearBulkInsertsGrid() {
+        $('#pnlBulkInsertData').empty();
+    }
+    function buildResultsBulkInsert(num) {
+        var _h = [], _i = 0;
+        _h[_i++] = '<table class="bulkTable bulkInsertTable">';
+        _h[_i++] = '<thead>';
+        _h[_i++] = '<th class="_tblsel no-sort text-center" id="_selSelect"><span class="no-sort fa fa-bars"></span></th>';
+        $.each(_viewstate.Results.Columns, function (i, c) {
+            _h[_i++] = '<th>' + c.Label + '</th>';
+        });
+        _h[_i++] = '</thead>';
+        _h[_i++] = '<tbody>';
+        for (idx = 0; idx < num; idx++) {
+            _h[_i++] = '<tr>';
+            _h[_i++] = '<td class="_tblrsel text-center nowrap row-delete" title="Remove this row"><span class="no-sort fa fa-times"></td>';
+            $.each(_viewstate.Results.Columns, function (i, c) {
+                var itm = getFilterItemByName(c.Name);
+                if (!itm) {
+                    DisplayUserMessage('E|FilterItem ' + c.Name + ' not found in view state.  Cannot build Bulk Insert grid');
+                    return('');
+                }
+                _h[_i++] = '<td class="">';
+                if (c.LookupId) {
+                    _h[_i++] = '<select id="' + c.Name + '_' + (idx + 1) + '" class="form-control bulk-lookup" data-name="' + c.Name + '" data-item-id="' + itm.Id + '" data-id="' + c.LookupId + '" data-type="' + c.Type + '" ';
+                    if (!c.bAllowDbNull) {
+                        _h[_i++] = ' required ';
+                    }
+                    _h[_i++] = '></select>';
+                }
+                else if (c.TypeListId) {
+                    _h[_i++] = '<input id="' + c.Name + '_' + (idx + 1) + '" type="text" class="form-control bulk-typeList" data-item-id="' + itm.Id + '" data-id="' + c.TypeListId + '" data-name="' + c.Name + '" maxlength="' + maxclen(c) + '" data-type="' + c.Type + '" list="bulkInsertTypeList_' + c.TypeListId + '"  placeholder="..." ';
+                    _h[_i++] = ' />';
+                }
+                else {
+                    _h[_i++] = '<input id="' + c.Name + '_' + (idx + 1) + '" class="form-control" data-item-id="' + itm.Id + '" data-name="' + c.Name + '" maxlength="' + maxclen(c) + '" data-type="' + c.Type + '" ';
+                    if (c.bIsIdentity) {
+                        _h[_i++] = ' readonly="readonly" ';
+                    }
+                    else {
+                        if (c.bAllowDbNull) {
+                            _h[_i++] = ' placeholder="optional" ';
+                        }
+                        else {
+                            _h[_i++] = ' required ';
+                        }
+                    }
+                    _h[_i++] = ' />';
+                }
+                _h[_i++] = '</td>';
+            });
+            _h[_i++] = '</tr>';
+        }
+        _h[_i++] = '</tbody>';
+        _h[_i++] = '</table>';
+        return (_h.join(''));
+    }
+    function getFilterItemByName(n) {
+        var itm;
+        if (n.indexOf('_') > 0) {
+            var nn = n.split('_');
+            var t = nn[0].trim();
+            var c = nn[1].trim();
+            $.each(_viewstate.Items, function (i, _itm) {
+                if ((_itm.Entity.Name == c) && (_itm.ParentEntity.Name == t)) {
+                    itm = _itm;
+                    return (false);
+                }
+            });
+        }
+        else {
+            $.each(_viewstate.Items, function (i, _itm) {
+                if (_itm.Entity.Name == n) {
+                    itm = _itm;
+                    return (false);
+                }
+            });
+        }
+        return (itm);
+    }
+    function buildSprocBulkInsert(proc, num) {
+        var _h = [], _i = 0;
+        _h[_i++] = '<table class="bulkTable bulkInsertTable">';
+        _h[_i++] = '<thead>';
+        _h[_i++] = '<th class="_tblsel no-sort text-center" id="_selSelect"><span class="no-sort fa fa-bars"></span></th>';
+        var itm;
+        $.each(proc.Parameters, function (i, p) {
+            if (p.Direction == 'Input') {
+                _h[_i++] = '<th>' + p.ParameterName + '</th>';
+            }
+        });
+        _h[_i++] = '</thead>';
+        _h[_i++] = '<tbody>';
+        for (idx = 0; idx < num; idx++) {
+            _h[_i++] = '<tr>';
+            _h[_i++] = '<td class="_tblrsel text-center nowrap row-delete" title="Remove this row"><span class="no-sort fa fa-times"></td>';
+            $.each(proc.Parameters, function (i, p) {
+                if (p.Direction != 'Input') {
+                    return;
+                }
+                itm = getParameterItem(p);
+                if (itm) {
+                    if (itm.Lookup && itm.Lookup.Id > 0) {
+                        p.Lookup = itm.Lookup;
+                    }
+                    if (itm.TypeList && itm.TypeList.Id > 0) {
+                        p.TypeList = itm.TypeList;
+                    }
+                }
+                _h[_i++] = '<td class="">';
+                if (p.Lookup) {
+                    _h[_i++] = '<select id="' + p.ParameterName + (i + 1) + '" class="form-control bulk-lookup" data-name="' + p.ParameterName + '" data-item-id="' + itm.Id + '" data-id="' + p.Lookup.Id + '" data-type="' + p.SqlDbType.toString().toLowerCase() + '" ';
+                    // TODO: METADATA NOT PROPERLY INDICATING IF REQUIRED OR NOT.
+                    ////if (!p.IsNullable) {
+                    ////    _h[_i++] = ' required ';
+                    ////}
+                    _h[_i++] = '></select>';
+                }
+                else if (p.TypeList) {
+                    _h[_i++] = '<input id="' + p.ParameterName + (i + 1) + '" type="text" class="form-control bulk-typeList" data-item-id="' + itm.Id + '" data-id="' + p.TypeList.Id + '" data-name="' + p.ParameterName + '" maxlength="' + maxlength(p.SqlDbType) + '" data-type="' + p.SqlDbType.toString().toLowerCase() + '" list="bulkInsertTypeList_' + p.TypeList.Id + '"  placeholder="..." ';
+                    // TODO: METADATA NOT PROPERLY INDICATING IF REQUIRED OR NOT.
+                    ////if (!p.IsNullable) {
+                    ////    _h[_i++] = ' required ';
+                    ////}
+                    _h[_i++] = ' />';
+                }
+                else {
+                    _h[_i++] = '<input id="' + p.ParameterName + (i + 1) + '" class="form-control" maxlength="' + maxlength(p.SqlDbType) + '" data-name="' + p.ParameterName + '" data-type="' + p.SqlDbType.toString().toLowerCase() + '" placeholder="' + makeParamPlaceholder(p) + '" ';
+                    // TODO: METADATA NOT PROPERLY INDICATING IF REQUIRED OR NOT.
+                    ////if (!p.IsNullable) {
+                    ////    _h[_i++] = ' required ';
+                    ////}
+                    _h[_i++] = ' />';
+                }
+                _h[_i++] = '</td>';              
+            });
+            _h[_i++] = '</tr>';
+        }
+        _h[_i++] = '</tbody>';
+        _h[_i++] = '</table>';
+        return (_h.join(''));
+    }
+    function getParameterItem(p) {
+        var itm;
+        $.each(_viewstate.Items, function (i, _i) {
+            if (!_i.ParameterName) { return; }
+            var ipn = _i.ParameterName;
+            if (ipn.indexOf('@@') > -1) {
+                ipn = ipn.substr(1);
+            }
+            var pn = p.ParameterName;
+            if (pn.indexOf('@@') > -1) {
+                pn = pn.substr(1);
+            }
+            if (ipn == pn) {
+                itm = _i; return(false);
+            }
+        });
+        return (itm);
+    }
+    function makeParamPlaceholder(p) {
+        var dbtype = p.SqlDbType.toString().toLowerCase();
+        if (dbtype == 'varchar' || dbtype == 'NvarChar') {
+            return(p.SqlDbType + "(" + p.Size + ")");
+        }
+        return(p.SqlDbType);
+    }
+
+
+    function loadBulkInsertLookups() {
+        var ll = $('table.bulkInsertTable').find('select.bulk-lookup');
+        var _ll = [];
+        $.each(ll, function (i, l) {
+            var id = $(l).attr('data-id');
+            var itemId = $(l).attr('data-item-id');
+            if (_ll.indexOf(itemId) == -1) {
+                requestBulkInsertLookupOptions(id, itemId);
+                _ll.push(itemId);
+            }
+        });
+    }
+    function requestBulkInsertLookupOptions(id, itemId) {
+        var _ioLookup = new qrmgio(cbBulkInsertLookupOptions);
+        var _d = _frmFilter._getctx();
+        $.extend(_d, { Id: id });
+        _d.FilterItemId = itemId;
+        _ioLookup.GetJSON('/DataMgr/Lookup/Read', _d, { LookupId: id, FilterItemId: itemId });
+    }
+    function cbBulkInsertLookupOptions(ud, dd) {
+        if (IsUserMessage(dd)) {
+            DisplayUserMessage(dd);
+            return;
+        }
+        var _h = renderBulkInsertLookupOptions(dd);
+        var _ss = $('table.bulkInsertTable').find('select.bulk-lookup[data-id="' + ud.LookupId + '"]');
+        $.each(_ss, function (i, s) {
+            $(s).append(_h);
+        });
+    }
+    function renderBulkInsertLookupOptions(dd) {
+        var _h = [], _i = 0;
+        $.each(dd, function (i, d) {
+            if (d.Image) {
+                _h[i++] = '<option value="' + d.Id + '" style="background-image:url(' + d.Image + ');">' + d.Label + '</option>';
+            }
+            else {
+                _h[i++] = '<option value="' + d.Id + '">' + d.Label + '</option>';
+            }
+        });
+        return (_h.join(''));
+    }
+
+    function loadBulkInsertTypeLists() {
+        var ii = $('table.bulkInsertTable').find('input.bulk-typeList');
+        var _ii = [];
+        $.each(ii, function (i, _i) {
+            var id = $(_i).attr('data-id');
+            if (_ii.indexOf(id) == -1) {
+                requestBulkInsertTypeListOptions(id);
+                _ii.push(id);
+            }
+        });
+    }
+    function requestBulkInsertTypeListOptions(id) {
+        var _ioTypeList = new qrmgio(cbBulkInsertTypeListOptions);
+        var _d = _frmFilter._getctx();
+        $.extend(_d, { Id: id });
+        _ioTypeList.GetJSON('/DataMgr/TypeList/Read', _d, { TypeListId: id });
+    }
+    function cbBulkInsertTypeListOptions(ud, dd) {
+        if (IsUserMessage(dd)) {
+            DisplayUserMessage(dd);
+            return;
+        }
+        var _h = renderBulkInsertTypeListOptions(ud, dd);
+        var _ii = $('table.bulkInsertTable').find('input.bulk-typeList[data-id="' + ud.TypeListId + '"]');
+        $.each(_ii, function (i, _i) {
+            $(_i).append(_h);
+        });
+    }
+    function renderBulkInsertTypeListOptions(ud, dd) {
+        var _h = [], _i = 0;
+        _h[_i++] = '<datalist id="bulkInsertTypeList_' + ud.TypeListId + '">';
+        $.each(dd, function (i, d) {
+            _h[_i++] = '<option>' + d.Label + '</option>';
+        });
+        _h[_i++] = '</datalist>';
+        return (_h.join(''));
+    }
+
+    function cbSaveBulkInserts(ud, d) {
+        if (d.questStatus) {
+            return;
+        }
+        if (!verifyBulkInsertGrid()) {
+            DisplayUserMessage('E|Required fields missing data');
+            return;
+        }
+        var _d = _frmFilter.GetData();
+        var trr = $('table.bulkInsertTable tbody tr');
+        rr = [];
+        $.each(trr, function (r, tr) {
+            var ttdd = $(tr).find('td');
+            cc = []
+            $.each(ttdd, function (i, td) {
+                if ($(td).hasClass('_tblrsel')) { return; }
+                var _i = $(td).find('input');
+                var cv;
+                if (_i.length) {
+                    cv = { ColumnName: $(_i).attr('data-name'), ColumnValue: $(_i).val() }
+                }
+                else {
+                    var s = $(td).find('select');
+                    if (s.length) {
+                        cv = { ColumnName: $(s).attr('data-name'), ColumnValue: $(s).val() }
+                    }
+                    else {
+                        alert('Something other than input or select in td.  Need to extend code to support');
+                    }
+                }
+                cc.push(cv);
+            });
+            var row = { Columns: cc };
+            rr.push(row);
+        });
+        _d.Rows = rr;
+        $.extend(d, _d);
+        return (true);
+    }
+    function verifyBulkInsertGrid() {
+        $('table.bulkInsertTable').find('input[required]').removeClass('validationError');
+        var _ff = $('table.bulkInsertTable').find('input[required]');
+        $.each(_ff, function (i, f) {
+            if ($(f).val() == '') {
+                $(f).addClass('validationError');
+            }
+        });
+        var _ss = $('table.bulkInsertTable').find('select[required]');
+        $.each(_ss, function (i, s) {
+            if ($(s).val() == -1) {
+                $(s).addClass('validationError');
+            }
+        });
+        return ($('table.bulkInsertTable').find('.validationError').length == 0);
+    }
+    function bindBulkInsertGrid() {
+        var _ss = $('table.bulkInsertTable').find('select[required]');
+        $.each(_ss, function (i, s) {
+            $(s).on('change', null, s, function (e) {
+                if (this.value == -1) {
+                    $(this).attr('required') ? $(this).addClass('validationError') : false;
+                }
+                else {
+                    $(this).removeClass('validationError');
+                }
+            });
+        });
+        $('table.bulkInsertTable').find('input[data-type*="date"]').datepicker({ format: "mm/dd/yyyy", autoclose: true });
+    }
+</script>
+
+
+
+
+<script type="text/javascript">
+    var _pnlBulkUpdates = null;
+    function initBulkUpdates() {
+        var pnlBulkUpdates = {
+            element: 'pnlBulkUpdates',
+            title: 'Bulk Updates',
+            name: 'BulkUpdates',
+            prefix: 'blkupd',
+            colmd: 12,
+            uri: '/DataMgr/BulkUpdates',
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb']
+            },
+            fields: [
+                { name: 'Id', key: true, hidden: true },
+                { name: 'TODO', label: 'TODO: A WAY TO BULK UPDATE THE RESULTS GOES IN HERE', labelonly: true },
+            ],
+            operations: [
+                { name: 'Columns', label: 'Columns', type: 'tab' },
+                { name: 'Save', label: 'Save', method: 'POST', callback: cbSaveBulkUpdates },
+                { name: 'Refresh', label: 'Refresh', method: 'POST', type: 'tab', callback: RefreshResults },
+            ],
+            actions: [
+            ],
+            tabs: [
+                { name: 'Columns', callback: cbBulkUpdateColumnsTab, defaultTab: true },
+                { name: 'Output', callback: cbResultsOutput },
+            ],
+            minHeight: '600px'
+        }
+        _pnlBulkUpdates = new qrmgPanel(pnlBulkUpdates);
+        ///_pnlBulkUpdates.Collapse();
+    }
+    function cbBulkUpdateColumnsTab(ud, d) {
+        if (ud.Init) {
+            var _h = [], _i = 0;
+            _h[_i++] = '<div id="pnlBulkUpdateColumns" class="bulkupdategrid">';
+            _h[_i++] = '</div>';
+            return (_h.join(''));
+        }
+    }
+    function loadBulkUpdates(d) {
+        var _h = [], _i = 0;
+        _h[_i++] = '<table class="bulkTable bulkUpdateTable">';
+        $.each(d.Results.Columns, function (i, c) {
+            var itm = getFilterItemByName(c.Name);
+            if (!itm) {
+                DisplayUserMessage('E|FilterItem ' + c.Name + ' not found in view state.  Cannot build Bulk Update grid');
+                return ('');
+            }
+            _h[_i++] = '<tr>';
+            _h[_i++] = '<td class="td-label">' + c.Label + ':&nbsp;</td>';
+            _h[_i++] = '<td class="td-input">';
+            if (c.bIsIdentity) {
+                _h[_i++] = '<input id="bulkUpdate_' + c.Name + '" class="form-control colval" readonly="readonly" placeholder="Identity column" data-item-id="' + itm.Id + '" data-name="' + c.Name + '" data-type="' + c.Type + '" />';
+            }
+            else if (c.bIsAutoIncrement) {
+                _h[_i++] = '<input id="bulkUpdate_' + c.Name + '" class="form-control colval" readonly="readonly" placeholder="Auto-increment column" data-item-id="' + itm.Id + '" data-name="' + c.Name + '" data-type="' + c.Type + '" />';
+            }
+            else if (c.bIsReadOnly) {
+                _h[_i++] = '<input id="bulkUpdate_' + c.Name + '" class="form-control colval" readonly="readonly" placeholder="Read-only column" data-item-id="' + itm.Id + '" data-name="' + c.Name + '" data-type="' + c.Type + '"/>';
+            }
+            else if (c.LookupId) {
+                _h[_i++] = '<select id="bulkUpdate_' + c.Name + '" class="form-control colval bulk-lookup" data-id="' + c.LookupId + '" data-item-id="' + itm.Id + '" data-name="' + c.Name + '" data-type="' + c.Type + '" ';
+                if (!c.bAllowDbNull) {
+                    _h[_i++] = ' required ';
+                }
+                _h[_i++] = ' ></select>';
+            }
+            else if (c.TypeListId) {
+                _h[_i++] = '<input id="bulkUpdate_' + c.Name + '" class="form-control colval bulk-typeList" data-id="' + c.TypeListId + '" data-name="' + c.Name + '" maxlength="' + maxclen(c) + '" data-type="' + c.Type + '" list="bulkUpdateTypeList_' + c.TypeListId + '" placeholder="..." ';
+                if (!c.bAllowDbNull) {
+                    _h[_i++] = ' required ';
+                }
+                _h[_i++] = ' />';
+            }
+            else {
+                _h[_i++] = '<input id="bulkUpdate_' + c.Name + '" class="form-control colval" data-name="' + c.Name + '" data-type="' + c.Type + '" ';
+                if (!c.bAllowDbNull) {
+                    _h[_i++] = ' required ';
+                }
+                _h[_i++] = ' />';
+            }
+            _h[_i++] = '</td>';
+            _h[_i++] = '<td class="td-nullit">';
+            if (c.bAllowDbNull) {
+                _h[_i++] = '<input type="checkbox" class="nullvalue" />&nbsp;NULL';
+            }
+            _h[_i++] = '</td>';
+
+
+            _h[_i++] = '</tr>';
+        });
+        _h[_i++] = '</table>';
+        clearBulkUpdatesGrid();
+        $('#pnlBulkUpdateColumns').html(_h.join(''));
+        bindBulkUpdateGrid();
+        loadBulkUpdatetLookups();
+        loadBulkUpdatetTypeLists();
+    }
+    function clearBulkUpdatesGrid() {
+        $('#pnlBulkUpdateColumns').empty();
+    }
+    function loadBulkUpdatetLookups() {
+        var ll = $('table.bulkUpdateTable').find('select.bulk-lookup');
+        var _ll = [];
+        $.each(ll, function (i, l) {
+            var id = $(l).attr('data-id');
+            var itemId = $(l).attr('data-item-id');
+            if (_ll.indexOf(itemId) == -1) {
+                requestUpdateLookupOptions(id, itemId);
+                _ll.push(itemId);
+            }
+        });
+    }
+    function requestUpdateLookupOptions(id, itemId) {
+        var _ioLookup = new qrmgio(cbUpdateLookupOptions);
+        var _d = _frmFilter._getctx();
+        $.extend(_d, { Id: id });
+        _d.FilterItemId = itemId;
+        _ioLookup.GetJSON('/DataMgr/Lookup/Read', _d, { LookupId: id, FilterItemId: itemId });
+    }
+    function cbUpdateLookupOptions(ud, dd) {
+        if (IsUserMessage(dd)) {
+            DisplayUserMessage(dd);
+            return;
+        }
+        var _h = renderBulkUpdateLookupOptions(dd);
+        var _ss = $('table.bulkUpdateTable').find('select.bulk-lookup[data-id="' + ud.LookupId + '"]');
+        $.each(_ss, function (i, s) {
+            $(s).append(_h);
+        });
+    }
+    function renderBulkUpdateLookupOptions(dd) {
+        var _h = [], _i = 0;
+        $.each(dd, function (i, d) {
+            if (d.Image) {
+                _h[i++] = '<option value="' + d.Id + '" style="background-image:url(' + d.Image + ');">' + d.Label + '</option>';
+            }
+            else {
+                _h[i++] = '<option value="' + d.Id + '">' + d.Label + '</option>';
+            }
+        });
+        return (_h.join(''));
+    }
+
+    function loadBulkUpdatetTypeLists() {
+        var ii = $('table.bulkUpdateTable').find('input.bulk-typeList');
+        var _ii = [];
+        $.each(ii, function (i, _i) {
+            var id = $(_i).attr('data-id');
+            if (_ii.indexOf(id) == -1) {
+                requestUpdateTypeListOptions(id);
+                _ii.push(id);
+            }
+        });
+    }
+    function requestUpdateTypeListOptions(id) {
+        var _ioTypeList = new qrmgio(cbUpdateTypeListOptions);
+        var _d = _frmFilter._getctx();
+        $.extend(_d, { Id: id });
+        _ioTypeList.GetJSON('/DataMgr/TypeList/Read', _d, { TypeListId: id });
+    }
+    function cbUpdateTypeListOptions(ud, dd) {
+        if (IsUserMessage(dd)) {
+            DisplayUserMessage(dd);
+            return;
+        }
+        var _h = renderBulkUpdateTypeListOptions(ud, dd);
+        var _ii = $('table.bulkUpdateTable').find('input.bulk-typeList[data-id="' + ud.TypeListId + '"]');
+        $.each(_ii, function (i, _i) {
+            $(_i).append(_h);
+        });
+    }
+    function renderBulkUpdateTypeListOptions(ud, dd) {
+        var _h = [], _i = 0;
+        _h[_i++] = '<datalist id="bulkUpdateTypeList_' + ud.TypeListId + '">';
+        $.each(dd, function (i, d) {
+            _h[_i++] = '<option>' + d.Label + '</option>';
+        });
+        _h[_i++] = '</datalist>';
+        return (_h.join(''));
+    }
+
+    function cbSaveBulkUpdates(ud, d) {
+        if (d.questStatus) {
+            return;
+        }
+        var _d = {};
+        ColumnData = [];
+        var ttrr = $('table.bulkUpdateTable tbody tr');
+        $.each(ttrr, function (i, tr) {
+            var _cv = $(tr).find('input.colval');
+            if (!_cv.length) {
+                _cv = $(tr).find('select');
+            }
+            var _bN = $(tr).find('input.nullvalue');
+            var cv = { ColumnName: $(_cv).attr('data-name'), ColumnValue: $(_cv).val(), bNull: _bN.length ? $(_bN).is(':checked') : false }
+            if ($(_cv).hasClass('bulk-lookup')) {
+                cv.LookUpId = $(_cv).attr('data-id');
+            }
+            if ($(_cv).hasClass('bulk-typeList')) {
+                cv.TypeListId = $(_cv).attr('data-id');
+            }
+            ColumnData.push(cv);
+        });
+        _d.ColumnData = ColumnData;
+        var _fd = _frmFilter.GetData();
+        _d.FilterId = _fd.FilterId;
+        $.extend(d, _d);
+        return (true);
+
+
+    }
+    function bindBulkUpdateGrid() {
+        $('table.bulkUpdateTable').find('input[data-type*="date"]').datepicker({ format: "mm/dd/yyyy", autoclose: true });
+    }
+</script>
+
+
+
+
+<script type="text/javascript">
+    var _pnlResults = null;
+    function initResults() {
+        var pnlResults = {
+            element: 'pnlResults',
+            title: 'Results',
+            name: 'Results',
+            prefix: 'pnlres',
+            colmd: 12,
+            uri: '/DataMgr/Results',
+            callback: cbPanelResults,
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb']
+            },
+            fields: [
+                { name: 'Id', key: true, hidden: true },
+                { name: 'TODO', label: 'TODO: AN EDITABLE RESULTS GRID GOES IN HERE', labelonly: true },
+            ],
+            operations: [
+                { name: 'Data', label: 'Data', type: 'tab' },
+                { name: 'Edit', label: 'Edit', callback: cbEditResults },
+                { name: 'Save', label: 'Save', method: 'POST', callback: cbSaveResults },
+                { name: 'Refresh', label: 'Refresh', method: 'POST', type: 'tab', callback: RefreshResults },
+            ],
+            actions: [
+                { name: 'RowLimit', label: 'Row Limit', type: 'text', value: '200' },
+                { name: 'ColLimit', label: 'Column Limit', type: 'text', value: '100' },
+            ],
+            tabs: [
+                { name: 'Data', callback: cbResultsTabData, defaultTab: true },
+                { name: 'Output', callback: cbResultsOutput },
+            ],
+            minHeight: '600px'
+        }
+        _pnlResults = new qrmgPanel(pnlResults);
+    }
+    function cbPanelResults(ud, d) {
+        initGrdResults();
+    }
+    function cbEditResults(ud, d) {
+        DisplayUserMessage('W|Not implemented yet');
+        return (true);
+    }
+    function cbSaveResults(ud, d) {
+    }
+    function cbResultsTabData(ud, d) {
+        if (ud.Init) {
+            var _h = [], _i = 0;
+            _h[_i++] = '<div id="grdResults">';
+            _h[_i++] = '</div>';
+            return (_h.join(''));
+        }
+    }
+    function cbResultsOutput(ud, d) { }
+</script>
+
+<script type="text/javascript">
+    var _grdResults;
+    function initGrdResults() {
+        var grdResults = {
+            name: 'grdResults',
+            element: 'grdResults',
+            prefix: 'res',
+            uri: '/DataMgr/Results',
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb']
+            },
+            callback: cbGrdResults,
+            dynamic: {
+                field: 'Results'
+            },
+            columns: [
+            ],
+            autogen: {
+                rows: 100
+            },
+            paging: {
+                Top: true,
+                Bottom: true,
+                PageSize: 10,
+                PageSizeOptions: [10, 20, 30, 50, 100],
+            },
+            operations: [
+            ],
+            commands: [
+                { name: 'SelectAll', label: 'Select All' },
+                { name: 'UNSelectAll', label: 'UN-Select All' },
+            ],
+            events: [
+            ],
+            contextMenu: [
+            ]
+        }
+        _grdResults = new qrmgGrid(grdResults);
+    }
+    function cbGrdResults(ud, d) {
+
+    }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+    var _viewstate;
+    $(function () {
+        initViewstate();
+        $('#pageTitle').text('Data Manager: ' + _viewstate.Tableset.Name);
+        initFilters();
+        initFilterItems();
+        initBulkInserts();
+        initBulkUpdates();
+        initResults();
+
+        // TODO: load more stuff in here
+
+        tempDisplayMessage();
+
+        klugieInitFilterSelect();
+    });
+    function initViewstate() {
+        _viewstate = JSON.parse($('#__frmDataMgrTablesetVIEW_STATE').val());
+    }
+    function tempDisplayMessage() {
+        if (_viewstate.questStatus.Severity == 3) {
+            DisplayUserMessage('E|' + _viewstate.questStatus.Message);
+        }
+        else if (_viewstate.questStatus.Severity == 4) {
+            DisplayUserMessage('F|' + _viewstate.questStatus.Message);
+        }
+    }
+    function loadConfiguration(d) {
+        if (d.UserMessage) {
+            // TODO: clear appropriate controls here.
+        }
+        else {
+            $('input[Id="__frmDataMgrTablesetVIEW_STATE"]').val(JSON.stringify(d));
+
+            initViewstate();
+
+        }
+        qrmgmvc.Global.Unmask($('#pageContentFrame'));
+    }
+    function klugieInitFilterSelect() {
+        $('.filter-select').on('change', function (e) {
+            $('.filter-select').val(this.value);
+            cbChangeFilter({ Change: true }, this.value);
+        });
+    }
+    function setPanelContext(id) {
+        $('.filter-select').val(id);
+    }
+    function RefreshResults(ud, d) {
+        _pnlFilters.DoOper('Run');
+        $('html, body').animate({ scrollTop: $('#pnlResults').offset().top - 100 });
+
+    }
+</script>

@@ -1,0 +1,52 @@
+﻿@model Quest.MasterPricing.Setup.Models.TypeListsListViewModel
+@{
+    ViewBag.Title = "TypeList List";
+    Layout = "~/Views/Shared/_LayoutSetup.cshtml";
+}
+
+<div class="questTableTitle">TypeList List</div>
+
+<div id="tblTypeLists" class="qrmgTable"></div>
+
+<script type="text/javascript">
+    $(function () {
+        var _tblTypeLists;
+        var tblTypeLists = {
+            name: 'tblTypeLists',
+            element: 'tblTypeLists',
+            prefix: 'tl',
+            uri: '/Setup/TypeLists',
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb']
+            },
+            autoLoad: true,
+            editor: { uri: '/Setup/TypeList' },
+            callback: cbTblTypeLists,
+            columns: [
+                { name: 'Id', hidden: true, key: true },
+                { name: 'Name', label: 'Name', width: '400px' },
+                { name: 'Summary', label: 'Summary' },
+                { name: 'Database', label: 'Database' },
+            ],
+            paging: {
+                Top: true,
+                Bottom: true,
+                PageSize: 10,
+                PageSizeOptions: [10, 20, 30, 50, 100],
+            },
+            operations: [
+            ],
+            commands: [
+                { name: 'Read', label: 'Edit', edit: true },
+            ],
+            events: [
+            ],
+            contextMenu: [
+            ]
+        }
+        _tblTypeLists = new qrmgTable(tblTypeLists);
+    });
+    function cbTblTypeLists(ud, d) {
+
+    }
+</script>

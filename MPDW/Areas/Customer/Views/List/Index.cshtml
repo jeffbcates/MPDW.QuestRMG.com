@@ -1,0 +1,42 @@
+﻿@model Quest.MPDW.Customer.Models.CustomersListViewModel
+@{
+    ViewBag.Title = "Customers";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="questTableTitle">Customers</div>
+
+<div id="tblCustomers" class="qrmgTable"></div>
+
+<script type="text/javascript">
+    $(function () {
+        var _tblCustomers;
+        var tblCustomers = {
+            name: 'tblCustomers',
+            element: 'tblCustomers',
+            prefix: 'cusloc',
+            uri: '/Customer',
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb']
+            },
+            autoLoad: true,
+            editor: false,
+            columns: [
+                { name: 'Id', hidden: true, key: true },
+                { name: 'Name', label: 'Name', width: '400px' },
+                { name: 'Personal', label: 'Personal' },
+                { name: 'CreateDate', label: 'Create Date' },
+            ],
+            operations: [
+                { name: 'New', label: '&nbsp;&nbsp;New&nbsp;&nbsp;', tooltip: 'Create a new customer', uri: '/Customer/Editor', classes: 'btn-new' },
+            ],
+            commands: [
+            ],
+            events: [
+            ],
+            contextMenu: [
+            ]
+        }
+        _tblCustomers = new qrmgTable(tblCustomers);
+    });
+</script>

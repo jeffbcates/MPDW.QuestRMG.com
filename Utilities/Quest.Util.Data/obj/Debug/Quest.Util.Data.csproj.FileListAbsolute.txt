@@ -1,0 +1,5 @@
+C:\Quest\src\MPDW\Utilities\Quest.Util.Data\bin\Debug\Quest.Util.Data.dll
+C:\Quest\src\MPDW\Utilities\Quest.Util.Data\bin\Debug\Quest.Util.Data.pdb
+C:\Quest\src\MPDW\Utilities\Quest.Util.Data\obj\Debug\Quest.Util.Data.csprojResolveAssemblyReference.cache
+C:\Quest\src\MPDW\Utilities\Quest.Util.Data\obj\Debug\Quest.Util.Data.dll
+C:\Quest\src\MPDW\Utilities\Quest.Util.Data\obj\Debug\Quest.Util.Data.pdb

@@ -1,0 +1,42 @@
+﻿@model Quest.MasterPricing.Setup.Models.TablesetEditorViewModel
+@{
+    ViewBag.Title = "Tableset Editor";
+    Layout = "~/Views/Shared/_LayoutSetup.cshtml";
+}
+
+<h1>Tableset Editor</h1>
+
+<input type="hidden" id="__frmTablesetVIEW_STATE" value="@Html.Raw(Json.Encode(Model))" />
+<div id="frmTableset">
+</div>
+
+<script type="text/javascript">
+    var _frmTableset = null;
+    var frmTableset = {
+        element: 'frmTableset',
+        prefix: 'ts',
+        uri: '/Setup/Tableset',
+        callback: cbTablesetEditor,
+        ctx: {
+            elements: ['_questctx', '_questmm', '_questnb']
+        },
+        fields: [
+            { name: 'Id', type: 'hidden', key: true },
+            { name: 'Name', label: 'Name', required: true, maxlength: 256, size: 55 },
+            { name: 'bEnabled', label: 'Enabled', type: 'checkbox' },
+            { name: 'Summary', label: 'Summary', maxlength: 256, size: 55 },
+            { name: 'DatabaseId', label: 'Database', type: 'select', required: true },
+        ],
+        operations: [
+            { name: 'Configuration', label: 'Configuration', classes: "btn btn-primary", type: 'View', url: '/Setup/TablesetConfiguration' },
+        ],
+        actions: [
+        ]
+    }
+    function cbTablesetEditor(ud, d) {
+    }
+    $(function () {
+        _frmTableset = new qrmgEditor(frmTableset);
+        _frmTableset.DisplayFormMessages();
+    });
+</script>

@@ -1,0 +1,10 @@
+C:\Quest\dev\Template\FMS\Services\Dbio\Quest.Services.Dbio.MasterPricing\bin\Release\Quest.Services.Dbio.MasterPricing.dll.config
+C:\Quest\dev\Template\FMS\Services\Dbio\Quest.Services.Dbio.MasterPricing\bin\Release\Quest.Services.Dbio.MasterPricing.dll
+C:\Quest\dev\Template\FMS\Services\Dbio\Quest.Services.Dbio.MasterPricing\bin\Release\Quest.Services.Dbio.MasterPricing.pdb
+C:\Quest\dev\Template\FMS\Services\Dbio\Quest.Services.Dbio.MasterPricing\bin\Release\EntityFramework.dll
+C:\Quest\dev\Template\FMS\Services\Dbio\Quest.Services.Dbio.MasterPricing\bin\Release\EntityFramework.SqlServer.dll
+C:\Quest\dev\Template\FMS\Services\Dbio\Quest.Services.Dbio.MasterPricing\bin\Release\EntityFramework.xml
+C:\Quest\dev\Template\FMS\Services\Dbio\Quest.Services.Dbio.MasterPricing\bin\Release\EntityFramework.SqlServer.xml
+C:\Quest\dev\Template\FMS\Services\Dbio\Quest.Services.Dbio.MasterPricing\obj\Release\Quest.Services.Dbio.MasterPricing.csprojResolveAssemblyReference.cache
+C:\Quest\dev\Template\FMS\Services\Dbio\Quest.Services.Dbio.MasterPricing\obj\Release\Quest.Services.Dbio.MasterPricing.dll
+C:\Quest\dev\Template\FMS\Services\Dbio\Quest.Services.Dbio.MasterPricing\obj\Release\Quest.Services.Dbio.MasterPricing.pdb

@@ -1,0 +1,57 @@
+﻿@model Quest.MasterPricing.Database.Models.StoredProceduresListViewModel
+@{
+    ViewBag.Title = "Database Stored Procedures List";
+    Layout = "~/Views/Shared/_LayoutDatabase.cshtml";
+}
+
+<input type="hidden" id="__tblStoredProceduresVIEW_STATE" value="@Html.Raw(Json.Encode(Model))" />
+
+<div class="questTableTitle">Database Stored Procedures List</div>
+
+<div id="tblStoredProcedures" class="qrmgTable"></div>
+
+<script type="text/javascript">
+    var _tblStoredProcedures;
+    $(function () {
+        var tblStoredProcedures = {
+            name: 'tblStoredProcedures',
+            element: 'tblStoredProcedures',
+            prefix: 'sproc',
+            uri: '/Database/StoredProcedures',
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb'],
+                master: { viewstate: true, field: 'DatabaseId' },
+                ////master: { element: true, name: 'DatabaseId', value: '#DatabaseId' }
+            },
+            autoLoad: true,
+            ////editor: { uri: '/Database/StoredProcedures' },
+            callback: cbTblStoredProcedures,
+            columns: [
+                { name: 'Id', hidden: true, key: true },
+                { name: 'Name', label: 'Database Name' },
+            ],
+            paging: {
+                Top: true,
+                Bottom: true,
+                PageSize: 100,
+                PageSizeOptions: [100, 200, 300, 1000],
+            },
+            operations: [
+                { name: 'Database', label: 'Database' },
+            ],
+            commands: [
+                ////{ name: 'Read', label: 'Details', edit: true },
+            ],
+            events: [
+            ],
+            contextMenu: [
+            ]
+        }
+        _tblStoredProcedures = new qrmgTable(tblStoredProcedures);
+    });
+    function cbTblStoredProcedures(ud, d) {
+
+    }
+</script>
+
+

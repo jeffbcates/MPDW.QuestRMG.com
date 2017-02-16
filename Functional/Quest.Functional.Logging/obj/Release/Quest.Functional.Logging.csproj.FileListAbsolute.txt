@@ -1,0 +1,7 @@
+C:\Quest\dev\Template\FMS\Functional\Quest.Functional.Logging\bin\Release\Quest.Functional.Logging.dll
+C:\Quest\dev\Template\FMS\Functional\Quest.Functional.Logging\bin\Release\Quest.Functional.Logging.pdb
+C:\Quest\dev\Template\FMS\Functional\Quest.Functional.Logging\bin\Release\Quest.Util.Data.dll
+C:\Quest\dev\Template\FMS\Functional\Quest.Functional.Logging\bin\Release\Quest.Util.Data.pdb
+C:\Quest\dev\Template\FMS\Functional\Quest.Functional.Logging\obj\Release\Quest.Functional.Logging.csprojResolveAssemblyReference.cache
+C:\Quest\dev\Template\FMS\Functional\Quest.Functional.Logging\obj\Release\Quest.Functional.Logging.dll
+C:\Quest\dev\Template\FMS\Functional\Quest.Functional.Logging\obj\Release\Quest.Functional.Logging.pdb

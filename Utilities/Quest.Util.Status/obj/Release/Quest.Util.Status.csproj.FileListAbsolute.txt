@@ -1,0 +1,4 @@
+C:\Quest\dev\Template\FMS\Utilities\Quest.Util.Status\bin\Release\Quest.Util.Status.dll
+C:\Quest\dev\Template\FMS\Utilities\Quest.Util.Status\bin\Release\Quest.Util.Status.pdb
+C:\Quest\dev\Template\FMS\Utilities\Quest.Util.Status\obj\Release\Quest.Util.Status.dll
+C:\Quest\dev\Template\FMS\Utilities\Quest.Util.Status\obj\Release\Quest.Util.Status.pdb

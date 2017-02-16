@@ -1,0 +1,10 @@
+C:\Quest\src\MPDW\Services\Dbio\Quest.Services.Dbio.MasterPricing\bin\Debug\Quest.Services.Dbio.MasterPricing.dll.config
+C:\Quest\src\MPDW\Services\Dbio\Quest.Services.Dbio.MasterPricing\bin\Debug\Quest.Services.Dbio.MasterPricing.dll
+C:\Quest\src\MPDW\Services\Dbio\Quest.Services.Dbio.MasterPricing\bin\Debug\Quest.Services.Dbio.MasterPricing.pdb
+C:\Quest\src\MPDW\Services\Dbio\Quest.Services.Dbio.MasterPricing\bin\Debug\EntityFramework.dll
+C:\Quest\src\MPDW\Services\Dbio\Quest.Services.Dbio.MasterPricing\bin\Debug\EntityFramework.SqlServer.dll
+C:\Quest\src\MPDW\Services\Dbio\Quest.Services.Dbio.MasterPricing\bin\Debug\EntityFramework.xml
+C:\Quest\src\MPDW\Services\Dbio\Quest.Services.Dbio.MasterPricing\bin\Debug\EntityFramework.SqlServer.xml
+C:\Quest\src\MPDW\Services\Dbio\Quest.Services.Dbio.MasterPricing\obj\Debug\Quest.Services.Dbio.MasterPricing.csprojResolveAssemblyReference.cache
+C:\Quest\src\MPDW\Services\Dbio\Quest.Services.Dbio.MasterPricing\obj\Debug\Quest.Services.Dbio.MasterPricing.dll
+C:\Quest\src\MPDW\Services\Dbio\Quest.Services.Dbio.MasterPricing\obj\Debug\Quest.Services.Dbio.MasterPricing.pdb

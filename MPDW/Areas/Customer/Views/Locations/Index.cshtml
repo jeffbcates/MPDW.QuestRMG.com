@@ -1,0 +1,42 @@
+﻿@model Quest.MPDW.Customer.Models.CustomerLocationsListViewModel
+@{
+    ViewBag.Title = "Customer Locations";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="questTableTitle">Customer Locations</div>
+
+<div id="tblCustomerLocations" class="qrmgTable"></div>
+
+<script type="text/javascript">
+    $(function () {
+        var _tblCustomerLocations;
+        var tblCustomerLocations = {
+            name: 'tblCustomerLocations',
+            element: 'tblCustomerLocations',
+            prefix: 'cusloc',
+            uri: '/Customer/Locations',
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb']
+            },
+            autoLoad: true,
+            editor: false,
+            columns: [
+                { name: 'Id', hidden: true, key: true },
+                { name: 'City', label: 'City', width: '400px' },
+                { name: 'State', label: 'State', width: '100px' },
+                { name: 'ZipCode', label: 'Zip Code', width: '200px' },
+            ],
+            operations: [
+                { name: 'New', label: '&nbsp;&nbsp;New&nbsp;&nbsp;', tooltip: 'Create a new location', uri: '/Locations/Editor', classes: 'btn-new' },
+            ],
+            commands: [
+            ],
+            events: [
+            ],
+            contextMenu: [
+            ]
+        }
+        _tblCustomerLocations = new qrmgTable(tblCustomerLocations);
+    });
+</script>
