@@ -121,11 +121,11 @@ namespace Quest.MasterPricing.Services.Data.Filters
                     JoinEntity joinEntity = null;
                     if (filterEntity.Type.Id == FilterEntityType.Table)
                     {
-                        joinEntity = joinEntityList.Find(delegate (JoinEntity e) { return e.FilterTable.TablesetTable.Table.Id == filterEntity.FilterTable.TablesetTable.Table.Id; });
+                        joinEntity = joinEntityList.Find(delegate (JoinEntity e) { return e.FilterTable != null && e.FilterTable.Schema == filterEntity.FilterTable.Schema && e.FilterTable.Name == filterEntity.FilterTable.Name; });
                     }
                     else if (filterEntity.Type.Id == FilterEntityType.View)
                     {
-                        joinEntity = joinEntityList.Find(delegate (JoinEntity e) { return e.FilterView.TablesetView.View.Id == filterEntity.FilterView.TablesetView.View.Id; });
+                        joinEntity = joinEntityList.Find(delegate (JoinEntity e) { return e.FilterView != null && e.FilterView.Schema == filterEntity.FilterView.Schema && e.FilterView.Name == filterEntity.FilterView.Name; });
                     }
                     else
                     {
@@ -218,20 +218,28 @@ namespace Quest.MasterPricing.Services.Data.Filters
                 int joinEntityAcronymSuffix = FROMEntityList.Count + 1;
                 foreach (JoinEntity joinEntity in joinEntityList)
                 {
+                    // Get the source entity's alias
                     FilterEntity filterEntity = null;
-                    if (joinEntity.Type.Id == FilterEntityType.Table)
+                    if (joinEntity.FilterItem.FilterColumn.FilterEntityTypeId == FilterEntityType.Table)
                     {
 
-                        filterEntity = FROMEntityList.Find(delegate (FilterEntity e) { return joinEntity.FilterItem.FilterColumn.FilterEntityId == e.FilterTable.Id; });
+                        filterEntity = FROMEntityList.Find(delegate (FilterEntity e) 
+                        {
+                            return e.FilterTable != null && joinEntity.FilterItem.JoinList[0].SourceSchema == e.FilterTable.Schema && joinEntity.FilterItem.JoinList[0].SourceEntityName == e.FilterTable.Name;
+                        });
                         if (filterEntity == null)
                         {
                             return (new questStatus(Severity.Error, String.Format("ERROR: FilterEntity not found for joined column (table).  FilterItem {0}  FilterEntityId: {1}",
                                     joinEntity.FilterItem.Identifier, joinEntity.FilterItem.FilterColumn.FilterEntityId)));
                         }
                     }
-                    else if (joinEntity.Type.Id == FilterEntityType.View)
+                    else if (joinEntity.FilterItem.FilterColumn.FilterEntityTypeId == FilterEntityType.View)
                     {
-                        filterEntity = FROMEntityList.Find(delegate (FilterEntity e) { return joinEntity.FilterItem.FilterColumn.FilterEntityId == e.FilterView.Id; });
+                        filterEntity = FROMEntityList.Find(delegate (FilterEntity e) 
+                        {
+                            return e.FilterView != null && joinEntity.FilterItem.JoinList[0].SourceSchema == e.FilterView.Schema && joinEntity.FilterItem.JoinList[0].SourceEntityName == e.FilterView.Name;
+                        });
+
                         if (filterEntity == null)
                         {
                             return (new questStatus(Severity.Error, String.Format("ERROR: FilterEntity not found for joined column (table).  FilterItem {0}  FilterEntityId: {1}",
@@ -272,13 +280,14 @@ namespace Quest.MasterPricing.Services.Data.Filters
 
 
             // Build result columns
+            FilterItem filterItem = null;
             StringBuilder sbResultColumns = new StringBuilder("");
             try
             {
                 string lastFilterEntityAlias = null;
                 for (int idx = 0; idx < filter.FilterItemList.Count; idx += 1)
                 {
-                    FilterItem filterItem = filter.FilterItemList[idx];
+                    filterItem = filter.FilterItemList[idx];
                     FilterEntity filterEntity = null;
                     status = getFilterItemFROMEntity(filterItem, FROMEntityList, out filterEntity);
                     if (!questStatusDef.IsSuccessOrWarning(status))
@@ -351,8 +360,8 @@ namespace Quest.MasterPricing.Services.Data.Filters
             }
             catch (System.Exception ex)
             {
-                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: generating filter SQL result columns: {0}",
-                    ex.Message)));
+                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: Building result columns SQL on FilterItem {0}: {1}",
+                    filterItem.Id, ex.Message)));
             }
 
 
@@ -365,7 +374,7 @@ namespace Quest.MasterPricing.Services.Data.Filters
                 {
                     // Initialize
                     List<string> itemClauseList = new List<string>();
-                    FilterItem filterItem = filter.FilterItemList[idx];
+                    filterItem = filter.FilterItemList[idx];
 
 
                     // Build sub-WHERE clause(es)
@@ -799,11 +808,11 @@ namespace Quest.MasterPricing.Services.Data.Filters
                 JoinEntity joinEntity = null;
                 if (filterEntity.Type.Id == FilterEntityType.Table)
                 {
-                    joinEntity = joinEntityList.Find(delegate (JoinEntity e) { return e.FilterTable.TablesetTable.Table.Id == filterEntity.FilterTable.TablesetTable.Table.Id; });
+                    joinEntity = joinEntityList.Find(delegate (JoinEntity e) { return e.FilterTable != null && e.FilterTable.TablesetTable.Table.Id == filterEntity.FilterTable.TablesetTable.Table.Id; });
                 }
                 else if (filterEntity.Type.Id == FilterEntityType.View)
                 {
-                    joinEntity = joinEntityList.Find(delegate (JoinEntity e) { return e.FilterView.TablesetView.View.Id == filterEntity.FilterView.TablesetView.View.Id; });
+                    joinEntity = joinEntityList.Find(delegate (JoinEntity e) { return e.FilterView != null && e.FilterView.TablesetView.View.Id == filterEntity.FilterView.TablesetView.View.Id; });
                 }
                 else
                 {
@@ -1146,20 +1155,20 @@ namespace Quest.MasterPricing.Services.Data.Filters
                 {
                     FilterItemJoin filterItemJoin = filterItem.JoinList[jdx];
 
-                    TablesetColumn tablesetColumn = null;
-                    status = getFilterItemJoinTablesetColumn(filter, filterItemJoin, out tablesetColumn);
+                    TablesetColumn sourceColumn = null;
+                    status = getFilterItemJoinTablesetColumn(filter, filterItemJoin, out sourceColumn);
                     if (!questStatusDef.IsSuccess(status))
                     {
                         return (status);
                     }
 
-                    if (tablesetColumn.EntityTypeId == EntityType.Table)
+                    if (filterItemJoin.TargetEntityTypeId == FilterEntityType.Table)
                     {
-                        FilterTable JOINTable = filter.FilterTableList.Find(delegate (FilterTable t) { return tablesetColumn.Column.EntityTypeId == EntityType.Table && t.TablesetTable.Table.Id == tablesetColumn.Column.EntityId; });
+                        FilterTable JOINTable = filter.FilterTableList.Find(delegate (FilterTable t) { return filterItemJoin.TargetSchema == t.Schema && filterItemJoin.TargetEntityName == t.Name; });
                         if (JOINTable == null)
                         {
-                            return (new questStatus(Severity.Error, String.Format("ERROR: tablesetColumn {0} JOIN table {1} not found building JOIN entity list",
-                                    tablesetColumn.Column.EntityId, tablesetColumn.Column.EntityId)));
+                            return (new questStatus(Severity.Error, String.Format("ERROR: FilterItem {0} FilterItemJoin {1} FilterTable [{2}].[{3}] not found determining JOIN entities",
+                                    filterItem.Id, filterItemJoin.Id, filterItemJoin.TargetSchema, filterItemJoin.TargetEntityName)));
                         }
                         JoinEntity joinEntity = new JoinEntity();
                         joinEntity.Type.Id = FilterEntityType.Table;
@@ -1167,36 +1176,36 @@ namespace Quest.MasterPricing.Services.Data.Filters
                         joinEntity.FilterTable = JOINTable;
                         joinEntity.FilterView = null;
                         joinEntity.Alias = "JT" + (joinEntityList.Count + 1).ToString();
-                        joinEntity.TablesetColumn = tablesetColumn;
+                        joinEntity.TablesetColumn = sourceColumn;
                         joinEntity.FilterItemJoin.FilterItemId = filterItem.Id;
-                        joinEntity.FilterItemJoin.ColumnId = tablesetColumn.Id;
+                        joinEntity.FilterItemJoin.ColumnId = sourceColumn.Id;
                         joinEntity.FilterItemJoin.JoinType = filterItemJoin.JoinType;
                         joinEntityList.Add(joinEntity);
                     }
-                    else if (tablesetColumn.EntityTypeId == EntityType.View)
+                    else if (filterItemJoin.TargetEntityTypeId == FilterEntityType.View)
                     {
-                        FilterView JOINView = filter.FilterViewList.Find(delegate (FilterView v) { return tablesetColumn.Column.EntityTypeId == EntityType.View && v.TablesetView.View.Id == tablesetColumn.Column.EntityId; });
+                        FilterView JOINView = filter.FilterViewList.Find(delegate (FilterView v) { return filterItemJoin.TargetSchema == v.Schema && filterItemJoin.TargetEntityName == v.Name; });
                         if (JOINView == null)
                         {
-                            return (new questStatus(Severity.Error, String.Format("ERROR: tablesetColumn {0} JOIN view {1} not found building JOIN entity list",
-                                    tablesetColumn.Column.EntityId, tablesetColumn.Column.EntityId)));
+                            return (new questStatus(Severity.Error, String.Format("ERROR: FilterItem {0} FilterItemJoin {1} FilterView [{2}].[{3}] not found determining JOIN entities",
+                                    filterItem.Id, filterItemJoin.Id, filterItemJoin.TargetSchema, filterItemJoin.TargetEntityName)));
                         }
                         JoinEntity joinEntity = new JoinEntity();
-                        joinEntity.Type.Id = FilterEntityType.Table;
+                        joinEntity.Type.Id = FilterEntityType.View;
                         joinEntity.FilterItem = filterItem;
                         joinEntity.FilterTable = null;
                         joinEntity.FilterView = JOINView;
                         joinEntity.Alias = "JV" + (joinEntityList.Count + 1).ToString();
-                        joinEntity.TablesetColumn = tablesetColumn;
+                        joinEntity.TablesetColumn = sourceColumn;
                         joinEntity.FilterItemJoin.FilterItemId = filterItem.Id;
-                        joinEntity.FilterItemJoin.ColumnId = tablesetColumn.Id;
+                        joinEntity.FilterItemJoin.ColumnId = sourceColumn.Id;
                         joinEntity.FilterItemJoin.JoinType = filterItemJoin.JoinType;
                         joinEntityList.Add(joinEntity);
                     }
                     else
                     {
-                        return (new questStatus(Severity.Error, String.Format("ERROR: Invalid entity type {0} on TablesetColumn {0}",
-                            tablesetColumn.EntityTypeId, tablesetColumn.Id)));
+                        return (new questStatus(Severity.Error, String.Format("ERROR: Invalid entity type {0} on source TablesetColumn {0}",
+                            sourceColumn.EntityTypeId, sourceColumn.Id)));
                     }
                 }
             }

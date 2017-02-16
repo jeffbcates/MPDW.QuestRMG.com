@@ -1165,30 +1165,56 @@ namespace Quest.MasterPricing.Services.Data.Filters
         }
         private questStatus getJoinTargetColumnId(Filter filter, FilterItemJoin filterItemJoin)
         {
-            // Get the TablesetColumnId for the given join.
-            FilterTable filterTable = filter.FilterTableList.Find(delegate (FilterTable t) 
+            if (filterItemJoin.TargetEntityTypeId == FilterEntityType.Table)
             {
-                return (filterItemJoin.TargetSchema == t.Schema && filterItemJoin.TargetEntityName == t.Name);
-            });
-            if (filterTable == null)
-            {
-                return (new questStatus(String.Format("ERROR: seeking FilterItemJoin {0} TablesetColumnId not found (FilterTable) [{1}].[{2}]",
-                    filterItemJoin.Id, filterItemJoin.TargetSchema, filterItemJoin.TargetEntityName)));
+                // Get the TablesetColumnId for the given join.
+                FilterTable filterTable = filter.FilterTableList.Find(delegate (FilterTable t)
+                {
+                    return (filterItemJoin.TargetSchema == t.Schema && filterItemJoin.TargetEntityName == t.Name);
+                });
+                if (filterTable == null)
+                {
+                    return (new questStatus(String.Format("ERROR: seeking FilterItemJoin {0} TablesetColumnId not found (FilterTable) [{1}].[{2}]",
+                        filterItemJoin.Id, filterItemJoin.TargetSchema, filterItemJoin.TargetEntityName)));
+                }
+
+                // Now get the TablesetColumnId for the given column name
+                FilterColumn filterColumn = filterTable.FilterColumnList.Find(delegate (FilterColumn fc)
+                {
+                    return (filterItemJoin.TargetColumnName == fc.TablesetColumn.Name);
+                });
+                if (filterColumn == null)
+                {
+                    return (new questStatus(String.Format("ERROR: seeking FilterItemJoin {0} FilterColumn not found (FilterTable) [{1}].[{2}]",
+                        filterItemJoin.Id, filterItemJoin.TargetSchema, filterItemJoin.TargetEntityName)));
+                }
+                filterItemJoin.ColumnId = filterColumn.TablesetColumn.Id;
             }
+            else if (filterItemJoin.TargetEntityTypeId == FilterEntityType.View)
+            {
+                // Get the TablesetColumnId for the given join.
+                FilterView filterView = filter.FilterViewList.Find(delegate (FilterView v)
+                {
+                    return (filterItemJoin.TargetSchema == v.Schema && filterItemJoin.TargetEntityName == v.Name);
+                });
+                if (filterView == null)
+                {
+                    return (new questStatus(String.Format("ERROR: seeking FilterItemJoin {0} TablesetColumnId not found (FilterView) [{1}].[{2}]",
+                        filterItemJoin.Id, filterItemJoin.TargetSchema, filterItemJoin.TargetEntityName)));
+                }
 
-            // Now get the TablesetColumnId for the given column name
-            FilterColumn filterColumn = filterTable.FilterColumnList.Find(delegate(FilterColumn fc)
-            {
-                return (filterItemJoin.TargetColumnName == fc.TablesetColumn.Name);
-            });
-            if (filterColumn == null)
-            {
-                return (new questStatus(String.Format("ERROR: seeking FilterItemJoin {0} FilterColumn not found (FilterTable) [{1}].[{2}]",
-                    filterItemJoin.Id, filterItemJoin.TargetSchema, filterItemJoin.TargetEntityName)));
+                // Now get the TablesetColumnId for the given column name
+                FilterColumn filterColumn = filterView.FilterColumnList.Find(delegate (FilterColumn fc)
+                {
+                    return (filterItemJoin.TargetColumnName == fc.TablesetColumn.Name);
+                });
+                if (filterColumn == null)
+                {
+                    return (new questStatus(String.Format("ERROR: seeking FilterItemJoin {0} FilterColumn not found (FilterView) [{1}].[{2}]",
+                        filterItemJoin.Id, filterItemJoin.TargetSchema, filterItemJoin.TargetEntityName)));
+                }
+                filterItemJoin.ColumnId = filterColumn.TablesetColumn.Id;
             }
-            filterItemJoin.ColumnId = filterColumn.TablesetColumn.Id;
-
-
             return (new questStatus(Severity.Success));
         }
 

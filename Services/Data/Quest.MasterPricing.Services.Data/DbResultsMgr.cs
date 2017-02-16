@@ -129,9 +129,12 @@ namespace Quest.MasterPricing.Services.Data.Filters
 
             // Append lookup or type list Id's to result columns with lookups.
             // NOTE: Lookups and typeList are mutually exclusive.
+            FilterItem filterItem = null;
             try {
-                foreach (FilterItem filterItem in filter.FilterItemList)
+                for (int idx=0; idx < filter.FilterItemList.Count; idx += 1)
                 {
+                    filterItem = filter.FilterItemList[idx];
+
                     string columnIdentifier = null;
                     FilterColumn filterColumn = null;
                     status = GetResultsColumnIdentifier(filter, filterItem, out columnIdentifier, out filterColumn);
@@ -166,7 +169,8 @@ namespace Quest.MasterPricing.Services.Data.Filters
             }
             catch (System.Exception ex)
             {
-                return (new questStatus(Severity.Error, String.Format("EXCEPTION: building filter results set: {0}", ex.Message)));
+                return (new questStatus(Severity.Error, String.Format("EXCEPTION: building filter results set for FilterItem {0}: {1}", 
+                        filterItem.Id, ex.Message)));
             }
             return (new questStatus(Severity.Success));
         }
@@ -178,31 +182,41 @@ namespace Quest.MasterPricing.Services.Data.Filters
             int numEntities = filter.FilterTableList.Count + filter.FilterViewList.Count;
 
 
-            ////FilterColumn _filterColumn = filter.FilterColumnList.Find(delegate (FilterColumn c) { return c.TablesetColumnId == filterItem.FilterEntityId; });
             FilterColumn _filterColumn = filterItem.FilterColumn;
             if (_filterColumn == null)
             {
                 return (new questStatus(Severity.Error, String.Format("ERROR: filter item {0} filter column not found in filter (building lookups)", filterItem.FilterEntityId)));
             }
             filterColumn = _filterColumn;
+
+            // If column labeled, that's it.
+            if (!string.IsNullOrEmpty(filterItem.Label))
+            {
+                columnIdentifier = filterItem.Label;
+                return (new questStatus(Severity.Success));
+            }
+
+            // Determine column identifier.
+            // Single-entity filters, it's the column name alone.
+            // More than one entity, it's the entity name  + "_" +  column name.
             if (numEntities == 1)
             {
-                columnIdentifier = string.IsNullOrEmpty(filterItem.Label) ? _filterColumn.TablesetColumn.Column.Name : filterItem.Label;
+                columnIdentifier = _filterColumn.TablesetColumn.Column.Name;
             }
             else {
-                if (_filterColumn.FilterEntityTypeId == EntityType.Table)
+                if (_filterColumn.FilterEntityTypeId == FilterEntityType.Table)
                 {
                     FilterTable filterTable = filter.FilterTableList.Find(delegate (FilterTable t) { return (t.Id == _filterColumn.FilterEntityId); });
                     columnIdentifier = filterTable.TablesetTable.Table.Name + "_" + _filterColumn.TablesetColumn.Column.Name;
                 }
-                else if (_filterColumn.FilterEntityTypeId == EntityType.View)
+                else if (_filterColumn.FilterEntityTypeId == FilterEntityType.View)
                 {
                     FilterView filterView = filter.FilterViewList.Find(delegate (FilterView v) { return (v.Id == _filterColumn.FilterEntityId); });
                     columnIdentifier = filterView.TablesetView.View.Name + "_" + _filterColumn.TablesetColumn.Column.Name;
                 }
                 else
                 {
-                    return (new questStatus(Severity.Error, String.Format("ERROR: invalid filter column {0} entity type id: {1} (building lookups)",
+                    return (new questStatus(Severity.Error, String.Format("ERROR: invalid filter column {0} entity type id: {1} (determining column identifier)",
                             _filterColumn.FilterEntityId, _filterColumn.FilterEntityTypeId)));
                 }
             }

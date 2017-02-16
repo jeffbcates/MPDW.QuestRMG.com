@@ -1,7 +1,0 @@
-C:\Quest\src\MPDW\Functional\Quest.Functional.Logging\bin\Debug\Quest.Functional.Logging.dll
-C:\Quest\src\MPDW\Functional\Quest.Functional.Logging\bin\Debug\Quest.Functional.Logging.pdb
-C:\Quest\src\MPDW\Functional\Quest.Functional.Logging\bin\Debug\Quest.Util.Data.dll
-C:\Quest\src\MPDW\Functional\Quest.Functional.Logging\bin\Debug\Quest.Util.Data.pdb
-C:\Quest\src\MPDW\Functional\Quest.Functional.Logging\obj\Debug\Quest.Functional.Logging.csprojResolveAssemblyReference.cache
-C:\Quest\src\MPDW\Functional\Quest.Functional.Logging\obj\Debug\Quest.Functional.Logging.dll
-C:\Quest\src\MPDW\Functional\Quest.Functional.Logging\obj\Debug\Quest.Functional.Logging.pdb
