@@ -1248,90 +1248,14 @@ namespace Quest.MasterPricing.Services.Data.Filters
             return (new questStatus(Severity.Success));
         }
 
-        ////private bool isSelfJoin(Filter filter, JoinEntity joinEntity)
-        ////{
-        ////    FilterColumn sourceColumn = filter.FilterColumnList.Find(delegate (FilterColumn c) { return c.FilterEntityTypeId == joinEntity.Type.Id && c.Id == joinEntity.FilterItem.FilterEntityId; });
-        ////    if (joinEntity.Type.Id == FilterEntityType.Table)
-        ////    {
-        ////        FilterTable sourceTable = filter.FilterTableList.Find(delegate (FilterTable t) { return sourceColumn.TablesetColumn.Column.EntityTypeId == EntityType.Table && t.TablesetTable.Table.Id == sourceColumn.TablesetColumn.Column.EntityId; });
-        ////        return (joinEntity.FilterTable.TablesetTableId == sourceTable.TablesetTableId);
-        ////    }
-        ////    else if (joinEntity.Type.Id == FilterEntityType.View)
-        ////    {
-        ////        FilterView sourceView = filter.FilterViewList.Find(delegate (FilterView v) { return sourceColumn.TablesetColumn.Column.EntityTypeId == EntityType.View && v.TablesetView.View.Id == sourceColumn.TablesetColumn.Column.EntityId; });
-        ////        return (joinEntity.FilterView.TablesetViewId == sourceView.TablesetViewId);
-        ////    }
-        ////    throw (new Exception(String.Format("EXCEPTION: invalid joined entity type {0} determining self join", joinEntity.Type.Id)));
-        ////}
-
         private bool isSelfJoin(Filter filter, JoinEntity joinEntity)
         {
             // TEMPORARY
-            return (false);
-
-            ////////// TODO: MULTIPLE JOINS.  CURRENTLY, ONLY ONE JOIN PER FILTER ITEM SUPPORTED.
-            ////////FilterItem filterItem = filter.FilterItemList.Find(delegate (FilterItem fi) { return (fi.FilterEntityTypeId == joinEntity.FilterItem.FilterEntityTypeId && fi.FilterEntityId == joinEntity.FilterItem.FilterEntityId); });
-
-            ////////FilterColumn sourceColumn = filter.FilterColumnList.Find(delegate (FilterColumn c) { return c.FilterEntityTypeId == joinEntity.Type.Id && c.Id == joinEntity.FilterItem.FilterEntityId; });
-            ////////if (joinEntity.Type.Id == FilterEntityType.Table)
-            ////////{
-            ////////    FilterTable filterTable = null;
-            ////////    FilterColumn targetFilterColumn = null;
-            ////////    foreach (FilterTable _filterTable in filter.FilterTableList)
-            ////////    {
-            ////////        foreach (FilterColumn filterColumn in _filterTable.FilterColumnList)
-            ////////        {
-            ////////            if (joinEntity.FilterItem.FilterEntityId == filterColumn.TablesetColumnId)
-            ////////            {
-            ////////                filterTable = _filterTable;
-            ////////                targetFilterColumn = filterColumn;
-            ////////                break;
-            ////////            }
-            ////////        }
-            ////////        if (filterTable != null)
-            ////////        {
-            ////////            break;
-            ////////        }
-            ////////    }
-            ////////    if (targetFilterColumn == null)
-            ////////    {
-            ////////        throw (new Exception(String.Format("EXCEPTION: FilterItemJoin {0} target table FilterColumn not found",
-            ////////                joinEntity.FilterItemJoin.Id)));
-            ////////    }
-            ////////    return (joinEntity.FilterTable.TablesetTable.Schema == filterTable.TablesetTable.Schema &&
-            ////////            joinEntity.FilterTable.TablesetTable.Name == filterTable.TablesetTable.Name);
-            ////////}
-            ////////else if (joinEntity.Type.Id == FilterEntityType.View)
-            ////////{
-            ////////    FilterView filterView = null;
-            ////////    FilterColumn targetFilterColumn = null;
-            ////////    foreach (FilterView _filterView in filter.FilterViewList)
-            ////////    {
-            ////////        foreach (FilterColumn filterColumn in _filterView.FilterColumnList)
-            ////////        {
-            ////////            if (joinEntity.FilterItem.FilterEntityId == filterColumn.TablesetColumnId)
-            ////////            {
-            ////////                filterView = _filterView;
-            ////////                targetFilterColumn = filterColumn;
-            ////////                break;
-            ////////            }
-            ////////        }
-            ////////        if (filterView != null)
-            ////////        {
-            ////////            break;
-            ////////        }
-            ////////    }
-            ////////    if (targetFilterColumn == null)
-            ////////    {
-            ////////        throw (new Exception(String.Format("EXCEPTION: FilterItemJoin {0} target view FilterColumn not found",
-            ////////                joinEntity.FilterItemJoin.Id)));
-            ////////    }
-            ////////    return (joinEntity.FilterTable.TablesetTable.Schema == filterView.TablesetView.Schema &&
-            ////////            joinEntity.FilterTable.TablesetTable.Name == filterView.TablesetView.Name);
-            ////////}
-            ////////throw (new Exception(String.Format("EXCEPTION: invalid joined entity type {0} determining self join", joinEntity.Type.Id)));
+            // TODO: SUPPORT MULTIPLE JOINS
+            return ((joinEntity.FilterItem.JoinList[0].SourceSchema == joinEntity.FilterItem.JoinList[0].TargetSchema)
+                &&
+                (joinEntity.FilterItem.JoinList[0].SourceEntityName == joinEntity.FilterItem.JoinList[0].TargetEntityName));
         }
-
 
         private questStatus getFilterItemFROMEntity(FilterItem filterItem, List<FilterEntity> FROMEntityList, out FilterEntity FROMEntity)
         {
