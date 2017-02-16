@@ -96,8 +96,8 @@ function qrmgTable(model) {
         }
         $.each(_self._model.operations, function (i, o) {
             o._id = _self._pfx + o.name;
-            o._lbl = o._lbl ? o._lbl : o.name;
-            o.classes = o.classes ? o.classes : "btn-default";
+            o._lbl = (o._lbl || o.label) ? (o._lbl || o.label) : o.name;
+            o.classes = o.classes ? o.classes : "tblbtnop";
             var _do = _self._getdefo(o.name);
             if (_do) {
                 if (!_self._model.bNoDefaultOptions) {
@@ -780,6 +780,10 @@ function qrmgTable(model) {
                 _url = _self._model.uri + "/" + o.name;
             }
             var _d = _self._getctx();
+            if (o.args) {
+                var _a = _self._getargs(o.args);
+                $.extend(_d, _a);
+            }
             var _io = new qrmgio(_self._roper);
             if (o.action) {
                 _io.GetJSON(_url, _d, o);
@@ -861,7 +865,7 @@ function qrmgTable(model) {
                 _self.Edit({ Id: ids[0] }, _cmd);
                 return;
             }
-            if (_cmd.type && _cmd.type == 'view') {
+            if (_cmd.view == true ||(_cmd.type && _cmd.type == 'view')) {
                 _io.ShowView(_url, _d, _cmd);
                 return;
             }
@@ -1082,6 +1086,22 @@ function qrmgTable(model) {
         return (_vs);
     }
 
+    _self._getargs = function (aa) {
+        var _d = {};
+        $.each(aa, function (i, a) {
+            if (a.viewstate) {
+                var vs = _self._getViewState();
+                _d[(a.name ? a.name : a.field)] = vs[a.field];
+            }
+            else if ($.isPlainObject(a)) {
+                $.extend(_d, a);
+            }
+            else {
+                _d[a.name] = $('#' + a.element).val();
+            }
+        });
+        return (_d);
+    }
 
     _self._getc = function (n) {
         var _c;

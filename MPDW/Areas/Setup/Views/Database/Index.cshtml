@@ -10,6 +10,8 @@
 <div id="frmDatabase">
 </div>
 
+<p style="color: red;">NOTE: Metadata is filtered with a prefix of 'Quest' for Views and Stored Procedures.</p>
+
 <script type="text/javascript">
     var _frmDatabase = null;
     var frmDatabase = {
@@ -29,9 +31,9 @@
         ],
         operations: [
             { name: 'RefreshSchema', label: 'Refresh Schema Info', classes: "btn btn-primary" },
-            { name: 'Tables', label: 'Tables', classes: "btn btn-secondary", uri: '/Database', view: true },
-            { name: 'Views', label: 'Views', classes: "btn btn-secondary", uri: '/Database', view: true },
-            { name: 'StoredProcedures', label: 'Stored Procedures', classes: "btn btn-secondary", uri: '/Database', view: true },
+            { name: 'Tables', label: 'Tables', classes: "btn btn-primary", uri: '/Database', view: true },
+            { name: 'Views', label: 'Views', classes: "btn btn-primary", uri: '/Database', view: true },
+            { name: 'StoredProcedures', label: 'Stored Procedures', classes: "btn btn-primary", uri: '/Database', view: true },
         ],
         actions: [
         ]

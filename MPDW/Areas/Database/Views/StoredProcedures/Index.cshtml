@@ -37,7 +37,9 @@
                 PageSizeOptions: [100, 200, 300, 1000],
             },
             operations: [
-                { name: 'Database', label: 'Database' },
+                { name: 'Database', label: 'Database', uri: '/Setup/Database', args: [{ viewstate: true, field: 'DatabaseId', name: 'Id' }] },
+                { name: 'Tables', label: 'Tables', uri: '/Database/Tables', args: [{ viewstate: true, field: 'DatabaseId', name: 'Id' }] },
+                { name: 'Views', label: 'Views', uri: '/Database/Views', args: [{ viewstate: true, field: 'DatabaseId', name: 'Id' }] },
             ],
             commands: [
                 ////{ name: 'Read', label: 'Details', edit: true },

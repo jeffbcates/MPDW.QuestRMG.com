@@ -282,6 +282,16 @@ footer {
     color: #3598dc !important;
     background-color: #EEEEEE !important;
 }
+.tblbtnop {
+    color: #FFFFFF !important;
+    background-color: #49A2E0 !important;
+}
+.tblbtnop:hover {
+    background-color: #3089C6 !important;
+}
+.tblbtnop:active {
+    background-color: #3089C6 !important;
+}
 .questSort {
     float: right;
     height: 0;
