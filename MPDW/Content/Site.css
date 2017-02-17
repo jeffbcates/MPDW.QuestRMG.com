@@ -231,14 +231,14 @@ input[type="file"] {
     display: none;
 }
 .custom-file-upload {
-    border: 1px solid #ccc;
+    border: 1px solid #8298B3;
     display: inline-block;
     margin-top: 4px;
     padding: 6px 12px;
     cursor: pointer;
 }
 .tvwFrame {
-  border: 2px solid #cccccc;
+  border: 2px solid #8298B3;
   clear: both;
   display: block;
   height: 220px;

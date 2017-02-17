@@ -15,7 +15,7 @@ a, button, code, div, img, input, label, li, p, pre, select, span, svg, table, t
     border-radius: 6px !important;
 }
 body {
-    color: #34495e;
+    color: #2F4255;
     font-size: 14px;
     margin: 0 !important;
     padding: 0 !important;
@@ -4160,7 +4160,7 @@ li .icon-large[class*=" fa-"], li .icon-large[class*=" glyphicon-"], li .icon-la
     padding-right: 0;
 }
 .form .form-actions {
-    background-color: #f5f5f5;
+    background-color: #f2f4f7;
     border-top: 1px solid #e7ecf1;
     margin: 0;
     padding: 4px 8px;
@@ -5587,8 +5587,8 @@ body[ng-controller] .modal-backdrop {
 .portlet > .portlet-title > .caption {
     display: inline-block;
     float: left;
-    font-size: 18px;
-    line-height: 18px;
+    font-size: 20px;
+    line-height: 20px;
     padding: 10px 0;
 }
 .portlet > .portlet-title > .caption.bold {
@@ -5790,7 +5790,7 @@ body[ng-controller] .modal-backdrop {
     padding: 0 10px;
 }
 .portlet.box > .portlet-title > .caption {
-    padding: 11px 0 9px;
+    padding: 11px 0 9px 10px;
 }
 .portlet.box > .portlet-title > .tools > a.remove {
     background-image: url("/Content/themes/metronic/images/portlet-remove-icon-white.png");
@@ -6110,7 +6110,7 @@ body[ng-controller] .modal-backdrop {
     color: #6c7a88;
 }
 .portlet.blue, .portlet.box.blue > .portlet-title, .portlet > .portlet-body.blue {
-    background-color: #3598dc;
+    background-color: #345983;
 }
 .portlet.box.dark > .portlet-title > .actions .btn-default > i {
     color: #738290;
@@ -6149,7 +6149,7 @@ body[ng-controller] .modal-backdrop {
     -moz-border-left-colors: none;
     -moz-border-right-colors: none;
     -moz-border-top-colors: none;
-    border-color: -moz-use-text-color #60aee4 #60aee4;
+    border-color: -moz-use-text-color #345983 #345983;
     border-image: none;
     border-style: none solid solid;
     border-width: 0 1px 1px;

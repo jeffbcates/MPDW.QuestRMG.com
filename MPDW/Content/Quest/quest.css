@@ -79,7 +79,7 @@
   top: 50px;
   width: 30px;
   bottom: 30px;
-  background-color: #002F63;
+  background-color: #1a4473;
 }
 
 .questNavbarHeader {
@@ -87,7 +87,7 @@
   display: block;
   height: 30px;
   width: 100%;
-  background-color: #002f63;
+  background-color: #1a4473;
   z-index: 2;
 }
 .questNavbarTack {
@@ -188,7 +188,7 @@ a.currentNavbarItem:hover {
     height: 40px;
     overflow: hidden;
     border: 2px solid #002F63;
-    background-color: #ffffff;
+    background-color: #f4f8fb;
     padding: 10px;
     z-index: 2000;
     text-align: center;
@@ -412,7 +412,7 @@ pnlbtn:active {
   font-weight: bold;
 }
 .questTablePageSizeSelect {
-    border: 1px solid #aaaaaa;
+    border: 1px solid #8298B3;
     text-align: right;
     padding-right: 4px;
 }
@@ -433,7 +433,7 @@ pnlbtn:active {
     width: 200px;
     height: 20px;
     font-weight: normal;
-    border: 1px solid #aaaaaa;
+    border: 1px solid #8298B3;
 }
 .tvwcmd {
     cursor: pointer;
@@ -469,7 +469,7 @@ pnlbtn:active {
   /*border: 1px solid green;*/
 }
 .questTablePagerButton {
-  border: 1px solid #6883a3;
+  border: 1px solid #8298B3;
   color: #f04f50;
   display: inline-block;
   margin: 4px;
@@ -501,7 +501,7 @@ pnlbtn:active {
     content: "\f0d9";
 }
 .questTablePagerNofM {
-  border: 1px solid #6883a3;
+  border: 1px solid #8298B3;
   color: #f04f50;
   display: inline-block;
   font-size: 1em;
@@ -657,7 +657,7 @@ pnlbtn:active {
   padding-left: 10px;
 }
 .portlet-toolbar-text {
-  border: 1px solid #aaaaaa;
+  border: 1px solid #8298B3;
   margin-right: 15px;
   margin-top: 10px;
   width: 60px;
@@ -809,7 +809,7 @@ pnlbtn:active {
 }
 
 .filtvalues {
-  border: 1px solid #aaaaaa;
+  border: 1px solid #8298B3;
   font-weight: normal;
   height: 28px;
   width: 100%;
@@ -953,7 +953,7 @@ td.td-input {
     font-weight: bold;
 }
 .mpdw-help {
-  color: #091a09;
+  color: #162335;
   font-size: 1.3em;
 }
 .mpdw-help p {
@@ -965,3 +965,5 @@ td.td-input {
 .mpdw-help ol li {
     padding-bottom: 20px;
 }
+
+

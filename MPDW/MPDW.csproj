@@ -777,6 +777,7 @@
       <DependentUpon>Web.config</DependentUpon>
     </Content>
     <Content Include="Views\Shared\_LayoutDatabase.cshtml" />
+    <Content Include="Views\Shared\_LayoutManageData.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
