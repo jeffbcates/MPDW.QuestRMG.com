@@ -10,6 +10,7 @@ function qrmgEditor(model) {
     _self._pkey = null;
     _self._bROS = false;
     _self._bChanges = false;
+    _self._bMasking = _self._model.mask || !_self._model.bNoMasking;
     _self._defopers = [
         { name: 'Save', classes: "btn btn-success", Save: true },
         { name: 'Clear', classes: "btn btn-secondary", Clear: true },
@@ -33,7 +34,9 @@ function qrmgEditor(model) {
         _self._render();
         _self._bind();
         _self._mask = _self._model.mask || _self._e;
-        qrmgmvc.Global.Mask(_self._mask);
+        if (!_self._model.bNoMasking) {
+            qrmgmvc.Global.Mask(_self._mask);
+        }
         if (!_self._model.bNoLoad) {
             _self.GetOptions();
         }

@@ -14,6 +14,6 @@ namespace Quest.Functional.MasterPricing
         public string Name { get; set; }
         public string Summary { get; set; }
         public string Database { get; set; }
-        public DateTime Created { get; set; }
+        public DateTime? LastRefresh { get; set; }
     }
 }

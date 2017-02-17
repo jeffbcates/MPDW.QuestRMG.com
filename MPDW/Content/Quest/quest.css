@@ -353,8 +353,10 @@ pnlbtn:active {
     position: relative;
 }
 .questTableInlineHeaderInfo {
-    padding-top: 3px;
-    padding-left: 20px;
+  display: inline-block;
+  padding-left: 20px;
+  padding-top: 3px;
+  position: relative;
 }
 .questTableHeaderFrame .questTablePager {
     padding-top: 10px;

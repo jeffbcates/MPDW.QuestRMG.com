@@ -19,5 +19,6 @@ namespace Quest.Services.Dbio.MasterPricing
         public bool bEnabled { get; set; }
         public string Name { get; set; }
         public string Summary { get; set; }
+        public Nullable<System.DateTime> LastRefresh { get; set; }
     }
 }

@@ -420,15 +420,10 @@
         _tvwTablesetEntities = new qrmgTreeview(tvwTablesetEntities);
         loadTreeviewTablesetEntities();
     }
-    function loadTreeviewTablesetEntities(tt) {
+    function loadTreeviewTablesetEntities() {
         var _ee = _viewstate.TableList.concat(_viewstate.ViewList);
         var _d = { questStatus: _viewstate.questStatus, Items: _ee };
         _tvwTablesetEntities.Fill(_d);
-        if (tt) {
-            $.each(tt, function (i, t) {
-                _tvwTablesetEntities.Remove(t.Id, 'Id');
-            });
-        }
     }
     function cbTvwTablesetEntities(op, msg, n, d) {
     }

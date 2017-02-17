@@ -1678,7 +1678,8 @@ $.ui.plugin.add("draggable", "cursor", {
 		if (t.css("cursor")) o._cursor = t.css("cursor");
 		t.css("cursor", o.cursor);
 	},
-	stop: function(event, ui) {
+	stop: function (event, ui) {
+	    if ($(this).data('draggable') === undefined) { return; } /* klugie: Ben Gillis. bug in jqueryUI ? */
 		var o = $(this).data('draggable').options;
 		if (o._cursor) $('body').css("cursor", o._cursor);
 	}

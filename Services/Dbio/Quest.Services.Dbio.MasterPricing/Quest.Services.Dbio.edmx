@@ -264,6 +264,7 @@
           <Property Name="bEnabled" Type="bit" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
           <Property Name="Summary" Type="nvarchar" MaxLength="256" />
+          <Property Name="LastRefresh" Type="datetime2" Precision="7" />
         </EntityType>
         <EntityType Name="TablesetTables">
           <Key>
@@ -739,6 +740,7 @@ warning 6002: The table/view 'MasterPricing.dbo.vwTypeListsList' does not have a
           <Property Name="bEnabled" Type="Boolean" Nullable="false" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
           <Property Name="Summary" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="LastRefresh" Type="DateTime" Precision="7" />
         </EntityType>
         <EntityType Name="TablesetTables">
           <Key>
@@ -1111,6 +1113,7 @@ warning 6002: The table/view 'MasterPricing.dbo.vwTypeListsList' does not have a
           <EntitySetMapping Name="Tablesets">
             <EntityTypeMapping TypeName="Quest.Services.Dbio.MasterPricing.Tablesets">
               <MappingFragment StoreEntitySet="Tablesets">
+                <ScalarProperty Name="LastRefresh" ColumnName="LastRefresh" />
                 <ScalarProperty Name="Summary" ColumnName="Summary" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="bEnabled" ColumnName="bEnabled" />

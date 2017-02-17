@@ -133,7 +133,7 @@ function qrmgTreeview(model) {
     }
     _self.Sort = function () {
         var nn = $('ul.list-group li', _self._e);
-        nn.sort(function (a, b) {
+        var _nn = nn.sort(function (a, b) {
             var ta = $(a).text();
             var tb = $(b).text();
             if (an > bn) {
@@ -158,7 +158,7 @@ function qrmgTreeview(model) {
     _self._rndrhdr = function () {
         if (!_self._model.header) { return; }
         var _h = [], _i = 0;
-        _h[_i++] = '<div class="' + (_self._model.header.bInlineHeader ? 'questTableInlineHeaderInfo' : ' questTableHeaderInfo ') + (_self._model.header.classes ? (' ' + _self._model.header.classes + ' ') : '') + '">';
+        _h[_i++] = '<div class="' + _self._e.substr(1) + ' ' + (_self._model.header.bInlineHeader ? 'questTableInlineHeaderInfo' : ' questTableHeaderInfo ') + (_self._model.header.classes ? (' ' + _self._model.header.classes + ' ') : '') + '">';
         if (_self._model.header.count) {
             _h[_i++] = '    <div class="questTableTotalRecords">';
             _h[_i++] = '        <label class="control-label">' + (_self._model.header.label || '') + '</label>';
@@ -307,7 +307,7 @@ function qrmgTreeview(model) {
 
     _self.UpdateHeader = function () {
         _self._setcnt();
-        $(_self._e).prev().find('.tvwCount').text(_self.Count);
+        $(_self._e).parent().find('.' + _self._e.substr(1)).find('.tvwCount').text(_self.Count);
     }
     _self._setiv = function () {
         var _vs = _self.ViewState();

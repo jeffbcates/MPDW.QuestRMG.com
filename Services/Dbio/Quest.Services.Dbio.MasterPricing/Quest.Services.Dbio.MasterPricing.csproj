@@ -174,6 +174,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Database\MasterPricing_20170116001.txt" />
+    <Content Include="Database\MasterPricing_20170117001.txt" />
     <Content Include="Database\MasterPricing_20170118001.txt" />
     <Content Include="Database\MasterPricing_20170118002.txt" />
     <Content Include="Database\MasterPricing_20170119001.txt" />
@@ -181,6 +182,7 @@
     <Content Include="Database\MasterPricing_20170201001.txt" />
     <Content Include="Database\MasterPricing_20170208001.txt" />
     <Content Include="Database\MasterPricing_20170209001.txt" />
+    <Content Include="Database\MasterPricing_20170214001.txt" />
     <Content Include="Quest.Services.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
       <DependentUpon>Quest.Services.Dbio.edmx</DependentUpon>
