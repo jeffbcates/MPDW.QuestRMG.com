@@ -305,6 +305,7 @@ namespace Quest.MasterPricing.Services.Business.Database
         }
         public questStatus StoreDatabaseColumns(DatabaseId databaseId, Dictionary<View, List<Column>> dictDBColumn, out List<View> viewIdList)
         {
+            // Initialize
             questStatus status = null;
             viewIdList = null;
 
@@ -318,6 +319,22 @@ namespace Quest.MasterPricing.Services.Business.Database
             return (new questStatus(Severity.Success));
         }
 
+
+        public questStatus Delete(DatabaseId databaseId)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            // Delete database
+            DbDatabaseMgr dbDatabaseMgr = new DbDatabaseMgr(this.UserSession);
+            status = dbDatabaseMgr.Delete(databaseId);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
         #endregion
 
 

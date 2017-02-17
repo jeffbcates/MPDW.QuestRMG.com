@@ -371,7 +371,20 @@ function Maskit(e, t) {
 function Unmaskit(e) {
     $('.questmask').remove();
 }
-
+function Mask(e, c, umsg) {
+    var _c = c || 'questmask';
+    $(e).append('<div class="questmask"></div>');
+    if (umsg) {
+        DisplayUserMessage(umsg);
+    }
+}
+function Unmask(e, c, bCM) {
+    var _c = c || 'questmask';
+    $(e).find('.questmask').remove();
+    if (bCM) {
+        ClearUserMessage();
+    }
+}
 
 /*================================================================================
 * Clipboard

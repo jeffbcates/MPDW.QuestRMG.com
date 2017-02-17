@@ -179,6 +179,29 @@ namespace Quest.MasterPricing.Services.Data.Database
             }
             return (new questStatus(Severity.Success));
         }
+        public questStatus Read(DbMgrTransaction trans, DatabaseId databaseId, out List<Quest.Functional.MasterPricing.View> viewList)
+        {
+            // Initialize
+            questStatus status = null;
+            viewList = null;
+
+
+            // Perform read
+            List<Quest.Services.Dbio.MasterPricing.Views> _viewList = null;
+            status = read((MasterPricingEntities)trans.DbContext, databaseId, out _viewList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            viewList = new List<View>();
+            foreach (Quest.Services.Dbio.MasterPricing.Views _view in _viewList)
+            {
+                Quest.Functional.MasterPricing.View view = new View();
+                BufferMgr.TransferBuffer(_view, view);
+                viewList.Add(view);
+            }
+            return (new questStatus(Severity.Success));
+        }
         public questStatus Read(DbMgrTransaction trans, ViewId viewId, out Quest.Functional.MasterPricing.View view)
         {
             // Initialize
@@ -187,17 +210,16 @@ namespace Quest.MasterPricing.Services.Data.Database
 
 
             // Perform read.
-            using (MasterPricingEntities dbContext = new MasterPricingEntities())
+            Quest.Services.Dbio.MasterPricing.Views _view = null;
+            status = read((MasterPricingEntities)trans.DbContext, viewId, out _view);
+            if (! questStatusDef.IsSuccess(status))
             {
-                Quest.Services.Dbio.MasterPricing.Views _view = null;
-                status = read((MasterPricingEntities)trans.DbContext, viewId, out _view);
-                if (! questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
-                view = new Quest.Functional.MasterPricing.View();
-                BufferMgr.TransferBuffer(_view, view);
+                return (status);
             }
+            view = new Quest.Functional.MasterPricing.View();
+            BufferMgr.TransferBuffer(_view, view);
+            
+
             return (new questStatus(Severity.Success));
         }
         public questStatus Update(Quest.Functional.MasterPricing.View view)

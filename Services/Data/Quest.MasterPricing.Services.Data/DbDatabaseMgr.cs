@@ -802,6 +802,305 @@ namespace Quest.MasterPricing.Services.Data.Setup
             return (new questStatus(Severity.Success));
         }
 
+        public questStatus Delete(DatabaseId databaseId)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            /*
+             * Start transaction
+             */
+            string transactionName = null;
+            status = GetUniqueTransactionName("DeleteDatabase_" + databaseId.Id.ToString(), out transactionName);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            DbMgrTransaction trans = null;
+            status = BeginTransaction(transactionName, out trans);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+
+            /*
+             * Get database schema
+             */
+            Quest.Functional.MasterPricing.Database database = null;
+            status = GetDatabaseSchema(trans, databaseId, out database);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+            #region Stored Procedures
+            //
+            // Stored Procedures
+            //
+            // Delete all stored procedure parameters
+            DbStoredProcedureParametersMgr dbStoredProcedureParametersMgr = new DbStoredProcedureParametersMgr(this.UserSession);
+            foreach (StoredProcedure storedProcedure in database.StoredProcedureList)
+            {
+                StoredProcedureId storedProcedureId = new StoredProcedureId(storedProcedure.Id);
+                status = dbStoredProcedureParametersMgr.Delete(trans, storedProcedureId);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    RollbackTransaction(trans);
+                    return (status);
+                }
+
+                // Delete stored procedure
+                DbStoredProceduresMgr dbStoredProceduresMgr = new DbStoredProceduresMgr(this.UserSession);
+                status = dbStoredProceduresMgr.Delete(trans, storedProcedureId);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    RollbackTransaction(trans);
+                    return (status);
+                }
+            }
+
+            #endregion
+
+
+            #region Tables
+            //
+            // Tables
+            //
+            // Delete all table columns
+            DbColumnsMgr dbColumnsMgr = new DbColumnsMgr(this.UserSession);
+            foreach (Table table in database.TableList)
+            {
+                TableId tableId = new TableId(table.Id);
+                status = dbColumnsMgr.Delete(trans, tableId);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    RollbackTransaction(trans);
+                    return (status);
+                }
+
+                // Delete table
+                DbTablesMgr dbTablesMgr = new DbTablesMgr(this.UserSession);
+                status = dbTablesMgr.Delete(trans, tableId);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    RollbackTransaction(trans);
+                    return (status);
+                }
+            }
+            #endregion
+
+
+            #region Views
+            //
+            // Views
+            //
+
+            // Delete all view columns
+            foreach (View view in database.ViewList)
+            {
+                ViewId viewId = new ViewId(view.Id);
+                status = dbColumnsMgr.Delete(trans, viewId);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    RollbackTransaction(trans);
+                    return (status);
+                }
+
+                // Delete view
+                DbViewsMgr dbViewsMgr = new DbViewsMgr(this.UserSession);
+                status = dbViewsMgr.Delete(trans, viewId);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    RollbackTransaction(trans);
+                    return (status);
+                }
+            }
+            #endregion
+
+
+            #region Database
+            //
+            // Database
+            //
+            DbDatabasesMgr dbDatabasesMgr = new DbDatabasesMgr(this.UserSession);
+            status = dbDatabasesMgr.Delete(trans, databaseId);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                RollbackTransaction(trans);
+                return (status);
+            }
+            #endregion
+
+
+
+            // Commit transaction
+            status = CommitTransaction(trans);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                RollbackTransaction(trans);
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus GetDatabaseSchema(DatabaseId databaseId, out Quest.Functional.MasterPricing.Database database)
+        {
+            // Initialize
+            questStatus status = null;
+            database = null;
+
+
+
+            // Start transaction
+            string transactionName = null;
+            status = GetUniqueTransactionName("GetDatabaseSchema_" + databaseId.Id.ToString(), out transactionName);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            DbMgrTransaction trans = null;
+            status = BeginTransaction(transactionName, out trans);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+
+            // Get schema.
+            status = GetDatabaseSchema(trans, databaseId, out database);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                RollbackTransaction(trans);
+                return (status);
+            }
+
+
+            // Commit transaction
+            status = CommitTransaction(trans);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                RollbackTransaction(trans);
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus GetDatabaseSchema(DbMgrTransaction trans, DatabaseId databaseId, out Quest.Functional.MasterPricing.Database database)
+        {
+            // Initialize
+            questStatus status = null;
+            database = null;
+
+
+
+            #region Database
+            //
+            // Database
+            //
+            DbDatabasesMgr dbDatabasesMgr = new DbDatabasesMgr(this.UserSession);
+            status = dbDatabasesMgr.Read(trans, databaseId, out database);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            #endregion
+
+
+            #region Tables
+            //
+            // Tables
+            //
+            DbTablesMgr dbTablesMgr = new DbTablesMgr(this.UserSession);
+            List<Table> tableList = null;
+            status = dbTablesMgr.Read(trans, databaseId, out tableList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                RollbackTransaction(trans);
+                return (status);
+            }
+
+            // Get all table columns
+            DbColumnsMgr dbColumnsMgr = new DbColumnsMgr(this.UserSession);
+            foreach (Table table in tableList)
+            {
+                TableId tableId = new TableId(table.Id);
+                List<Column> columnList = null;
+                status = dbColumnsMgr.Read(trans, tableId, out columnList);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    RollbackTransaction(trans);
+                    return (status);
+                }
+                table.ColumnList = columnList;
+            }
+            database.TableList = tableList;
+            #endregion
+
+
+            #region Views
+            //
+            // Views
+            //
+            DbViewsMgr dbViewsMgr = new DbViewsMgr(this.UserSession);
+            List<View> viewList = null;
+            status = dbViewsMgr.Read(trans, databaseId, out viewList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                RollbackTransaction(trans);
+                return (status);
+            }
+
+            // Get all view columns
+            foreach (View view in viewList)
+            {
+                ViewId viewId = new ViewId(view.Id);
+                List<Column> columnList = null;
+                status = dbColumnsMgr.Read(trans, viewId, out columnList);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    RollbackTransaction(trans);
+                    return (status);
+                }
+                view.ColumnList = columnList;
+            }
+            database.ViewList = viewList;
+            #endregion
+
+
+            #region Stored Procedures
+            //
+            // Stored Procedures
+            //
+            // Get all stored procedures
+            DbStoredProceduresMgr dbStoredProceduresMgr = new DbStoredProceduresMgr(this.UserSession);
+            List<StoredProcedure> storedProcedureList = null;
+            status = dbStoredProceduresMgr.Read(trans, databaseId, out storedProcedureList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                RollbackTransaction(trans);
+                return (status);
+            }
+
+            // Get all stored procedure parameters
+            DbStoredProcedureParametersMgr dbStoredProcedureParametersMgr = new DbStoredProcedureParametersMgr(this.UserSession);
+            foreach (StoredProcedure storedProcedure in storedProcedureList)
+            {
+                StoredProcedureId storedProcedureId = new StoredProcedureId(storedProcedure.Id);
+                List<StoredProcedureParameter> storeProcedureParameterList = null;
+                status = dbStoredProcedureParametersMgr.Read(trans, storedProcedureId, out storeProcedureParameterList);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    RollbackTransaction(trans);
+                    return (status);
+                }
+                storedProcedure.ParameterList = storeProcedureParameterList;
+            }
+            database.StoredProcedureList = storedProcedureList;
+            #endregion
+
+
+            return (new questStatus(Severity.Success));
+        }
         #endregion
 
 

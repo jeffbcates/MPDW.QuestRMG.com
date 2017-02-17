@@ -547,7 +547,7 @@ namespace Quest.MasterPricing.Services.Data.Database
 
             try
             {
-                // Read all storedProcedureParameters for this stored.
+                // Read all storedProcedureParameters for this storedProcedure.
                 List<Quest.Services.Dbio.MasterPricing.StoredProcedureParameters> _storedProcedureParametersList = null;
                 status = read(dbContext, storedProcedureId, out _storedProcedureParametersList);
                 if (!questStatusDef.IsSuccess(status))

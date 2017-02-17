@@ -14,5 +14,17 @@ namespace Quest.Functional.MasterPricing
         public string Summary { get; set; }
         public string ConnectionString { get; set; }
         public DateTime? LastRefresh { get; set; }
+
+        public List<Table> TableList { get; set; }
+        public List<View> ViewList { get; set; }
+        public List<StoredProcedure> StoredProcedureList { get; set; }
+
+
+        public Database()
+        {
+            TableList = new List<Table>();
+            ViewList = new List<View>();
+            StoredProcedureList = new List<StoredProcedure>();
+        }
     }
 }

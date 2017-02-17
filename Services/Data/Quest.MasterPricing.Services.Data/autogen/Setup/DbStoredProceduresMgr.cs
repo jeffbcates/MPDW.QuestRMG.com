@@ -527,13 +527,13 @@ namespace Quest.MasterPricing.Services.Data.Database
                     return (status);
                 }
 
-                // Delete parameters.
-                DbStoredProcedureParametersMgr dbStoredProcedureParametersMgr = new DbStoredProcedureParametersMgr(this.UserSession);
-                status = dbStoredProcedureParametersMgr.Delete(storedProcedureId);
-                if (!questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
+                ////// Delete parameters.
+                ////DbStoredProcedureParametersMgr dbStoredProcedureParametersMgr = new DbStoredProcedureParametersMgr(this.UserSession);
+                ////status = dbStoredProcedureParametersMgr.Delete(storedProcedureId);
+                ////if (!questStatusDef.IsSuccess(status))
+                ////{
+                ////    return (status);
+                ////}
 
 
                 // Delete the record.

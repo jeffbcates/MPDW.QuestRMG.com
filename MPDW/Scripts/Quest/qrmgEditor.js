@@ -34,9 +34,7 @@ function qrmgEditor(model) {
         _self._render();
         _self._bind();
         _self._mask = _self._model.mask || _self._e;
-        if (!_self._model.bNoMasking) {
-            qrmgmvc.Global.Mask(_self._mask);
-        }
+        _self.Mask();
         if (!_self._model.bNoLoad) {
             _self.GetOptions();
         }
@@ -438,7 +436,7 @@ function qrmgEditor(model) {
         $('#' + o.id).empty().prop('disabled', 'disabled').text('Loading ...').append('<option value="-1"><span class="italic">Loading ...</span></option>');
         var _questio = new qrmgio(_self._ropt, _ud);
         if (o.mask) {
-            qrmgmvc.Global.Mask(o.mask);
+            Mask(o.mask);
         }
         _questio._ajax('get', 'json', o.uri, _d);
     }
@@ -474,16 +472,17 @@ function qrmgEditor(model) {
             if (!_self._optcnt) {
                 $(_self._e).trigger("qrmgEditor:optsdone");
             }
+            _self._docallback(ud, Data)
             if (ud.mask) {
-                qrmgmvc.Global.Mask(ud.mask);
+                _self.Unmask(ud.mask);
             }
-            return (_self._docallback(ud, Data));
+            return;
         }
         if (ud.bNoLoad) {
             if (ud.callback) {
                 ud.callback(ud, Data);
                 if (ud.mask) {
-                    qrmgmvc.Global.Mask(ud.mask);
+                    _self.Unmask(ud.mask);
                 }
                 return;
             }
@@ -492,6 +491,9 @@ function qrmgEditor(model) {
         _self._optcnt -= 1;
         if (!_self._optcnt) {
             $(_self._e).trigger("qrmgEditor:optsdone");
+        }
+        if (ud.mask) {
+            _self.Unmask(ud.mask);
         }
     }
     _self._loadOptions = function (opt, Data) {
@@ -561,35 +563,35 @@ function qrmgEditor(model) {
     }
 
     _self._dooper = function (o, e) {
-        var bUnmask = true;
+        _self.Mask(_self._mask);
         if (o.Validate) {
-            var bV = true;
-            bV = _self.Validate()
-            if (!bV) {
-                qrmgmvc.Global.Unmask(_self._e);
+            if (!_self.Validate()) {
+                _self.Unmask();
                 return;
             }
         }
         var _d = _self.GetData();
         if (_self._docallback(o, _d)) {
+            _self.Unmask();
             return;
         }
-        qrmgmvc.Global.Mask(_self._e);
         if (o.callback) {
-            if (o.callback(o, _d));
-            qrmgmvc.Global.Unmask(_self._e);
-            return;
+            if (o.callback(o, _d)) {
+                _self.Unmask();
+                return;
+            }
         }
-        if (o.Clear) {
+        if (o.Save) {
+            _self.Save(o);
+        }
+        else if (o.Clear) {
             _self.Clear();
             ClearUserMessage();
             RemoveQSParam("Id");
+            _self.Unmask();
         }
         else if (o.Delete) {
             _self.Delete();
-        }
-        else if (o.Save) {
-            _self.Save(o);
         }
         else if (o.Cancel) {
             _self.Cancel(o);
@@ -619,10 +621,42 @@ function qrmgEditor(model) {
                 alert('F|Error doing operation ' + o.name);
             }
         }
-        if (bUnmask) {
-            qrmgmvc.Global.Unmask(_self._e);
+    }
+    _self.Save = function (o, bNV) {
+        if (!_self._bChanges) {
+            _self.Validate();
+            _self.Unmask();
+            return;
+        }
+        var bV = true;
+        if (!bNV) {
+            bV = _self.Validate()
+        }
+        if (!bV) {
+            _self.Unmask();
+            return;
+        }
+        var _d = _self.GetData();
+        var _evt = _self._getevt("BeforeSave");
+        if (_evt != null) {
+            if (_evt.callback({ BeforeSave: true }, _d)) {
+                _self.Unmask();
+                return;
+            }
+        }
+
+        var _url = (o.uri ? o.uri : _self._model.uri) + '/Save';
+        var _io = new qrmgio(_self._roper);
+        if (o.type == 'submit') {
+            _io.PostView(_url, _d, o);
+        }
+        else {
+            ////_io.PostJSON(_url, _d, o);
+            _io._postJSON(_url, _d, o);
         }
     }
+
+
     _self.Clear = function (bUM, bForce) {
         if (!bForce && _self._bChanges) {
             if (!confirm('Are you sure?  You will lose your change')) {
@@ -665,43 +699,6 @@ function qrmgEditor(model) {
         }
         _self._docallback({ PostClear: true }, _d);
     }
-    _self.Save = function (o, bNV) {
-        if (!_self._bChanges) {
-            _self.Validate();
-            qrmgmvc.Global.Unmask(_self._e);
-            return;
-        }
-        var bV = true;
-        if (!bNV) {
-            bV = _self.Validate()
-        }
-        if (!bV) {
-            qrmgmvc.Global.Unmask(_self._e);
-            return;
-        }
-        DisplayUserMessage(_self._model.SaveMessage || 'W|Saving ...');
-        if (_self._model.mask) {
-            qrmgmvc.Global.Mask(_self._e);
-        }
-        var _d = _self.GetData();
-
-        var _evt = _self._getevt("BeforeSave");
-        if (_evt != null) {
-            if (_evt.callback({ BeforeSave: true }, _d)) {
-                return;
-            }
-        }
-
-        var _url = (o.uri ? o.uri : _self._model.uri) + '/Save';
-        var _io = new qrmgio(_self._roper);
-        if (o.type == 'submit') {
-            _io.PostView(_url, _d, o);
-        }
-        else {
-            ////_io.PostJSON(_url, _d, o);
-            _io._postJSON(_url, _d, o);
-        }
-    }
     _self.Cancel = function (o) {
         if (_self._bChanges) {
             $('#btnCancel', '#mdlgLoseChanges').unbind('click').on('click', function (e) {
@@ -717,7 +714,7 @@ function qrmgEditor(model) {
         }
     }
     _self._cancel = function (o) {
-        qrmgmvc.Global.Mask(_self._e);
+        _self.Mask();
         try {
             var _url = (o.uri ? o.uri : _self._model.uri) + '/' + o.name;
             var _ctx = _self._getctx();
@@ -726,9 +723,11 @@ function qrmgEditor(model) {
         }
         catch (e) {
             DisplayUserMessage('F|Error doing operation ' + o.name);
+            _self.Unmask();
         }
     }
     _self.Read = function (id, bRO) {
+        _self.Mask();
         var _d = {};
         var _ud = { Read: true };
         if (bRO) { _ud.bRO = true }
@@ -746,7 +745,7 @@ function qrmgEditor(model) {
             });
             $('#btnRefresh', '#mdlgDelChanges').unbind('click').on('click', function (e) {
                 var id = _self._getkeyv();
-                qrmgmvc.Global.Mask(_self._e);
+                _self.Mask();
                 _self.Read(id, true);
             });
             $('#mdlgDelChanges').modal('show');
@@ -776,6 +775,7 @@ function qrmgEditor(model) {
             DisplayUserMessage(d, _self);
         }
         if (_self._docallback(ud, d)) {
+            _self.Unmask();
             return;
         }
         if (ud.Save) {
@@ -806,23 +806,24 @@ function qrmgEditor(model) {
                 $('#' + _self._pkey._id, _self._e).val('');
             }
         }
-        qrmgmvc.Global.Unmask(_self._e);
+        _self.Unmask();
     }
 
     _self._doaction = function (a) {
-        // TODO: mask
+        _self.Mask();
         try {
             var _url = (a.uri ? a.uri : _self._model.uri) + '/' + a.name;
             // TODO: args
-            var _io = new qrmgio(_self._raction);
+            var _io = new qrmgio(_self._raction, a);
             _io.ShowView(_url);
         }
         catch (e) {
-            alert('F|Error doing action ' + o.name);
+            DisplayUserMessage('F|EXCEPTION: performing action ' + a.name);
+            _self.Unmask();
         }
     }
     _self._raction = function () {
-        alert('F|Error retruning from action ' + o.name);
+        DisplayUserMessage('F|Error retruning from action ' + a.name);
     }
 
     _self.GetData = function () {
@@ -999,12 +1000,12 @@ function qrmgEditor(model) {
     }
     _self.Load = function (Data, bForce) {
         var _dd;
-        qrmgmvc.Global.Mask(_self._e);
+        _self.Mask();
         if (!Data) {
             var _vs = _self.ViewState();
             if (!_vs) {
-                qrmgmvc.Global.Unmask(_self._e);
                 _self._docallback({ PostLoad: true }, Data);
+                _self.Unmask();
                 return;
             }
             if (_vs) {
@@ -1013,13 +1014,13 @@ function qrmgEditor(model) {
                 }
                 else {
                     _self._load(_vs);
-                    qrmgmvc.Global.Unmask(_self._e);
+                    _self.Unmask();
                 }
             }
         }
         else {
             _self._load(Data, bForce);
-            qrmgmvc.Global.Unmask(_self._e);
+            _self.Unmask();
         }
     }
     _self._load = function (Data, bForce, bUM) {
@@ -1049,11 +1050,6 @@ function qrmgEditor(model) {
         if (_evt != null) {
             _evt.callback({ AfterLoaded: true }, Data);
         }
-
-        // WIP - I dont know what this is, in-progress I guess.
-        $.each(_self._model.fields, function (i, f) {
-            var _v = Data[f.name];
-        });
         _self._binderrs();
     }
     _self._afot = function (v) {
@@ -1099,14 +1095,27 @@ function qrmgEditor(model) {
     _self.Change = function(v) {
         _self._bChanges = v;
     }
-    _self.bChanges = function()
-    {
+    _self.bChanges = function() {
         return (_self._bChanges);
     }
     _self.LoadOptions = function (o, oo) {
         var _o = _self._getopt(o.name);
         if (!_o) { return; }
         return(_self._loadOptions(_o, oo));
+    }
+
+    _self.Mask = function (e, msg) {
+        if (!_self._bMasking) { return; }
+        Mask(e || _self._mask, null, msg);
+        _self.Buttons(false);
+    }
+    _self.Unmask = function (e, bCM) {
+        if (!_self._bMasking) { return; }
+        Unmask(e || _self._mask, null, bCM);
+        _self.Buttons(true);
+    }
+    _self.Buttons = function (bDisable) {
+        bDisable ? $('#frmTableset .avopsacts button').removeAttr('disabled') : $('#frmTableset .avopsacts button').attr('disabled', 'disabled');
     }
 
     _self._init();

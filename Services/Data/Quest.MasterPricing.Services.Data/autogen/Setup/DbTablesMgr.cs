@@ -153,6 +153,29 @@ namespace Quest.MasterPricing.Services.Data.Database
             }
             return (new questStatus(Severity.Success));
         }
+        public questStatus Read(DbMgrTransaction trans, DatabaseId databaseId, out List<Quest.Functional.MasterPricing.Table> tableList)
+        {
+            // Initialize
+            questStatus status = null;
+            tableList = null;
+
+
+            // Perform read
+            List<Quest.Services.Dbio.MasterPricing.Tables> _tableList = null;
+            status = read((MasterPricingEntities)trans.DbContext, databaseId, out _tableList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            tableList = new List<Table>();
+            foreach (Quest.Services.Dbio.MasterPricing.Tables _table in _tableList)
+            {
+                Quest.Functional.MasterPricing.Table table = new Table();
+                BufferMgr.TransferBuffer(_table, table);
+                tableList.Add(table);
+            }         
+            return (new questStatus(Severity.Success));
+        }
         public questStatus Read(DatabaseId databaseId, out List<Quest.Functional.MasterPricing.Table> tableList)
         {
             // Initialize
@@ -187,17 +210,15 @@ namespace Quest.MasterPricing.Services.Data.Database
 
 
             // Perform read.
-            using (MasterPricingEntities dbContext = new MasterPricingEntities())
+            Quest.Services.Dbio.MasterPricing.Tables _table = null;
+            status = read((MasterPricingEntities)trans.DbContext, tableId, out _table);
+            if (! questStatusDef.IsSuccess(status))
             {
-                Quest.Services.Dbio.MasterPricing.Tables _table = null;
-                status = read((MasterPricingEntities)trans.DbContext, tableId, out _table);
-                if (! questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
-                table = new Quest.Functional.MasterPricing.Table();
-                BufferMgr.TransferBuffer(_table, table);
+                return (status);
             }
+            table = new Quest.Functional.MasterPricing.Table();
+            BufferMgr.TransferBuffer(_table, table);
+            
             return (new questStatus(Severity.Success));
         }
         public questStatus Update(Quest.Functional.MasterPricing.Table table)

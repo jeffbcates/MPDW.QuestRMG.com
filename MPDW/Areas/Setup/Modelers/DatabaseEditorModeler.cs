@@ -113,8 +113,8 @@ namespace Quest.MasterPricing.Setup.Modelers
 
 
             // Delete
-            DatabasesMgr databasesMgr = new DatabasesMgr(this.UserSession);
-            status = databasesMgr.Delete(databaseId);
+            DatabaseMgr databaseMgr = new DatabaseMgr(this.UserSession);
+            status = databaseMgr.Delete(databaseId);
             if (!questStatusDef.IsSuccess(status))
             {
                 return (status);
