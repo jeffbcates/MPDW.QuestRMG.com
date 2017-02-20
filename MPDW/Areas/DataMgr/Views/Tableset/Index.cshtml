@@ -300,6 +300,7 @@
             }      
         }
         else if (ud.Read) {
+            qrmgmvc.Global.Unmask($('#pnlFilters'));
             if (IsAppSuccess(d)) {
                 _viewstate.Entities = d.Entities;
                 _viewstate.Items = d.Items;

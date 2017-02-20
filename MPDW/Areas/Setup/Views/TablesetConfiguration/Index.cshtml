@@ -186,7 +186,7 @@
             events: [
                 { name: 'AfterLoaded', callback: cbTvwTablesetTablesAfterLoaded },
                 { name: 'NodeSelected', callback: cbTvwTablesetTablesNodeSelected },
-                { name: 'Click', callback: cbTvwTablesetTablesClick },
+                ////{ name: 'Click', callback: cbTvwTablesetTablesClick },
                 { name: 'OnTreeRender', callback: cbTvwTablesetTablesOnTreeRender },
                 { name: 'OnDrop', callback: cbTvwTablesetTablesOnDrop },
                 { name: 'Refresh', callback: cbTvwTablesetTablesRefresh },
@@ -212,16 +212,16 @@
     function cbTvwTablesetTablesNodeSelected(evt, d, e) {
         e.stopPropagation();
     }
-    function cbTvwTablesetTablesClick(e, d) {
-        var b = $(e.event.currentTarget).hasClass('tvwSelected');
-        if (!e.event.ctrlKey) {
-            _tvwTablesetTables.ClearSelected();
-        }
-        if (!b) {
-            $(e.event.currentTarget).toggleClass('tvwSelected');
-        }
-        return (true);
-    }
+    ////function cbTvwTablesetTablesClick(e, d) {
+    ////    var b = $(e.event.currentTarget).hasClass('tvwSelected');
+    ////    if (!e.event.ctrlKey) {
+    ////        _tvwTablesetTables.ClearSelected();
+    ////    }
+    ////    if (!b) {
+    ////        $(e.event.currentTarget).toggleClass('tvwSelected');
+    ////    }
+    ////    return (true);
+    ////}
     function cbTvwTablesetTablesOnTreeRender(e) {
         if (!_tvwTablesetTables) { return; }
         $(_tvwTablesetTables._e + ' ul li span.fa-table').closest('li').addClass('tvwTable');
@@ -303,9 +303,14 @@
         e.stopPropagation();
     }
     function cbTvwDatabaseTablesClick(e, d) {
+        var b = $(e.event.currentTarget).hasClass('tvwSelected');
         if (!e.event.ctrlKey) {
+            _tvwTablesetTables.ClearSelected();
         }
-        $(e.event.currentTarget).toggleClass('tvwSelected');
+        if (!b) {
+            $(e.event.currentTarget).toggleClass('tvwSelected');
+        }
+        return (true);
     }
     function cbTvwDatabaseTablesOnTreeRender(e) {
         if (!_tvwDatabaseTables) { return; }
@@ -390,9 +395,14 @@
         e.stopPropagation();
     }
     function cbTvwTablesetViewsClick(e, d) {
+        var b = $(e.event.currentTarget).hasClass('tvwSelected');
         if (!e.event.ctrlKey) {
+            _tvwTablesetTables.ClearSelected();
         }
-        $(e.event.currentTarget).toggleClass('tvwSelected');
+        if (!b) {
+            $(e.event.currentTarget).toggleClass('tvwSelected');
+        }
+        return (true);
     }
     function cbTvwTablesetViewsOnTreeRender() {
         if (!_tvwTablesetViews) { return; }
@@ -475,9 +485,14 @@
         e.stopPropagation();
     }
     function cbTvwDatabaseViewsClick(e, d) {
+        var b = $(e.event.currentTarget).hasClass('tvwSelected');
         if (!e.event.ctrlKey) {
+            _tvwTablesetTables.ClearSelected();
         }
-        $(e.event.currentTarget).toggleClass('tvwSelected');
+        if (!b) {
+            $(e.event.currentTarget).toggleClass('tvwSelected');
+        }
+        return (true);
     }
     function cbTvwDatabaseViewsOnTreeRender(e) {
         if (!_tvwDatabaseViews) { return; }

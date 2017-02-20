@@ -225,6 +225,7 @@ function qrmgTreeview(model) {
         if (_evt != null) {
             if (_evt.callback("OnTreeRender"));
         }
+        _self._bind();
         if (_self._model.draggable) {
             _self.Draggable();
         }
@@ -243,19 +244,26 @@ function qrmgTreeview(model) {
             }
             n = d;
         });
-        _evt = _self._getevt("Click");
-        if (_evt != null) {
-            $(_self._e).find('ul.list-group li').on('click', null, n, function (e) {
-                if (_evt.callback({ Click: true, node: n, event: e })) {
-                    e.stopPropagation();
-                    e.preventDefault();
-                }
-            });
-        }
+        _self._bindnodes();
         if (_self._model.header.filter) {
             _self._bndfltr();
         }
         _self._bndcmds();
+    }
+    _self._bindnodes = function () {
+        $(_self._e).find('ul.list-group li').on('click', function (e) {
+            _evt = _self._getevt("Click");
+            if (_evt != null) {
+                if (_evt.callback({ Click: true, node: n, event: e })) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                }
+            }
+            else {
+                var n = _self.GetNode($(e.currentTarget).attr('data-id'));
+                _self._click(e, n);
+            }
+        });
     }
     _self._bndfltr = function () {
         $(_self._e).prev().find('.tvwFilter').on('keyup', function (e) {
@@ -382,6 +390,14 @@ function qrmgTreeview(model) {
             _tvwCategories._tvw.expandNode(n);
         }
         return (n);
+    }
+    _self._click = function (e) {
+        var b = $(e.currentTarget).hasClass('tvwSelected');
+        if (!e.ctrlKey) {
+            _self.ClearSelected();
+        }
+        $(e.currentTarget).addClass('tvwSelected');
+        return (true);
     }
     _self.ClearSelected = function () {
         $('.tvwSelected', _self._e).removeClass('tvwSelected');
