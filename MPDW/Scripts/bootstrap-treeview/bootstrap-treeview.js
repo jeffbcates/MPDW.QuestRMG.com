@@ -530,15 +530,20 @@
 		var _this = this;
 		$.each(nodes, function addNodes(id, node) {
 
+		    if (!node.Id) {
+		        alert('Cannot load bootstrap-treeview node without an .Id value.  Node: ' + node.text);
+		    }
 			var treeItem = $(_this.template.item)
 				.addClass('node-' + _this.elementId)
 				.addClass(node.state.checked ? 'node-checked' : '')
 				.addClass(node.state.disabled ? 'node-disabled': '')
 				.addClass(node.state.selected ? 'node-selected' : '')
-				.addClass(node.searchResult ? 'search-result' : '') 
+				.addClass(node.searchResult ? 'search-result' : '')
 				.attr('data-nodeid', node.nodeId)
+				.attr('data-id', node.Id)
                 .attr('title', node.title ? node.title : '')
 				.attr('style', _this.buildStyleOverride(node));
+
 
 			// Add indent/spacer to mimic tree structure
 			for (var i = 0; i < (level - 1); i++) {

@@ -399,7 +399,8 @@
             },
             draggable: true,
             droppable: true,
-            sortable: true,
+            dropsource: _tvwFilterEntities,
+            sorted: false,
             multiSelect: true,
             ctx: {
                 elements: ['_questctx', '_questmm', '_questnb'],
@@ -461,6 +462,7 @@
             },
             draggable: true,
             droppable: true,
+            dropsource: _tvwTablesetEntities,
             sortable: true,
             multiSelect: true,
             ctx: {
@@ -505,10 +507,10 @@
         var _nn = [];
         var _idd = [];
         $.each(ui.draggable, function (i, d) {
-            var _nodeId = parseInt(d.dataset.nodeid);
-            var n = _tvwTablesetEntities.GetNode('nodeId', _nodeId);
+            var id = parseInt(d.dataset.id);
+            var n = _tvwTablesetEntities.GetNode(id);
             _nn.push(n);
-            _idd.push(_nodeId);
+            _idd.push(id);
         });
         var _d = { questStatus: _viewstate.questStatus, Items: _nn };
         _tvwFilterEntities.Insert(_d);
@@ -582,10 +584,10 @@
         var _nn = [];
         var _idd = [];
         $.each(ui.draggable, function (i, d) {
-            var _nodeId = parseInt(d.dataset.nodeid);
-            var n = _tvwValueEntities.GetNode('nodeId', _nodeId);
+            var id = parseInt(d.dataset.id);
+            var n = _tvwValueEntities.GetNode(id);
             _nn.push(n);
-            _idd.push(_nodeId);
+            _idd.push(id);
         });
         var _d = { questStatus: _viewstate.questStatus, Items: _nn };
         _tvwValueEntities.Insert(_d);
@@ -637,8 +639,8 @@
     function cbFilterItemDrop(e, ui) {
         var lbl = ui.draggable.text();
         if (lbl.indexOf('.') > -1) {
-            var id = $(ui.draggable).attr('data-nodeid');
-            var n = _tvwValueEntities.GetNode('nodeId', parseInt(id));
+            var id = $(ui.draggable).attr('data-id');
+            var n = _tvwValueEntities.GetNode(parseInt(id));
             insertFilterItem(n);
             return (true);
         }
@@ -646,15 +648,15 @@
             var pp = lbl.split(':');
             lbl = pp[0].trim();
         }
-        var id = $(ui.draggable).attr('data-nodeid');
-        var n = _tvwValueEntities.GetNode('nodeId', parseInt(id));
+        var id = $(ui.draggable).attr('data-id');
+        var n = _tvwValueEntities.GetNode(parseInt(id));
         insertFilterItem(n);
         return (true);
     }
     function insertFilterItem(n) {
         var lbl = extractName(n.text);
         if (n.ParentId > 0) {
-            var pn = _tvwValueEntities.GetNode('Id', n.ParentId);
+            var pn = _tvwValueEntities.GetNode(n.ParentId);
             var _key = pn.text + '.' + lbl;
             _key = _key.replace(/[\[\]']+/g, '').replace(/\./g, '_');
             var itm = { Id: n.Id, key: _key, name: lbl, title: lbl, data: n, Parent: pn, Operations: n.Operations, Joins: n.Joins, Label: n.Label, ParameterName: n.ParameterName };

@@ -337,7 +337,7 @@ function qrmgFilter(model) {
         }
         else {
             $.each(itm.data.nodes, function (i, n) {
-                var pn = _self._model.source.GetNode('Id', n.ParentId);
+                var pn = _self._model.source.GetNode(n.ParentId);
                 var lbl = _self._mklbl(n);
                 var _key = pn.text + '.' + lbl;
                 _key = _key.replace(/[\[\]']+/g, '').replace(/\./g, '_');

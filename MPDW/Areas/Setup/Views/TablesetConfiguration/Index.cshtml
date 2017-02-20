@@ -175,7 +175,7 @@
             draggable: true,
             droppable: true,
             dropsource: _tvwDatabaseTables,
-            sortable: true,
+            sorted: true,
             multiSelect: true,
             ctx: {
                 elements: ['_questctx', '_questmm', '_questnb'],
@@ -213,16 +213,19 @@
         e.stopPropagation();
     }
     function cbTvwTablesetTablesClick(e, d) {
+        var b = $(e.event.currentTarget).hasClass('tvwSelected');
         if (!e.event.ctrlKey) {
+            _tvwTablesetTables.ClearSelected();
         }
-        $(e.event.currentTarget).toggleClass('tvwSelected');
+        if (!b) {
+            $(e.event.currentTarget).toggleClass('tvwSelected');
+        }
+        return (true);
     }
     function cbTvwTablesetTablesOnTreeRender(e) {
         if (!_tvwTablesetTables) { return; }
         $(_tvwTablesetTables._e + ' ul li span.fa-table').closest('li').addClass('tvwTable');
         $(_tvwTablesetTables._e + ' ul li span.fa-th').closest('li').addClass('tvwView');
-        _tvwTablesetTables.Draggable();
-        _tvwTablesetTables.Droppable();
     }
     function cbTvwTablesetTablesOnDrop() {
         _frmTablesetConfiguration.Change(true);
@@ -234,10 +237,10 @@
         var _nn = [];
         var _idd = [];
         $.each(ee, function (i, e) {
-            var _nodeId = parseInt(e.dataset.nodeid);
-            var n = _tvwTablesetTables.GetNode('nodeId', _nodeId);
+            var id = parseInt(e.dataset.id);
+            var n = _tvwTablesetTables.GetNode(id);
             _nn.push(n);
-            _idd.push(_nodeId);
+            _idd.push(id);
         });
         var _d = { questStatus: _viewstate.questStatus, Items: _nn };
         _tvwDatabaseTables.Insert(_d);
@@ -262,7 +265,7 @@
             draggable: true,
             droppable: true,
             dropsource: _tvwTablesetTables,
-            sortable: true,
+            sorted: true,
             multiSelect: true,
             ctx: {
                 elements: ['_questctx', '_questmm', '_questnb'],
@@ -308,8 +311,6 @@
         if (!_tvwDatabaseTables) { return; }
         $(_tvwDatabaseTables._e + ' ul li span.fa-table').closest('li').addClass('tvwTable');
         $(_tvwDatabaseTables._e + ' ul li span.fa-th').closest('li').addClass('tvwView');
-        _tvwDatabaseTables.Draggable();
-        _tvwDatabaseTables.Droppable();
     }
     function cbTvwDatabaseTablesOnDrop() {
         _frmTablesetConfiguration.Change(true);
@@ -321,10 +322,10 @@
         var _nn = [];
         var _idd = [];
         $.each(ee, function (i, e) {
-            var _nodeId = parseInt(e.dataset.nodeid);
-            var n = _tvwDatabaseTables.GetNode('nodeId', _nodeId);
+            var id = parseInt(e.dataset.id);
+            var n = _tvwDatabaseTables.GetNode(id);
             _nn.push(n);
-            _idd.push(_nodeId);
+            _idd.push(id);
         });
         var _d = { questStatus: _viewstate.questStatus, Items: _nn };
         _tvwTablesetTables.Insert(_d);
@@ -351,7 +352,7 @@
             draggable: true,
             droppable: true,
             dropsource: _tvwDatabaseViews,
-            sorview: true,
+            sorted: true,
             multiSelect: true,
             ctx: {
                 elements: ['_questctx', '_questmm', '_questnb'],
@@ -397,8 +398,6 @@
         if (!_tvwTablesetViews) { return; }
         $(_tvwTablesetViews._e + ' ul li span.fa-table').closest('li').addClass('tvwTable');
         $(_tvwTablesetViews._e + ' ul li span.fa-th').closest('li').addClass('tvwView');
-        _tvwTablesetViews.Draggable();
-        _tvwTablesetViews.Droppable();
     }
     function cbTvwTablesetViewsOnDrop() {
         _frmTablesetConfiguration.Change(true);
@@ -410,10 +409,10 @@
         var _nn = [];
         var _idd = [];
         $.each(ee, function (i, e) {
-            var _nodeId = parseInt(e.dataset.nodeid);
-            var n = _tvwTablesetViews.GetNode('nodeId', _nodeId);
+            var id = parseInt(e.dataset.id);
+            var n = _tvwTablesetViews.GetNode(id);
             _nn.push(n);
-            _idd.push(_nodeId);
+            _idd.push(id);
         });
         var _d = { questStatus: _viewstate.questStatus, Items: _nn };
         _tvwDatabaseViews.Insert(_d);
@@ -438,7 +437,7 @@
             draggable: true,
             droppable: true,
             dropsource: _tvwTablesetViews,
-            sorview: true,
+            sorted: true,
             multiSelect: true,
             ctx: {
                 elements: ['_questctx', '_questmm', '_questnb'],
@@ -484,8 +483,6 @@
         if (!_tvwDatabaseViews) { return; }
         $(_tvwDatabaseViews._e + ' ul li span.fa-table').closest('li').addClass('tvwTable');
         $(_tvwDatabaseViews._e + ' ul li span.fa-th').closest('li').addClass('tvwView');
-        _tvwDatabaseViews.Draggable();
-        _tvwDatabaseViews.Droppable();
     }
     function cbTvwDatabaseViewsOnDrop() {
         _frmTablesetConfiguration.Change(true);
@@ -497,10 +494,10 @@
         var _nn = [];
         var _idd = [];
         $.each(ee, function (i, e) {
-            var _nodeId = parseInt(e.dataset.nodeid);
-            var n = _tvwDatabaseViews.GetNode('nodeId', _nodeId);
+            var id = parseInt(e.dataset.id);
+            var n = _tvwDatabaseViews.GetNode(id);
             _nn.push(n);
-            _idd.push(_nodeId);
+            _idd.push(id);
         });
         var _d = { questStatus: _viewstate.questStatus, Items: _nn };
         _tvwTablesetViews.Insert(_d);
@@ -601,6 +598,8 @@
 
         _tvwTablesetTables.DropSource(_tvwDatabaseTables);
         _tvwDatabaseTables.DropSource(_tvwTablesetTables);
+        _tvwTablesetViews.DropSource(_tvwDatabaseViews);
+        _tvwDatabaseViews.DropSource(_tvwTablesetViews);
 
         initTablesetConfigurationEditor();
         tempDisplayMessage();

@@ -382,8 +382,8 @@
                     e.preventDefault();
                     return;
                 }
-                var tn = _tvwJoinTargets.GetNode('nodeId', $(sn).attr('data-nodeid'));
-                var tbl = _tvwValueEntities.GetNode('Id', tn.ParentId);
+                var tn = _tvwJoinTargets.GetNode($(sn).attr('data-id'));
+                var tbl = _tvwValueEntities.GetNode(tn.ParentId);
                 var col = tn.text.split(':')[0];
                 var j = {};
                 j.Id = 0;
@@ -522,7 +522,7 @@
                     e.preventDefault();
                     return;
                 }
-                var tn = _tvwLookups.GetNode('nodeId', $(sn).attr('data-nodeid'));
+                var tn = _tvwLookups.GetNode($(sn).attr('data-id'));
                 _fltFilterItems.AddData(_lookupId, 'Lookup', tn);
 
                 // klugie: display lookup prior to SAVE/refresh
@@ -640,7 +640,7 @@
                     e.preventDefault();
                     return;
                 }
-                var tn = _tvwTypeLists.GetNode('nodeId', $(sn).attr('data-nodeid'));
+                var tn = _tvwTypeLists.GetNode($(sn).attr('data-id'));
                 _fltFilterItems.AddData(_typeListId, 'TypeList', tn);
 
                 // klugie: display typeList prior to SAVE/refresh
