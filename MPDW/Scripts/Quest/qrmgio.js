@@ -12,6 +12,18 @@ function qrmgio(cb, ud, tmo) {
         _self._path = GetCurrentPath();
     }
 
+    this.OpenView = function (url, d) {
+        try {
+            var _url = _self._path + url;
+            if (d && (url.indexOf('?') < 0)) {
+                _url += '?' + $.param(d);
+            }
+            window.open(_url, '_blank');
+        }
+        catch (e) {
+            alert('EXCEPTION: retrieving ' + url);
+        }
+    }
     this.ShowView = function (url, d) {
         try {
             var _url = _self._path + url;

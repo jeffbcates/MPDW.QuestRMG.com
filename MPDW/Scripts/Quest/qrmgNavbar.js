@@ -37,6 +37,7 @@ function qrmgNavbar(model) {
         o._p = p;
         o._id = _self._initoid(o);
         o.label = o.label ? o.label : o.name;
+        o.NewTabOption = o.NewTabOption || _self._model.NewTabOption;
         if (!o.uri) {
             o.uri = _self._bldopth(o);
         }
@@ -262,7 +263,13 @@ function qrmgNavbar(model) {
             }
             else {
                 var _io = new qrmgio(_self._ropex, o);
-                _io.ShowView(_url, _d);
+                if (o.NewTabOption && e.shiftKey) {
+                    _io.OpenView(_url, _d);
+                    qrmgmvc.Global.Unmask(_self._model.maskFrame);
+                }
+                else {
+                    _io.ShowView(_url, _d);
+                }
             }
         });
         if (o.options) {
