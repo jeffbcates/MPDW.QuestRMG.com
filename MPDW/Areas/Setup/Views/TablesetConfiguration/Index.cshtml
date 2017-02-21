@@ -97,7 +97,7 @@
         }
     }
     function RefreshScreen() {
-        qrmgmvc.Global.Mask($('#pageContentFrame'));
+        qrmgmvc.Global.Mask($('#pageContent'));
         cbTablesetId({ Change: true }, _frmTableset.GetData().TablesetId);
     }
 </script>
@@ -186,7 +186,6 @@
             events: [
                 { name: 'AfterLoaded', callback: cbTvwTablesetTablesAfterLoaded },
                 { name: 'NodeSelected', callback: cbTvwTablesetTablesNodeSelected },
-                ////{ name: 'Click', callback: cbTvwTablesetTablesClick },
                 { name: 'OnTreeRender', callback: cbTvwTablesetTablesOnTreeRender },
                 { name: 'OnDrop', callback: cbTvwTablesetTablesOnDrop },
                 { name: 'Refresh', callback: cbTvwTablesetTablesRefresh },
@@ -195,6 +194,8 @@
                 { name: 'Remove', label: 'Remove', classes: "btn btn-primary" },
             ],
             commands: [
+                { name: 'SelectAll', classes: 'fa fa-check-square', title: 'Select all items', callback: cbTvwTablesetTablesSelectAll },
+                { name: 'DeselectAll', classes: 'fa fa-square-o', title: 'Deselect all items', callback: cbTvwTablesetTablesDeselectAll },
                 { name: 'Transfer', classes: 'fa fa-exchange', title: 'Transfer selected to Database Tables', callback: cbTransferToDatabaseTables },
             ]
         }
@@ -212,16 +213,6 @@
     function cbTvwTablesetTablesNodeSelected(evt, d, e) {
         e.stopPropagation();
     }
-    ////function cbTvwTablesetTablesClick(e, d) {
-    ////    var b = $(e.event.currentTarget).hasClass('tvwSelected');
-    ////    if (!e.event.ctrlKey) {
-    ////        _tvwTablesetTables.ClearSelected();
-    ////    }
-    ////    if (!b) {
-    ////        $(e.event.currentTarget).toggleClass('tvwSelected');
-    ////    }
-    ////    return (true);
-    ////}
     function cbTvwTablesetTablesOnTreeRender(e) {
         if (!_tvwTablesetTables) { return; }
         $(_tvwTablesetTables._e + ' ul li span.fa-table').closest('li').addClass('tvwTable');
@@ -232,6 +223,12 @@
     }
     function cbTvwTablesetTablesRefresh(e) {
         $('#draggingContainer').remove();
+    }
+    function cbTvwTablesetTablesSelectAll(ud, ee) {
+        _tvwTablesetTables.SelectAll();
+    }
+    function cbTvwTablesetTablesDeselectAll(ud, ee) {
+        _tvwTablesetTables.DeselectAll();
     }
     function cbTransferToDatabaseTables(ud, ee) {
         var _nn = [];
@@ -276,7 +273,6 @@
             events: [
                 { name: 'AfterLoaded', callback: cbTvwDatabaseTablesAfterLoaded },
                 { name: 'NodeSelected', callback: cbTvwDatabaseTablesNodeSelected },
-                { name: 'Click', callback: cbTvwDatabaseTablesClick },
                 { name: 'OnTreeRender', callback: cbTvwDatabaseTablesOnTreeRender },
                 { name: 'OnDrop', callback: cbTvwDatabaseTablesOnDrop },
                 { name: 'Refresh', callback: cbTvwDatabaseTablesRefresh },
@@ -285,6 +281,8 @@
                 { name: 'Add', label: 'Add', classes: "btn btn-primary" },
             ],
             commands: [
+                { name: 'SelectAll', classes: 'fa fa-check-square', title: 'Select all items', callback: cbTvwDatabaseTablesSelectAll },
+                { name: 'DeselectAll', classes: 'fa fa-square-o', title: 'Deselect all items', callback: cbTvwDatabaseTablesDeselectAll },
                 { name: 'Transfer', classes: 'fa fa-exchange', title: 'Transfer selected to Tableset Tables', callback: cbTransferToTablesetTables },
             ]
         }
@@ -302,16 +300,6 @@
     function cbTvwDatabaseTablesNodeSelected(evt, d, e) {
         e.stopPropagation();
     }
-    function cbTvwDatabaseTablesClick(e, d) {
-        var b = $(e.event.currentTarget).hasClass('tvwSelected');
-        if (!e.event.ctrlKey) {
-            _tvwTablesetTables.ClearSelected();
-        }
-        if (!b) {
-            $(e.event.currentTarget).toggleClass('tvwSelected');
-        }
-        return (true);
-    }
     function cbTvwDatabaseTablesOnTreeRender(e) {
         if (!_tvwDatabaseTables) { return; }
         $(_tvwDatabaseTables._e + ' ul li span.fa-table').closest('li').addClass('tvwTable');
@@ -322,6 +310,12 @@
     }
     function cbTvwDatabaseTablesRefresh(e) {
         $('#draggingContainer').remove();
+    }
+    function cbTvwDatabaseTablesSelectAll(ud, ee) {
+        _tvwDatabaseTables.SelectAll();
+    }
+    function cbTvwDatabaseTablesDeselectAll(ud, ee) {
+        _tvwDatabaseTables.DeselectAll();
     }
     function cbTransferToTablesetTables(ud, ee) {
         var _nn = [];
@@ -368,7 +362,6 @@
             events: [
                 { name: 'AfterLoaded', callback: cbTvwTablesetViewsAfterLoaded },
                 { name: 'NodeSelected', callback: cbTvwTablesetViewsNodeSelected },
-                { name: 'Click', callback: cbTvwTablesetViewsClick },
                 { name: 'OnTreeRender', callback: cbTvwTablesetViewsOnTreeRender },
                 { name: 'OnDrop', callback: cbTvwTablesetViewsOnDrop },
                 { name: 'Refresh', callback: cbTvwTablesetViewsRefresh },
@@ -377,6 +370,8 @@
                 { name: 'Remove', label: 'Remove', classes: "btn btn-primary" },
             ],
             commands: [
+                { name: 'SelectAll', classes: 'fa fa-check-square', title: 'Select all items', callback: cbTvwTablesetViewsSelectAll },
+                { name: 'DeselectAll', classes: 'fa fa-square-o', title: 'Deselect all items', callback: cbTvwTablesetViewsDeselectAll },
                 { name: 'Transfer', classes: 'fa fa-exchange', title: 'Transfer selected to Database Views', callback: cbTransferToDatabaseViews },
             ]
         }
@@ -394,16 +389,6 @@
     function cbTvwTablesetViewsNodeSelected(evt, d, e) {
         e.stopPropagation();
     }
-    function cbTvwTablesetViewsClick(e, d) {
-        var b = $(e.event.currentTarget).hasClass('tvwSelected');
-        if (!e.event.ctrlKey) {
-            _tvwTablesetTables.ClearSelected();
-        }
-        if (!b) {
-            $(e.event.currentTarget).toggleClass('tvwSelected');
-        }
-        return (true);
-    }
     function cbTvwTablesetViewsOnTreeRender() {
         if (!_tvwTablesetViews) { return; }
         $(_tvwTablesetViews._e + ' ul li span.fa-table').closest('li').addClass('tvwTable');
@@ -414,6 +399,12 @@
     }
     function cbTvwTablesetViewsRefresh() {
         $('#draggingContainer').remove();
+    }
+    function cbTvwTablesetViewsSelectAll(ud, ee) {
+        _tvwTablesetViews.SelectAll();
+    }
+    function cbTvwTablesetViewsDeselectAll(ud, ee) {
+        _tvwTablesetViews.DeselectAll();
     }
     function cbTransferToDatabaseViews(ud, ee) {
         var _nn = [];
@@ -458,7 +449,6 @@
             events: [
                 { name: 'AfterLoaded', callback: cbTvwDatabaseViewsAfterLoaded },
                 { name: 'NodeSelected', callback: cbTvwDatabaseViewsNodeSelected },
-                { name: 'Click', callback: cbTvwDatabaseViewsClick },
                 { name: 'OnTreeRender', callback: cbTvwDatabaseViewsOnTreeRender },
                 { name: 'OnDrop', callback: cbTvwDatabaseViewsOnDrop },
                 { name: 'Refresh', callback: cbTvwDatabaseViewsRefresh },
@@ -467,6 +457,8 @@
                 { name: 'Add', label: 'Add', classes: "btn btn-primary" },
             ],
             commands: [
+                { name: 'SelectAll', classes: 'fa fa-check-square', title: 'Select all items', callback: cbTvwDatabaseViewsSelectAll },
+                { name: 'DeselectAll', classes: 'fa fa-square-o', title: 'Deselect all items', callback: cbTvwDatabaseViewsDeselectAll },
                 { name: 'Transfer', classes: 'fa fa-exchange', title: 'Transfer selected to Tableset Views', callback: cbTransferToTablesetViews },
             ]
         }
@@ -484,16 +476,6 @@
     function cbTvwDatabaseViewsNodeSelected(evt, d, e) {
         e.stopPropagation();
     }
-    function cbTvwDatabaseViewsClick(e, d) {
-        var b = $(e.event.currentTarget).hasClass('tvwSelected');
-        if (!e.event.ctrlKey) {
-            _tvwTablesetTables.ClearSelected();
-        }
-        if (!b) {
-            $(e.event.currentTarget).toggleClass('tvwSelected');
-        }
-        return (true);
-    }
     function cbTvwDatabaseViewsOnTreeRender(e) {
         if (!_tvwDatabaseViews) { return; }
         $(_tvwDatabaseViews._e + ' ul li span.fa-table').closest('li').addClass('tvwTable');
@@ -504,6 +486,12 @@
     }
     function cbTvwDatabaseViewsRefresh() {
         $('#draggingContainer').remove();
+    }
+    function cbTvwDatabaseViewsSelectAll(ud, ee) {
+        _tvwDatabaseViews.SelectAll();
+    }
+    function cbTvwDatabaseViewsDeselectAll(ud, ee) {
+        _tvwDatabaseViews.DeselectAll();
     }
     function cbTransferToTablesetViews(ud, ee) {
         var _nn = [];
@@ -558,6 +546,7 @@
         }
     }
     function cbFrmTablesetConfigurationBeforeSave(ud, d) {
+        qrmgmvc.Global.Mask($('#pageContent'));
         var _d = {};
 
         // TODO: modularize.

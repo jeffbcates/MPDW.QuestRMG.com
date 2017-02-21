@@ -373,7 +373,8 @@ function Unmaskit(e) {
 }
 function Mask(e, c, umsg) {
     var _c = c || 'questmask';
-    $(e).append('<div class="questmask"></div>');
+    var redraw = $(e).offsetHeight;
+    $(e).append('<div class="questmask"></div>').show();
     if (umsg) {
         DisplayUserMessage(umsg);
     }

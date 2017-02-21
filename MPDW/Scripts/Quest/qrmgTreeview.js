@@ -6,20 +6,17 @@ function qrmgTreeview(model) {
     _self._pfx = model.pfx;
     _self._uri = model.uri.charAt(model.uri.length - 1) == '/' ? model.uri : model.uri + '/';
     _self._callback = model.callback;
-    _self._bMasking = _self._model.mask || !_self._model.bNoMasking;
     _self._tvw;
     _self._kn;
     _self._bInit = false;
     _self.draggableOptions = {
         start: function (event, ui) {
-            console.log("draggableOptions start ");
-            _self.draggingObjs = $('li.tvwSelected', _self._e);
+            ////console.log("draggableOptions start ");
+            _self.draggingObjs = $('li.node-selected', _self._e);
         },
-        ////helper: 'clone',
-        ////revert: 'invalid',
         helper: function (e) {
-            console.log("draggableOptions helper ");
-            var selected = $('li.tvwSelected', _self._e);
+            ////console.log("draggableOptions helper ");
+            var selected = $('li.node-selected', _self._e);
             if (selected.length === 0) {
                 selected = $(this);
             }
@@ -28,7 +25,7 @@ function qrmgTreeview(model) {
             return container;
         },
         drag: function (event, ui) {
-            console.log("draggableOptions drag ");
+            ////console.log("draggableOptions drag ");
             var currentLoc = $(this).position();
             var prevLoc = $(this).data('prevLoc');
             if (!prevLoc) {
@@ -46,6 +43,9 @@ function qrmgTreeview(model) {
     };
 
     _self._init = function () {
+        _self._model.mask = _self._model.mask || _self._e;
+        _self._bMasking = _self._model.mask || !_self._model.bNoMasking;
+
         _self._kn = _self._model.keyname || 'Id'; 
         _self._initctx()
         _self._mask = _self._model.mask || _self._e;
@@ -100,7 +100,7 @@ function qrmgTreeview(model) {
         if (_self._model.droppable) {
             $(_self._e).droppable({
                 drop: function (e, ui) {
-                    console.log("droppable drop: ");
+                    ////console.log("droppable drop: ");
                     if ($(ui.draggable).closest('div.treeview').attr('id') == _self._e.substr(1)) {
                         _self.Refresh();
                         return;
@@ -151,7 +151,6 @@ function qrmgTreeview(model) {
         }
     }
     _self.Sort = function (nodes) {
-        console.log('qrmgTreeview.Sort' + _self._e.substr(1));
         var nn = nodes || _self._tvw.Nodes;
         try {
             nn.sort(function (a, b) {
@@ -251,7 +250,7 @@ function qrmgTreeview(model) {
         _self._bndcmds();
     }
     _self._bindnodes = function () {
-        $(_self._e).find('ul.list-group li').on('click', function (e) {
+        $(_self._e).find('ul.list-group li').unbind('click').on('click', function (e) {
             _evt = _self._getevt("Click");
             if (_evt != null) {
                 if (_evt.callback({ Click: true, node: n, event: e })) {
@@ -261,24 +260,35 @@ function qrmgTreeview(model) {
             }
             else {
                 var n = _self.GetNode($(e.currentTarget).attr('data-id'));
-                _self._click(e, n);
+                if (_self._click(e, n)) {
+                    e.stopPropagation();
+                    e.preventDefault();
+                }
             }
         });
     }
     _self._bndfltr = function () {
-        $(_self._e).prev().find('.tvwFilter').on('keyup', function (e) {
-            _self.Filter($(_self._e).prev().find('.tvwFilter').val());
+        $(_self._e).parent().find('.' + _self._e.substr(1)).find('.tvwFilter').on('keyup', function (e) {
+            _self.Filter($(_self._e).parent().find('.' + _self._e.substr(1)).find('.tvwFilter').val());
         });
     }
     _self._bndcmds = function () {
         var cc = $(_self._e).prev().find('.tvwcmd');
         $.each(cc, function (i, c) {
-            $(c).on('click', null, c, function (e) {
+            $(c).unbind('click').on('click', null, c, function (e) {
+                _self.Mask();
                 var _c = _self._getcmd($(c).attr('data-name'));
-                if (_c.callback) {
-                    var ss = $('.tvwSelected', _self._e);
-                    if (_c.callback(_c, ss)) { return; }
+                if (_c.userMessage) {
+                    DisplayUserMessage(_c.userMessage);
                 }
+                if (_c.callback) {
+                    var ss = $('.node-selected', _self._e);
+                    _c.callback(_c, ss)
+                }
+                if (_c.userMessage) {
+                    ClearUserMessage();
+                }
+                _self.Unmask();
             });
         });
     }
@@ -381,26 +391,97 @@ function qrmgTreeview(model) {
         return (_vs);
     }
 
+    _self.SelectAll = function () {
+        $.each(_self._tvw.Nodes, function (i, n) {
+            _self.Select(n.Id);
+        });
+    }
     _self.Select = function (id, bExpand) {
         var n = _self.GetNode(id);
         if (!n) { return; }
-        _tvwCategories._tvw.selectNode(n.nodeId);
-        _tvwCategories._tvw.revealNode(n);
+        n.state.selected = true;
+        var e = $(_self._e).find('li[data-id="' + n.Id + '"]');
+        $(e).addClass('node-selected').attr('style', 'color:#FFFFFF;background-color:#428bca;');
         if (n.nodes.length) {
-            _tvwCategories._tvw.expandNode(n);
+            _self._tvw.expandNode(n);
         }
         return (n);
     }
-    _self._click = function (e) {
-        var b = $(e.currentTarget).hasClass('tvwSelected');
-        if (!e.ctrlKey) {
-            _self.ClearSelected();
+    _self.DeselectAll = function () {
+        $.each(_self._tvw.Nodes, function (i, n) {
+            _self.Deselect(n.Id);
+        });
+    }
+    _self.Deselect = function (id, bExpand) {
+        var n = _self.GetNode(id);
+        if (!n) { return; }
+        n.state.selected = false;
+        var e = $(_self._e).find('li[data-id="' + n.Id + '"]');
+        $(e).removeClass('node-selected').attr('style', 'color:null;background-color:null;');
+        if (n.nodes.length) {
+            _self._tvw.expandNode(n);
         }
-        $(e.currentTarget).addClass('tvwSelected');
+        return (n);
+    }
+
+    _self._click = function (e) {
+        var b = $(e.currentTarget).hasClass('node-selected');
+        if (e.ctrlKey) {
+            if (e.shiftKey) {
+                if (_self._lastSelected) {
+                    _self._selectRange(e);
+                }
+            }
+            else {
+                if (b) {
+                    _self.Deselect($(e.currentTarget).attr('data-id'));
+                }
+                else {
+                    _self.Select($(e.currentTarget).attr('data-id'));
+                }
+            }
+        }
+        else {
+            _self.ClearSelected();
+            if (! b) {
+                _self.Select($(e.currentTarget).attr('data-id'));
+            }
+        }
+        _self._lastSelected = e.currentTarget;
         return (true);
     }
     _self.ClearSelected = function () {
-        $('.tvwSelected', _self._e).removeClass('tvwSelected');
+        var ee = $('.node-selected', _self._e);
+        $.each(ee, function (i, e) {
+            $(e).removeClass('node-selected').attr('style', 'color:null;background-color:null;');
+            var n = _self.GetNode($(e).attr('data-id'));
+            n.state.selected = false;
+        });
+    }
+    _self._selectRange = function (e) {
+        var _lastid = $(_self._lastSelected).attr('data-id');
+        if ($(e.currentTarget).prevAll().filter(function (i) { return ($(this).attr('data-id') == _lastid); }).length) {
+            var _p = $(e.currentTarget);
+            while (_p.length) {
+                var n = _self.GetNode($(_p).attr('data-id'));
+                _self.Select(n.Id);
+                _p = $(_p).prev();
+                if ($(_p).attr('data-id') == _lastid) { return (false); }
+            }
+        }
+        else if ($(e.currentTarget).nextAll().filter(function (i) { return ($(this).attr('data-id') == _lastid); }).length) {
+            var _n = $(e.currentTarget);
+            while (_n.length) {
+                var n = _self.GetNode($(_n).attr('data-id'));
+                _self.Select(n.Id);
+                _n = $(_n).next();
+                if ($(_n).attr('data-id') == _lastid) { return (false); }
+            }
+        }
+        else {
+            return (false);
+        }
+        return (true);
     }
 
     _self._gettvw = function () {
@@ -452,7 +533,6 @@ function qrmgTreeview(model) {
     }
 
     _self.Refresh = function () {
-        console.log('qrmgTreeview.Refresh' + _self._e.substr(1));
         var _d = { questStatus: _viewstate.questStatus, Items: _self._tvw.Nodes };
         _self.Fill(_d);
         if (_self._model.sorted) {
@@ -500,9 +580,7 @@ function qrmgTreeview(model) {
         $(_self._e).addClass('validationError');
         return (false);
     }
-    _self.ClearSelected = function () {
-        $(_self._e).find('ul.list-group li.tvwSelected').removeClass('tvwSelected');
-    }
+
     _self.Clear = function () {
         var _d = { questStatus: _viewstate.questStatus, Items: [] };
         _self.Fill(_d);
