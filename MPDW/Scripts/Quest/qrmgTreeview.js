@@ -426,27 +426,29 @@ function qrmgTreeview(model) {
 
     _self._click = function (e) {
         var b = $(e.currentTarget).hasClass('node-selected');
-        if (e.ctrlKey) {
-            if (e.shiftKey) {
-                if (_self._lastSelected) {
-                    _self._selectRange(e);
-                }
+        if (e.shiftKey) {
+            if (_self._lastSelected) {
+                _self._selectRange(e);
+            }
+        }
+        else if (e.ctrlKey) {
+            if (b) {
+                _self.Deselect($(e.currentTarget).attr('data-id'));
             }
             else {
-                if (b) {
-                    _self.Deselect($(e.currentTarget).attr('data-id'));
-                }
-                else {
-                    _self.Select($(e.currentTarget).attr('data-id'));
-                }
+                _self.Select($(e.currentTarget).attr('data-id'));
             }
         }
         else {
             _self.ClearSelected();
-            if (! b) {
+            if (!b) {
                 _self.Select($(e.currentTarget).attr('data-id'));
             }
         }
+
+
+
+
         _self._lastSelected = e.currentTarget;
         return (true);
     }
