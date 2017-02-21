@@ -51,7 +51,7 @@ namespace Quest.Services.Dbio.MasterPricing
         public virtual DbSet<TablesetTables> TablesetTables { get; set; }
         public virtual DbSet<TablesetViews> TablesetViews { get; set; }
         public virtual DbSet<vwLookupsList4> vwLookupsList4 { get; set; }
-        public virtual DbSet<vwTablesetsList3> vwTablesetsList3 { get; set; }
+        public virtual DbSet<vwTablesetsList4> vwTablesetsList4 { get; set; }
         public virtual DbSet<vwTablesetTablesList2> vwTablesetTablesList2 { get; set; }
         public virtual DbSet<vwTablesetViewsList2> vwTablesetViewsList2 { get; set; }
         public virtual DbSet<vwTypeListsList> vwTypeListsList { get; set; }

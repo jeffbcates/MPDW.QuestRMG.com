@@ -31,7 +31,7 @@
         <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.TablesetTables" Width="1.5" PointX="12.75" PointY="6.75" />
         <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.TablesetViews" Width="1.5" PointX="6.75" PointY="12.75" />
         <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.vwLookupsList4" Width="1.5" PointX="12.75" PointY="9.75" />
-        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.vwTablesetsList3" Width="1.5" PointX="8.75" PointY="13.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.vwTablesetsList4" Width="1.5" PointX="8.75" PointY="13.75" />
         <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.vwTablesetTablesList2" Width="1.5" PointX="10.75" PointY="13.75" />
         <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.vwTablesetViewsList2" Width="1.5" PointX="12.75" PointY="13.75" />
         <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.vwTypeListsList" Width="1.5" PointX="14.75" PointY="0.75" />

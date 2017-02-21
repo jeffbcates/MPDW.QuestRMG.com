@@ -236,8 +236,8 @@ namespace Quest.MasterPricing.Services.Data.Database
                     try
                     {
                         PropertyInfo[] dbProperties = typeof(Quest.Services.Dbio.MasterPricing.Tablesets).GetProperties().ToArray();
-                        int totalRecords = dbContext.vwTablesetsList3.Where(BuildWhereClause(queryOptions, dbProperties)).Count();
-                        List<Quest.Services.Dbio.MasterPricing.vwTablesetsList3> _tablesetsList = dbContext.vwTablesetsList3.Where(BuildWhereClause(queryOptions, dbProperties))
+                        int totalRecords = dbContext.vwTablesetsList4.Where(BuildWhereClause(queryOptions, dbProperties)).Count();
+                        List<Quest.Services.Dbio.MasterPricing.vwTablesetsList4> _tablesetsList = dbContext.vwTablesetsList4.Where(BuildWhereClause(queryOptions, dbProperties))
                                 .OrderBy(BuildSortString(queryOptions.SortColumns))
                                 .Skip(queryOptions.Paging.PageSize * (queryOptions.Paging.PageNumber - 1))
                                 .Take(queryOptions.Paging.PageSize).ToList();
@@ -246,7 +246,7 @@ namespace Quest.MasterPricing.Services.Data.Database
                             return (new questStatus(Severity.Warning));
                         }
                         tablesetList = new List<Quest.Functional.MasterPricing.Tableset>();
-                        foreach (Quest.Services.Dbio.MasterPricing.vwTablesetsList3 _tableset in _tablesetsList)
+                        foreach (Quest.Services.Dbio.MasterPricing.vwTablesetsList4 _tableset in _tablesetsList)
                         {
                             Quest.Functional.MasterPricing.Tableset tableset = new Quest.Functional.MasterPricing.Tableset();
                             BufferMgr.TransferBuffer(_tableset, tableset);

@@ -306,8 +306,8 @@ warning 6002: The table/view 'MasterPricing.dbo.vwLookupsList4' does not have a 
           <Property Name="Database" Type="nvarchar" MaxLength="256" />
         </EntityType>
         <!--Errors Found During Generation:
-warning 6002: The table/view 'MasterPricing.dbo.vwTablesetsList3' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
-        <EntityType Name="vwTablesetsList3">
+warning 6002: The table/view 'MasterPricing.dbo.vwTablesetsList4' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+        <EntityType Name="vwTablesetsList4">
           <Key>
             <PropertyRef Name="Id" />
             <PropertyRef Name="DatabaseId" />
@@ -319,6 +319,7 @@ warning 6002: The table/view 'MasterPricing.dbo.vwTablesetsList3' does not have 
           <Property Name="bEnabled" Type="bit" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
           <Property Name="Summary" Type="nvarchar" MaxLength="256" />
+          <Property Name="LastRefresh" Type="datetime2" Precision="7" />
           <Property Name="Database" Type="nvarchar" MaxLength="256" />
         </EntityType>
         <!--Errors Found During Generation:
@@ -406,15 +407,16 @@ warning 6002: The table/view 'MasterPricing.dbo.vwTypeListsList' does not have a
     [vwLookupsList4].[Database] AS [Database]
     FROM [dbo].[vwLookupsList4] AS [vwLookupsList4]</DefiningQuery>
           </EntitySet>
-          <EntitySet Name="vwTablesetsList3" EntityType="Self.vwTablesetsList3" store:Type="Views" store:Schema="dbo">
+          <EntitySet Name="vwTablesetsList4" EntityType="Self.vwTablesetsList4" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
-    [vwTablesetsList3].[Id] AS [Id], 
-    [vwTablesetsList3].[DatabaseId] AS [DatabaseId], 
-    [vwTablesetsList3].[bEnabled] AS [bEnabled], 
-    [vwTablesetsList3].[Name] AS [Name], 
-    [vwTablesetsList3].[Summary] AS [Summary], 
-    [vwTablesetsList3].[Database] AS [Database]
-    FROM [dbo].[vwTablesetsList3] AS [vwTablesetsList3]</DefiningQuery>
+    [vwTablesetsList4].[Id] AS [Id], 
+    [vwTablesetsList4].[DatabaseId] AS [DatabaseId], 
+    [vwTablesetsList4].[bEnabled] AS [bEnabled], 
+    [vwTablesetsList4].[Name] AS [Name], 
+    [vwTablesetsList4].[Summary] AS [Summary], 
+    [vwTablesetsList4].[LastRefresh] AS [LastRefresh], 
+    [vwTablesetsList4].[Database] AS [Database]
+    FROM [dbo].[vwTablesetsList4] AS [vwTablesetsList4]</DefiningQuery>
           </EntitySet>
           <EntitySet Name="vwTablesetTablesList2" EntityType="Self.vwTablesetTablesList2" store:Type="Views" store:Schema="dbo">
             <DefiningQuery>SELECT 
@@ -476,7 +478,7 @@ warning 6002: The table/view 'MasterPricing.dbo.vwTypeListsList' does not have a
           <EntitySet Name="TablesetTables" EntityType="Quest.Services.Dbio.MasterPricing.TablesetTables" />
           <EntitySet Name="TablesetViews" EntityType="Quest.Services.Dbio.MasterPricing.TablesetViews" />
           <EntitySet Name="vwLookupsList4" EntityType="Quest.Services.Dbio.MasterPricing.vwLookupsList4" />
-          <EntitySet Name="vwTablesetsList3" EntityType="Quest.Services.Dbio.MasterPricing.vwTablesetsList3" />
+          <EntitySet Name="vwTablesetsList4" EntityType="Quest.Services.Dbio.MasterPricing.vwTablesetsList4" />
           <EntitySet Name="vwTablesetTablesList2" EntityType="Quest.Services.Dbio.MasterPricing.vwTablesetTablesList2" />
           <EntitySet Name="vwTablesetViewsList2" EntityType="Quest.Services.Dbio.MasterPricing.vwTablesetViewsList2" />
           <EntitySet Name="vwTypeListsList" EntityType="Quest.Services.Dbio.MasterPricing.vwTypeListsList" />
@@ -779,7 +781,7 @@ warning 6002: The table/view 'MasterPricing.dbo.vwTypeListsList' does not have a
           <Property Name="Arguments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Database" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
         </EntityType>
-        <EntityType Name="vwTablesetsList3">
+        <EntityType Name="vwTablesetsList4">
           <Key>
             <PropertyRef Name="Id" />
             <PropertyRef Name="DatabaseId" />
@@ -791,6 +793,7 @@ warning 6002: The table/view 'MasterPricing.dbo.vwTypeListsList' does not have a
           <Property Name="bEnabled" Type="Boolean" Nullable="false" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
           <Property Name="Summary" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="LastRefresh" Type="DateTime" Precision="7" />
           <Property Name="Database" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
         </EntityType>
         <EntityType Name="vwTablesetTablesList2">
@@ -1158,10 +1161,11 @@ warning 6002: The table/view 'MasterPricing.dbo.vwTypeListsList' does not have a
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="vwTablesetsList3">
-            <EntityTypeMapping TypeName="Quest.Services.Dbio.MasterPricing.vwTablesetsList3">
-              <MappingFragment StoreEntitySet="vwTablesetsList3">
+          <EntitySetMapping Name="vwTablesetsList4">
+            <EntityTypeMapping TypeName="Quest.Services.Dbio.MasterPricing.vwTablesetsList4">
+              <MappingFragment StoreEntitySet="vwTablesetsList4">
                 <ScalarProperty Name="Database" ColumnName="Database" />
+                <ScalarProperty Name="LastRefresh" ColumnName="LastRefresh" />
                 <ScalarProperty Name="Summary" ColumnName="Summary" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="bEnabled" ColumnName="bEnabled" />
