@@ -6,7 +6,14 @@
 
 <h3 id="pageTitle">Data Manager</h3>
 
-<input type="hidden" id="__frmDataMgrTablesetVIEW_STATE" value="@Html.Raw(Json.Encode(Model))" />
+@* Usually, calling home for individual items best.  But, here's how-to for very large databases: *@
+@*<input type="hidden" id="__frmDataMgrTablesetVIEW_STATE" value="@Html.Raw(Json.Encode(Model))" />*@
+@{
+    System.Web.Script.Serialization.JavaScriptSerializer serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
+    serializer.MaxJsonLength = Int32.MaxValue;
+}
+<input type="hidden" id="__frmDataMgrTablesetVIEW_STATE" value="@Html.Raw(serializer.Serialize(Model))" />
+
 
 <div id="pnlFilters"></div>
 
