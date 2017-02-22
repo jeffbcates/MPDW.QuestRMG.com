@@ -53,6 +53,9 @@ function qrmgEditor(model) {
             if (f.key) {
                 _self._pkey = f;
             }
+            if (f.type && f.type == 'labelOnly') {
+                f.labelOnly = true;
+            }
         });
     }
     _self._initops = function () {
@@ -164,8 +167,16 @@ function qrmgEditor(model) {
     }
     _self._rdrlbl = function (f) {
         var _h = [], _i = 0;
-        _h[_i++] = '<label for="' + f._id + '" class="control-label">';
-        if (f.label) {
+        _h[_i++] = '<label for="' + f._id + '" class="control-label ';
+        if (f.labelOnly) {
+            _h[_i++] = ' ' + f.classes + ' ';
+        }
+        _h[_i++] = '">';
+
+        if (f.labelOnly) {
+            _h[_i++] = f.label;
+        }
+        else if (f.label) {
             if (f.required && f.required == true) {
                 _h[_i++] = f.label + '<span class="required">*</span>';
             }

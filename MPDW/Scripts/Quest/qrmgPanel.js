@@ -109,7 +109,7 @@ function qrmgPanel(model) {
         });
         return (_t);
     }
-    _self._geto = function (n) {
+    _self._getop = function (n) {
         var _o = null;
         $.each(_self._model.operations, function (i, o) {
             if (o.name == n) {
@@ -129,6 +129,7 @@ function qrmgPanel(model) {
         });
         return (_a);
     }
+
     _self._bindoo = function () {
         var _oo = $('.form-actions .pull-left', _self._e).find('.btn');
         if (_oo) {
@@ -189,7 +190,7 @@ function qrmgPanel(model) {
     }
 
     _self.DoOper = function (n) {
-        var _o = _self._geto(n);
+        var _o = _self._getop(n);
         if (!_o) { return; }
         var _d;
         if (_o.type && _o.type == 'tab') {
@@ -319,7 +320,7 @@ function qrmgPanel(model) {
     }
     _self._rndrops = function (bBottom) {
         var _h = [], _i = 0;
-        _h[_i++] = '<div class="btn-set pull-left">';
+        _h[_i++] = '<div class="pnl-operations btn-set pull-left">';
         $.each(_self._model.operations, function (i, o) {
             _h[_i++] = _self._rndrop(o, bBottom);
         });
@@ -343,7 +344,7 @@ function qrmgPanel(model) {
     }
     _self._rndracts = function () {
         var _h = [], _i = 0;
-        _h[_i++] = '<div class="btn-set pull-right">';
+        _h[_i++] = '<div class="pnl-actions btn-set pull-right">';
         $.each(_self._model.actions, function (i, a) {
             _h[_i++] = _self._rndract(a);
         });
@@ -741,9 +742,14 @@ function qrmgPanel(model) {
         return (_e);
     }
     _self._gettab = function (n) {
+        var _t;
         $.each(_self._model.tabs, function (i, t) {
-
+            if (n == t.name) {
+                _t = t;
+                return (false);
+            }
         });
+        return (_t);
     }
 
     _self.GetOptions = function () {
@@ -1044,6 +1050,12 @@ function qrmgPanel(model) {
         return (ctx);
     }
     _self.Tab = function (n) {
+        var t = _self._gettab(n);
+        if (t && t.callback) {
+            if (t.callback({ Active: true, Before: true })) {
+                return;
+            }
+        }
         if (n) {
             $(_self._e).find('.portlet-tab').addClass('hidden');
             var _n = n || '_Fields';
@@ -1056,6 +1068,34 @@ function qrmgPanel(model) {
             }
             return (n);
         }
+        var e = {};
+        e.currentTarget = $(_self._e).find('.pnl-operations').find('button[id="pnlflt_btn' + n + '"]');
+        if (!e.currentTarget.length) {
+            e.currentTarget = $(_self._e).find('.pnl-actions').find('button[id="pnlflt_btn' + n + '"]');
+        }
+        _self._activetab(e);
+        if (t && t.callback) {
+            if (t.callback({ Active: true, After: true })) {
+                return;
+            }
+        }
+    }
+    _self.Operations = function (nn, bE) {
+        if (!$.isArray(nn)) { return; }
+        $.each(nn, function (i, n) {
+            var _o = _self._getop(n);
+            if (_o) {
+                var e = $(_self._e).find('.pnl-operations').find('button[id="pnlflt_btn' + n + '"]');
+                if (e) {
+                    if (bE) {
+                        $(e).removeAttr("disabled");
+                    }
+                    else {
+                        $(e).attr("disabled", "disabled");
+                    }
+                }
+            }
+        });
     }
 
     _self.GetField = function (fn) {
@@ -1078,6 +1118,27 @@ function qrmgPanel(model) {
         });
         return (_f ? _f.label : id);
     }
+    _self.GetOperation = function (on) {
+        var _op;
+        $.each(_self._model.operations, function (i, op) {
+            if (op.name == on) {
+                _op = op;
+                return (false);
+            }
+        });
+        return (_op);
+    }
+    _self.GetAction = function (an) {
+        var _a;
+        $.each(_self._model.actions, function (i, a) {
+            if (a.name == an) {
+                _a = a;
+                return (false);
+            }
+        });
+        return (_a);
+    }
+
     _self.SetField = function (n, v) {
         var f = _self.GetField(n);
         if (!f) { return; }
@@ -1103,17 +1164,6 @@ function qrmgPanel(model) {
         else {
             $(f).val(v);
         }
-    }
-
-    _self.GetAction = function (an) {
-        var _a;
-        $.each(_self._model.actions, function (i, a) {
-            if (a.name == an) {
-                _a = a;
-                return (false);
-            }
-        });
-        return (_a);
     }
 
     _self.bChanges = function () {
