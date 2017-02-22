@@ -205,7 +205,7 @@ function qrmgTreeview(model) {
     _self._rndrcmds = function () {
         var _h = [], _i = 0;
         _self._model.commands = _self._model.commands || [];
-        _self._model.commands.push({ name: 'Refresh', classes: 'fa fa-refresh', title: 'Fresh Treevie', callback: _self.Refresh });
+        _self._model.commands.push({ name: 'Refresh', classes: 'fa fa-refresh', title: 'Refresh treeview', callback: _self.Refresh });
         $.each(_self._model.commands, function (i, c) {
             _h[_i++] = '<span data-name="' + c.name + '" class="tvwcmd ';
             if (c.classes) {
@@ -277,18 +277,22 @@ function qrmgTreeview(model) {
         $.each(cc, function (i, c) {
             $(c).unbind('click').on('click', null, c, function (e) {
                 _self.Mask();
-                var _c = _self._getcmd($(c).attr('data-name'));
-                if (_c.userMessage) {
-                    DisplayUserMessage(_c.userMessage);
-                }
-                if (_c.callback) {
-                    var ss = $('.node-selected', _self._e);
-                    _c.callback(_c, ss)
-                }
-                if (_c.userMessage) {
-                    ClearUserMessage();
-                }
-                _self.Unmask();
+                setTimeout(function () {
+                    var _c = _self._getcmd($(c).attr('data-name'));
+                    if (_c.userMessage) {
+                        DisplayUserMessage(_c.userMessage);
+                    }
+                    if (_c.callback) {
+                        var ss = $('.node-selected', _self._e);
+                        _c.callback(_c, ss)
+                    }
+                    if (_c.userMessage) {
+                        ClearUserMessage();
+                    }
+                }, 250);
+                setTimeout(function () {
+                    _self.Unmask();
+                }, 250);
             });
         });
     }
@@ -315,8 +319,10 @@ function qrmgTreeview(model) {
     _self._load = function (Data) {
     }
     _self._rload = function (ud, d) {
-        if (!IsAppSuccess(d)) {
-            DisplayUserMessage(d);
+        if (!_self._model.bNoUserMessages) {
+            if (!IsAppSuccess(d)) {
+                DisplayUserMessage(d);
+            }
         }
         if (_self._docallback(ud, d)) {
             return;
@@ -535,7 +541,7 @@ function qrmgTreeview(model) {
     }
 
     _self.Refresh = function () {
-        var _d = { questStatus: _viewstate.questStatus, Items: _self._tvw.Nodes };
+        var _d = { questStatus: _viewstate.questStatus, Items: _self._tvw.Tree };
         _self.Fill(_d);
         if (_self._model.sorted) {
             _self.Sort();

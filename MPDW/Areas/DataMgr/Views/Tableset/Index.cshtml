@@ -222,6 +222,7 @@
             return;
         }
         $('#tvwSQLFrame').text('');
+
         var _d = {};
         _d.TablesetId = _viewstate.TablesetId;
         _d.CurrentTab = _pnlFilters.Tab();
@@ -488,6 +489,7 @@
             },
             viewstate: { element: '__frmDataMgrTablesetVIEW_STATE' },
             callback: cbTvwTablesetEntities,
+            bNoUserMessages: true,
             events: [
                 { name: 'AfterLoaded', callback: cbTvwTablesetEntitiesAfterLoaded },
                 { name: 'NodeSelected', callback: cbTvwTablesetEntitiesNodeSelected },
@@ -551,6 +553,7 @@
             },
             viewstate: { element: '__frmDataMgrTablesetVIEW_STATE' },
             callback: cbTvwFilterEntities,
+            bNoUserMessages: true,
             events: [
                 { name: 'AfterLoaded', callback: cbTvwFilterEntitiesAfterLoaded },
                 { name: 'NodeSelected', callback: cbTvwFilterEntitiesNodeSelected },
@@ -628,6 +631,7 @@
             },
             viewstate: { element: '__frmDataMgrTablesetVIEW_STATE' },
             callback: cbTvwConfigureTables,
+            bNoUserMessages: true,
             events: [
                 { name: 'AfterLoaded', callback: cbTvwValueEntitiesAfterLoaded },
                 { name: 'NodeSelected', callback: cbTvwValueEntitiesNodeSelected },

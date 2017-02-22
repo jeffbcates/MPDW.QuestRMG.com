@@ -459,7 +459,7 @@ pnlbtn:active {
   width: auto;
   min-height: 20px;
   font-weight: bold;
-  margin-top: 10px;
+  /*margin-top: 10px;*/
   margin-left: 30px;
   margin-right: 10px;
   float: right;
