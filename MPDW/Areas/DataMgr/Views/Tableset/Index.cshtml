@@ -48,27 +48,26 @@
             operations: [
                 { name: 'List', label: 'List', type: 'tab', title: 'Create a new filter' },
                 { name: 'Entities', label: 'Entities', type: 'tab', title: 'Assign tableset entities to a filter' },
-                { name: 'Values', label: 'Items', type: 'tab', title: 'Designate entity columns and operations' },
-                { name: 'Save', label: 'Save', method: 'POST', callback: cbSaveFilterPanel, title: 'Save the filter SQL' },
-                { name: 'SQL', label: 'SQL', method: 'POST', type: 'tab', callback: cbGetFilterSQL, title: 'View filter SQL' },
-                { name: 'Run', label: 'Run', method: 'POST', callback: cbRunFilter, title: 'Run the filter' },
+                { name: 'Items', label: 'Items', type: 'tab', title: 'Designate entity columns and operations' },
                 { name: 'Procedures', label: 'Procedures', type: 'tab', title: 'Establish stored procedures to invoke' },
+                { name: 'SQLTab', label: 'SQL', type: 'tab', title: 'View filter SQL' },
+                { name: 'SQL', method: 'POST', callback: cbGetFilterSQL, hidden: true },
+                { name: 'Save', label: 'Save', classes: 'btn-success', method: 'POST', callback: cbSaveFilterPanel, title: 'Save the filter SQL' },
+                { name: 'Run', label: 'Run', classes: 'btn-danger', method: 'POST', callback: cbRunFilter, title: 'Run the filter' },
             ],
             actions: [
                 { name: 'RowLimit', label: 'Row Limit', type: 'text', value: '200', title: 'Set max # of rows to return' },
                 { name: 'ColLimit', label: 'Column Limit', type: 'text', value: '100', title: 'Set max # of columns to return' },
-                { name: 'Copy', label: 'Copy SQL', callback: cbCopySQLToClipboard, title: 'Copy filter formatted SQL to clipboard' },
             ],
             tabs: [
                 { name: 'List', callback: cbTabList, defaultTab: true },
                 { name: 'Entities', callback: cbTabEntities, classes: 'overflow-hidden' },
-                { name: 'Values', callback: cbTabValues },
-                { name: 'SQL', callback: cbTabSQL },
+                { name: 'Items', callback: cbTabItems },
+                { name: 'SQLTab', callback: cbTabSQL },
                 { name: 'CustomFilter', callback: cbTabCustomFilter },
                 { name: 'Procedures', callback: cbTabProcedures },
             ],
             events: [
-                { name: 'BeforeSave', callback: cbPnlFiltersBeforeSave },
             ],
             minHeight: '600px'
         }
@@ -83,6 +82,14 @@
         initTreeviewValueEntities();
         initFilterProcedures();
     }
+    function loadFilterPanel(d) {
+        loadTreeviewTablesetEntities();
+        loadTreeviewFilterEntities(d.Entities);
+        loadTreeviewValueEntities(d.Entities);
+        loadFilterItems(d.Items);
+        loadFilterProcedures(d.Procedures);
+    }
+
     function cbTabList(ud, d) {
         if (ud.Init) {
             var _h = [], _i = 0;
@@ -94,7 +101,7 @@
     function cbTabEntities(ud, d) {
         if (ud.Init) {
             var _h = [], _i = 0;
-            _h[_i++] = '<div id="hdrCurrentEntitiesFilter" class="panel-tab-banner">';
+            _h[_i++] = '<div id="hdrFilterEntities" class="panel-tab-banner">';
             _h[_i++] = '    <div class="panel-tab-banner-title">Filter:&nbsp;</div>';
             _h[_i++] = '    <div class="panel-title-select">';
             _h[_i++] = '       <select id="selCurrentEntitiesFilter" class="form-control filter-select"></select>';
@@ -111,10 +118,10 @@
             return (_h.join(''));
         }
     }
-    function cbTabValues(ud, d) {
+    function cbTabItems(ud, d) {
         if (ud.Init) {
             var _h = [], _i = 0;
-            _h[_i++] = '<div id="hdrCurrentValuesFilter" class="panel-tab-banner">';
+            _h[_i++] = '<div id="hdrFilterItems" class="panel-tab-banner">';
             _h[_i++] = '    <div class="panel-tab-banner-title">Filter:&nbsp;</div>';
             _h[_i++] = '    <div class="panel-title-select">';
             _h[_i++] = '       <select id="selCurrentValuesFilter" class="form-control filter-select"></select>';
@@ -134,14 +141,18 @@
     function cbTabSQL(ud, d) {
         if (ud.Init) {
             var _h = [], _i = 0;
-            _h[_i++] = '<div id="hdrCurrentSQLFilter" class="panel-tab-banner">';
+            _h[_i++] = '<div id="hdrFilterSQL" class="panel-tab-banner">';
             _h[_i++] = '    <div class="panel-tab-banner-title">Filter:&nbsp;</div>';
             _h[_i++] = '    <div class="panel-title-select">';
             _h[_i++] = '       <select id="selCurrentSQLFilter" class="form-control filter-select"></select>';
             _h[_i++] = '    </div>';
+            _h[_i++] = '    <div class="panel-tab-operations">';
+            _h[_i++] = '        <button id="btnGetSQL" type="button" class="btn btn-primary" title="Get filter SQL" onclick="cbGetFilterSQL()">Get SQL</button>';
+            _h[_i++] = '        <button id="btnCopySQL" type="button" class="btn btn-primary" title="Copy filter formatted SQL to clipboard" onclick="cbCopySQLToClipboard()">Copy SQL</button>';
+            _h[_i++] = '    </div>';
             _h[_i++] = '</div>';
             _h[_i++] = '<div id="tvwSQLFrame" class="panel-full-tab panel-tab-banner-space">';
-            _h[_i++] = 'Filter SQL goes in here.';
+            _h[_i++] = '';
             _h[_i++] = '</div>';
             return (_h.join(''));
         }
@@ -166,15 +177,7 @@
             return (_h.join(''));
         }
     }
-    function cbPnlFiltersBeforeSave(ud, d) {
 
-    }
-    function cbRestoreTreeviews(ud, d) {
-        loadTreeviewTablesetEntities();
-        loadTreeviewFilterEntities();
-        loadTreeviewConfigureTables();
-        return (false);
-    }
     function cbSaveFilterPanel(ud, d) {
         if (d.questStatus) {
             if (IsAppSuccess(d)) {
@@ -204,18 +207,6 @@
 
         $.extend(d, _d);
         return (true);
-    }
-    function cbGetFilterSQL(ud, d) {
-        if (d.questStatus) {
-            $('#tvwSQLFrame').empty().text(d.SQL);
-        }
-        else {
-            var _d = {};
-            _d.Editor = _frmFilter.GetData();
-            if (parseInt(_d.Editor.FilterId) < 1) { return; }
-            $.extend(d, _d);
-            return (true);
-        }
     }
     function cbRunFilter(ud, d) {
         if (d.questStatus) {
@@ -253,6 +244,32 @@
         }
 
     }
+    function cbGetFilterSQL(o, d, dd) {
+        if (!o) {
+            if (!_frmFilter._bROS) {
+                DisplayUserMessage('W|Select a filter');
+                return;
+            }
+            _pnlFilters.DoOper('SQL');
+            return;
+        }
+        if (d.questStatus) {
+            if (IsAppSuccess(d)) {
+                $('#tvwSQLFrame').text(d.SQL);
+            }
+            else {
+                $('#tvwSQLFrame').text('');
+            }
+            return;
+        }
+        else {
+            var _d = {};
+            _d.Editor = _frmFilter.GetData();
+            $.extend(d, _d);
+            return (true);
+        }
+    }
+
     function cbCopySQLToClipboard() {
         ClipboardHelper.copyText($('#tvwSQLFrame').text());
         DisplayUserMessage('I|SQL copied to clipboard');
@@ -269,6 +286,7 @@
             classes: 'panelForm',
             bNoLoad: true,
             bAutoFocus: false,
+            bNoMasking: true,
             ctx: {
                 elements: ['_questctx', '_questmm', '_questnb']
             },
@@ -323,7 +341,7 @@
             }
             loadTreeviewTablesetEntities();
             loadTreeviewFilterEntities(d.Entities);
-            loadTreeviewConfigureTables(d.Entities);
+            loadTreeviewValueEntities(d.Entities);
             loadFilterItems(d.Items);
             loadFilterProcedures(d.Procedures);
         }
@@ -335,7 +353,7 @@
         qrmgmvc.Global.Mask($('#pnlFilters'));
         if (ud.Change) {
             if (d == -1) {
-                // TODO: Clear/disable accordingly.
+                setPanelContext(d);
                 _frmFilter.Clear();
                 _frmFilter.SetField('FilterId', -1);
                 _tvwTablesetEntities.Clear();
@@ -567,9 +585,9 @@
             ],
         }
         _tvwValueEntities = new qrmgTreeview(tvwValueEntities);
-        loadTreeviewConfigureTables();
+        loadTreeviewValueEntities();
     }
-    function loadTreeviewConfigureTables(tt) {
+    function loadTreeviewValueEntities(tt) {
         _tvwValueEntities.Clear();
         var _d = { questStatus: _viewstate.questStatus, Items: tt ? tt : _viewstate.Entities };
         _tvwValueEntities.Fill(_d);
@@ -720,6 +738,7 @@
             callback: cbFilterProceduresEditor,
             classes: 'panelForm',
             bAutoFocus: false,
+            bNoMasking: true,
             ctx: {
                 elements: ['_questctx', '_questmm', '_questnb']
             },
@@ -1412,6 +1431,7 @@
             ],
             operations: [
                 { name: 'Refresh', label: 'Refresh', method: 'POST', type: 'tab', callback: RefreshResults, title: 'Rerun filter to refresh results' },
+                { name: 'Export', label: 'Export', method: 'POST', type: 'tab', callback: cbExportToExcel, title: 'Export results to Excel' },
             ],
             actions: [
                 { name: 'RowLimit', label: 'Row Limit', type: 'text', value: '200' },
@@ -1437,6 +1457,24 @@
         }
     }
     function cbResultsOutput(ud, d) { }
+    function cbExportToExcel(ud, d) {
+        var f = _frmFilter.GetData();
+        if (parseInt(f.FilterId) < 1) {
+            DisplayUserMessage('E|Select a filter to export');
+            return;
+        }
+        d.FilterId = _d.Editor.FilterId;
+
+        var _rd = _pnlResults.GetData();
+        d._ResultsOptions = {};
+        d._ResultsOptions.RowLimit = _rd.RowLimit;
+        d._ResultsOptions.ColLimit = _rd.ColLimit;
+
+
+
+
+        ExportToExcel()
+    }
 </script>
 
 <script type="text/javascript">
@@ -1456,9 +1494,9 @@
             },
             columns: [
             ],
-            autogen: {
-                rows: 100
-            },
+            ////autogen: {
+            ////    rows: 100
+            ////},
             paging: {
                 Top: true,
                 Bottom: true,
@@ -1549,5 +1587,28 @@
         _pnlFilters.DoOper('Run');
         $('html, body').animate({ scrollTop: $('#pnlResults').offset().top - 100 });
 
+    }
+</script>
+<script type="text/javascript">
+    function ExportToExcel(filter) {
+        var _frmId = filter.name + 'ExportToExcel';
+        $('#' + _frmId).remove();
+
+        var _frmExport = document.createElement("form");
+        _frmExport.setAttribute("id", _frmId);
+        _frmExport.setAttribute("method", "post");
+        _frmExport.setAttribute("action", "/DataMgr/Results/ExportToExcel");
+        _frmExport.setAttribute("target", "view");
+
+        for (var f in filter) {
+            var _in = document.createElement("input");
+            _in.setAttribute("type", "hidden");
+            _in.setAttribute("name", f);
+            _in.setAttribute("value", filter[f]);
+            _frmExport.appendChild(_in);
+        }
+
+        document.body.appendChild(_frmExport);
+        _frmExport.submit();
     }
 </script>

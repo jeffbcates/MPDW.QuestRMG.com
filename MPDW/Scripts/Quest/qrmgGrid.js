@@ -624,6 +624,9 @@ function qrmgGrid(model) {
         return (_rr);
     }
 
+    _self.NumRows = function () {
+        return ($(_self._e + ' tbody tr').length);
+    }
     _self._init();
 }
 

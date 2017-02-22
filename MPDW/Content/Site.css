@@ -295,7 +295,7 @@ input[type="file"] {
 .portlet-container-sans-actions {
     display: block;
     position: absolute;
-    top: 40px;
+    top: 54px;
     left: 0;
     right: 0;
     bottom: 0;
@@ -471,6 +471,11 @@ input[type="file"] {
   line-height: 1 !important;
   padding: 3px 6px;
 }
+.panel-tab-operations {
+    position: relative;
+    display: inline-block;
+    float: right;
+}
 .disabled  {
     pointer-events: none;
     opacity: 0.4;
@@ -493,4 +498,8 @@ input[type="file"] {
 }
 .form-control::-moz-placeholder {
     font-style: italic;
+}
+
+button.active {
+    color: #FFFFFF !important;
 }

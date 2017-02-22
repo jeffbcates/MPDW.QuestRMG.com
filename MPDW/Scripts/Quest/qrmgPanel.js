@@ -192,12 +192,12 @@ function qrmgPanel(model) {
         var _o = _self._geto(n);
         if (!_o) { return; }
         var _d;
+        if (_o.type && _o.type == 'tab') {
+            _self.Tab(_o.name);
+        }
         if (_o.callback) {
             _d = _self.GetData();
             if (!_o.callback(_o, _d)) { return; }
-        }
-        if (_o.type && _o.type == 'tab') {
-            _self.Tab(_o.name);
         }
         if (_o._action) {
             _self[_o._action]();
@@ -207,6 +207,7 @@ function qrmgPanel(model) {
         }
     }
     _self._dooper = function (o, d) {
+        if (!o._m) { return; }
         qrmgmvc.Global.Maskit($(_self._e));
         ClearUserMessage();
         if (o.validate) {
@@ -326,13 +327,14 @@ function qrmgPanel(model) {
         return (_h.join(''));
     }
     _self._rndrop = function (o, bBottom) {
+        if (o.hidden) { return; }
         if (bBottom) {
             if (!o.position || (o.position.indexOf("Bottom") == -1)) { return; }
         }
         o._id = _self._pfx + '_btn' + o.name;
         o._lbl = o.label ? o.label : o.name;
         var _h = [], _i = 0;
-        _h[_i++] = '<button id="' + o._id + '" class="btn ' + (o.class ? o.class : 'pnlbtn') + '" type="button"';
+        _h[_i++] = '<button id="' + o._id + '" class="btn ' + (o.classes ? o.classes : 'pnlbtn') + '" type="button"';
         if (o.title) {
             _h[_i++] = ' title="' + o.title + '" ';
         }
@@ -358,7 +360,7 @@ function qrmgPanel(model) {
                 _h[_i++] = '<input id="' + a._id + '" type="text" class="portlet-toolbar-text text-right" ' + (a.title ? ' title="' + a.title + '" ' : '') + ' value="' + (a.value ? a.value : '') + '"/>';
             }
             else if (a.type == 'tab') {
-                _h[_i++] = '<button id="' + a._id + '" class="btn ' + (a.class ? a.class : 'grey') + '" type="button" ';
+                _h[_i++] = '<button id="' + a._id + '" class="btn ' + (a.classes ? a.classes : 'grey') + '" type="button" ';
                 if (a.title) {
                     _h[_i++] = ' title="' + a.title + '" ';
                 }
@@ -366,7 +368,7 @@ function qrmgPanel(model) {
             }
         }
         else {
-            _h[_i++] = '<button id="' + a._id + '" class="btn ' + (a.class ? a.class : 'grey') + '" type="button" ';
+            _h[_i++] = '<button id="' + a._id + '" class="btn ' + (a.classes ? a.classes : 'grey') + '" type="button" ';
             if (a.title) {
                 _h[_i++] = ' title="' + a.title + '" ';
             }

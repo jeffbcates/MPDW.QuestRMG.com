@@ -369,6 +369,7 @@ function qrmgNavbar(model) {
         var _gg = $("[class*='method-get']", '#' + o._id);
         $.each(o.options, function (i, _o) {
             $('#' + _self._pfx + _o.name + '_' + _o.data.Id).on('click', null, _o, function (e) {
+                qrmgmvc.Global.Mask(_self._model.maskFrame);
                 e.stopPropagation();
                 e.preventDefault();
                 _self._setcur(_o, e);
