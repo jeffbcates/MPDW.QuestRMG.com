@@ -688,7 +688,7 @@ function qrmgEditor(model) {
                 $(f).prop('checked', false);
             }
             else if ($(f).prop('type') == 'select-one') {
-                $(f).val([]);
+                $(f).val(-1);
             }
             else if ($(f).prop('type') == 'select-multiple') {
                 $(f).val([]);
@@ -1055,7 +1055,7 @@ function qrmgEditor(model) {
             }
         }
         _self._bChanges = false;
-        ClearMessage();
+        ////ClearMessage();
 
         var _evt = _self._getevt("AfterLoaded");
         if (_evt != null) {

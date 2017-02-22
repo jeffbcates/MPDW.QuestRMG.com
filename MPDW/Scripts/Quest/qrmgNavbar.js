@@ -361,7 +361,6 @@ function qrmgNavbar(model) {
             oo.push(_o);
         });
         o.options = oo;
-        var _h = [], _i = 0;
         _self._inssubm(o);
         _self._rndrco();
     }

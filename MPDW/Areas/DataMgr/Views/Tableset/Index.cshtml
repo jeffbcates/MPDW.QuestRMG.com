@@ -215,7 +215,7 @@
 
     function cbSaveFilterPanel(ud, d) {
         if (d.questStatus) {
-            if (IsAppSuccess(d)) {
+            if (IsAppSuccess(d) || IsAppWarning(d)) {
                 var _d = _frmFilter.GetData();
                 cbChangeFilter({ Change: true }, _d.FilterId);
             }
@@ -388,6 +388,12 @@
             _pnlFilters.Operations(['Save', 'Run'], true);
             enadisSQLTabButtons(true);
             qrmgmvc.Global.Unmask($('#pnlFilters'));
+        }
+        else if (ud.Delete) {
+            if (IsAppSuccess(d)) {
+                $('.filter-select option[value="' + d.Id + '"]').remove();
+                setPanelContext('-1');
+            }
         }
     }
     function cbAfterLoadedFrmTablesetFilters(ud, d) {
