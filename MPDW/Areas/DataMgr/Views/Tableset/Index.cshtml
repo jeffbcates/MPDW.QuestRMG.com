@@ -5,6 +5,10 @@
 }
 
 <h3 id="pageTitle">Data Manager</h3>
+<div class="page-subtitle-frame">
+    <div id="pTablesetSummary" class="page-subtitle pull-left"></div>
+    <div id="pTablesetLastRefresh" class="page-subtitle pull-right"><b>Last Refresh:</b></div>
+</div>
 
 @* Usually, calling home for individual items best.  But, here's how-to for very large databases: *@
 @*<input type="hidden" id="__frmDataMgrTablesetVIEW_STATE" value="@Html.Raw(Json.Encode(Model))" />*@
@@ -1614,6 +1618,10 @@
     }
     function initViewstate() {
         _viewstate = JSON.parse($('#__frmDataMgrTablesetVIEW_STATE').val());
+        $('#pTablesetSummary').text(_viewstate.Tableset.Summary);
+        $('#pTablesetLastRefresh').html('<b>Last Refresh:</b>&nbsp;' + _viewstate.Tableset.LastRefresh);
+
+        
     }
     function displayViewMessage() {
         if (_viewstate.questStatus.Severity == 3) {

@@ -80,8 +80,10 @@ namespace Quest.MasterPricing.DataMgr.Modelers
             // Build model
             dataMgrTablesetViewModel = new DataMgrTablesetViewModel(this.UserSession, this._dataMgrBaseViewModel);
             dataMgrTablesetViewModel.TablesetId = tablesetId.Id;
-            dataMgrTablesetViewModel.Tableset = tablesetDataManagement.TablesetConfiguration.Tableset;
-            dataMgrTablesetViewModel.Database = tablesetDataManagement.TablesetConfiguration.Database;
+            BufferMgr.TransferBuffer(tablesetDataManagement.TablesetConfiguration.Tableset, dataMgrTablesetViewModel.Tableset);
+            dataMgrTablesetViewModel.Tableset.LastRefresh = tablesetDataManagement.TablesetConfiguration.Tableset.LastRefresh.HasValue ?
+                    tablesetDataManagement.TablesetConfiguration.Tableset.LastRefresh.Value.ToString("MM/dd/yyyy HH:mm:ss") : "";
+
 
             foreach (TablesetTable tablesetTable in tablesetDataManagement.TablesetConfiguration.TablesetTables)
             {

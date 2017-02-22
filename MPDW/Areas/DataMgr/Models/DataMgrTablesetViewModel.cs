@@ -14,9 +14,7 @@ namespace Quest.MasterPricing.DataMgr.Models
     {
         public int Id { get; set; }
         public int TablesetId { get; set; }
-        public Tableset Tableset { get; set; }
-        public Quest.Functional.MasterPricing.Database Database { get; set; }
-        public List<BootstrapTreenodeViewModel> FilterItems { get; set; }
+        public TablesetViewModel Tableset { get; set; }
         public List<BootstrapTreenodeViewModel> TableList { get; set; }
         public List<BootstrapTreenodeViewModel> ViewList { get; set; }
         public List<BootstrapTreenodeViewModel> Lookups { get; set; }
@@ -26,9 +24,7 @@ namespace Quest.MasterPricing.DataMgr.Models
         public DataMgrTablesetViewModel()
             : base()
         {
-            Database = new Quest.Functional.MasterPricing.Database();
-            Tableset = new Tableset();
-            FilterItems = new List<BootstrapTreenodeViewModel>();
+            Tableset = new TablesetViewModel();
             TableList = new List<BootstrapTreenodeViewModel>();
             ViewList = new List<BootstrapTreenodeViewModel>();
             Lookups = new List<BootstrapTreenodeViewModel>();
@@ -37,9 +33,7 @@ namespace Quest.MasterPricing.DataMgr.Models
         public DataMgrTablesetViewModel(UserSession userSession)
             : base(userSession)
         {
-            Database = new Quest.Functional.MasterPricing.Database();
-            Tableset = new Tableset();
-            FilterItems = new List<BootstrapTreenodeViewModel>();
+            Tableset = new TablesetViewModel();
             TableList = new List<BootstrapTreenodeViewModel>();
             ViewList = new List<BootstrapTreenodeViewModel>();
             Lookups = new List<BootstrapTreenodeViewModel>();
@@ -48,9 +42,7 @@ namespace Quest.MasterPricing.DataMgr.Models
         public DataMgrTablesetViewModel(UserSession userSession, BaseUserSessionViewModel baseUserSessionViewModel)
             : base(userSession, baseUserSessionViewModel)
         {
-            Database = new Quest.Functional.MasterPricing.Database();
-            Tableset = new Tableset();
-            FilterItems = new List<BootstrapTreenodeViewModel>();
+            Tableset = new TablesetViewModel();
             TableList = new List<BootstrapTreenodeViewModel>();
             ViewList = new List<BootstrapTreenodeViewModel>();
             Lookups = new List<BootstrapTreenodeViewModel>();

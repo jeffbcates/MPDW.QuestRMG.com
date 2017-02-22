@@ -200,6 +200,20 @@ a.currentNavbarItem:hover {
     cursor: pointer;
 }
 
+.page-title {
+
+}
+.page-subtitle-frame {
+  position: relative;
+  display: block;
+  height: 40px;
+  width: 100%;
+  clear: both;
+  padding-right: 10px;
+}
+.page-subtitle {
+
+}
 
 
 footer {

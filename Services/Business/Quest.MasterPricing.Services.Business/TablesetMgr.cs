@@ -173,15 +173,6 @@ namespace Quest.MasterPricing.Services.Business.Tablesets
                     return (status);
                 }
 
-                // Update tableset with this database Id.
-                _tableset.DatabaseId = tablesetConfiguration.Database.Id;
-                status = tablesetsMgr.Update(trans, _tableset);
-                if (!questStatusDef.IsSuccess(status))
-                {
-                    mgr.RollbackTransaction(trans);
-                    return (status);
-                }
-
 
                 /*
                  * Remove all tableset entities.
@@ -315,6 +306,16 @@ namespace Quest.MasterPricing.Services.Business.Tablesets
                     }
                 }
                 #endregion
+
+
+                // Update tableset.
+                _tableset.DatabaseId = tablesetConfiguration.Database.Id;
+                status = tablesetsMgr.Update(trans, _tableset);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    mgr.RollbackTransaction(trans);
+                    return (status);
+                }
 
 
                 // COMMIT TRANSACTION

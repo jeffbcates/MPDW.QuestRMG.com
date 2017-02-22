@@ -57,6 +57,10 @@ namespace Quest.MasterPricing.Services.Business.Database
             questStatus status = null;
 
 
+            // Last refresh is creation date
+            tableset.LastRefresh = DateTime.Now;
+
+
             // Create tableset
             status = _dbTablesetsMgr.Create(tableset, out tablesetId);
             if (! questStatusDef.IsSuccess(status))
@@ -70,6 +74,10 @@ namespace Quest.MasterPricing.Services.Business.Database
             // Initialize
             tablesetId = null;
             questStatus status = null;
+
+
+            // Last refresh is creation date
+            tableset.LastRefresh = DateTime.Now;
 
 
             // Create tableset
@@ -116,6 +124,10 @@ namespace Quest.MasterPricing.Services.Business.Database
             questStatus status = null;
 
 
+            // Last refresh is creation date
+            tableset.LastRefresh = DateTime.Now;
+
+
             // Update tableset
             status = _dbTablesetsMgr.Update(tableset);
             if (!questStatusDef.IsSuccess(status))
@@ -128,6 +140,10 @@ namespace Quest.MasterPricing.Services.Business.Database
         {
             // Initialize
             questStatus status = null;
+
+
+            // Last refresh is creation date
+            tableset.LastRefresh = DateTime.Now;
 
 
             // Update tableset
