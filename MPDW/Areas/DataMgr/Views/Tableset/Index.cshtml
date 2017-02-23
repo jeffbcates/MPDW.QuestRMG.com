@@ -1613,6 +1613,9 @@
         initBulkUpdates();
         initResults();
 
+        _tvwTablesetEntities.DropSource(_tvwFilterEntities);
+        _tvwFilterEntities.DropSource(_tvwTablesetEntities);
+
         displayViewMessage();
         initFilterSelect();
     }
