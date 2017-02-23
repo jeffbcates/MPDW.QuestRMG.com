@@ -64,6 +64,7 @@ function qrmgTreeview(model) {
             data: Data || {},
             multiSelect: _self._model.multiSelect,
             onTreeRender: _self._onrndr
+            ////onNodeSelected: _self._onNodeSelected
         });
         _self._tvw = _self._gettvw();
         if (!bFill) {
@@ -74,6 +75,10 @@ function qrmgTreeview(model) {
         _self.Droppable();
         _self.Sortable();
         _self.Selectable();
+    }
+
+    _self._onNodeSelected = function (p1, p2) {
+        alert('onNodeSelected');
     }
 
     _self.Draggable = function (b) {
@@ -258,7 +263,7 @@ function qrmgTreeview(model) {
                     e.preventDefault();
                 }
             }
-            else {
+            else if (_self._model.bRangeSelect) {
                 var n = _self.GetNode($(e.currentTarget).attr('data-id'));
                 if (_self._click(e, n)) {
                     e.stopPropagation();
@@ -295,6 +300,31 @@ function qrmgTreeview(model) {
                 }, 250);
             });
         });
+    }
+
+    _self._click = function (e) {
+        var b = $(e.currentTarget).hasClass('node-selected');
+        if (e.shiftKey) {
+            if (_self._lastSelected) {
+                _self._selectRange(e);
+            }
+        }
+        else if (e.ctrlKey) {
+            if (b) {
+                _self.Deselect($(e.currentTarget).attr('data-id'));
+            }
+            else {
+                _self.Select($(e.currentTarget).attr('data-id'));
+            }
+        }
+        else {
+            _self.ClearSelected();
+            if (!b) {
+                _self.Select($(e.currentTarget).attr('data-id'));
+            }
+        }
+        _self._lastSelected = e.currentTarget;
+        return (true);
     }
 
     _self._docallback = function (ud, d) {
@@ -430,34 +460,6 @@ function qrmgTreeview(model) {
         return (n);
     }
 
-    _self._click = function (e) {
-        var b = $(e.currentTarget).hasClass('node-selected');
-        if (e.shiftKey) {
-            if (_self._lastSelected) {
-                _self._selectRange(e);
-            }
-        }
-        else if (e.ctrlKey) {
-            if (b) {
-                _self.Deselect($(e.currentTarget).attr('data-id'));
-            }
-            else {
-                _self.Select($(e.currentTarget).attr('data-id'));
-            }
-        }
-        else {
-            _self.ClearSelected();
-            if (!b) {
-                _self.Select($(e.currentTarget).attr('data-id'));
-            }
-        }
-
-
-
-
-        _self._lastSelected = e.currentTarget;
-        return (true);
-    }
     _self.ClearSelected = function () {
         var ee = $('.node-selected', _self._e);
         $.each(ee, function (i, e) {
