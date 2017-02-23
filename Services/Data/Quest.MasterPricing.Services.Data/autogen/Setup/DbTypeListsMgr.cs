@@ -402,22 +402,9 @@ namespace Quest.MasterPricing.Services.Data.Database
         }
         private questStatus delete(MasterPricingEntities dbContext, TypeListId typeListId)
         {
-            // Initialize 
-            questStatus status = null;
-
-
             try
             {
-                // Read the record.
-                Quest.Services.Dbio.MasterPricing.TypeLists _typeList = null;
-                status = read(dbContext, typeListId, out _typeList);
-                if (!questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
-
-                // Delete the record.
-                dbContext.TypeLists.Remove(_typeList);
+                dbContext.TypeLists.RemoveRange(dbContext.TypeLists.Where(r => r.Id == typeListId.Id));
                 dbContext.SaveChanges();
             }
             catch (System.Exception ex)

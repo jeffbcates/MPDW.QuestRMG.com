@@ -456,22 +456,9 @@ namespace Quest.MasterPricing.Services.Data.Database
         }
         private questStatus delete(MasterPricingEntities dbContext, TablesetColumnId tablesetColumnId)
         {
-            // Initialize 
-            questStatus status = null;
-
-
             try
             {
-                // Read the record.
-                Quest.Services.Dbio.MasterPricing.TablesetColumns _tablesetColumn = null;
-                status = read(dbContext, tablesetColumnId, out _tablesetColumn);
-                if (!questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
-
-                // Delete the record.
-                dbContext.TablesetColumns.Remove(_tablesetColumn);
+                dbContext.TablesetColumns.RemoveRange(dbContext.TablesetColumns.Where(r => r.Id == tablesetColumnId.Id));
                 dbContext.SaveChanges();
             }
             catch (System.Exception ex)
@@ -484,22 +471,10 @@ namespace Quest.MasterPricing.Services.Data.Database
         }
         private questStatus delete(MasterPricingEntities dbContext, EntityType entityType, TableSetEntityId tableSetEntityId)
         {
-            // Initialize 
-            questStatus status = null;
-
-
             try
             {
-                // Read the records.
-                List<Quest.Services.Dbio.MasterPricing.TablesetColumns> tablesetColumnList = null;
-                status = read(dbContext, entityType, tableSetEntityId, out tablesetColumnList);
-                if (!questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
-
-                // Delete the records.
-                dbContext.TablesetColumns.RemoveRange(tablesetColumnList);
+                dbContext.TablesetColumns.RemoveRange(dbContext.TablesetColumns.Where(
+                        r => r.EntityTypeId == entityType.Id && r.TableSetEntityId == tableSetEntityId.Id));
                 dbContext.SaveChanges();
             }
             catch (System.Exception ex)

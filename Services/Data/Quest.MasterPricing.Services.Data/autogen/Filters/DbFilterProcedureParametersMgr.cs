@@ -515,22 +515,9 @@ namespace Quest.MasterPricing.Services.Data.Filters
         }
         private questStatus delete(MasterPricingEntities dbContext, FilterProcedureParameterId filterProcedureParameterId)
         {
-            // Initialize 
-            questStatus status = null;
-
-
             try
             {
-                // Read the record.
-                Quest.Services.Dbio.MasterPricing.FilterProcedureParameters _filterProcedureParameters = null;
-                status = read(dbContext, filterProcedureParameterId, out _filterProcedureParameters);
-                if (!questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
-
-                // Delete the record.
-                dbContext.FilterProcedureParameters.Remove(_filterProcedureParameters);
+                dbContext.FilterProcedureParameters.RemoveRange(dbContext.FilterProcedureParameters.Where(r => r.Id == filterProcedureParameterId.Id));
                 dbContext.SaveChanges();
             }
             catch (System.Exception ex)
@@ -543,22 +530,9 @@ namespace Quest.MasterPricing.Services.Data.Filters
         }
         private questStatus delete(MasterPricingEntities dbContext, FilterProcedureId filterProcedureId)
         {
-            // Initialize 
-            questStatus status = null;
-
-
             try
             {
-                // Read all filterProcedureParametersList for this filterProcedure.
-                List<Quest.Services.Dbio.MasterPricing.FilterProcedureParameters> _filterProcedureParametersList = null;
-                status = read(dbContext, filterProcedureId, out _filterProcedureParametersList);
-                if (!questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
-
-                // Delete the records.
-                dbContext.FilterProcedureParameters.RemoveRange(_filterProcedureParametersList);
+                dbContext.FilterProcedureParameters.RemoveRange(dbContext.FilterProcedureParameters.Where(r => r.FilterProcedureId == filterProcedureId.Id));
                 dbContext.SaveChanges();
             }
             catch (System.Exception ex)

@@ -513,22 +513,9 @@ namespace Quest.MasterPricing.Services.Data.Filters
         }
         private questStatus delete(MasterPricingEntities dbContext, FilterProcedureId filterProcedureId)
         {
-            // Initialize 
-            questStatus status = null;
-
-
             try
             {
-                // Read the record.
-                Quest.Services.Dbio.MasterPricing.FilterProcedures _filterProcedures = null;
-                status = read(dbContext, filterProcedureId, out _filterProcedures);
-                if (!questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
-
-                // Delete the record.
-                dbContext.FilterProcedures.Remove(_filterProcedures);
+                dbContext.FilterProcedures.RemoveRange(dbContext.FilterProcedures.Where(r => r.Id == filterProcedureId.Id));
                 dbContext.SaveChanges();
             }
             catch (System.Exception ex)
@@ -541,22 +528,9 @@ namespace Quest.MasterPricing.Services.Data.Filters
         }
         private questStatus delete(MasterPricingEntities dbContext, FilterId filterId)
         {
-            // Initialize 
-            questStatus status = null;
-
-
             try
             {
-                // Read all filterProcedures for this filter.
-                List<Quest.Services.Dbio.MasterPricing.FilterProcedures> _filterProceduresList = null;
-                status = read(dbContext, filterId, out _filterProceduresList);
-                if (!questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
-
-                // Delete the records.
-                dbContext.FilterProcedures.RemoveRange(_filterProceduresList);
+                dbContext.FilterProcedures.RemoveRange(dbContext.FilterProcedures.Where(r => r.FilterId == filterId.Id));
                 dbContext.SaveChanges();
             }
             catch (System.Exception ex)

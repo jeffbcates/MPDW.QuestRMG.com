@@ -402,22 +402,9 @@ namespace Quest.MasterPricing.Services.Data.Database
         }
         private questStatus delete(MasterPricingEntities dbContext, TablesetId tablesetId)
         {
-            // Initialize 
-            questStatus status = null;
-
-
             try
             {
-                // Read the record.
-                Quest.Services.Dbio.MasterPricing.Tablesets _tableset = null;
-                status = read(dbContext, tablesetId, out _tableset);
-                if (!questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
-
-                // Delete the record.
-                dbContext.Tablesets.Remove(_tableset);
+                dbContext.Tablesets.RemoveRange(dbContext.Tablesets.Where(r => r.Id == tablesetId.Id));
                 dbContext.SaveChanges();
             }
             catch (System.Exception ex)

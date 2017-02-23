@@ -559,22 +559,9 @@ namespace Quest.MasterPricing.Services.Data.Filters
         }
         private questStatus delete(MasterPricingEntities dbContext, FilterTableId filterTableId)
         {
-            // Initialize 
-            questStatus status = null;
-
-
             try
             {
-                // Read the record.
-                Quest.Services.Dbio.MasterPricing.FilterTables _filterTables = null;
-                status = read(dbContext, filterTableId, out _filterTables);
-                if (!questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
-
-                // Delete the record.
-                dbContext.FilterTables.Remove(_filterTables);
+                dbContext.FilterTables.RemoveRange(dbContext.FilterTables.Where(r => r.Id == filterTableId.Id));
                 dbContext.SaveChanges();
             }
             catch (System.Exception ex)
@@ -587,22 +574,9 @@ namespace Quest.MasterPricing.Services.Data.Filters
         }
         private questStatus delete(MasterPricingEntities dbContext, FilterId filterId)
         {
-            // Initialize 
-            questStatus status = null;
-
-
             try
             {
-                // Read all filterTables for this filter.
-                List<Quest.Services.Dbio.MasterPricing.FilterTables> _filterTablesList = null;
-                status = read(dbContext, filterId, out _filterTablesList);
-                if (!questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
-
-                // Delete the records.
-                dbContext.FilterTables.RemoveRange(_filterTablesList);
+                dbContext.FilterTables.RemoveRange(dbContext.FilterTables.Where(r => r.FilterId == filterId.Id));
                 dbContext.SaveChanges();
             }
             catch (System.Exception ex)

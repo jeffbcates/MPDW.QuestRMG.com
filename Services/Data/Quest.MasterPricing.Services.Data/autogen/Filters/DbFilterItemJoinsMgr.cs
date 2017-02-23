@@ -513,22 +513,9 @@ namespace Quest.MasterPricing.Services.Data.Filters
         }
         private questStatus delete(MasterPricingEntities dbContext, FilterItemJoinId filterItemJoinId)
         {
-            // Initialize 
-            questStatus status = null;
-
-
             try
             {
-                // Read the record.
-                Quest.Services.Dbio.MasterPricing.FilterItemJoins _filterItemJoins = null;
-                status = read(dbContext, filterItemJoinId, out _filterItemJoins);
-                if (!questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
-
-                // Delete the record.
-                dbContext.FilterItemJoins.Remove(_filterItemJoins);
+                dbContext.FilterItemJoins.RemoveRange(dbContext.FilterItemJoins.Where(r => r.Id == filterItemJoinId.Id));
                 dbContext.SaveChanges();
             }
             catch (System.Exception ex)
@@ -541,22 +528,9 @@ namespace Quest.MasterPricing.Services.Data.Filters
         }
         private questStatus delete(MasterPricingEntities dbContext, FilterItemId filterItemId)
         {
-            // Initialize 
-            questStatus status = null;
-
-
             try
             {
-                // Read all filterItemJoins for this table.
-                List<Quest.Services.Dbio.MasterPricing.FilterItemJoins> _filterItemJoinsList = null;
-                status = read(dbContext, filterItemId, out _filterItemJoinsList);
-                if (!questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
-
-                // Delete the records.
-                dbContext.FilterItemJoins.RemoveRange(_filterItemJoinsList);
+                dbContext.FilterItemJoins.RemoveRange(dbContext.FilterItemJoins.Where(r => r.FilterItemId == filterItemId.Id));
                 dbContext.SaveChanges();
             }
             catch (System.Exception ex)

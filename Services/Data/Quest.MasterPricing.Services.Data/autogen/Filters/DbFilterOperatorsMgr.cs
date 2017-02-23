@@ -408,22 +408,9 @@ namespace Quest.MasterPricing.Services.Data.Filters
         }
         private questStatus delete(MasterPricingEntities dbContext, FilterOperatorId filterOperatorId)
         {
-            // Initialize 
-            questStatus status = null;
-
-
             try
             {
-                // Read the record.
-                Quest.Services.Dbio.MasterPricing.FilterOperators _filterOperators = null;
-                status = read(dbContext, filterOperatorId, out _filterOperators);
-                if (!questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
-
-                // Delete the record.
-                dbContext.FilterOperators.Remove(_filterOperators);
+                dbContext.FilterOperators.RemoveRange(dbContext.FilterOperators.Where(r => r.Id == filterOperatorId.Id));
                 dbContext.SaveChanges();
             }
             catch (System.Exception ex)

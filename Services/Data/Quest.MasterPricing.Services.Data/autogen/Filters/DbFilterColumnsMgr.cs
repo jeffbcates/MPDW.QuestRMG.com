@@ -723,22 +723,9 @@ namespace Quest.MasterPricing.Services.Data.Filters
         }
         private questStatus delete(MasterPricingEntities dbContext, FilterColumnId filterColumnId)
         {
-            // Initialize 
-            questStatus status = null;
-
-
             try
             {
-                // Read the record.
-                Quest.Services.Dbio.MasterPricing.FilterColumns _filterColumns = null;
-                status = read(dbContext, filterColumnId, out _filterColumns);
-                if (!questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
-
-                // Delete the record.
-                dbContext.FilterColumns.Remove(_filterColumns);
+                dbContext.FilterColumns.RemoveRange(dbContext.FilterColumns.Where(r => r.Id == filterColumnId.Id));
                 dbContext.SaveChanges();
             }
             catch (System.Exception ex)
@@ -751,22 +738,10 @@ namespace Quest.MasterPricing.Services.Data.Filters
         }
         private questStatus delete(MasterPricingEntities dbContext, FilterId filterId, FilterTableId filterTableId)
         {
-            // Initialize 
-            questStatus status = null;
-
-
             try
             {
-                // Read all filterColumns for this table.
-                List<Quest.Services.Dbio.MasterPricing.FilterColumns> _filterColumnsList = null;
-                status = read(dbContext, filterId, filterTableId, out _filterColumnsList);
-                if (!questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
-
-                // Delete the records.
-                dbContext.FilterColumns.RemoveRange(_filterColumnsList);
+                dbContext.FilterColumns.RemoveRange(dbContext.FilterColumns.Where(
+                        r => r.FilterId == filterId.Id && r.FilterEntityTypeId == FilterEntityType.Table && r.FilterEntityId == filterTableId.Id));
                 dbContext.SaveChanges();
             }
             catch (System.Exception ex)
@@ -779,22 +754,10 @@ namespace Quest.MasterPricing.Services.Data.Filters
         }
         private questStatus delete(MasterPricingEntities dbContext, FilterId filterId, FilterViewId filterViewId)
         {
-            // Initialize 
-            questStatus status = null;
-
-
             try
             {
-                // Read all filterColumns for this view.
-                List<Quest.Services.Dbio.MasterPricing.FilterColumns> _filterColumnsList = null;
-                status = read(dbContext, filterId, filterViewId, out _filterColumnsList);
-                if (!questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
-
-                // Delete the records.
-                dbContext.FilterColumns.RemoveRange(_filterColumnsList);
+                dbContext.FilterColumns.RemoveRange(dbContext.FilterColumns.Where(
+                        r => r.FilterId == filterId.Id && r.FilterEntityTypeId == FilterEntityType.View && r.FilterEntityId == filterViewId.Id));
                 dbContext.SaveChanges();
             }
             catch (System.Exception ex)
@@ -807,22 +770,9 @@ namespace Quest.MasterPricing.Services.Data.Filters
         }
         private questStatus delete(MasterPricingEntities dbContext, FilterId filterId)
         {
-            // Initialize 
-            questStatus status = null;
-
-
             try
             {
-                // Read all filterColumns for this table.
-                List<Quest.Services.Dbio.MasterPricing.FilterColumns> _filterColumnsList = null;
-                status = read(dbContext, filterId, out _filterColumnsList);
-                if (!questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
-
-                // Delete the records.
-                dbContext.FilterColumns.RemoveRange(_filterColumnsList);
+                dbContext.FilterColumns.RemoveRange(dbContext.FilterColumns.Where(r => r.FilterId == filterId.Id));
                 dbContext.SaveChanges();
             }
             catch (System.Exception ex)
