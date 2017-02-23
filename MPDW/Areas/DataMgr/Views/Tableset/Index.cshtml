@@ -1488,10 +1488,9 @@
             },
             fields: [
                 { name: 'Id', key: true, hidden: true },
-                { name: 'TODO', label: 'TODO: AN EDITABLE RESULTS GRID GOES IN HERE', labelonly: true },
             ],
             operations: [
-                { name: 'Refresh', label: 'Refresh', method: 'POST', type: 'tab', callback: RefreshResults, title: 'Rerun filter to refresh results' },
+                { name: 'Refresh', label: 'Refresh', method: 'POST', callback: RefreshResults, title: 'Rerun filter to refresh results' },
                 { name: 'Export', label: 'Export', method: 'POST', type: 'tab', callback: cbExportToExcel, title: 'Export results to Excel' },
             ],
             actions: [
@@ -1535,9 +1534,7 @@
         d._ResultsOptions.RowLimit = _rd.RowLimit;
         d._ResultsOptions.ColLimit = _rd.ColLimit;
 
-
-
-
+        
         ExportToExcel();
     }
 </script>
@@ -1615,6 +1612,13 @@
 
         _tvwTablesetEntities.DropSource(_tvwFilterEntities);
         _tvwFilterEntities.DropSource(_tvwTablesetEntities);
+
+        $('#pnlflt_act_RowLimit').on('keyup', function (e) {
+            $('#pnlres_act_RowLimit').val($('#pnlflt_act_RowLimit').val());
+        });
+        $('#pnlres_act_RowLimit').on('keyup', function (e) {
+            $('#pnlflt_act_RowLimit').val($('#pnlres_act_RowLimit').val());
+        });
 
         displayViewMessage();
         initFilterSelect();
