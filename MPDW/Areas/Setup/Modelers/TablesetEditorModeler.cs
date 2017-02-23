@@ -8,6 +8,7 @@ using Quest.Util.Data;
 using Quest.Functional.ASM;
 using Quest.Functional.MasterPricing;
 using Quest.MasterPricing.Setup.Models;
+using Quest.MasterPricing.Services.Business.Tablesets;
 using Quest.MasterPricing.Services.Business.Database;
 
 
@@ -110,8 +111,8 @@ namespace Quest.MasterPricing.Setup.Modelers
 
 
             // Delete
-            TablesetsMgr tablesetsMgr = new TablesetsMgr(this.UserSession);
-            status = tablesetsMgr.Delete(tablesetId);
+            TablesetMgr tablesetMgr = new TablesetMgr(this.UserSession);
+            status = tablesetMgr.Delete(tablesetId);
             if (!questStatusDef.IsSuccess(status))
             {
                 return (status);

@@ -666,22 +666,9 @@ namespace Quest.MasterPricing.Services.Data.Database
         }
         private questStatus delete(MasterPricingEntities dbContext, ColumnId columnId)
         {
-            // Initialize 
-            questStatus status = null;
-
-
             try
             {
-                // Read the record.
-                Quest.Services.Dbio.MasterPricing.Columns _columns = null;
-                status = read(dbContext, columnId, out _columns);
-                if (!questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
-
-                // Delete the record.
-                dbContext.Columns.Remove(_columns);
+                dbContext.Columns.RemoveRange(dbContext.Columns.Where(r => r.Id == columnId.Id));
                 dbContext.SaveChanges();
             }
             catch (System.Exception ex)
@@ -694,22 +681,9 @@ namespace Quest.MasterPricing.Services.Data.Database
         }
         private questStatus delete(MasterPricingEntities dbContext, TableId tableId)
         {
-            // Initialize 
-            questStatus status = null;
-
-
             try
             {
-                // Read all columns for this table.
-                List<Quest.Services.Dbio.MasterPricing.Columns> _columnsList = null;
-                status = read(dbContext, tableId, out _columnsList);
-                if (!questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
-
-                // Delete the records.
-                dbContext.Columns.RemoveRange(_columnsList);
+                dbContext.Columns.RemoveRange(dbContext.Columns.Where(r => r.EntityTypeId == EntityType.Table && r.EntityId == tableId.Id));
                 dbContext.SaveChanges();
             }
             catch (System.Exception ex)
@@ -722,22 +696,9 @@ namespace Quest.MasterPricing.Services.Data.Database
         }
         private questStatus delete(MasterPricingEntities dbContext, ViewId viewId)
         {
-            // Initialize 
-            questStatus status = null;
-
-
             try
             {
-                // Read all columns for this view.
-                List<Quest.Services.Dbio.MasterPricing.Columns> _columnsList = null;
-                status = read(dbContext, viewId, out _columnsList);
-                if (!questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
-
-                // Delete the records.
-                dbContext.Columns.RemoveRange(_columnsList);
+                dbContext.Columns.RemoveRange(dbContext.Columns.Where(r => r.EntityTypeId == EntityType.View && r.EntityId == viewId.Id));
                 dbContext.SaveChanges();
             }
             catch (System.Exception ex)

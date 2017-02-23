@@ -36,3 +36,7 @@
 	color: silver;
 	cursor: not-allowed;
 }
+
+.treeview ul.list-group li.node-selected:hover  {
+    background-color: #68A3D4 !important;
+}

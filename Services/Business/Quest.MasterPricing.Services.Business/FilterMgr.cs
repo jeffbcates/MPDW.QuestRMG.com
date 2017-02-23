@@ -577,6 +577,36 @@ namespace Quest.MasterPricing.Services.Business.Filters
             }
             return (new questStatus(Severity.Success));
         }
+        
+        public questStatus Read(DbMgrTransaction trans, TablesetId tablesetId, out List<Filter> filterList)
+        {
+            // Initialize
+            questStatus status = null;
+            filterList = null;
+
+            // Get all filters for this tableset.
+            DbFilterMgr dbFilterMgr = new DbFilterMgr(this.UserSession);
+            status = dbFilterMgr.Read(trans, tablesetId, out filterList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus Delete(DbMgrTransaction trans, FilterId filterId)
+        {
+            // Initialize
+            questStatus status = null;
+
+            // TODO: DELETE ALL STUFF WITH A FILTER.
+            DbFilterMgr dbFilterMgr = new DbFilterMgr(this.UserSession);
+            status = dbFilterMgr.Delete(trans, filterId);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
         #endregion
 
 

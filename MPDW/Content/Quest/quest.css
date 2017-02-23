@@ -671,7 +671,7 @@ pnlbtn:active {
     list-style: none;
 }
 .modal {
-    z-index: 10000 !important;
+    z-index: 100000 !important;
 }
 
 

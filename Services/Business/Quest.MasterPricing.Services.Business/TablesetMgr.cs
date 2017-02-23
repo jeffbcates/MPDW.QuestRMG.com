@@ -16,6 +16,7 @@ using Quest.MPDW.Services.Data;
 using Quest.MPDW.Services.Business;
 using Quest.MasterPricing.Services.Data.Database;
 using Quest.MasterPricing.Services.Business.Database;
+using Quest.MasterPricing.Services.Business.Filters;
 
 
 namespace Quest.MasterPricing.Services.Business.Tablesets
@@ -145,14 +146,13 @@ namespace Quest.MasterPricing.Services.Business.Tablesets
             // Initialize 
             questStatus status = null;
             tablesetId = null;
-            Mgr mgr = new Mgr();
             DbMgrTransaction trans = null;
 
 
             try
             {
                 // BEGIN TRANSACTION
-                status = mgr.BeginTransaction("SaveTablesetConfiguration" + Guid.NewGuid().ToString(), out trans);
+                status = BeginTransaction("SaveTablesetConfiguration" + Guid.NewGuid().ToString(), out trans);
                 if (!questStatusDef.IsSuccess(status))
                 {
                     return (status);
@@ -169,7 +169,7 @@ namespace Quest.MasterPricing.Services.Business.Tablesets
                 status = tablesetsMgr.Read(trans, _tablesetId, out _tableset);
                 if (!questStatusDef.IsSuccess(status))
                 {
-                    mgr.RollbackTransaction(trans);
+                    RollbackTransaction(trans);
                     return (status);
                 }
 
@@ -180,7 +180,7 @@ namespace Quest.MasterPricing.Services.Business.Tablesets
                 status = ClearTablesetEntities(trans, _tablesetId);
                 if (!questStatusDef.IsSuccess(status))
                 {
-                    mgr.RollbackTransaction(trans);
+                    RollbackTransaction(trans);
                     return (status);
                 }
 
@@ -194,7 +194,7 @@ namespace Quest.MasterPricing.Services.Business.Tablesets
                 status = databaseMgr.ReadDatabaseEntities(databaseId, out databaseEntities);
                 if (!questStatusDef.IsSuccess(status))
                 {
-                    mgr.RollbackTransaction(trans);
+                    RollbackTransaction(trans);
                     return (status);
                 }
 
@@ -213,7 +213,7 @@ namespace Quest.MasterPricing.Services.Business.Tablesets
                     Table _table = databaseEntities.TableList.Find(delegate (Table t) { return t.Schema == tablesetTable.Schema && t.Name == tablesetTable.Name; });
                     if (_table == null)
                     {
-                        mgr.RollbackTransaction(trans);
+                        RollbackTransaction(trans);
                         return (new questStatus(Severity.Error, String.Format("ERROR: tableset table [{0}].[{1}] not found in database metainfo.  Try refreshing database schema info",
                                 tablesetTable.Schema, tablesetTable.Name)));
                     }
@@ -227,7 +227,7 @@ namespace Quest.MasterPricing.Services.Business.Tablesets
                     status = dbTablesetTablesMgr.Create(trans, tablesetTable, out tablesetTableId);
                     if (!questStatusDef.IsSuccess(status))
                     {
-                        mgr.RollbackTransaction(trans);
+                        RollbackTransaction(trans);
                         return (status);
                     }
 
@@ -236,7 +236,7 @@ namespace Quest.MasterPricing.Services.Business.Tablesets
                         Column _column = _table.ColumnList.Find(delegate (Column c) { return c.Name == column.Name; });
                         if (_column == null)
                         {
-                            mgr.RollbackTransaction(trans);
+                            RollbackTransaction(trans);
                             return (new questStatus(Severity.Error, String.Format("ERROR: column [{0}] not found in table [{1}].[{2}] in database metainfo.  Try refreshing database schema info",
                                     column.Name, _table.Schema, _table.Name)));
                         }
@@ -250,7 +250,7 @@ namespace Quest.MasterPricing.Services.Business.Tablesets
                         status = dbTablesetColumnsMgr.Create(trans, tablesetColumn, out tablesetColumnId);
                         if (!questStatusDef.IsSuccess(status))
                         {
-                            mgr.RollbackTransaction(trans);
+                            RollbackTransaction(trans);
                             return (status);
                         }
                     }
@@ -264,7 +264,7 @@ namespace Quest.MasterPricing.Services.Business.Tablesets
                     View _view = databaseEntities.ViewList.Find(delegate (View v) { return v.Schema == tablesetView.Schema && v.Name == tablesetView.Name; });
                     if (_view == null)
                     {
-                        mgr.RollbackTransaction(trans);
+                        RollbackTransaction(trans);
                         return (new questStatus(Severity.Error, String.Format("ERROR: tableset view [{0}].[{1}] not found in database metainfo.  Try refreshing database schema info",
                                 tablesetView.Schema, tablesetView.Name)));
                     }
@@ -277,7 +277,7 @@ namespace Quest.MasterPricing.Services.Business.Tablesets
                     status = dbTablesetViewsMgr.Create(trans, tablesetView, out tablesetViewId);
                     if (!questStatusDef.IsSuccess(status))
                     {
-                        mgr.RollbackTransaction(trans);
+                        RollbackTransaction(trans);
                         return (status);
                     }
 
@@ -286,7 +286,7 @@ namespace Quest.MasterPricing.Services.Business.Tablesets
                         Column _column = _view.ColumnList.Find(delegate (Column c) { return c.Name == column.Name; });
                         if (_column == null)
                         {
-                            mgr.RollbackTransaction(trans);
+                            RollbackTransaction(trans);
                             return (new questStatus(Severity.Error, String.Format("ERROR: column [{0}] not found in view [{1}].[{2}] in database metainfo.  Try refreshing database schema info",
                                     column.Name, _view.Schema, _view.Name)));
                         }
@@ -300,7 +300,7 @@ namespace Quest.MasterPricing.Services.Business.Tablesets
                         status = dbTablesetColumnsMgr.Create(trans, tablesetColumn, out tablesetColumnId);
                         if (!questStatusDef.IsSuccess(status))
                         {
-                            mgr.RollbackTransaction(trans);
+                            RollbackTransaction(trans);
                             return (status);
                         }
                     }
@@ -313,13 +313,13 @@ namespace Quest.MasterPricing.Services.Business.Tablesets
                 status = tablesetsMgr.Update(trans, _tableset);
                 if (!questStatusDef.IsSuccess(status))
                 {
-                    mgr.RollbackTransaction(trans);
+                    RollbackTransaction(trans);
                     return (status);
                 }
 
 
                 // COMMIT TRANSACTION
-                status = mgr.CommitTransaction(trans);
+                status = CommitTransaction(trans);
                 if (!questStatusDef.IsSuccess(status))
                 {
                     return (status);
@@ -332,7 +332,7 @@ namespace Quest.MasterPricing.Services.Business.Tablesets
             {
                 if (trans != null)
                 {
-                    mgr.RollbackTransaction(trans);
+                    RollbackTransaction(trans);
                 }
                 return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                         this.GetType().Name, MethodBase.GetCurrentMethod().Name,
@@ -419,6 +419,77 @@ namespace Quest.MasterPricing.Services.Business.Tablesets
                 }
             }
             dbTablesetViewsMgr.Delete(trans, tablesetId);
+
+
+            return (new questStatus(Severity.Success));
+        }
+        
+        public questStatus Delete(TablesetId tablesetId)
+        {
+            // Initialize
+            questStatus status = null;
+            DbMgrTransaction trans = null;
+
+
+            // BEGIN TRANSACTION
+            status = BeginTransaction("DeleteTableset_" + Guid.NewGuid().ToString(), out trans);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+
+            try
+            {
+                // Get all filters
+                List<Filter> filterList = null;
+                FilterMgr filterMgr = new FilterMgr(this.UserSession);
+                status = filterMgr.Read(trans, tablesetId, out filterList);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    RollbackTransaction(trans);
+                    return (status);
+                }
+              
+                // Delete tableset filters
+                foreach (Filter filter in filterList)
+                {
+                    FilterId filterId = new FilterId(filter.Id);
+                    status = filterMgr.Delete(trans, filterId);
+                    if (!questStatusDef.IsSuccess(status))
+                    {
+                        RollbackTransaction(trans);
+                        return (status);
+                    }
+                }
+
+                // Delete Tableset
+                DbTablesetsMgr dbTablesetsMgr = new DbTablesetsMgr(this.UserSession);
+                status = dbTablesetsMgr.Delete(tablesetId);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    RollbackTransaction(trans);
+                    return (status);
+                }
+
+
+                // COMMIT TRANSACTION
+                status = CommitTransaction(trans);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+            }
+            catch (System.Exception ex)
+            {
+                if (trans != null)
+                {
+                    RollbackTransaction(trans);
+                }
+                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                        this.GetType().Name, MethodBase.GetCurrentMethod().Name,
+                        ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+            }
 
 
             return (new questStatus(Severity.Success));

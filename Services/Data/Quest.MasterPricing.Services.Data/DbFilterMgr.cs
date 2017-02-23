@@ -585,8 +585,6 @@ namespace Quest.MasterPricing.Services.Data.Filters
         #endregion
 
 
-
-
         public questStatus LoadFilterColumnMetadata(DatabaseId databaseId, TablesetId tablesetId, FilterColumn filterColumn)
         {
             // Initialize
@@ -1096,7 +1094,31 @@ namespace Quest.MasterPricing.Services.Data.Filters
                 return (status);
             }
 
-            // Call transaction-based method
+
+            // Delete the filter.
+            status = Delete(trans, filterId);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                RollbackTransaction(trans);
+                return (status);
+            }
+
+
+            // COMMIT TRANSACTION
+            status = CommitTransaction(trans);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus Delete(DbMgrTransaction trans, FilterId filterId)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            // Clear the filter.
             status = Clear(trans, filterId);
             if (!questStatusDef.IsSuccess(status))
             {
@@ -1112,17 +1134,26 @@ namespace Quest.MasterPricing.Services.Data.Filters
                 RollbackTransaction(trans);
                 return (status);
             }
+            return (new questStatus(Severity.Success));
+        }
+        #endregion
 
-            // COMMIT TRANSACTION
-            status = CommitTransaction(trans);
-            if (!questStatusDef.IsSuccess(status))
+        public questStatus Read(DbMgrTransaction trans, TablesetId tablesetId, out List<Filter> filterList)
+        {
+            // Initialize
+            questStatus status = null;
+            filterList = null;
+
+
+            // Get all filters for this tableset.
+            DbFiltersMgr dbFiltersMgr = new DbFiltersMgr(this.UserSession);
+            status = dbFiltersMgr.Read(trans, tablesetId, out filterList);
+            if (! questStatusDef.IsSuccess(status))
             {
                 return (status);
             }
             return (new questStatus(Severity.Success));
         }
-        #endregion
-
         #endregion
 
 

@@ -563,22 +563,9 @@ namespace Quest.MasterPricing.Services.Data.Database
         }
         private questStatus delete(MasterPricingEntities dbContext, ViewId viewId)
         {
-            // Initialize 
-            questStatus status = null;
-
-
             try
             {
-                // Read the record.
-                Quest.Services.Dbio.MasterPricing.Views _view = null;
-                status = read(dbContext, viewId, out _view);
-                if (!questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
-
-                // Delete the record.
-                dbContext.Views.Remove(_view);
+                dbContext.Views.RemoveRange(dbContext.Views.Where(r => r.Id == viewId.Id));
                 dbContext.SaveChanges();
             }
             catch (System.Exception ex)
@@ -591,22 +578,9 @@ namespace Quest.MasterPricing.Services.Data.Database
         }
         private questStatus delete(MasterPricingEntities dbContext, DatabaseId databaseId)
         {
-            // Initialize 
-            questStatus status = null;
-
-
             try
             {
-                // Read the record.
-                List<Quest.Services.Dbio.MasterPricing.Views> _viewsList = null;
-                status = read(dbContext, databaseId, out _viewsList);
-                if (!questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
-
-                // Delete the records.
-                dbContext.Views.RemoveRange(_viewsList);
+                dbContext.Views.RemoveRange(dbContext.Views.Where(r => r.DatabaseId == databaseId.Id));
                 dbContext.SaveChanges();
             }
             catch (System.Exception ex)

@@ -496,7 +496,7 @@
             bNoUserMessages: true,
             events: [
                 { name: 'AfterLoaded', callback: cbTvwTablesetEntitiesAfterLoaded },
-                { name: 'NodeSelected', callback: cbTvwTablesetEntitiesNodeSelected },
+                ////{ name: 'NodeSelected', callback: cbTvwTablesetEntitiesNodeSelected },
                 { name: 'OnTreeRender', callback: cbOnTvwTablesetEntitiesRender },
                 { name: 'OnDrop', callback: cbTvwTablesetEntitiesOnDrop },
                 { name: 'Refresh', callback: cbTvwTablesetEntitiesRefresh },
@@ -517,9 +517,9 @@
     }
     function cbTvwTablesetEntitiesAfterLoaded() {
     }
-    function cbTvwTablesetEntitiesNodeSelected(evt, d, e) {
-        ////e.stopPropagation();
-    }
+    ////function cbTvwTablesetEntitiesNodeSelected(evt, d, e) {
+    ////    ////e.stopPropagation();
+    ////}
     function cbOnTvwTablesetEntitiesRender(e) {
         if (!_tvwTablesetEntities) { return; }
         $(_tvwTablesetEntities._e + ' ul li span.fa-table').closest('li').addClass('tvwTable');
