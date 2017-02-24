@@ -220,7 +220,7 @@ function qrmgForm(model) {
     }
     _self._rdroas = function () {
         var _h = [], _i = 0;
-        _h[_i++] = '<div class="avopsacts">';
+        _h[_i++] = '<div class="avopsactst">';
         $.each(_self._model.operations, function (i, o) {
             _h[_i++] = _self._rdroa(o);
         });

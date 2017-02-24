@@ -30,7 +30,7 @@ function qrmgMainMenu(model) {
         o.Label = o.Label ? o.Label : o.Name;
         var _h = [], _i = 0;
         _h[_i++] = '<li>';
-        _h[_i++] = '<a id="' + o._id + '" href="' + o.Uri + '" class="page-scroll">' + o.Label + '</a>';
+        _h[_i++] = '<a id="' + o._id + '" href="' + o.Uri + '" class="page-scroll ' + (o.bCurrentItem ? 'currentMenuItem' : '') + '">' + o.Label + '</a>';
 
         _h[_i++] = '</li>';
         return (_h.join(''));

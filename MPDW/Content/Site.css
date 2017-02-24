@@ -169,6 +169,21 @@ body {
     margin-left: 10px;
 }
 
+.avopsactst {
+  background-color: #ffffff;
+  display: block;
+  height: 70px;
+  left: 31px;
+  padding-top: 20px;
+  position: fixed;
+  right: 0;
+  text-align: center;
+  z-index: 2;
+}
+.avopsactst button {
+    margin-left: 10px;
+}
+
 .pnlfrmbtns {
   background-color: #ffffff;
   bottom: 50px;
