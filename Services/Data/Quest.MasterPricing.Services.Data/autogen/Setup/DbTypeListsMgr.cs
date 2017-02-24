@@ -87,7 +87,7 @@ namespace Quest.MasterPricing.Services.Data.Database
 
             // Create the typeList in this transaction.
             status = create((MasterPricingEntities)trans.DbContext, typeList, out typeListId);
-            if (! questStatusDef.IsSuccess(status))
+            if (!questStatusDef.IsSuccess(status))
             {
                 return (status);
             }
@@ -147,7 +147,7 @@ namespace Quest.MasterPricing.Services.Data.Database
             {
                 Quest.Services.Dbio.MasterPricing.TypeLists _typeList = null;
                 status = read((MasterPricingEntities)trans.DbContext, typeListId, out _typeList);
-                if (! questStatusDef.IsSuccess(status))
+                if (!questStatusDef.IsSuccess(status))
                 {
                     return (status);
                 }
@@ -214,7 +214,7 @@ namespace Quest.MasterPricing.Services.Data.Database
 
             // Perform delete in this transaction.
             status = delete((MasterPricingEntities)trans.DbContext, typeListId);
-            if (! questStatusDef.IsSuccess(status))
+            if (!questStatusDef.IsSuccess(status))
             {
                 RollbackTransaction(trans);
                 return (status);
@@ -383,7 +383,7 @@ namespace Quest.MasterPricing.Services.Data.Database
                 TypeListId typeListId = new TypeListId(typeList.Id);
                 Quest.Services.Dbio.MasterPricing.TypeLists _typeList = null;
                 status = read(dbContext, typeListId, out _typeList);
-                if (! questStatusDef.IsSuccess(status))
+                if (!questStatusDef.IsSuccess(status))
                 {
                     return (status);
                 }
@@ -402,9 +402,22 @@ namespace Quest.MasterPricing.Services.Data.Database
         }
         private questStatus delete(MasterPricingEntities dbContext, TypeListId typeListId)
         {
+            // Initialize 
+            questStatus status = null;
+
+
             try
             {
-                dbContext.TypeLists.RemoveRange(dbContext.TypeLists.Where(r => r.Id == typeListId.Id));
+                // Read the record.
+                Quest.Services.Dbio.MasterPricing.TypeLists _typeList = null;
+                status = read(dbContext, typeListId, out _typeList);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+
+                // Delete the record.
+                dbContext.TypeLists.Remove(_typeList);
                 dbContext.SaveChanges();
             }
             catch (System.Exception ex)

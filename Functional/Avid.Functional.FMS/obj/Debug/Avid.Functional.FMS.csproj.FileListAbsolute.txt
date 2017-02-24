@@ -12,12 +12,3 @@ C:\temp\FMS\FMS\Functional\Avid.Functional.FMS\bin\Debug\Avid.Util.Data.pdb
 C:\temp\FMS\FMS\Functional\Avid.Functional.FMS\obj\Debug\Avid.Functional.FMS.csprojResolveAssemblyReference.cache
 C:\temp\FMS\FMS\Functional\Avid.Functional.FMS\obj\Debug\Avid.Functional.FMS.dll
 C:\temp\FMS\FMS\Functional\Avid.Functional.FMS\obj\Debug\Avid.Functional.FMS.pdb
-C:\Quest\src\MPDW\Functional\Avid.Functional.FMS\bin\Debug\Avid.Functional.FMS.dll
-C:\Quest\src\MPDW\Functional\Avid.Functional.FMS\bin\Debug\Avid.Functional.FMS.pdb
-C:\Quest\src\MPDW\Functional\Avid.Functional.FMS\bin\Debug\Quest.Functional.ASM.dll
-C:\Quest\src\MPDW\Functional\Avid.Functional.FMS\bin\Debug\Quest.Util.Data.dll
-C:\Quest\src\MPDW\Functional\Avid.Functional.FMS\bin\Debug\Quest.Util.Data.pdb
-C:\Quest\src\MPDW\Functional\Avid.Functional.FMS\bin\Debug\Quest.Functional.ASM.pdb
-C:\Quest\src\MPDW\Functional\Avid.Functional.FMS\obj\Debug\Avid.Functional.FMS.csprojResolveAssemblyReference.cache
-C:\Quest\src\MPDW\Functional\Avid.Functional.FMS\obj\Debug\Avid.Functional.FMS.dll
-C:\Quest\src\MPDW\Functional\Avid.Functional.FMS\obj\Debug\Avid.Functional.FMS.pdb

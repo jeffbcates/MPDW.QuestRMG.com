@@ -87,7 +87,7 @@ namespace Quest.MasterPricing.Services.Data.Database
 
             // Create the table in this transaction.
             status = create((MasterPricingEntities)trans.DbContext, table, out tableId);
-            if (! questStatusDef.IsSuccess(status))
+            if (!questStatusDef.IsSuccess(status))
             {
                 return (status);
             }
@@ -173,7 +173,7 @@ namespace Quest.MasterPricing.Services.Data.Database
                 Quest.Functional.MasterPricing.Table table = new Table();
                 BufferMgr.TransferBuffer(_table, table);
                 tableList.Add(table);
-            }         
+            }
             return (new questStatus(Severity.Success));
         }
         public questStatus Read(DatabaseId databaseId, out List<Quest.Functional.MasterPricing.Table> tableList)
@@ -212,13 +212,13 @@ namespace Quest.MasterPricing.Services.Data.Database
             // Perform read.
             Quest.Services.Dbio.MasterPricing.Tables _table = null;
             status = read((MasterPricingEntities)trans.DbContext, tableId, out _table);
-            if (! questStatusDef.IsSuccess(status))
+            if (!questStatusDef.IsSuccess(status))
             {
                 return (status);
             }
             table = new Quest.Functional.MasterPricing.Table();
             BufferMgr.TransferBuffer(_table, table);
-            
+
             return (new questStatus(Severity.Success));
         }
         public questStatus Update(Quest.Functional.MasterPricing.Table table)
@@ -279,7 +279,7 @@ namespace Quest.MasterPricing.Services.Data.Database
 
             // Perform delete in this transaction.
             status = delete((MasterPricingEntities)trans.DbContext, tableId);
-            if (! questStatusDef.IsSuccess(status))
+            if (!questStatusDef.IsSuccess(status))
             {
                 RollbackTransaction(trans);
                 return (status);
@@ -543,7 +543,7 @@ namespace Quest.MasterPricing.Services.Data.Database
                 TableId tableId = new TableId(table.Id);
                 Quest.Services.Dbio.MasterPricing.Tables _table = null;
                 status = read(dbContext, tableId, out _table);
-                if (! questStatusDef.IsSuccess(status))
+                if (!questStatusDef.IsSuccess(status))
                 {
                     return (status);
                 }
@@ -562,9 +562,22 @@ namespace Quest.MasterPricing.Services.Data.Database
         }
         private questStatus delete(MasterPricingEntities dbContext, TableId tableId)
         {
+            // Initialize 
+            questStatus status = null;
+
+
             try
             {
-                dbContext.Tables.RemoveRange(dbContext.Tables.Where(r => r.Id == tableId.Id));
+                // Read the record.
+                Quest.Services.Dbio.MasterPricing.Tables _table = null;
+                status = read(dbContext, tableId, out _table);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+
+                // Delete the record.
+                dbContext.Tables.Remove(_table);
                 dbContext.SaveChanges();
             }
             catch (System.Exception ex)
@@ -577,9 +590,22 @@ namespace Quest.MasterPricing.Services.Data.Database
         }
         private questStatus delete(MasterPricingEntities dbContext, DatabaseId databaseId)
         {
+            // Initialize 
+            questStatus status = null;
+
+
             try
             {
-                dbContext.Tables.RemoveRange(dbContext.Tables.Where(r => r.DatabaseId == databaseId.Id));
+                // Read the record.
+                List<Quest.Services.Dbio.MasterPricing.Tables> _tablesList = null;
+                status = read(dbContext, databaseId, out _tablesList);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+
+                // Delete the record.
+                dbContext.Tables.RemoveRange(_tablesList);
                 dbContext.SaveChanges();
             }
             catch (System.Exception ex)

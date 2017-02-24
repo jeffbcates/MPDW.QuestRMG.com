@@ -513,9 +513,22 @@ namespace Quest.MasterPricing.Services.Data.Database
         }
         private questStatus delete(MasterPricingEntities dbContext, StoredProcedureParameterId storedProcedureParameterId)
         {
+            // Initialize 
+            questStatus status = null;
+
+
             try
             {
-                dbContext.StoredProcedureParameters.RemoveRange(dbContext.StoredProcedureParameters.Where(r => r.Id == storedProcedureParameterId.Id));
+                // Read the record.
+                Quest.Services.Dbio.MasterPricing.StoredProcedureParameters _storedProcedureParameters = null;
+                status = read(dbContext, storedProcedureParameterId, out _storedProcedureParameters);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+
+                // Delete the record.
+                dbContext.StoredProcedureParameters.Remove(_storedProcedureParameters);
                 dbContext.SaveChanges();
             }
             catch (System.Exception ex)
@@ -528,9 +541,22 @@ namespace Quest.MasterPricing.Services.Data.Database
         }
         private questStatus delete(MasterPricingEntities dbContext, StoredProcedureId storedProcedureId)
         {
+            // Initialize 
+            questStatus status = null;
+
+
             try
             {
-                dbContext.StoredProcedureParameters.RemoveRange(dbContext.StoredProcedureParameters.Where(r => r.StoredProcedureId == storedProcedureId.Id));
+                // Read all storedProcedureParameters for this storedProcedure.
+                List<Quest.Services.Dbio.MasterPricing.StoredProcedureParameters> _storedProcedureParametersList = null;
+                status = read(dbContext, storedProcedureId, out _storedProcedureParametersList);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+
+                // Delete the records.
+                dbContext.StoredProcedureParameters.RemoveRange(_storedProcedureParametersList);
                 dbContext.SaveChanges();
             }
             catch (System.Exception ex)

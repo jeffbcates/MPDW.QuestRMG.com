@@ -87,7 +87,7 @@ namespace Quest.MasterPricing.Services.Data.Database
 
             // Create the lookup in this transaction.
             status = create((MasterPricingEntities)trans.DbContext, lookup, out lookupId);
-            if (! questStatusDef.IsSuccess(status))
+            if (!questStatusDef.IsSuccess(status))
             {
                 return (status);
             }
@@ -147,7 +147,7 @@ namespace Quest.MasterPricing.Services.Data.Database
             {
                 Quest.Services.Dbio.MasterPricing.Lookups _lookup = null;
                 status = read((MasterPricingEntities)trans.DbContext, lookupId, out _lookup);
-                if (! questStatusDef.IsSuccess(status))
+                if (!questStatusDef.IsSuccess(status))
                 {
                     return (status);
                 }
@@ -214,7 +214,7 @@ namespace Quest.MasterPricing.Services.Data.Database
 
             // Perform delete in this transaction.
             status = delete((MasterPricingEntities)trans.DbContext, lookupId);
-            if (! questStatusDef.IsSuccess(status))
+            if (!questStatusDef.IsSuccess(status))
             {
                 RollbackTransaction(trans);
                 return (status);
@@ -383,7 +383,7 @@ namespace Quest.MasterPricing.Services.Data.Database
                 LookupId lookupId = new LookupId(lookup.Id);
                 Quest.Services.Dbio.MasterPricing.Lookups _lookup = null;
                 status = read(dbContext, lookupId, out _lookup);
-                if (! questStatusDef.IsSuccess(status))
+                if (!questStatusDef.IsSuccess(status))
                 {
                     return (status);
                 }
@@ -402,9 +402,22 @@ namespace Quest.MasterPricing.Services.Data.Database
         }
         private questStatus delete(MasterPricingEntities dbContext, LookupId lookupId)
         {
+            // Initialize 
+            questStatus status = null;
+
+
             try
             {
-                dbContext.Lookups.RemoveRange(dbContext.Lookups.Where(r => r.Id == lookupId.Id));
+                // Read the record.
+                Quest.Services.Dbio.MasterPricing.Lookups _lookup = null;
+                status = read(dbContext, lookupId, out _lookup);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+
+                // Delete the record.
+                dbContext.Lookups.Remove(_lookup);
                 dbContext.SaveChanges();
             }
             catch (System.Exception ex)

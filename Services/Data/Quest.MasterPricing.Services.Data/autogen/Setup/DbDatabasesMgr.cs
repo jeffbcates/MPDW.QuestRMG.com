@@ -87,7 +87,7 @@ namespace Quest.MasterPricing.Services.Data.Database
 
             // Create the database in this transaction.
             status = create((MasterPricingEntities)trans.DbContext, database, out databaseId);
-            if (! questStatusDef.IsSuccess(status))
+            if (!questStatusDef.IsSuccess(status))
             {
                 return (status);
             }
@@ -147,7 +147,7 @@ namespace Quest.MasterPricing.Services.Data.Database
             {
                 Quest.Services.Dbio.MasterPricing.Databases _database = null;
                 status = read((MasterPricingEntities)trans.DbContext, databaseId, out _database);
-                if (! questStatusDef.IsSuccess(status))
+                if (!questStatusDef.IsSuccess(status))
                 {
                     return (status);
                 }
@@ -214,7 +214,7 @@ namespace Quest.MasterPricing.Services.Data.Database
 
             // Perform delete in this transaction.
             status = delete((MasterPricingEntities)trans.DbContext, databaseId);
-            if (! questStatusDef.IsSuccess(status))
+            if (!questStatusDef.IsSuccess(status))
             {
                 RollbackTransaction(trans);
                 return (status);
@@ -383,7 +383,7 @@ namespace Quest.MasterPricing.Services.Data.Database
                 DatabaseId databaseId = new DatabaseId(database.Id);
                 Quest.Services.Dbio.MasterPricing.Databases _database = null;
                 status = read(dbContext, databaseId, out _database);
-                if (! questStatusDef.IsSuccess(status))
+                if (!questStatusDef.IsSuccess(status))
                 {
                     return (status);
                 }
@@ -402,9 +402,22 @@ namespace Quest.MasterPricing.Services.Data.Database
         }
         private questStatus delete(MasterPricingEntities dbContext, Quest.Functional.MasterPricing.DatabaseId databaseId)
         {
+            // Initialize 
+            questStatus status = null;
+
+
             try
             {
-                dbContext.Databases.RemoveRange(dbContext.Databases.Where(r => r.Id == databaseId.Id));
+                // Read the record.
+                Quest.Services.Dbio.MasterPricing.Databases _database = null;
+                status = read(dbContext, databaseId, out _database);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+
+                // Delete the record.
+                dbContext.Databases.Remove(_database);
                 dbContext.SaveChanges();
             }
             catch (System.Exception ex)

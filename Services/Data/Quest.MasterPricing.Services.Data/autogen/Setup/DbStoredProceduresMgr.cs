@@ -513,9 +513,31 @@ namespace Quest.MasterPricing.Services.Data.Database
         }
         private questStatus delete(MasterPricingEntities dbContext, StoredProcedureId storedProcedureId)
         {
+            // Initialize 
+            questStatus status = null;
+
+
             try
             {
-                dbContext.StoredProcedures.RemoveRange(dbContext.StoredProcedures.Where(r => r.Id == storedProcedureId.Id));
+                // Read the record.
+                Quest.Services.Dbio.MasterPricing.StoredProcedures _storedProcedures = null;
+                status = read(dbContext, storedProcedureId, out _storedProcedures);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+
+                ////// Delete parameters.
+                ////DbStoredProcedureParametersMgr dbStoredProcedureParametersMgr = new DbStoredProcedureParametersMgr(this.UserSession);
+                ////status = dbStoredProcedureParametersMgr.Delete(storedProcedureId);
+                ////if (!questStatusDef.IsSuccess(status))
+                ////{
+                ////    return (status);
+                ////}
+
+
+                // Delete the record.
+                dbContext.StoredProcedures.Remove(_storedProcedures);
                 dbContext.SaveChanges();
             }
             catch (System.Exception ex)
@@ -528,9 +550,34 @@ namespace Quest.MasterPricing.Services.Data.Database
         }
         private questStatus delete(MasterPricingEntities dbContext, DatabaseId databaseId)
         {
+            // Initialize 
+            questStatus status = null;
+
+
             try
             {
-                dbContext.StoredProcedures.RemoveRange(dbContext.StoredProcedures.Where(r => r.DatabaseId == databaseId.Id));
+                // Read all storedProcedures for this stored.
+                List<Quest.Services.Dbio.MasterPricing.StoredProcedures> _storedProceduresList = null;
+                status = read(dbContext, databaseId, out _storedProceduresList);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+
+                // Delete their parameters.
+                DbStoredProcedureParametersMgr dbStoredProcedureParametersMgr = new DbStoredProcedureParametersMgr(this.UserSession);
+                foreach (Quest.Services.Dbio.MasterPricing.StoredProcedures _storedProcedure in _storedProceduresList)
+                {
+                    StoredProcedureId storedProcedureId = new StoredProcedureId(_storedProcedure.Id);
+                    status = dbStoredProcedureParametersMgr.Delete(storedProcedureId);
+                    if (!questStatusDef.IsSuccess(status))
+                    {
+                        return (status);
+                    }
+                }
+
+                // Delete the records.
+                dbContext.StoredProcedures.RemoveRange(_storedProceduresList);
                 dbContext.SaveChanges();
             }
             catch (System.Exception ex)
