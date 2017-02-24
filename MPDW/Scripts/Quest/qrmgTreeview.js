@@ -513,8 +513,11 @@ function qrmgTreeview(model) {
         $.each(_self._tvw.Nodes, function (i, n) {
             if (itm.Entity.type == n.type && itm.Entity.Name == n.Name) {
                 if (itm.ParentEntity.type == n.parentType) {
-                    _n = n;
-                    return (false);
+                    var pn = _self.GetNode(n.ParentId);
+                    if (itm.ParentEntity.Name == pn.Name) {
+                        _n = n;
+                        return (false);
+                    }
                 }
             }
         });

@@ -186,7 +186,7 @@ namespace Quest.MasterPricing.Services.Data.Filters
 
                     if (fedx > 0)
                     {
-                        sbFROM.Append(",");
+                        sbFROM.Append("        ,");
                     }
 
                     if (filterEntity.Type.Id == FilterEntityType.Table)
@@ -213,68 +213,15 @@ namespace Quest.MasterPricing.Services.Data.Filters
 
 
             // Append JOINs onto FROM clause
-            try
+            List<string> joinClauseList = null;
+            status = buildJOINclauses(filter, FROMEntityList, joinEntityList, out joinClauseList);
+            if (!questStatusDef.IsSuccess(status))
             {
-                int joinEntityAcronymSuffix = FROMEntityList.Count + 1;
-                foreach (JoinEntity joinEntity in joinEntityList)
-                {
-                    // Get the source entity's alias
-                    FilterEntity filterEntity = null;
-                    if (joinEntity.FilterItem.FilterColumn.FilterEntityTypeId == FilterEntityType.Table)
-                    {
-
-                        filterEntity = FROMEntityList.Find(delegate (FilterEntity e) 
-                        {
-                            return e.FilterTable != null && joinEntity.FilterItem.JoinList[0].SourceSchema == e.FilterTable.Schema && joinEntity.FilterItem.JoinList[0].SourceEntityName == e.FilterTable.Name;
-                        });
-                        if (filterEntity == null)
-                        {
-                            return (new questStatus(Severity.Error, String.Format("ERROR: FilterEntity not found for joined column (table).  FilterItem {0}  FilterEntityId: {1}",
-                                    joinEntity.FilterItem.Identifier, joinEntity.FilterItem.FilterColumn.FilterEntityId)));
-                        }
-                    }
-                    else if (joinEntity.FilterItem.FilterColumn.FilterEntityTypeId == FilterEntityType.View)
-                    {
-                        filterEntity = FROMEntityList.Find(delegate (FilterEntity e) 
-                        {
-                            return e.FilterView != null && joinEntity.FilterItem.JoinList[0].SourceSchema == e.FilterView.Schema && joinEntity.FilterItem.JoinList[0].SourceEntityName == e.FilterView.Name;
-                        });
-
-                        if (filterEntity == null)
-                        {
-                            return (new questStatus(Severity.Error, String.Format("ERROR: FilterEntity not found for joined column (table).  FilterItem {0}  FilterEntityId: {1}",
-                                    joinEntity.FilterItem.Identifier, joinEntity.FilterItem.FilterColumn.FilterEntityId)));
-                        }
-                    }
-
-                    // Output JOIN SQL
-                    // NOTE: THIS DOESN'T REALLY SUPPORT MULTI-JOINS YET.  ALIASES NEED TO BE AT FilterItemJoin LEVEL.
-                    FilterItemJoin filterItemJoin = joinEntity.FilterItem.JoinList[0];
-                    sbFROM.AppendLine("    " + filterItemJoin.JoinType + " " + BracketIdentifier(filterItemJoin.TargetSchema) + "." + BracketIdentifier(filterItemJoin.TargetEntityName) + " " + joinEntity.Alias
-                            + " ON " + joinEntity.Alias + "." + filterItemJoin.TargetColumnName + " = " + filterEntity.Alias + "." + filterItemJoin.SourceColumnName);
-                }
+                return (status);
             }
-            catch (System.Exception ex)
+            foreach (string joinClause in joinClauseList)
             {
-                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: generating filter SQL: appending JOINs onto FROM clause: {0}",
-                    ex.Message)));
-            }
-
-
-            // Build FROM clause
-            string FROMClauseCompare = null;
-            try
-            {
-                status = BuildFROMClause(filter, out FROMClauseCompare);
-                if (!questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
-            }
-            catch (System.Exception ex)
-            {
-                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: generating filter SQL building FROM clause: {0}",
-                    ex.Message)));
+                sbFROM.AppendLine(joinClause);
             }
 
 
@@ -1117,27 +1064,56 @@ namespace Quest.MasterPricing.Services.Data.Filters
         {
             // Initialize
             normalizedFROMEntityList = new List<FilterEntity>();
-
-
-            foreach (FilterTable filterTable in filter.FilterTableList)
-            {
-                FilterEntity filterEntity = new FilterEntity();
-                filterEntity.Type.Id = FilterEntityType.Table;
-                filterEntity.FilterTable = filterTable;
-                filterEntity.FilterView = null;
-                filterEntity.Alias = "T" + (normalizedFROMEntityList.Count + 1).ToString();
-                normalizedFROMEntityList.Add(filterEntity);
-            }
+            int numTables = 0;
             int numViews = 0;
-            foreach (FilterView filterView in filter.FilterViewList)
-            {
-                FilterEntity filterEntity = new FilterEntity();
-                filterEntity.Type.Id = FilterEntityType.View;
-                filterEntity.FilterTable = null;
-                filterEntity.FilterView = filterView;
-                filterEntity.Alias = "V" + (numViews + 1).ToString();
-                normalizedFROMEntityList.Add(filterEntity);
-                numViews += 1;
+
+            // Build normalized list of all the entities from which filter items are in.
+            for (int idx = 0; idx < filter.FilterItemList.Count; idx += 1)
+            { 
+                FilterItem filterItem = filter.FilterItemList[idx];
+                if (filterItem.FilterColumn.FilterEntityTypeId == FilterEntityType.Table)
+                {
+                    FilterTable filterTable = filter.FilterTableList.Find(delegate (FilterTable t) { return (t.Id == filterItem.FilterColumn.FilterEntityId); });
+                    if (filterTable == null)
+                    {
+                        return (new questStatus(Severity.Error, String.Format("ERROR: building FROM entities, filterItem #{0} FilterColumn.FilterEntityId {1} not in FilterTableList",
+                                idx+1, filterItem.FilterColumn.FilterEntityId)));
+                    }
+                    FilterEntity filterEntity = normalizedFROMEntityList.Find(delegate (FilterEntity fe) {
+                            return (fe.Type.Id == FilterEntityType.Table && fe.FilterTable.Schema == filterTable.Schema && fe.FilterTable.Name == filterTable.Name); });
+                    if (filterEntity == null)
+                    {
+                        numTables += 1;
+                        filterEntity = new FilterEntity();
+                        filterEntity.Type.Id = FilterEntityType.Table;
+                        filterEntity.FilterTable = filterTable;
+                        filterEntity.FilterView = null;
+                        filterEntity.Alias = "T" + (numTables).ToString();
+                        normalizedFROMEntityList.Add(filterEntity);
+                    }
+                }
+                else if (filterItem.FilterColumn.FilterEntityTypeId == FilterEntityType.View)
+                {
+                    FilterView filterView = filter.FilterViewList.Find(delegate (FilterView v) { return (v.Id == filterItem.FilterColumn.FilterEntityId); });
+                    if (filterView == null)
+                    {
+                        return (new questStatus(Severity.Error, String.Format("ERROR: building FROM entities, filterItem #{0} FilterColumn.FilterEntityId {1} not in FilterViewList",
+                                idx + 1, filterItem.FilterColumn.FilterEntityId)));
+                    }
+                    FilterEntity filterEntity = normalizedFROMEntityList.Find(delegate (FilterEntity fe) {
+                        return (fe.Type.Id == FilterEntityType.View && fe.FilterView.Schema == filterView.Schema && fe.FilterView.Name == filterView.Name);
+                    });
+                    if (filterEntity == null)
+                    {
+                        numViews += 1;
+                        filterEntity = new FilterEntity();
+                        filterEntity.Type.Id = FilterEntityType.View;
+                        filterEntity.FilterTable = null;
+                        filterEntity.FilterView = filterView;
+                        filterEntity.Alias = "V" + (numViews).ToString();
+                        normalizedFROMEntityList.Add(filterEntity);
+                    }
+                }
             }
             return (new questStatus(Severity.Success));
         }
@@ -1239,18 +1215,19 @@ namespace Quest.MasterPricing.Services.Data.Filters
             // Initialize
             aliasedJoinEntityList = new List<JoinEntity>();
 
-            int numJoins = 0;
+            int numJoinTables = 0;
+            int numJoinViews = 0;
             foreach (JoinEntity joinEntity in joinEntityList)
             {
                 if (joinEntity.Type.Id == FilterEntityType.Table)
                 {
-                    numJoins += 1;
-                    joinEntity.Alias = "JT" + numJoins.ToString();
+                    numJoinTables += 1;
+                    joinEntity.Alias = "JT" + numJoinTables.ToString();
                 }
                 else if (joinEntity.Type.Id == FilterEntityType.View)
                 {
-                    numJoins += 1;
-                    joinEntity.Alias = "JV" + numJoins.ToString();
+                    numJoinViews += 1;
+                    joinEntity.Alias = "JV" + numJoinViews.ToString();
                 }
                 aliasedJoinEntityList.Add(joinEntity);
             }
@@ -1423,42 +1400,89 @@ namespace Quest.MasterPricing.Services.Data.Filters
             return (new questStatus(Severity.Error, String.Format("FilterItemJoin {0} TablesetColumn not found", filterItemJoin.Id)));
         }
 
-        // TODO: OPTIMIZE ABOVE TO USE THESE BELOW.
-        ////////private questStatus getTableSetColumn(Filter filter, EntityTypeId entityTypeId, TablesetColumnId tablesetColumnId, out TablesetColumn tablesetColumn)
-        ////////{
-        ////////    // Initialize
-        ////////    tablesetColumn = null;
+        private questStatus buildJOINclauses(Filter filter, List<FilterEntity> FROMEntityList, List<JoinEntity> joinEntityList, out List<string> joinClauseList)
+        {
+            // Initialize
+            questStatus status = null;
+            joinClauseList = new List<string>();
 
-        ////////    if (entityTypeId.Id == EntityType.Table)
-        ////////    {
-        ////////        foreach (FilterTable filterTable in filter.FilterTableList)
-        ////////        {
-        ////////            foreach (FilterColumn filterColumn in filterTable.FilterColumnList)
-        ////////            {
-        ////////                if (tablesetColumnId.Id == filterColumn.TablesetColumnId)
-        ////////                {
-        ////////                    tablesetColumn = filterColumn.TablesetColumn;
-        ////////                    return (new questStatus(Severity.Success));
-        ////////                }
-        ////////            }
-        ////////        }
-        ////////    }
-        ////////    else if (entityTypeId.Id == EntityType.View)
-        ////////    {
-        ////////        foreach (FilterView filterView in filter.FilterViewList)
-        ////////        {
-        ////////            foreach (FilterColumn filterColumn in filterView.FilterColumnList)
-        ////////            {
-        ////////                if (tablesetColumnId.Id == filterColumn.TablesetColumnId)
-        ////////                {
-        ////////                    tablesetColumn = filterColumn.TablesetColumn;
-        ////////                    return (new questStatus(Severity.Success));
-        ////////                }
-        ////////            }
-        ////////        }
-        ////////    }
-        ////////    return (new questStatus(Severity.Error, String.Format("TableSetColumnId {0} not found in filter", tablesetColumnId.Id)));
-        ////////}
+
+            // Build a JOIN clause for every join in the filter
+            foreach (FilterItem filterItem in filter.FilterItemList)
+            {
+                foreach (FilterItemJoin filterItemJoin in filterItem.JoinList)
+                {
+                    // Get source alias
+                    string sourceAlias = null;
+                    status = findAlias(FROMEntityList, joinEntityList, filterItemJoin.SourceSchema, filterItemJoin.SourceEntityName, out sourceAlias);
+                    if (!questStatusDef.IsSuccess(status))
+                    {
+                        return (status);
+                    }
+
+                    // Get target alias
+                    string targetAlias = null;
+                    status = findAlias(FROMEntityList, joinEntityList, filterItemJoin.TargetSchema, filterItemJoin.TargetEntityName, out targetAlias);
+                    if (!questStatusDef.IsSuccess(status))
+                    {
+                        return (status);
+                    }
+
+                    // Build JOIN clause
+                    string joinClause = String.Format("    " + filterItemJoin.JoinType + " " + BracketIdentifier(filterItemJoin.TargetSchema) + "." + BracketIdentifier(filterItemJoin.TargetEntityName) + " " + targetAlias
+                            + " ON " + targetAlias + "." + filterItemJoin.TargetColumnName + " = " + sourceAlias + "." + filterItemJoin.SourceColumnName);
+                    joinClauseList.Add(joinClause);
+                }
+            }
+            return (new questStatus(Severity.Success));
+        }
+
+        private questStatus findAlias(List<FilterEntity> FROMEntityList, List<JoinEntity> joinEntityList, string schema, string name, out string alias)
+        {
+            // Initialize
+            alias = null;
+
+            foreach (FilterEntity filterEntity in FROMEntityList)
+            {
+                if (filterEntity.FilterTable != null)
+                {
+                    if (name == filterEntity.FilterTable.Name && schema == filterEntity.FilterTable.Schema)
+                    {
+                        alias = filterEntity.Alias;
+                        return (new questStatus(Severity.Success));
+                    }
+                }
+                else if (filterEntity.FilterView != null)
+                {
+                    if (name == filterEntity.FilterView.Name && schema == filterEntity.FilterView.Schema)
+                    {
+                        alias = filterEntity.Alias;
+                        return (new questStatus(Severity.Success));
+                    }
+                }
+            }
+            foreach (JoinEntity joinEntity in joinEntityList)
+            {
+                if (joinEntity.FilterTable != null)
+                {
+                    if (name == joinEntity.FilterTable.Name && schema == joinEntity.FilterTable.Schema)
+                    {
+                        alias = joinEntity.Alias;
+                        return (new questStatus(Severity.Success));
+                    }
+                }
+                else if (joinEntity.FilterView != null)
+                {
+                    if (name == joinEntity.FilterView.Name && schema == joinEntity.FilterView.Schema)
+                    {
+                        alias = joinEntity.Alias;
+                        return (new questStatus(Severity.Success));
+                    }
+                }
+            }
+            return (new questStatus(Severity.Error, String.Format("ERROR: [{0}].[{1}] alias not found in FROM entities or JOIN entities",
+                    name, schema)));
+        }
         #endregion
     }
 }

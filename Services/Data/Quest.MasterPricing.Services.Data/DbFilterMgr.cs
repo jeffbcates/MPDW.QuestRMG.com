@@ -845,11 +845,11 @@ namespace Quest.MasterPricing.Services.Data.Filters
             FilterColumn _filterColumn = null;
             if (tablesetColumn.EntityTypeId == EntityType.Table)
             {
-                _filterColumn = filter.FilterColumnList.Find(delegate (FilterColumn c) { return (c.FilterEntityTypeId == FilterEntityType.Table && c.Name == tablesetColumn.Name); });
+                _filterColumn = filter.FilterColumnList.Find(delegate (FilterColumn c) { return (c.FilterEntityTypeId == FilterEntityType.Table && c.TablesetEntityId == tablesetColumn.TableSetEntityId && c.Name == tablesetColumn.Name); });
             }
             else if (tablesetColumn.EntityTypeId == EntityType.View)
             {
-                _filterColumn = filter.FilterColumnList.Find(delegate (FilterColumn c) { return (c.FilterEntityTypeId == FilterEntityType.View && c.Name == tablesetColumn.Name); });
+                _filterColumn = filter.FilterColumnList.Find(delegate (FilterColumn c) { return (c.FilterEntityTypeId == FilterEntityType.View && c.TablesetEntityId == tablesetColumn.TableSetEntityId && c.Name == tablesetColumn.Name); });
             }
             else
             {
