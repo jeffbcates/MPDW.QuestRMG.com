@@ -1327,7 +1327,7 @@ namespace Quest.MasterPricing.Services.Data.Filters
             {
                 foreach (JoinEntity joinEntity in JOINEntityList)
                 {
-                    if (filterColumn.FilterEntityId == joinEntity.FilterTable.Id)
+                    if (joinEntity.FilterTable != null && filterColumn.FilterEntityId == joinEntity.FilterTable.Id)
                     {
                         JOINEntity = joinEntity;
                         return (new questStatus(Severity.Success));
@@ -1338,7 +1338,7 @@ namespace Quest.MasterPricing.Services.Data.Filters
             {
                 foreach (JoinEntity joinEntity in JOINEntityList)
                 {
-                    if (filterColumn.FilterEntityId == joinEntity.FilterView.Id)
+                    if (joinEntity.FilterView != null && filterColumn.FilterEntityId == joinEntity.FilterView.Id)
                     {
                         JOINEntity = joinEntity;
                         return (new questStatus(Severity.Success));

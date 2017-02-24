@@ -196,7 +196,7 @@ function qrmgTreeview(model) {
             _h[_i++] = '    </div>';
         }
         if (_self._model.header.filter) {
-            _h[_i++] = '    <div class="questTableFilter">';
+            _h[_i++] = '    <div class="questTreeviewFilter">';
             _h[_i++] = '        Filter:';
             _h[_i++] = '        <input type="text" class="tvwFilter">';
             _h[_i++] = '    </div>';

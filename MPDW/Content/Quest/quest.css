@@ -456,6 +456,21 @@ pnlbtn:active {
     font-weight: normal;
     border: 1px solid #8298B3;
 }
+
+.questTreeviewFilter {
+  position: relative;
+  display: inline-block;
+  height: auto;
+  width: auto;
+  min-height: 20px;
+  font-weight: bold;
+}
+.questTreeviewFilter input {
+    width: 200px;
+    height: 20px;
+    font-weight: normal;
+    border: 1px solid #8298B3;
+}
 .tvwcmd {
     cursor: pointer;
     padding-right: 12px;

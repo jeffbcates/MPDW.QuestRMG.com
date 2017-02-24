@@ -496,9 +496,7 @@
             bNoUserMessages: true,
             events: [
                 { name: 'AfterLoaded', callback: cbTvwTablesetEntitiesAfterLoaded },
-                ////{ name: 'NodeSelected', callback: cbTvwTablesetEntitiesNodeSelected },
                 { name: 'OnTreeRender', callback: cbOnTvwTablesetEntitiesRender },
-                { name: 'OnDrop', callback: cbTvwTablesetEntitiesOnDrop },
                 { name: 'Refresh', callback: cbTvwTablesetEntitiesRefresh },
             ],
             operations: [
@@ -517,17 +515,12 @@
     }
     function cbTvwTablesetEntitiesAfterLoaded() {
     }
-    ////function cbTvwTablesetEntitiesNodeSelected(evt, d, e) {
-    ////    ////e.stopPropagation();
-    ////}
     function cbOnTvwTablesetEntitiesRender(e) {
         if (!_tvwTablesetEntities) { return; }
         $(_tvwTablesetEntities._e + ' ul li span.fa-table').closest('li').addClass('tvwTable');
         $(_tvwTablesetEntities._e + ' ul li span.fa-th').closest('li').addClass('tvwView');
         _tvwTablesetEntities.Draggable();
         _tvwTablesetEntities.Droppable();
-    }
-    function cbTvwTablesetEntitiesOnDrop(e, ui) {
     }
     function cbTvwTablesetEntitiesRefresh(e) {
         $('#draggingContainer').remove();
@@ -560,9 +553,7 @@
             bNoUserMessages: true,
             events: [
                 { name: 'AfterLoaded', callback: cbTvwFilterEntitiesAfterLoaded },
-                { name: 'NodeSelected', callback: cbTvwFilterEntitiesNodeSelected },
                 { name: 'OnTreeRender', callback: cbOnTvwFilterEntitiesRender },
-                { name: 'OnDrop', callback: cbTvwFilterEntitiesOnDrop },
                 { name: 'Refresh', callback: cbTvwFilterEntitiesRefresh },
             ],
             operations: [
@@ -576,13 +567,15 @@
         _tvwFilterEntities.Clear();
         var _d = { questStatus: _viewstate.questStatus, Items: tt ? tt : _viewstate.Entities };
         _tvwFilterEntities.Fill(_d);
+
+        var fee = _tvwFilterEntities.GetData();
+        $.each(fee, function (i, fe) {
+            _tvwTablesetEntities.Remove(fe.Id);
+        });
     }
     function cbTvwFilterEntities(op, msg, n, d) {
     }
     function cbTvwFilterEntitiesAfterLoaded() {
-    }
-    function cbTvwFilterEntitiesNodeSelected(evt, d, e) {
-        e.stopPropagation();
     }
     function cbOnTvwFilterEntitiesRender(e) {
         if (!_tvwFilterEntities) { return; }
@@ -590,22 +583,6 @@
         $(_tvwFilterEntities._e + ' ul li span.fa-th').closest('li').addClass('tvwView');
         _tvwFilterEntities.Draggable();
         _tvwFilterEntities.Droppable();
-    }
-    function cbTvwFilterEntitiesOnDrop(e, ui) {
-        var _nn = [];
-        var _idd = [];
-        $.each(ui.draggable, function (i, d) {
-            var id = parseInt(d.dataset.id);
-            var n = _tvwTablesetEntities.GetNode(id);
-            _nn.push(n);
-            _idd.push(id);
-        });
-        var _d = { questStatus: _viewstate.questStatus, Items: _nn };
-        _tvwFilterEntities.Insert(_d);
-        $.each(_idd, function (i, id) {
-            _tvwTablesetEntities.Remove(id);
-        });
-        return (true);
     }
     function cbTvwFilterEntitiesRefresh(e) {
         $('#draggingContainer').remove();
@@ -1613,12 +1590,7 @@
         _tvwTablesetEntities.DropSource(_tvwFilterEntities);
         _tvwFilterEntities.DropSource(_tvwTablesetEntities);
 
-        $('#pnlflt_act_RowLimit').on('keyup', function (e) {
-            $('#pnlres_act_RowLimit').val($('#pnlflt_act_RowLimit').val());
-        });
-        $('#pnlres_act_RowLimit').on('keyup', function (e) {
-            $('#pnlflt_act_RowLimit').val($('#pnlres_act_RowLimit').val());
-        });
+        syncLimitBoxes();
 
         displayViewMessage();
         initFilterSelect();
@@ -1627,8 +1599,6 @@
         _viewstate = JSON.parse($('#__frmDataMgrTablesetVIEW_STATE').val());
         $('#pTablesetSummary').text(_viewstate.Tableset.Summary);
         $('#pTablesetLastRefresh').html('<b>Last Refresh:</b>&nbsp;' + _viewstate.Tableset.LastRefresh);
-
-        
     }
     function displayViewMessage() {
         if (_viewstate.questStatus.Severity == 3) {
@@ -1638,13 +1608,20 @@
             DisplayUserMessage('F|' + _viewstate.questStatus.Message);
         }
     }
+    function syncLimitBoxes() {
+        $('#pnlflt_act_RowLimit').on('keyup', function (e) {
+            $('#pnlres_act_RowLimit').val($('#pnlflt_act_RowLimit').val());
+        });
+        $('#pnlres_act_RowLimit').on('keyup', function (e) {
+            $('#pnlflt_act_RowLimit').val($('#pnlres_act_RowLimit').val());
+        });
+    }
     function initFilterSelect() {
         $('.filter-select').on('change', function (e) {
             $('.filter-select').val(this.value);
             cbChangeFilter({ Change: true }, this.value);
         });
     }
-
     function setPanelContext(id) {
         $('.filter-select').val(id);
     }

@@ -185,6 +185,18 @@ namespace Quest.MasterPricing.Services.Business.Tablesets
                 }
 
 
+                // TESTING ONLY:  COMMIT TRANSACTION
+                bool bKlugie = false;
+                if (bKlugie)
+                {
+                    status = CommitTransaction(trans);
+                    if (!questStatusDef.IsSuccess(status))
+                    {
+                        return (status);
+                    }
+                }
+
+
                 /*
                  * Get database entites.
                  */

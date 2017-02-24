@@ -478,9 +478,22 @@ namespace Quest.MasterPricing.Services.Data.Database
         }
         private questStatus delete(MasterPricingEntities dbContext, TablesetId tablesetId)
         {
+            // Initialize 
+            questStatus status = null;
+
+
             try
             {
-                dbContext.TablesetViews.RemoveRange(dbContext.TablesetViews.Where(r => r.Id == tablesetId.Id));
+                // Read the records.
+                List<Quest.Services.Dbio.MasterPricing.TablesetViews> _tablesetViewList = null;
+                status = read(dbContext, tablesetId, out _tablesetViewList);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+
+                // Delete the records.
+                dbContext.TablesetViews.RemoveRange(_tablesetViewList);
                 dbContext.SaveChanges();
             }
             catch (System.Exception ex)

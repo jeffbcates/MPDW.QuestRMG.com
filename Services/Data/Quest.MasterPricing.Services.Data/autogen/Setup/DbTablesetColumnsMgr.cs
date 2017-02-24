@@ -87,7 +87,7 @@ namespace Quest.MasterPricing.Services.Data.Database
 
             // Create the tablesetColumn in this transaction.
             status = create((MasterPricingEntities)trans.DbContext, tablesetColumn, out tablesetColumnId);
-            if (! questStatusDef.IsSuccess(status))
+            if (!questStatusDef.IsSuccess(status))
             {
                 return (status);
             }
@@ -176,7 +176,7 @@ namespace Quest.MasterPricing.Services.Data.Database
             }
             tablesetColumn = new Quest.Functional.MasterPricing.TablesetColumn();
             BufferMgr.TransferBuffer(_tablesetColumn, tablesetColumn);
-            
+
             return (new questStatus(Severity.Success));
         }
         public questStatus Read(DbMgrTransaction trans, TablesetColumnId tablesetColumnId, out Quest.Functional.MasterPricing.TablesetColumn tablesetColumn)
@@ -189,7 +189,7 @@ namespace Quest.MasterPricing.Services.Data.Database
             // Perform read.
             Quest.Services.Dbio.MasterPricing.TablesetColumns _tablesetColumn = null;
             status = read((MasterPricingEntities)trans.DbContext, tablesetColumnId, out _tablesetColumn);
-            if (! questStatusDef.IsSuccess(status))
+            if (!questStatusDef.IsSuccess(status))
             {
                 return (status);
             }
@@ -256,7 +256,7 @@ namespace Quest.MasterPricing.Services.Data.Database
 
             // Perform delete in this transaction.
             status = delete((MasterPricingEntities)trans.DbContext, tablesetColumnId);
-            if (! questStatusDef.IsSuccess(status))
+            if (!questStatusDef.IsSuccess(status))
             {
                 RollbackTransaction(trans);
                 return (status);
@@ -382,8 +382,8 @@ namespace Quest.MasterPricing.Services.Data.Database
 
             try
             {
-                tablesetColumn = dbContext.TablesetColumns.Where(r => r.EntityTypeId == filterColumnTablesetColumnId.EntityTypeId.Id 
-                        && r.TableSetEntityId == filterColumnTablesetColumnId.EntityId.Id 
+                tablesetColumn = dbContext.TablesetColumns.Where(r => r.EntityTypeId == filterColumnTablesetColumnId.EntityTypeId.Id
+                        && r.TableSetEntityId == filterColumnTablesetColumnId.EntityId.Id
                         && r.Name == filterColumnTablesetColumnId.Name).SingleOrDefault();
                 if (tablesetColumn == null)
                 {
@@ -437,7 +437,7 @@ namespace Quest.MasterPricing.Services.Data.Database
                 TablesetColumnId tablesetColumnId = new TablesetColumnId(tablesetColumn.Id);
                 Quest.Services.Dbio.MasterPricing.TablesetColumns _tablesetColumn = null;
                 status = read(dbContext, tablesetColumnId, out _tablesetColumn);
-                if (! questStatusDef.IsSuccess(status))
+                if (!questStatusDef.IsSuccess(status))
                 {
                     return (status);
                 }
@@ -456,9 +456,22 @@ namespace Quest.MasterPricing.Services.Data.Database
         }
         private questStatus delete(MasterPricingEntities dbContext, TablesetColumnId tablesetColumnId)
         {
+            // Initialize 
+            questStatus status = null;
+
+
             try
             {
-                dbContext.TablesetColumns.RemoveRange(dbContext.TablesetColumns.Where(r => r.Id == tablesetColumnId.Id));
+                // Read the record.
+                Quest.Services.Dbio.MasterPricing.TablesetColumns _tablesetColumn = null;
+                status = read(dbContext, tablesetColumnId, out _tablesetColumn);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+
+                // Delete the record.
+                dbContext.TablesetColumns.Remove(_tablesetColumn);
                 dbContext.SaveChanges();
             }
             catch (System.Exception ex)
@@ -471,10 +484,22 @@ namespace Quest.MasterPricing.Services.Data.Database
         }
         private questStatus delete(MasterPricingEntities dbContext, EntityType entityType, TableSetEntityId tableSetEntityId)
         {
+            // Initialize 
+            questStatus status = null;
+
+
             try
             {
-                dbContext.TablesetColumns.RemoveRange(dbContext.TablesetColumns.Where(
-                        r => r.EntityTypeId == entityType.Id && r.TableSetEntityId == tableSetEntityId.Id));
+                // Read the records.
+                List<Quest.Services.Dbio.MasterPricing.TablesetColumns> tablesetColumnList = null;
+                status = read(dbContext, entityType, tableSetEntityId, out tablesetColumnList);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+
+                // Delete the records.
+                dbContext.TablesetColumns.RemoveRange(tablesetColumnList);
                 dbContext.SaveChanges();
             }
             catch (System.Exception ex)
