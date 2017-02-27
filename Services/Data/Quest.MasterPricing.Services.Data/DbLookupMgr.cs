@@ -126,7 +126,8 @@ namespace Quest.MasterPricing.Services.Data.Filters
 
                                 try
                                 {
-                                    optionValuePair.Id = ((IDictionary<string, object>)resultRow)[lookup.KeyField].ToString();
+                                    string _lookupKeyField = lookup.KeyField.Replace("[", "").Replace("]", "");
+                                    optionValuePair.Id = ((IDictionary<string, object>)resultRow)[_lookupKeyField].ToString();
                                 }
                                 catch (System.Exception)
                                 {
@@ -140,7 +141,8 @@ namespace Quest.MasterPricing.Services.Data.Filters
                                     string textField = textFieldList[idx];
                                     try
                                     {
-                                        sbOptionText.Append(((IDictionary<string, object>)resultRow)[textField].ToString());
+                                        string _textField = textField.Replace("[", "").Replace("]", "");
+                                        sbOptionText.Append(((IDictionary<string, object>)resultRow)[_textField].ToString());
                                         if (idx + 1 < textFieldList.Length)
                                         {
                                             sbOptionText.Append(" - ");

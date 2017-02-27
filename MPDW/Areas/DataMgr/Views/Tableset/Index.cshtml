@@ -406,9 +406,18 @@
             qrmgmvc.Global.Unmask($('#pnlFilters'));
         }
         else if (ud.Delete) {
-            if (IsAppSuccess(d)) {
-                $('.filter-select option[value="' + d.Id + '"]').remove();
-                setPanelContext('-1');
+            if (d.questStatus) {
+                if (IsAppSuccess(d)) {
+                    $('.filter-select option[value="' + d.Id + '"]').remove();
+                    setPanelContext('-1');
+                }
+            }
+            else {
+                // klugie: Allow a delete regardless.
+                _frmFilter._bChanges = false;  
+                _frmFilter._bROS = true;
+                var _d = _frmFilter.GetData();
+                _frmFilter.SetField("Id", _d.FilterId);
             }
         }
     }
@@ -861,7 +870,7 @@
             ],
             actions: [
                 { name: 'NumRows', label: '# Rows', type: 'text', value: '1', title: 'Specify # of rows to auto-generate' },
-                { name: 'New', label: 'New', callback: cbBulkInsertNewRows, title: 'Auto-generate # Rows rows' },
+                { name: 'New', label: 'New', classes: 'btn pnlbtn', callback: cbBulkInsertNewRows, title: 'Auto-generate # Rows rows' },
             ],
             tabs: [
                 { name: 'Rows', callback: cbBulkInsertRowsTab, defaultTab: true },
