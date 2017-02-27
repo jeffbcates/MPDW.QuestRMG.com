@@ -85,6 +85,10 @@
         initTreeviewFilterEntities();
         initTreeviewValueEntities();
         initFilterProcedures();
+
+        $('#chkJoinItemsOnly').on('click', function () {
+            displayJoinItems($(this).is(':checked'));
+        });
     }
     function loadFilterPanel(d) {
         loadTreeviewTablesetEntities();
@@ -142,6 +146,11 @@
             _h[_i++] = '    <div class="panel-title-select">';
             _h[_i++] = '       <select id="selCurrentValuesFilter" class="form-control filter-select"></select>';
             _h[_i++] = '    </div>';
+
+            _h[_i++] = '    <div class="pull-right" style="margin-right: 10px">';
+            _h[_i++] = '       <input type="checkbox" id="chkJoinItemsOnly" />&nbsp;Join Items Only';
+            _h[_i++] = '    </div>';
+
             _h[_i++] = '</div>';
             _h[_i++] = '<div id="tvwConfigureTablesFrame" class="panel-quarter-tab panel-tab-banner-space pull-left disabled">';
             _h[_i++] = '    <div id="tvwValueEntities" class="panel-full-frame-40header">';
@@ -313,6 +322,18 @@
     function cbCopySQLToClipboard() {
         ClipboardHelper.copyText($('#tvwSQLFrame').text());
         DisplayUserMessage('I|SQL copied to clipboard');
+    }
+
+    function displayJoinItems(bJoinItemsOnly) {
+        var ii = $('#pnlFilterItems div.questFilterItem');
+        $.each(ii, function (i, itm) {
+            if (!bJoinItemsOnly || $(itm).find('.questFilterItemJoin').text().trim().length > 0) {
+                $(itm).show();
+            }
+            else {
+                $(itm).hide();
+            }
+        });
     }
 </script>
 <script type="text/javascript">
