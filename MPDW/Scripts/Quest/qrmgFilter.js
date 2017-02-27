@@ -604,7 +604,20 @@ function qrmgFilter(model) {
         _d.Joins = _jj;
         _self.AddData(id, 'Joins', _d.Joins);
         $('.questFilterItemJoin[data-id="' + j.ColumnId + '"]', _self._e).remove();
+
         return (_d.Joins);
+    }
+
+    _self.ShowJoinItemsOnly = function (bJoinItemsOnly) {
+        var ii = $(_self._e + ' div.questFilterItem');
+        $.each(ii, function (i, itm) {
+            if (!bJoinItemsOnly || $(itm).find('.questFilterItemJoin').text().trim().length > 0) {
+                $(itm).show();
+            }
+            else {
+                $(itm).hide();
+            }
+        });
     }
 
     _self._docallback = function (ud, data) {

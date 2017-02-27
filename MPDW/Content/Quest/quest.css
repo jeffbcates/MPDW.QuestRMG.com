@@ -376,6 +376,7 @@ pnlbtn:active {
   padding-left: 20px;
   padding-top: 3px;
   position: relative;
+  margin-bottom: 10px;
 }
 .questTableHeaderFrame .questTablePager {
     padding-top: 10px;
@@ -723,6 +724,7 @@ pnlbtn:active {
     border: 4px solid #CCCCCC;
     border-bottom: none;
     overflow: auto;
+    cursor: move;
 }
 .questFilterItem:hover {
     background: #FFFFFF;
@@ -785,6 +787,7 @@ pnlbtn:active {
 .questFilterItemJoin {
   color: darkgreen;
   display: block;
+  height: 2em;
   position: relative;
   width: auto;
 }

@@ -72,7 +72,7 @@
             ],
             events: [
             ],
-            minHeight: '600px'
+            minHeight: '1200px'
         }
         _pnlFilters = new qrmgPanel(pnlFilters);
         _pnlFilters.Tab('List');
@@ -86,8 +86,9 @@
         initTreeviewValueEntities();
         initFilterProcedures();
 
+        $('#pnlFilterItems').sortable();
         $('#chkJoinItemsOnly').on('click', function () {
-            displayJoinItems($(this).is(':checked'));
+            _fltFilterItems.ShowJoinItemsOnly($(this).is(':checked'));
         });
     }
     function loadFilterPanel(d) {
@@ -324,17 +325,6 @@
         DisplayUserMessage('I|SQL copied to clipboard');
     }
 
-    function displayJoinItems(bJoinItemsOnly) {
-        var ii = $('#pnlFilterItems div.questFilterItem');
-        $.each(ii, function (i, itm) {
-            if (!bJoinItemsOnly || $(itm).find('.questFilterItemJoin').text().trim().length > 0) {
-                $(itm).show();
-            }
-            else {
-                $(itm).hide();
-            }
-        });
-    }
 </script>
 <script type="text/javascript">
     var _frmFilter = null;
@@ -724,6 +714,7 @@
     function cbFilterItemSelected(ud, d) {
     }
     function cbFilterItemDrop(e, ui) {
+        if ($(ui.draggable).closest('#pnlFilterItems').length > 0) { return (true); }
         var lbl = ui.draggable.text();
         if (lbl.indexOf('.') > -1) {
             var id = $(ui.draggable).attr('data-id');
@@ -778,6 +769,7 @@
             if (itm.ParameterName) { n.ParameterName = itm.ParameterName; }
             insertFilterItem(n);
         });
+        _fltFilterItems.ShowJoinItemsOnly($('#chkJoinItemsOnly').is(':checked'));
     }
     function extractName(txt) {
         if (txt.indexOf(':') > -1) {
