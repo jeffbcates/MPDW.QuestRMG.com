@@ -1154,6 +1154,190 @@ namespace Quest.MasterPricing.Services.Data.Filters
             }
             return (new questStatus(Severity.Success));
         }
+
+        public questStatus Copy(FilterId filterId, out FilterId newFilterId)
+        {
+            // Initialize
+            questStatus status = null;
+            newFilterId = null;
+            DbMgrTransaction trans = null;
+
+
+
+            // Get the filter.
+            Filter filter = null;
+            DbFiltersMgr dbFiltersMgr = new DbFiltersMgr(this.UserSession);
+            status = GetFilter(filterId, out filter);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+
+
+            // BEGIN TRANSACTION
+            status = BeginTransaction("CopyFilter_" + filterId.ToString(), out trans);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+
+
+            // Change the name and save it for a new filterId.
+            filter.Name = filter.Name + " (Copy)";
+            status = dbFiltersMgr.Create(trans, filter, out newFilterId);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                RollbackTransaction(trans);
+                return (status);
+            }
+
+            // Copy tables.
+            DbFilterTablesMgr dbFilterTablesMgr = new DbFilterTablesMgr(this.UserSession);
+            DbFilterColumnsMgr dbFilterColumnsMgr = new DbFilterColumnsMgr(this.UserSession);
+            foreach (FilterTable filterTable in filter.FilterTableList)
+            {
+                filterTable.FilterId = newFilterId.Id;
+                FilterTableId filterTableId = null;
+                status = dbFilterTablesMgr.Create(trans, filterTable, out filterTableId);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    RollbackTransaction(trans);
+                    return (status);
+                }
+                foreach (FilterColumn filterColumn in filterTable.FilterColumnList)
+                {
+                    filterColumn.FilterId = newFilterId.Id;
+                    filterColumn.FilterEntityId = filterTableId.Id;
+                    FilterColumnId filterColumnId = null;
+                    status = dbFilterColumnsMgr.Create(trans, filterColumn, out filterColumnId);
+                    if (!questStatusDef.IsSuccess(status))
+                    {
+                        RollbackTransaction(trans);
+                        return (status);
+                    }
+                }
+            }
+
+            // Copy views.
+            DbFilterViewsMgr dbFilterViewsMgr = new DbFilterViewsMgr(this.UserSession);
+            foreach (FilterView filterView in filter.FilterViewList)
+            {
+                filterView.FilterId = newFilterId.Id;
+                FilterViewId filterViewId = null;
+                status = dbFilterViewsMgr.Create(trans, filterView, out filterViewId);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    RollbackTransaction(trans);
+                    return (status);
+                }
+                foreach (FilterColumn filterColumn in filterView.FilterColumnList)
+                {
+                    filterColumn.FilterId = newFilterId.Id;
+                    filterColumn.FilterEntityId = filterViewId.Id;
+                    FilterColumnId filterColumnId = null;
+                    status = dbFilterColumnsMgr.Create(trans, filterColumn, out filterColumnId);
+                    if (!questStatusDef.IsSuccess(status))
+                    {
+                        RollbackTransaction(trans);
+                        return (status);
+                    }
+                }
+            }
+
+            // Copy items
+            DbFilterItemsMgr dbFilterItemsMgr = new DbFilterItemsMgr(this.UserSession);
+            DbFilterItemJoinsMgr dbFilterItemJoinsMgr = new DbFilterItemJoinsMgr(this.UserSession);
+            DbFilterOperationsMgr dbFilterOperationsMgr = new DbFilterOperationsMgr(this.UserSession);
+            DbFilterValuesMgr dbFilterValuesMgr = new DbFilterValuesMgr(this.UserSession);
+            foreach (FilterItem filterItem in filter.FilterItemList)
+            {
+                filterItem.FilterId = newFilterId.Id;
+                FilterItemId filterItemId = null;
+                status = dbFilterItemsMgr.Create(trans, filterItem, out filterItemId);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    RollbackTransaction(trans);
+                    return (status);
+                }
+
+                // Save filter item joins
+                foreach (FilterItemJoin filterItemJoin in filterItem.JoinList)
+                {
+                    filterItemJoin.FilterItemId = filterItemId.Id;
+                    FilterItemJoinId filterItemJoinId = null;
+                    status = dbFilterItemJoinsMgr.Create(trans, filterItemJoin, out filterItemJoinId);
+                    if (!questStatusDef.IsSuccess(status))
+                    {
+                        RollbackTransaction(trans);
+                        return (status);
+                    }
+                }
+
+                // Save filter operations
+                foreach (FilterOperation filterOperation in filterItem.OperationList)
+                {
+                    filterOperation.FilterItemId = filterItemId.Id;
+                    FilterOperationId filterOperationId = null;
+                    status = dbFilterOperationsMgr.Create(trans, filterOperation, out filterOperationId);
+                    if (!questStatusDef.IsSuccess(status))
+                    {
+                        RollbackTransaction(trans);
+                        return (status);
+                    }
+
+                    // Save filter values
+                    foreach (FilterValue filterValue in filterOperation.ValueList)
+                    {
+                        filterValue.FilterOperationId = filterOperationId.Id;
+                        FilterValueId filterValueId = null;
+                        status = dbFilterValuesMgr.Create(trans, filterValue, out filterValueId);
+                        if (!questStatusDef.IsSuccess(status))
+                        {
+                            RollbackTransaction(trans);
+                            return (status);
+                        }
+                    }
+                }
+            }
+
+            // Save filter procedures
+            DbFilterProceduresMgr dbFilterProceduresMgr = new DbFilterProceduresMgr(this.UserSession);
+            DbFilterProcedureParametersMgr dbFilterProcedureParametersMgr = new DbFilterProcedureParametersMgr(this.UserSession);
+            foreach (FilterProcedure filterProcedure in filter.FilterProcedureList)
+            {
+                filterProcedure.FilterId = newFilterId.Id;
+                FilterProcedureId filterProcedureId = null;
+                status = dbFilterProceduresMgr.Create(trans, filterProcedure, out filterProcedureId);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    RollbackTransaction(trans);
+                    return (status);
+                }
+
+                foreach (FilterProcedureParameter filterProcedureParameter in filterProcedure.ParameterList)
+                {
+                    filterProcedureParameter.FilterProcedureId = filterProcedureId.Id;
+                    FilterProcedureParameterId filterProcedureParameterId = null;
+                    status = dbFilterProcedureParametersMgr.Create(trans, filterProcedureParameter, out filterProcedureParameterId);
+                    if (!questStatusDef.IsSuccess(status))
+                    {
+                        RollbackTransaction(trans);
+                        return (status);
+                    }
+                }
+            }
+
+
+            // COMMIT TRANSACTION
+            status = CommitTransaction(trans);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
         #endregion
 
 

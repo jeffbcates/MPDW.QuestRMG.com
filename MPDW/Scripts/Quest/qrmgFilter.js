@@ -548,7 +548,7 @@ function qrmgFilter(model) {
     _self._getdata = function (fi) {
         var _data = $('#' + $(fi).attr('id')).data();
         if (!_data) {
-            alert('_data not found for fi: ' + fi);
+            alert('_data not found for fi: ' + $(fi).attr('id'));
         }
         var data = _data[$(fi).attr('id')];
         return (data);

@@ -139,46 +139,49 @@ namespace Quest.MasterPricing.Services.Business.Filters
                 FilterColumnsMgr filterColumnsMgr = new FilterColumnsMgr(this.UserSession);
                 foreach (FilterColumn filterColumn in filter.FilterColumnList)
                 {
-                    // Get the FilterTable or FilterView Id.
-                    // This is a klugie.  Gotta rework DataManager panel first, though.  No time to do that.
-                    if (filterColumn.FilterEntityTypeId == FilterEntityType.Table)
+                    if (filterColumn.FilterEntityId < BaseId.VALID_ID)
                     {
-                        TablesetTable tablesetTable = null;
-                        status = dbFilterMgr.GetTablesetTable(filterColumn, out tablesetTable);
-                        if (!questStatusDef.IsSuccess(status))
+                        // Get the FilterTable or FilterView Id.
+                        // This is a klugie.  Gotta rework DataManager panel first, though.  No time to do that.
+                        if (filterColumn.FilterEntityTypeId == FilterEntityType.Table)
                         {
-                            mgr.RollbackTransaction(trans);
-                            return (status);
+                            TablesetTable tablesetTable = null;
+                            status = dbFilterMgr.GetTablesetTable(filterColumn, out tablesetTable);
+                            if (!questStatusDef.IsSuccess(status))
+                            {
+                                mgr.RollbackTransaction(trans);
+                                return (status);
+                            }
+                            FilterTable filterTable = filter.FilterTableList.Find(delegate (FilterTable t) { return (t.Schema == tablesetTable.Schema && t.Name == tablesetTable.Name); });
+                            if (filterTable == null)
+                            {
+                                return (new questStatus(Severity.Error, String.Format("ERROR: FilterTable not found for TableSetTable Schema:{0} Name:{1}",
+                                        tablesetTable.Schema, tablesetTable.Name)));
+                            }
+                            filterColumn.FilterEntityId = filterTable.Id;
                         }
-                        FilterTable filterTable = filter.FilterTableList.Find(delegate (FilterTable t) { return (t.Schema == tablesetTable.Schema && t.Name == tablesetTable.Name); });
-                        if (filterTable == null)
+                        else if (filterColumn.FilterEntityTypeId == FilterEntityType.View)
                         {
-                            return (new questStatus(Severity.Error, String.Format("ERROR: FilterTable not found for TableSetTable Schema:{0} Name:{1}",
-                                    tablesetTable.Schema, tablesetTable.Name)));
+                            TablesetView tablesetView = null;
+                            status = dbFilterMgr.GetTablesetView(filterColumn, out tablesetView);
+                            if (!questStatusDef.IsSuccess(status))
+                            {
+                                mgr.RollbackTransaction(trans);
+                                return (status);
+                            }
+                            FilterView filterView = filter.FilterViewList.Find(delegate (FilterView v) { return (v.Schema == tablesetView.Schema && v.Name == tablesetView.Name); });
+                            if (filterView == null)
+                            {
+                                return (new questStatus(Severity.Error, String.Format("ERROR: FilterView not found for TableSetTable Schema:{0} Name:{1}",
+                                        tablesetView.Schema, tablesetView.Name)));
+                            }
+                            filterColumn.FilterEntityId = filterView.Id;
                         }
-                        filterColumn.FilterEntityId = filterTable.Id;
-                    }
-                    else if (filterColumn.FilterEntityTypeId == FilterEntityType.View)
-                    {
-                        TablesetView tablesetView = null;
-                        status = dbFilterMgr.GetTablesetView(filterColumn, out tablesetView);
-                        if (!questStatusDef.IsSuccess(status))
+                        else
                         {
-                            mgr.RollbackTransaction(trans);
-                            return (status);
+                            return (new questStatus(Severity.Error, String.Format("ERROR: FilterColumn FilterEntityTypeId {0} not supported.  FilterColumn {1}",
+                                    filterColumn.FilterEntityTypeId, filterColumn.Id)));
                         }
-                        FilterView filterView = filter.FilterViewList.Find(delegate (FilterView v) { return (v.Schema == tablesetView.Schema && v.Name == tablesetView.Name); });
-                        if (filterView == null)
-                        {
-                            return (new questStatus(Severity.Error, String.Format("ERROR: FilterView not found for TableSetTable Schema:{0} Name:{1}",
-                                    tablesetView.Schema, tablesetView.Name)));
-                        }
-                        filterColumn.FilterEntityId = filterView.Id;
-                    }
-                    else
-                    {
-                        return (new questStatus(Severity.Error, String.Format("ERROR: FilterColumn FilterEntityTypeId {0} not supported.  FilterColumn {1}",
-                                filterColumn.FilterEntityTypeId, filterColumn.Id)));
                     }
 
                     // Save
@@ -200,16 +203,20 @@ namespace Quest.MasterPricing.Services.Business.Filters
                 FilterValuesMgr filterValuesMgr = new FilterValuesMgr(this.UserSession);
                 foreach (FilterItem filterItem in filter.FilterItemList)
                 {
-                    // Get filterItem FilterEntityId
                     FilterColumn filterColumn = null;
-                    status = dbFilterMgr.GetFilterColumn(filter, filterItem, out filterColumn);
-                    if (!questStatusDef.IsSuccess(status))
+
+                    // Get filterItem FilterEntityId
+                    if (filterItem.FilterEntityId < BaseId.VALID_ID)
                     {
-                        mgr.RollbackTransaction(trans);
-                        return (status);
+                        status = dbFilterMgr.GetFilterColumn(filter, filterItem, out filterColumn);
+                        if (!questStatusDef.IsSuccess(status))
+                        {
+                            mgr.RollbackTransaction(trans);
+                            return (status);
+                        }
+                        filterItem.FilterEntityId = filterColumn.Id;
+                        filterItem.FilterColumn = filterColumn;        // helps with bookkeeping further down.
                     }
-                    filterItem.FilterEntityId = filterColumn.Id;
-                    filterItem.FilterColumn = filterColumn;        // helps with bookkeeping further down.
 
                     // Save FilterItem
                     FilterItemId filterItemId = null;
@@ -228,61 +235,64 @@ namespace Quest.MasterPricing.Services.Business.Filters
                         filterItemJoin.FilterItemId = filterItemId.Id;
 
 
-                        // Get join target type (Table or View)
-                        TablesetColumnId tablesetColumnId = new TablesetColumnId(filterItemJoin.ColumnId);
-                        TablesetTable tablesetTable = null;
-                        TablesetView tablesetView = null;
-                        status = getJoinTarget(tablesetColumnId, out tablesetTable, out tablesetView);
-                        if (!questStatusDef.IsSuccess(status))
+                        if (string.IsNullOrEmpty(filterItemJoin.SourceSchema) || string.IsNullOrEmpty(filterItemJoin.SourceEntityName) || string.IsNullOrEmpty(filterItemJoin.SourceColumnName))
                         {
-                            mgr.RollbackTransaction(trans);
-                            return (status);
-                        }
-                        filterItemJoin.TargetEntityTypeId = tablesetTable == null ? FilterEntityType.View : FilterEntityType.Table;
 
-                        // Get target identifier parts.
-                        string targetSchema = null;
-                        string targetEntityName = null;
-                        string targetColumnName = null;
-                        SQLIdentifier.ParseThreePartIdentifier(filterItemJoin.Identifier, out targetSchema, out targetEntityName, out targetColumnName);
-                        filterItemJoin.TargetSchema = targetSchema;
-                        filterItemJoin.TargetEntityName = targetEntityName;
-                        filterItemJoin.TargetColumnName = targetColumnName;
-
-
-                        // Get source identifier parts.
-                        string sourceSchema = null;
-                        string sourceEntityName = null;
-                        string sourceColumnName = null;
-                        if (filterColumn.FilterEntityTypeId == FilterEntityType.Table)
-                        {
-                            FilterTable filterTable = filter.FilterTableList.Find(delegate (FilterTable t) { return (filterColumn.FilterEntityId == t.Id); });
-                            if (filterTable == null)
+                            // Get join target type (Table or View)
+                            TablesetColumnId tablesetColumnId = new TablesetColumnId(filterItemJoin.ColumnId);
+                            TablesetTable tablesetTable = null;
+                            TablesetView tablesetView = null;
+                            status = getJoinTarget(tablesetColumnId, out tablesetTable, out tablesetView);
+                            if (!questStatusDef.IsSuccess(status))
                             {
                                 mgr.RollbackTransaction(trans);
-                                return (new questStatus(Severity.Error, String.Format("ERROR: building Join on {0}, FilterTable {1} not found",
-                                        filterItemJoin.Identifier, filterColumn.FilterEntityId)));
+                                return (status);
                             }
-                            sourceSchema = filterTable.Schema;
-                            sourceEntityName = filterTable.Name;
-                        }
-                        else if (filterColumn.FilterEntityTypeId == FilterEntityType.View)
-                        {
-                            FilterView filterView = filter.FilterViewList.Find(delegate (FilterView v) { return (filterColumn.FilterEntityId == v.Id); });
-                            if (filterView == null)
-                            {
-                                mgr.RollbackTransaction(trans);
-                                return (new questStatus(Severity.Error, String.Format("ERROR: building Join on {0}, FilterView {1} not found",
-                                        filterItemJoin.Identifier, filterColumn.FilterEntityId)));
-                            }
-                            sourceSchema = filterView.Schema;
-                            sourceEntityName = filterView.Name;
-                        }
-                        sourceColumnName = filterColumn.Name;
-                        filterItemJoin.SourceSchema = sourceSchema;
-                        filterItemJoin.SourceEntityName = sourceEntityName;
-                        filterItemJoin.SourceColumnName = sourceColumnName;
+                            filterItemJoin.TargetEntityTypeId = tablesetTable == null ? FilterEntityType.View : FilterEntityType.Table;
 
+                            // Get target identifier parts.
+                            string targetSchema = null;
+                            string targetEntityName = null;
+                            string targetColumnName = null;
+                            SQLIdentifier.ParseThreePartIdentifier(filterItemJoin.Identifier, out targetSchema, out targetEntityName, out targetColumnName);
+                            filterItemJoin.TargetSchema = targetSchema;
+                            filterItemJoin.TargetEntityName = targetEntityName;
+                            filterItemJoin.TargetColumnName = targetColumnName;
+
+
+                            // Get source identifier parts.
+                            string sourceSchema = null;
+                            string sourceEntityName = null;
+                            string sourceColumnName = null;
+                            if (filterColumn.FilterEntityTypeId == FilterEntityType.Table)
+                            {
+                                FilterTable filterTable = filter.FilterTableList.Find(delegate (FilterTable t) { return (filterColumn.FilterEntityId == t.Id); });
+                                if (filterTable == null)
+                                {
+                                    mgr.RollbackTransaction(trans);
+                                    return (new questStatus(Severity.Error, String.Format("ERROR: building Join on {0}, FilterTable {1} not found",
+                                            filterItemJoin.Identifier, filterColumn.FilterEntityId)));
+                                }
+                                sourceSchema = filterTable.Schema;
+                                sourceEntityName = filterTable.Name;
+                            }
+                            else if (filterColumn.FilterEntityTypeId == FilterEntityType.View)
+                            {
+                                FilterView filterView = filter.FilterViewList.Find(delegate (FilterView v) { return (filterColumn.FilterEntityId == v.Id); });
+                                if (filterView == null)
+                                {
+                                    mgr.RollbackTransaction(trans);
+                                    return (new questStatus(Severity.Error, String.Format("ERROR: building Join on {0}, FilterView {1} not found",
+                                            filterItemJoin.Identifier, filterColumn.FilterEntityId)));
+                                }
+                                sourceSchema = filterView.Schema;
+                                sourceEntityName = filterView.Name;
+                            }
+                            sourceColumnName = filterColumn.Name;
+                            filterItemJoin.SourceSchema = sourceSchema;
+                            filterItemJoin.SourceEntityName = sourceEntityName;
+                            filterItemJoin.SourceColumnName = sourceColumnName;
+                        }
 
                         // Create FilterItemJoin
                         FilterItemJoinId filterItemJoinId = null;
@@ -601,6 +611,22 @@ namespace Quest.MasterPricing.Services.Business.Filters
             // TODO: DELETE ALL STUFF WITH A FILTER.
             DbFilterMgr dbFilterMgr = new DbFilterMgr(this.UserSession);
             status = dbFilterMgr.Delete(trans, filterId);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+
+        public questStatus Copy(FilterId filterId, out FilterId newFilterId)
+        {
+            // Initialize
+            questStatus status = null;
+            newFilterId = null;
+
+
+            DbFilterMgr dbFilterMgr = new DbFilterMgr(this.UserSession);
+            status = dbFilterMgr.Copy(filterId, out newFilterId);
             if (!questStatusDef.IsSuccess(status))
             {
                 return (status);

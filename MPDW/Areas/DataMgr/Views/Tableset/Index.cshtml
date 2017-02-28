@@ -72,7 +72,7 @@
             ],
             events: [
             ],
-            minHeight: '1200px'
+            minHeight: '3600px'
         }
         _pnlFilters = new qrmgPanel(pnlFilters);
         _pnlFilters.Tab('List');
@@ -357,6 +357,7 @@
             ],
             opframe: 'pnlfrmbtns',
             operations: [
+                { name: 'Copy', label: 'Copy', classes: 'btn btn-primary', title: 'Copy this filter' }
             ],
             actions: [
             ],
@@ -418,6 +419,16 @@
                 _frmFilter._bROS = true;
                 var _d = _frmFilter.GetData();
                 _frmFilter.SetField("Id", _d.FilterId);
+            }
+        }
+        else if (ud.name == 'Copy') {
+            if (d.questStatus) {
+                DisplayUserMessage(d);
+                _frmFilter.Unmask('#pageContent', false, true);
+            }
+            else {
+                DisplayUserMessage('W|Copying filter ...');
+                _frmFilter.Mask('#pageContent', 'Copying filter...', true);
             }
         }
     }
@@ -626,7 +637,7 @@
             draggable: true,
             droppable: false,
             sortable: true,
-            multiSelect: false,
+            multiSelect: true,
             ctx: {
                 elements: ['_questctx', '_questmm', '_questnb'],
             },

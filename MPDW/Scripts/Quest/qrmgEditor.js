@@ -1115,13 +1115,17 @@ function qrmgEditor(model) {
         return(_self._loadOptions(_o, oo));
     }
 
-    _self.Mask = function (e, msg) {
-        if (!_self._bMasking) { return; }
+    _self.Mask = function (e, msg, bForce) {
+        if (!bForce) {
+            if (!_self._bMasking) { return; }
+        }
         Mask(e || _self._mask, null, msg);
         _self.Buttons(false);
     }
-    _self.Unmask = function (e, bCM) {
-        if (!_self._bMasking) { return; }
+    _self.Unmask = function (e, bCM, bForce) {
+        if (!bForce) {
+            if (!_self._bMasking) { return; }
+        }
         Unmask(e || _self._mask, null, bCM);
         _self.Buttons(true);
     }
