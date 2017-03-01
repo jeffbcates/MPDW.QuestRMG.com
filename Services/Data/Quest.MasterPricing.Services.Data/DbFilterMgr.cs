@@ -1246,6 +1246,23 @@ namespace Quest.MasterPricing.Services.Data.Filters
                 }
             }
 
+            // Copy the columns
+            Dictionary<int, int> oldToNewFilterEntityIds = new Dictionary<int, int>();
+            foreach (FilterColumn filterColumn in filter.FilterColumnList)
+            {
+                filterColumn.FilterId = newFilterId.Id;
+                FilterColumnId filterColumnId = null;
+                int oldId = filterColumn.Id;
+                status = dbFilterColumnsMgr.Create(filterColumn, out filterColumnId);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    RollbackTransaction(trans);
+                    return (status);
+                }
+                oldToNewFilterEntityIds.Add(oldId, filterColumnId.Id);
+                filterColumn.Id = filterColumnId.Id;
+            }
+
             // Copy items
             DbFilterItemsMgr dbFilterItemsMgr = new DbFilterItemsMgr(this.UserSession);
             DbFilterItemJoinsMgr dbFilterItemJoinsMgr = new DbFilterItemJoinsMgr(this.UserSession);
@@ -1254,6 +1271,16 @@ namespace Quest.MasterPricing.Services.Data.Filters
             foreach (FilterItem filterItem in filter.FilterItemList)
             {
                 filterItem.FilterId = newFilterId.Id;
+                int newFilterEntityId = -1;
+                if (! oldToNewFilterEntityIds.TryGetValue(filterItem.FilterEntityId, out newFilterEntityId))
+                {
+                    status = new questStatus(Severity.Error, String.Format("FilterItem {0}  filterEntityId {1}  not found in old-to-new mappings",
+                        filterItem.Id, filterItem.FilterEntityId));
+                    RollbackTransaction(trans);
+                    return (status);
+                }
+                filterItem.FilterEntityId = newFilterEntityId;
+
                 FilterItemId filterItemId = null;
                 status = dbFilterItemsMgr.Create(trans, filterItem, out filterItemId);
                 if (!questStatusDef.IsSuccess(status))
