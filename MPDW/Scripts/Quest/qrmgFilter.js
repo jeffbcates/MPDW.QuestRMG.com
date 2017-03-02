@@ -299,7 +299,7 @@ function qrmgFilter(model) {
                             return;
                         }
                     }
-                    ui.draggable.detach().appendTo($(this).find('ul.list-group'));
+                    ////ui.draggable.detach().appendTo($(this).find('ul.list-group'));
                 }
             });
         }

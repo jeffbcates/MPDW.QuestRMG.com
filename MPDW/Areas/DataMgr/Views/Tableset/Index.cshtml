@@ -10,8 +10,6 @@
     <div id="pTablesetLastRefresh" class="page-subtitle pull-right"><b>Last Refresh:</b></div>
 </div>
 
-@* Usually, calling home for individual items best.  But, here's how-to for very large databases: *@
-@*<input type="hidden" id="__frmDataMgrTablesetVIEW_STATE" value="@Html.Raw(Json.Encode(Model))" />*@
 @{
     System.Web.Script.Serialization.JavaScriptSerializer serializer = new System.Web.Script.Serialization.JavaScriptSerializer();
     serializer.MaxJsonLength = Int32.MaxValue;
@@ -47,7 +45,6 @@
             fields: [
                 { name: 'Id', key: true, hidden: true },
                 { name: 'TablesetId', hidden: true },
-                { name: 'TODO', label: 'TODO: FILTERS GO IN HERE', labelonly: true },
             ],
             operations: [
                 { name: 'List', label: 'List', type: 'tab', title: 'Create a new filter' },
@@ -92,7 +89,7 @@
         });
     }
     function loadFilterPanel(d) {
-        loadTreeviewTablesetEntities();
+        loadTablesetEntities();
         loadTreeviewFilterEntities(d.Entities);
         loadTreeviewValueEntities(d.Entities);
         loadFilterItems(d.Items);
@@ -397,7 +394,7 @@
                 qrmgmvc.Global.Unmask($('#pnlFilters'));
                 return;
             }
-            loadTreeviewTablesetEntities();
+            loadTablesetEntities();
             loadTreeviewFilterEntities(d.Entities);
             loadTreeviewValueEntities(d.Entities);
             loadFilterItems(d.Items);
@@ -453,7 +450,7 @@
                 return;
             }
             else {
-                loadTreeviewTablesetEntities();
+                loadTablesetEntities();
             }
             $('#tvwSQLFrame').text('');
             clearFilterProcedures();
@@ -535,9 +532,9 @@
             ],
         }
         _tvwTablesetEntities = new qrmgTreeview(tvwTablesetEntities);
-        loadTreeviewTablesetEntities();
+        loadTablesetEntities();
     }
-    function loadTreeviewTablesetEntities() {
+    function loadTablesetEntities() {
         var _ee = _viewstate.TableList.concat(_viewstate.ViewList);
         var _d = { questStatus: _viewstate.questStatus, Items: _ee };
         _tvwTablesetEntities.Fill(_d);
@@ -733,22 +730,29 @@
     }
     function cbFilterItemSelected(ud, d) {
     }
+    $(ui.helper).find('li');
+
     function cbFilterItemDrop(e, ui) {
         if ($(ui.draggable).closest('#pnlFilterItems').length > 0) { return (true); }
-        var lbl = ui.draggable.text();
-        if (lbl.indexOf('.') > -1) {
-            var id = $(ui.draggable).attr('data-id');
+        var ee = $(ui.helper).find('li');
+        $.each(ee, function (i, e) {
+            var lbl = $(e).text();
+            if (lbl.indexOf('.') > -1) {
+                var id = $(e).attr('data-id');
+                var n = _tvwValueEntities.GetNode(parseInt(id));
+                insertFilterItem(n);
+                return (true);
+            }
+            if (lbl.indexOf(':') > -1) {
+                var pp = lbl.split(':');
+                lbl = pp[0].trim();
+            }
+            var id = $(e).attr('data-id');
             var n = _tvwValueEntities.GetNode(parseInt(id));
             insertFilterItem(n);
-            return (true);
-        }
-        if (lbl.indexOf(':') > -1) {
-            var pp = lbl.split(':');
-            lbl = pp[0].trim();
-        }
-        var id = $(ui.draggable).attr('data-id');
-        var n = _tvwValueEntities.GetNode(parseInt(id));
-        insertFilterItem(n);
+            n.state.selected = false;
+        });
+        _tvwValueEntities.Refresh();
         return (true);
     }
     function insertFilterItem(n) {

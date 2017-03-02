@@ -374,14 +374,15 @@ namespace Quest.MasterPricing.DataMgr.Modelers
             }
             return (new questStatus(Severity.Success));
         }
-        public questStatus Copy(FilterEditorViewModel filterEditorViewModel)
+        public questStatus Copy(FilterCopyViewModel viewModel, out FilterCopyViewModel filterCopyViewModel)
         {
             // Initialize
             questStatus status = null;
+            filterCopyViewModel = null;
 
 
             // Copy the filter.
-            FilterId filterId = new FilterId(filterEditorViewModel.FilterId);
+            FilterId filterId = new FilterId(viewModel.FilterId);
             FilterId newFilterId = null;
             FilterMgr filterMgr = new FilterMgr(this.UserSession);
             status = filterMgr.Copy(filterId, out newFilterId);
@@ -389,6 +390,12 @@ namespace Quest.MasterPricing.DataMgr.Modelers
             {
                 return (status);
             }
+
+            // Return new filter Id
+            filterCopyViewModel = new FilterCopyViewModel();
+            filterCopyViewModel.FilterId = viewModel.FilterId;
+            filterCopyViewModel.NewFilterId = newFilterId.Id;
+
             return (new questStatus(Severity.Success));
         }
         #endregion

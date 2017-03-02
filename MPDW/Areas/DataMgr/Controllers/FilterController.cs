@@ -312,7 +312,7 @@ namespace Quest.MasterPricing.DataMgr
             return Json(filterRunViewModel, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
-        public ActionResult Copy(FilterEditorViewModel viewModel)
+        public ActionResult Copy(FilterCopyViewModel viewModel)
         {
             questStatus status = null;
 
@@ -339,8 +339,9 @@ namespace Quest.MasterPricing.DataMgr
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Perform operation.
              *---------------------------------------------------------------------------------------------------------------------------------*/
+            FilterCopyViewModel filterCopyViewModel = null;
             FilterPanelModeler filterPanelModeler = new FilterPanelModeler(Request, this.UserSession, viewModel);
-            status = filterPanelModeler.Copy(viewModel);
+            status = filterPanelModeler.Copy(viewModel, out filterCopyViewModel);
             if (!questStatusDef.IsSuccess(status))
             {
                 viewModel.questStatus = status;
@@ -350,9 +351,9 @@ namespace Quest.MasterPricing.DataMgr
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Return result.
              *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = new questStatus(Severity.Success, "Filter successfully copied");
-            viewModel.questStatus = status;
-            return Json(viewModel, JsonRequestBehavior.AllowGet);
+            status = new questStatus(Severity.Success, "Filter successfully copied.  Click on the tableset again to load it.");
+            filterCopyViewModel.questStatus = status;
+            return Json(filterCopyViewModel, JsonRequestBehavior.AllowGet);
         }
         #endregion
 
