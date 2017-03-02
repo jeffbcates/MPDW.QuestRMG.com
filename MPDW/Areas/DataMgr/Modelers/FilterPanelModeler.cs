@@ -364,7 +364,8 @@ namespace Quest.MasterPricing.DataMgr.Modelers
                 foreach (KeyValuePair<string, object> kvp in _dynRow)
                 {
                     ColumnValueViewModel columnValueViewModel = new ColumnValueViewModel();
-                    columnValueViewModel.Name = filterRunViewModel.Results.Columns[cidx].Name;
+                    columnValueViewModel.Name = string.IsNullOrEmpty(filterRunViewModel.Results.Columns[cidx].Label) ? 
+                            filterRunViewModel.Results.Columns[cidx].Name : filterRunViewModel.Results.Columns[cidx].Label;
                     columnValueViewModel.Label = filterRunViewModel.Results.Columns[cidx].Label;
                     columnValueViewModel.Value = kvp.Value == null ? "(null)" : kvp.Value.ToString();
                     dynamicRowViewModel.ColumnValues.Add(columnValueViewModel);

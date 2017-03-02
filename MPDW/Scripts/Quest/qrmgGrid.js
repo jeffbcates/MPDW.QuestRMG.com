@@ -457,9 +457,9 @@ function qrmgGrid(model) {
                 if (c.key) {
                     _self._keyc = c;
                 }
-                var _d = String(d[c.name] ? d[c.name] : '') || '';
+                var _d = String(d[c.label || c.name] ? d[c.label || c.name] : '') || '';
                 if (j == 0 && !_self._model.noops) {
-                    _h[_i++] = '<td class="_tblrsel ' + _cc + ' text-center"><input id="' + _self._name + '_' + c.name + '_sel_' + _d + '" type="checkbox" /></td>';
+                    _h[_i++] = '<td class="_tblrsel ' + _cc + ' text-center"><input id="' + _self._name + '_' + c.name + '_sel_' + (c.key ? _d : j) + '" type="checkbox" /></td>';
                     ////_h[_i++] = '<td id="' + _self._name + '_' + c.name + '_ops_' + _d + '" class="_tblrops ' + _cc + '"></td>';
                 }
                 if (_d !== undefined) {
@@ -617,7 +617,7 @@ function qrmgGrid(model) {
         $.each(dd.Items, function (i, d) {
             var _r = {}
             $.each(d.ColumnValues, function (j, cv) {
-                _r[cv.Name] = cv.Value;
+                _r[cv.Label ? cv.Label : cv.Name] = cv.Value;
             });
             _rr.push(_r);
         });

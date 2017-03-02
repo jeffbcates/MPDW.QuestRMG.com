@@ -11,4 +11,3 @@ C:\Quest\src\MPDW\Functional\Quest.Functional.MasterPricing\bin\Debug\Quest.Util
 C:\Quest\src\MPDW\Functional\Quest.Functional.MasterPricing\bin\Debug\Quest.Util.Data.pdb
 C:\Quest\src\MPDW\Functional\Quest.Functional.MasterPricing\obj\Debug\Quest.Functional.MasterPricing.dll
 C:\Quest\src\MPDW\Functional\Quest.Functional.MasterPricing\obj\Debug\Quest.Functional.MasterPricing.pdb
-C:\Quest\src\MPDW\Functional\Quest.Functional.MasterPricing\obj\Debug\Quest.Functional.MasterPricing.csprojResolveAssemblyReference.cache
