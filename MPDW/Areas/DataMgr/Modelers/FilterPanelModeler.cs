@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Web;
 using Quest.Util.Status;
 using Quest.Util.Buffer;
@@ -397,6 +398,31 @@ namespace Quest.MasterPricing.DataMgr.Modelers
             filterCopyViewModel.FilterId = viewModel.FilterId;
             filterCopyViewModel.NewFilterId = newFilterId.Id;
 
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus Export(FilterResultsExportViewModel filterResultsExportViewModel, out ResultsSet resultsSet)
+        {
+            // Initialize
+            questStatus status = null;
+            resultsSet = null;
+
+
+            // Fill out a run rqeuest
+            RunFilterRequest runFilterRequest = new RunFilterRequest();
+            runFilterRequest.FilterId.Id = filterResultsExportViewModel.Id;
+            runFilterRequest.RowLimit = filterResultsExportViewModel.RowLimit;
+            runFilterRequest.ColLimit = filterResultsExportViewModel.ColLimit;
+
+
+            // Execute filter
+            resultsSet = null;
+            FilterMgr filterMgr = new FilterMgr(this.UserSession);
+            status = filterMgr.ExecuteFilter(runFilterRequest, out resultsSet);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (new questStatus(status.Severity, String.Format("Error executing filter Id={0}: {1}",
+                    runFilterRequest.FilterId.Id, status.Message)));
+            }
             return (new questStatus(Severity.Success));
         }
         #endregion

@@ -1535,20 +1535,19 @@
         $('html, body').animate({ scrollTop: $('#pnlResults').offset().top - 100 });
     }
     function cbExportToExcel(ud, d) {
-        var f = _frmFilter.GetData();
-        if (parseInt(f.FilterId) < 1) {
-            DisplayUserMessage('E|Select a filter to export');
+        $('#pnlresDataTab').removeClass('hidden'); // klugie
+        var d = _frmFilter.GetData();
+        if (parseInt(d.FilterId) < 1) {
+            DisplayUserMessage('E|Select a filter and run it to export results');
             return;
         }
-        d.FilterId = _d.Editor.FilterId;
-
-        var _rd = _pnlResults.GetData();
         d._ResultsOptions = {};
-        d._ResultsOptions.RowLimit = _rd.RowLimit;
-        d._ResultsOptions.ColLimit = _rd.ColLimit;
-
-        
-        ExportToExcel();
+        var p = _pnlFilters.GetData();
+        d.RowLimit = p.RowLimit;
+        d.ColLimit = p.ColLimit;
+      
+        ExportToExcel(d);
+        _pnlFilters.Tab('Data');
     }
 </script>
 
@@ -1664,14 +1663,16 @@
 </script>
 <script type="text/javascript">
     function ExportToExcel(filter) {
-        var _frmId = filter.name + 'ExportToExcel';
-        $('#' + _frmId).remove();
+        var _name = filter.Name.replace(/\s/g, "");
+        var _frmId = _name + '_ExportToExcel';
+        $('.frmExportToExcel').remove();
 
         var _frmExport = document.createElement("form");
         _frmExport.setAttribute("id", _frmId);
         _frmExport.setAttribute("method", "post");
-        _frmExport.setAttribute("action", "/DataMgr/Results/ExportToExcel");
+        _frmExport.setAttribute("action", "/DataMgr/Results/Export");
         _frmExport.setAttribute("target", "view");
+        _frmExport.setAttribute("class", "frmExportToExcel");
 
         for (var f in filter) {
             var _in = document.createElement("input");

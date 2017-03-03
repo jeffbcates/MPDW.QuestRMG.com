@@ -6,6 +6,7 @@ using System.Web;
 
 namespace Quest.MasterPricing.DataMgr.Models
 {
+    [Serializable]
     public class ColumnHeaderViewModel
     {
         public string Name { get; set; }

@@ -1,6 +1,12 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Data;
+using System.IO;
 using System.Linq;
+using System.Reflection;
+using System.Runtime.Serialization.Formatters.Binary;
+using System.Text;
 using System.Web;
 using System.Web.Mvc;
 using Quest.MPDW.Controllers;
@@ -53,7 +59,7 @@ namespace Quest.MasterPricing.DataMgr
          * POST Methods
          *=================================================================================================================================*/
         [HttpPost]
-        public ActionResult ExportToExcel(FilterEditorViewModel viewModel)
+        public ActionResult Export(FilterResultsExportViewModel viewModel)
         {
             questStatus status = null;
 
@@ -80,13 +86,9 @@ namespace Quest.MasterPricing.DataMgr
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Perform operation.
              *---------------------------------------------------------------------------------------------------------------------------------*/
-            RunFilterRequest runFilterRequest = new RunFilterRequest();
-            runFilterRequest.FilterId.Id = viewModel.FilterId;
-            runFilterRequest.RowLimit = viewModel._ResultsOptions.RowLimit;
-            runFilterRequest.ColLimit = viewModel._ResultsOptions.ColLimit;
-            FilterRunViewModel filterRunViewModel = null;
+            ResultsSet resultsSet = null;
             FilterPanelModeler filterPanelModeler = new FilterPanelModeler(Request, this.UserSession, viewModel);
-            status = filterPanelModeler.Run(runFilterRequest, out filterRunViewModel);
+            status = filterPanelModeler.Export(viewModel, out resultsSet);
             if (!questStatusDef.IsSuccess(status))
             {
                 viewModel.questStatus = status;
@@ -96,10 +98,32 @@ namespace Quest.MasterPricing.DataMgr
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Return result.
              *---------------------------------------------------------------------------------------------------------------------------------*/
-            ContentResult contentResult = new ContentResult();
-            contentResult.ContentType = "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet";
-            contentResult.Content = "";
-            return (contentResult);
+            Response.ClearContent();
+            Response.AddHeader("content-disposition", "atachment;filename=" + viewModel.Name.Replace(" ", "_") + ".xls");
+            Response.AddHeader("Content-Type", "application/vnd.ms-excel");
+            WriteTsv(resultsSet, Response.Output);
+            Response.End();
+            return new EmptyResult();
+        }
+        public void WriteTsv(ResultsSet resultsSet, TextWriter output)
+        {
+            foreach (KeyValuePair<string, Column> kvp in resultsSet.ResultColumns)
+            {
+                output.Write(kvp.Key); // header
+                output.Write("\t");
+            }
+            output.WriteLine();
+            foreach (dynamic _dynRow in resultsSet.Data)
+            {
+                foreach (KeyValuePair<string, object> kvp in _dynRow)
+                {
+                    string value = kvp.Value == null ? "(null)" : kvp.Value.ToString();
+                    output.Write(value);
+                    output.Write("\t");
+
+                }
+                output.WriteLine();
+            }
         }
         #endregion
 

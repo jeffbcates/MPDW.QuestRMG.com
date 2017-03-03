@@ -6,6 +6,7 @@ using System.Web;
 
 namespace Quest.MasterPricing.DataMgr.Models
 {
+    [Serializable]
     public class DynamicRowViewModel
     {
         public List<ColumnValueViewModel> ColumnValues { get; set; }

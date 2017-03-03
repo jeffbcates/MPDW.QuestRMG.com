@@ -10,6 +10,7 @@ using Quest.Functional.MasterPricing;
 
 namespace Quest.MasterPricing.DataMgr.Models
 {
+    [Serializable]
     public class FilterResultsViewModel 
     {
         public List<ColumnHeaderViewModel> Columns = null;
