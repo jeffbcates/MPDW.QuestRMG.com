@@ -133,7 +133,8 @@ namespace Quest.MasterPricing.DataMgr.Modelers
             {
                 FilterItemViewModel filterItemViewModel = new FilterItemViewModel();
                 filterItemViewModel.Id = filterItem.Id;
-                filterItemViewModel.Name = filterItem.TablesetColumn.Name;
+                ////filterItemViewModel.Name = filterItem.TablesetColumn.Name;
+                filterItemViewModel.Name = filterItem.FilterColumn.TablesetColumn.Column.Name;
                 filterItemViewModel.Label = filterItem.Label;
                 filterItemViewModel.ParameterName = filterItem.ParameterName;
 

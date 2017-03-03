@@ -102,6 +102,7 @@ namespace Quest.MasterPricing.DataMgr
             Response.AddHeader("content-disposition", "atachment;filename=" + viewModel.Name.Replace(" ", "_") + ".xls");
             Response.AddHeader("Content-Type", "application/vnd.ms-excel");
             WriteTsv(resultsSet, Response.Output);
+            Response.Flush();
             Response.End();
             return new EmptyResult();
         }

@@ -105,7 +105,8 @@
         }
         else if (ud.Active) {
             if (ud.Before) {
-                _pnlFilters.Operations(['Save', 'Run'], _frmFilter._bROS);
+                _pnlFilters.Operations(['Save'], null, false);
+                _pnlFilters.Operations(['Run'], _frmFilter._bROS);
                 enadisSQLTabButtons();
             }
         }
@@ -131,6 +132,7 @@
         }
         else if (ud.Active) {
             if (ud.Before) {
+                _pnlFilters.Operations(['Save'], null, true);
                 _pnlFilters.Operations(['Save', 'Run'], _frmFilter._bROS);
                 enadisSQLTabButtons();
             }
@@ -162,6 +164,7 @@
         }
         else if (ud.Active) {
             if (ud.Before) {
+                _pnlFilters.Operations(['Save'], null, true);
                 _pnlFilters.Operations(['Save', 'Run'], _frmFilter._bROS);
                 enadisSQLTabButtons();
             }
@@ -187,7 +190,8 @@
         }
         else if (ud.Active) {
             if (ud.Before) {
-                _pnlFilters.Operations(['Save', 'Run'], _frmFilter._bROS);
+                _pnlFilters.Operations(['Save'], null, false);
+                _pnlFilters.Operations(['Run'], _frmFilter._bROS);
                 enadisSQLTabButtons();
             }
         }
@@ -218,6 +222,7 @@
         }
         else if (ud.Active) {
             if (ud.Before) {
+                _pnlFilters.Operations(['Save'], null, true);
                 _pnlFilters.Operations(['Save', 'Run'], _frmFilter._bROS);
                 enadisSQLTabButtons();
             }
@@ -1547,7 +1552,6 @@
         d.ColLimit = p.ColLimit;
       
         ExportToExcel(d);
-        _pnlFilters.Tab('Data');
     }
 </script>
 

@@ -29,9 +29,9 @@ function qrmgPanel(model) {
     }
     _self._inittools = function () {
         _self._tools = [
-            { name: 'options', class: 'config', title: 'Options', callback: _self._options },
+            { name: 'options', class: 'config', title: 'Options', callback: _self._options, disabled: true },
             { name: 'collapse', class: 'collapse', title: 'Collapse/Expand', callback: _self._collapse },
-            { name: 'reload', class: 'reload', title: 'Reload', callback: _self._reload },
+            { name: 'reload', class: 'reload', title: 'Reload', callback: _self._reload, disabled: true },
         ];
     }
     _self._initaa = function () {
@@ -291,6 +291,7 @@ function qrmgPanel(model) {
         var _h = [], _i = 0;
         _h[_i++] = '<div class="tools">';
         $.each(_self._tools, function (i, t) {
+            if (t.disabled) { return; }
             _h[_i++] = '    <a id="_porttool' + t.class + '" class="' + t.class + '" href="javascript:;" data-original-title="" title="' + t.title + '"></a>';
         });
         _h[_i++] = '</div>';
@@ -879,10 +880,10 @@ function qrmgPanel(model) {
     }
 
     _self.Collapse = function () {
-        $(_self._e + ' .portlet-body').hide(300);
+        $(_self._e + ' .portlet-body').hide(150);
     }
     _self.Expand = function () {
-        $(_self._e + ' .portlet-body').show(300);
+        $(_self._e + ' .portlet-body').show(150);
     }
     _self._options = function () {
         // TODO: dialog  or expanded menu of options
@@ -1080,18 +1081,28 @@ function qrmgPanel(model) {
             }
         }
     }
-    _self.Operations = function (nn, bE) {
+    _self.Operations = function (nn, bE, bV) {
         if (!$.isArray(nn)) { return; }
         $.each(nn, function (i, n) {
             var _o = _self._getop(n);
             if (_o) {
                 var e = $(_self._e).find('.pnl-operations').find('button[id="pnlflt_btn' + n + '"]');
                 if (e) {
-                    if (bE) {
-                        $(e).removeAttr("disabled");
+                    if (bE != null) {
+                        if (bE) {
+                            $(e).removeAttr("disabled");
+                        }
+                        else {
+                            $(e).attr("disabled", "disabled");
+                        }
                     }
-                    else {
-                        $(e).attr("disabled", "disabled");
+                    if (bV != null) {
+                        if (bV) {
+                            $(e).removeClass("hidden");
+                        }
+                        else {
+                            $(e).addClass("hidden");
+                        }
                     }
                 }
             }

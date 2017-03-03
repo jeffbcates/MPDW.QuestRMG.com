@@ -5660,7 +5660,7 @@ body[ng-controller] .modal-backdrop {
 .portlet > .portlet-title > .tools {
     display: inline-block;
     float: right;
-    padding: 12px 0 8px;
+    padding: 12px 10px 8px;
 }
 .portlet > .portlet-title > .tools > a {
     display: inline-block;
