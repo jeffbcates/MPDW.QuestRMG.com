@@ -141,6 +141,7 @@ namespace Quest.MasterPricing.DataMgr.Modelers
                 filterItemViewModel.Entity.type = "column";  // TODO: ALL THAT'S SUPPORTED RIGHT NOW.
                 filterItemViewModel.Entity.Schema = null;
                 filterItemViewModel.Entity.Name = filterItem.FilterColumn.TablesetColumn.Column.Name;
+                BufferMgr.TransferBuffer(filterItem.FilterColumn.TablesetColumn.Column, filterItemViewModel.Entity.Column);
 
                 filterItemViewModel.ParentEntity.type = filterItem.FilterColumn.ParentEntityType.type;
                 filterItemViewModel.ParentEntity.Schema = filterItem.FilterColumn.ParentEntityType.Schema;

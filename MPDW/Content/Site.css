@@ -496,6 +496,16 @@ input[type="file"] {
     opacity: 0.4;
 }
 
+.panel-tab-frame {
+  bottom: 0;
+  display: block;
+  left: 0;
+  overflow: auto;
+  position: absolute;
+  right: 0;
+  top: 30px;
+}
+
 .under-contruction {
     position: absolute;
     display: block;
