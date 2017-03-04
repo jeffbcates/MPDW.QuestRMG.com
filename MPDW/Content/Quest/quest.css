@@ -260,10 +260,13 @@ footer {
 }
 
 .questTableFrame {
+  bottom: 4px;
   clear: both;
   display: block;
-  position: relative;
-  width: 100%;
+  left: 4px;
+  position: absolute;
+  right: 4px;
+  top: 0;
 }
 .questTableOperations {
   display: inline-block;
@@ -275,8 +278,21 @@ footer {
 .questTableOperations button {
     margin-left: 4px;
 }
+.questTableSubframe {
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
 .questTableBodyFrame {
-    overflow: auto;
+  bottom: 0;
+  display: block;
+  left: 0;
+  overflow: scroll;
+  position: absolute;
+  right: 0;
+  top: 50px;
 }
 .pnl-tab-instructions {
     font-weight: bold;
@@ -946,7 +962,7 @@ pnlbtn:active {
 }
 .bulkUpdateTable {
     table-layout: auto;
-    width: 100%;
+    width: 98%;
     border-spacing: 5px;
     border-collapse: separate;
 }
@@ -962,9 +978,14 @@ td.td-label {
 td.td-input {
     width: 99%;
 }
-.bulkgrid {
-    width: 100%;
-    margin-top: 10px;
+.bulkgridframe {
+  bottom: 4px;
+  display: block;
+  left: 4px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  overflow: auto;
 }
 .bulkInsertTable {
     table-layout: auto;

@@ -150,7 +150,7 @@ function qrmgGrid(model) {
         _h[_i++] = '<div id="' + _self._name + 'Operations"  class="questTableOperations">';
         _h[_i++] = _self._rndrops();
         _h[_i++] = '</div>';
-        _h[_i++] = '<div id="' + _self._name + 'Subframe" class="">';
+        _h[_i++] = '<div id="' + _self._name + 'Subframe" class="questTableSubframe">';
         _h[_i++] = _self._rndrhdr();
         _h[_i++] = _self._rndrtbl();
         _h[_i++] = _self._rndrftr();
@@ -239,15 +239,27 @@ function qrmgGrid(model) {
     }
     _self._rndrtbl = function () {
         var _h = [], _i = 0;
+
+
         if (_self._model.maxbodyheight) {
-            _h[_i++] = '<div class="questTableBodyFrame" style="height: ' + _self._model.maxbodyheight + '">';
+            _h[_i++] = '<div id="' + _self._model.name + 'TableBodyFrame" class="questTableBodyFrame" style="height: ' + _self._model.maxbodyheight + '">';
         }
+        else {
+            _h[_i++] = '<div id="' + _self._model.name + 'TableBodyFrame" class="questTableBodyFrame">';
+        }
+
+
         _h[_i++] = '<table id="' + _self._model.name + '" class="qrmgTable table table-bordered table-hover ' + (_self._model.classes ? _self._model.classes : "") + '">';
         _h[_i++] = _self._rndrth();
         _h[_i++] = _self._rndrtb();
         _h[_i++] = _self._rndrtf();
         _h[_i++] = '</table>';
+
+
         if (_self._model.maxbodyheight) {
+            _h[_i++] = '</div>';
+        }
+        else {
             _h[_i++] = '</div>';
         }
         return (_h.join(''));
@@ -588,6 +600,7 @@ function qrmgGrid(model) {
                 evt.callback('AfterLoad');
             }
         }
+        _self.FixHeader();
         qrmgmvc.Global.Unmask(_self._e);
     }
     _self._ldcc = function (cc) {
@@ -626,6 +639,13 @@ function qrmgGrid(model) {
 
     _self.NumRows = function () {
         return ($(_self._e + ' tbody tr').length);
+    }
+
+    _self.FixHeader = function () {
+        $(_self._e).closest('.questTableBodyFrame').scroll(function () {
+            var translate = "translate(0," + this.scrollTop + "px)";
+            this.querySelector("thead").style.transform = translate;
+        });
     }
     _self._init();
 }

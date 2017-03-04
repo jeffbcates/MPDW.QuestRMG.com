@@ -69,7 +69,7 @@
             ],
             events: [
             ],
-            minHeight: '3600px'
+            minHeight: '1200px'
         }
         _pnlFilters = new qrmgPanel(pnlFilters);
         _pnlFilters.Tab('List');
@@ -121,11 +121,11 @@
             _h[_i++] = '    </div>';
             _h[_i++] = '</div>';
             _h[_i++] = '<div class="panel-tab-frame">';
-            _h[_i++] = '    <div id="tvwTablesetTablesFrame" class="panel-half-tab panel-tab-banner-space pull-left disabled">';
+            _h[_i++] = '    <div id="tvwTablesetTablesFrame" class="panel-half-tab pull-left disabled">';
             _h[_i++] = '        <div id="tvwTablesetEntities" class="panel-full-frame-40header">';
             _h[_i++] = '        </div>';
             _h[_i++] = '    </div>';
-            _h[_i++] = '    <div id="tvwFilterTablesFrame" class="panel-half-tab panel-tab-banner-space pull-right disabled">';
+            _h[_i++] = '    <div id="tvwFilterTablesFrame" class="panel-half-tab pull-right disabled">';
             _h[_i++] = '        <div id="tvwFilterEntities" class="panel-full-frame-40header">';
             _h[_i++] = '        </div>';
             _h[_i++] = '    </div>';
@@ -155,11 +155,11 @@
 
             _h[_i++] = '</div>';
             _h[_i++] = '<div class="panel-tab-frame">';
-            _h[_i++] = '    <div id="tvwConfigureTablesFrame" class="panel-quarter-tab panel-tab-banner-space pull-left disabled">';
+            _h[_i++] = '    <div id="tvwConfigureTablesFrame" class="panel-quarter-tab pull-left disabled">';
             _h[_i++] = '        <div id="tvwValueEntities" class="panel-full-frame-40header">';
             _h[_i++] = '        </div>';
             _h[_i++] = '    </div>';
-            _h[_i++] = '    <div id="pnlFilterItemsFrame" class="panel-three-quarter-tab panel-tab-banner-space pull-right disabled">';
+            _h[_i++] = '    <div id="pnlFilterItemsFrame" class="panel-three-quarter-tab pull-right disabled scrollable">';
             _h[_i++] = '        <div id="pnlFilterItems" class="panel-full-frame-header">';
             _h[_i++] = '        </div>';
             _h[_i++] = '    </div>';
@@ -906,7 +906,7 @@
     function cbBulkInsertRowsTab(ud, d) {
         if (ud.Init) {
             var _h = [], _i = 0;
-            _h[_i++] = '<div id="pnlBulkInsertData" class="bulkgrid">';
+            _h[_i++] = '<div id="pnlBulkInsertData" class="bulkgridframe">';
             _h[_i++] = '</div>';
             return (_h.join(''));
         }
@@ -1308,7 +1308,7 @@
     function cbBulkUpdateColumnsTab(ud, d) {
         if (ud.Init) {
             var _h = [], _i = 0;
-            _h[_i++] = '<div id="pnlBulkUpdateColumns" class="bulktable">';
+            _h[_i++] = '<div id="pnlBulkUpdateColumns" class="bulkgridframe">';
             _h[_i++] = '</div>';
             return (_h.join(''));
         }
@@ -1523,7 +1523,7 @@
                 { name: 'Data', callback: cbResultsTabData, defaultTab: true },
                 { name: 'Output', callback: cbResultsOutput },
             ],
-            minHeight: '600px'
+            minHeight: '800px'
         }
         _pnlResults = new qrmgPanel(pnlResults);
     }
@@ -1594,7 +1594,8 @@
             events: [
             ],
             contextMenu: [
-            ]
+            ],
+            nofooter: true
         }
         _grdResults = new qrmgGrid(grdResults);
     }
@@ -1692,5 +1693,19 @@
 
         document.body.appendChild(_frmExport);
         _frmExport.submit();
+    }
+</script>
+<script type="text/javascript">
+    function fixTableHedaderJquery() {
+        $("#grdResultsTableBodyFrame").scroll(function () {
+            var translate = "translate(0," + this.scrollTop + "px)";
+            this.querySelector("thead").style.transform = translate;
+        });
+    }
+    function fixTableHeader(e) {
+        $(e).scroll(function () {
+            var translate = "translate(0," + this.scrollTop + "px)";
+            this.querySelector("thead").style.transform = translate;
+        });
     }
 </script>

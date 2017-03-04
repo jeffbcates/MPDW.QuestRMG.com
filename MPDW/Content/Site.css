@@ -322,7 +322,6 @@ input[type="file"] {
     left: 0;
     right: 0;
     bottom: 0;
-    overflow: auto;
 }
 .overflow-hidden {
     overflow: hidden !important;
@@ -382,11 +381,13 @@ input[type="file"] {
 }
 .panel-full-tab {
   border: 2px solid #cccccc;
+  bottom: 4px;
   display: inline-block;
-  height: 100%;
-  position: relative;
-  width: 100%;
+  left: 4px;
   padding: 6px;
+  position: absolute;
+  right: 4px;
+  top: 0;
 }
 
 .quarter-width {
@@ -465,7 +466,7 @@ input[type="file"] {
   padding-bottom: 10px;
 }
 .panel-tab-banner-space {
-    margin-top: 40px;
+    margin-top: 48px;
 }
 .panel-tab-banner-title {
     position: relative;
@@ -500,10 +501,12 @@ input[type="file"] {
   bottom: 0;
   display: block;
   left: 0;
-  overflow: auto;
   position: absolute;
   right: 0;
-  top: 30px;
+  top: 48px;
+}
+.scrollable {
+  overflow: auto;
 }
 
 .under-contruction {
