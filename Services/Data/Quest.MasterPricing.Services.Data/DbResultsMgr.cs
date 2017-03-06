@@ -165,6 +165,7 @@ namespace Quest.MasterPricing.Services.Data.Filters
                     {
                         resultsSet.ResultColumns[columnIdentifier].TypeListId = filterItem.TypeListId;
                     }
+                    resultsSet.ResultColumns[columnIdentifier].bIsHidden = filterItem.bHidden;
                 }
             }
             catch (System.Exception ex)

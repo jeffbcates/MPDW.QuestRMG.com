@@ -49,6 +49,7 @@
           <Property Name="TypeListId" Type="int" />
           <Property Name="Label" Type="nvarchar" MaxLength="256" />
           <Property Name="ParameterName" Type="nvarchar" MaxLength="256" />
+          <Property Name="bHidden" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="FilterOperations">
           <Key>
@@ -527,6 +528,7 @@ warning 6002: The table/view 'MasterPricing.dbo.vwTypeListsList' does not have a
           <Property Name="TypeListId" Type="Int32" />
           <Property Name="Label" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
           <Property Name="ParameterName" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+          <Property Name="bHidden" Type="Boolean" Nullable="false" />
         </EntityType>
         <EntityType Name="FilterOperations">
           <Key>
@@ -879,6 +881,7 @@ warning 6002: The table/view 'MasterPricing.dbo.vwTypeListsList' does not have a
           <EntitySetMapping Name="FilterItems">
             <EntityTypeMapping TypeName="Quest.Services.Dbio.MasterPricing.FilterItems">
               <MappingFragment StoreEntitySet="FilterItems">
+                <ScalarProperty Name="bHidden" ColumnName="bHidden" />
                 <ScalarProperty Name="ParameterName" ColumnName="ParameterName" />
                 <ScalarProperty Name="Label" ColumnName="Label" />
                 <ScalarProperty Name="TypeListId" ColumnName="TypeListId" />

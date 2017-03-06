@@ -137,6 +137,7 @@ namespace Quest.MasterPricing.DataMgr.Modelers
                 filterItemViewModel.Name = filterItem.FilterColumn.TablesetColumn.Column.Name;
                 filterItemViewModel.Label = filterItem.Label;
                 filterItemViewModel.ParameterName = filterItem.ParameterName;
+                filterItemViewModel.bHidden = filterItem.bHidden;
 
                 filterItemViewModel.Entity.type = "column";  // TODO: ALL THAT'S SUPPORTED RIGHT NOW.
                 filterItemViewModel.Entity.Schema = null;

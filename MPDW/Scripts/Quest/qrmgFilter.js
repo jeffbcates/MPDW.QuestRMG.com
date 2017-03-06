@@ -42,7 +42,7 @@ function qrmgFilter(model) {
     _self._rndritm = function (itm, id) {
         var _id = id || ('fltitm' + itm.name);
         var _h = [], _i = 0;
-        _h[_i++] = '<div id="' + _id + '" data-id="' + itm.Id + '" class="questFilterItem">';
+        _h[_i++] = '<div id="' + _id + '" data-id="' + itm.Id + '" class="questFilterItem ' + (itm.bHidden ? 'questFilterItemHidden' : '') + '">';
         _h[_i++] = _self._rndrcol(itm);
         _h[_i++] = _self._rndritmop(itm);
         _h[_i++] = '</div>';
@@ -121,7 +121,13 @@ function qrmgFilter(model) {
         _h[_i++] = '        <li data-toggle="modal" data-target="#mdlFilter">Filter/Sub-Select ...</li>';
         _h[_i++] = '        <li data-toggle="modal" data-target="#mdlLookup">Lookup ...</li>';
         _h[_i++] = '        <li data-toggle="modal" data-target="#mdlTypeList">Type List ...</li>';
-        _h[_i++] = '        <li class="filterItemVisibility">Hidden</li>';
+        if (itm.bHidden) {
+            _h[_i++] = '        <li class="filterItemVisibility">Visible</li>';
+        }
+        else {
+            _h[_i++] = '        <li class="filterItemVisibility">Hidden</li>';
+        }
+
         _h[_i++] = '    </ul>';
         _h[_i++] = '</div>';
 
@@ -355,7 +361,7 @@ function qrmgFilter(model) {
                 var lbl = _self._mklbl(n);
                 var _key = pn.text + '.' + lbl;
                 _key = _key.replace(/[\[\]']+/g, '').replace(/\./g, '_');
-                var itm = { Id: n.Id, key: _key, name: lbl, title: lbl, data: n, Parent: pn, Operations: n.Operations, Joins: n.Joins, Label: n.Label, ParameterName: n.ParameterName };
+                var itm = { Id: n.Id, key: _key, name: lbl, title: lbl, data: n, Parent: pn, Operations: n.Operations, Joins: n.Joins, Label: n.Label, ParameterName: n.ParameterName, bHidden: n.bHidden };
                 _self.Insert(itm);
             });
         }
@@ -492,6 +498,7 @@ function qrmgFilter(model) {
             if (pn) {
                 item.ParameterName = pn;
             }
+            item.bHidden = $(fi).hasClass('questFilterItemHidden');
             data.push(item);
         });
         return (data);
@@ -622,8 +629,8 @@ function qrmgFilter(model) {
         return (_d.Joins);
     }
 
-    _self.ShowJoinItemsOnly = function (bJoinItemsOnly) {
-        var ii = $(_self._e + ' div.questFilterItem');
+    _self.ShowJoinItemsOnly = function (bJoinItemsOnly, bVisibleItems) {
+        var ii = bVisibleItems ? $(_self._e + ' div.questFilterItem:visible') : $(_self._e + ' div.questFilterItem');
         $.each(ii, function (i, itm) {
             if (!bJoinItemsOnly || $(itm).find('.questFilterItemJoin').text().trim().length > 0) {
                 $(itm).show();

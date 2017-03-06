@@ -20,6 +20,7 @@ namespace Quest.MasterPricing.DataMgr.Models
         public FilterItemLookupViewModel Lookup { get; set; }
         public FilterItemTypeListViewModel TypeList { get; set; }
         public string ParameterName { get; set; }
+        public bool bHidden { get; set; }
 
         public FilterEntityViewModel ParentEntity { get; set; }
 

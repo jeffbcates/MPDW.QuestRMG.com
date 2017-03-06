@@ -608,6 +608,7 @@ function qrmgGrid(model) {
         $.each(cc, function (i, c) {
             var _c = { name: c.Name };
             _c.label = c.Label ? c.Label : c.Name;
+            _c.hidden = c.bIsHidden;
             _cc.push(_c);
         });
         _self._model.columns = _cc;

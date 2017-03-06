@@ -201,6 +201,7 @@ namespace Quest.MasterPricing.DataMgr.Modelers
                 filterItem.TablesetColumnId = filterItemViewModel.Entity.Id;
                 filterItem.Label = filterItemViewModel.Label;
                 filterItem.ParameterName = filterItemViewModel.ParameterName;
+                filterItem.bHidden = filterItemViewModel.bHidden;
 
                 // Joins
                 foreach (FilterItemJoinViewModel filterItemJoinViewModel in filterItemViewModel.Joins)

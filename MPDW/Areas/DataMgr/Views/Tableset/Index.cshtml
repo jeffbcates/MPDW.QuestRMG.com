@@ -85,7 +85,8 @@
 
         $('#pnlFilterItems').sortable();
         $('#chkJoinItemsOnly').on('click', function () {
-            _fltFilterItems.ShowJoinItemsOnly($(this).is(':checked'));
+            showSelectedEntities();
+            _fltFilterItems.ShowJoinItemsOnly($(this).is(':checked'), true);
         });
     }
     function loadFilterPanel(d) {
@@ -150,13 +151,15 @@
             _h[_i++] = '    </div>';
             _h[_i++] = '    <div class="panel-tab-banner-title">Show:&nbsp;</div>';
             _h[_i++] = '    <div class="panel-entity-select">';
-            _h[_i++] = '       <select id="selFilterItemEntities" class="panel-control" multiple="multiple" size="1">';
-            _h[_i++] = '       <option>ALL Entities</option>';
+            _h[_i++] = '       <select id="selFilterItemEntities" class="panel-control" multiple="multiple" size="1" style="min-width: 300px;">';
+            _h[_i++] = '       <option value="-1">ALL Entities</option>';
+            _h[_i++] = '       <option value="-2">Visible Items</option>';
+            _h[_i++] = '       <option value ="-3">Hidden Items</option>';
             _h[_i++] = '       </select>';
             _h[_i++] = '    </div>';
 
             _h[_i++] = '    <div class="pull-right" style="margin-right: 10px; padding-top: 10px;">';
-            _h[_i++] = '       <input type="checkbox" id="chkJoinItemsOnly" />&nbsp;All Join Items';
+            _h[_i++] = '       <input type="checkbox" id="chkJoinItemsOnly" />&nbsp;All Joins';
             _h[_i++] = '    </div>';
 
             _h[_i++] = '</div>';
@@ -188,12 +191,12 @@
                 ee.push(d.Table);
             }
         });
-        $('#selFilterItemEntities').empty().append('<option value="-1">ALL Entities</option>');
+        $('#selFilterItemEntities').empty().append('<option value="-1">ALL Entities</option>').append('<option value="-2">Visible Items</option>').append('<option value="-3">Hidden Items</option>');
         $.each(ee, function (i, e) {
             $('#selFilterItemEntities').append('<option value="' + e + '">' + e + '</option');
         });
         $('#selFilterItemEntities').val("-1");
-        $('#selFilterItemEntities').unbind('change').bind('change', function () {
+        $('#selFilterItemEntities').unbind('click').bind('click', function () {
             showSelectedEntities();
         });
         $('#selFilterItemEntities').unbind('focus').bind('focus', function () {
@@ -206,9 +209,30 @@
     }
     function showSelectedEntities() {
         var see = $('#selFilterItemEntities option:selected');
-        if (see.length == 1 && $(see)[0].value == "-1") {
-            $('.questFilterItem').show();
-            return;
+        if (see.length == 1) {
+            if ($(see)[0].value == "-1") {
+                $('.questFilterItem').show();
+                if ($('#chkJoinItemsOnly').is(':checked')) {
+                    _fltFilterItems.ShowJoinItemsOnly(true, true); 
+                }
+                return;
+            }
+            else if ($(see)[0].value == "-2") {
+                $('.questFilterItem:not(.questFilterItemHidden)').show();
+                $('.questFilterItemHidden').hide();
+                if ($('#chkJoinItemsOnly').is(':checked')) {
+                    _fltFilterItems.ShowJoinItemsOnly(true, true); 
+                }
+                return;
+            }
+            else if ($(see)[0].value == "-3") {
+                $('.questFilterItem:not(.questFilterItemHidden)').hide();
+                $('.questFilterItemHidden').show();
+                if ($('#chkJoinItemsOnly').is(':checked')) {
+                    _fltFilterItems.ShowJoinItemsOnly(true, true); 
+                }
+                return;
+            }
         }
         var seet = [];
         $.each(see, function (i, st) {
@@ -224,6 +248,9 @@
                 $(itm).show();
             }
         });
+        if ($('#chkJoinItemsOnly').is(':checked')) {
+            _fltFilterItems.ShowJoinItemsOnly(true, true);
+        }
     }
     function cbTabSQL(ud, d) {
         if (ud.Init) {
@@ -505,6 +532,7 @@
                 _tvwFilterEntities.Clear();
                 _tvwValueEntities.Clear();
                 _fltFilterItems.Clear();
+                loadShowEntitesSelect();
                 $('#tvwSQLFrame').text('');
                 qrmgmvc.Global.Unmask($('#pnlFilters'));
                 return;
@@ -820,7 +848,7 @@
             var pn = _tvwValueEntities.GetNode(n.ParentId);
             var _key = pn.text + '.' + lbl;
             _key = _key.replace(/[\[\]']+/g, '').replace(/\./g, '_');
-            var itm = { Id: n.Id, key: _key, name: lbl, title: lbl, data: n, Parent: pn, Operations: n.Operations, Joins: n.Joins, Label: n.Label, ParameterName: n.ParameterName };
+            var itm = { Id: n.Id, key: _key, name: lbl, title: lbl, data: n, Parent: pn, Operations: n.Operations, Joins: n.Joins, Label: n.Label, ParameterName: n.ParameterName, bHidden: n.bHidden };
             if (n.Lookup) { itm.Lookup = n.Lookup; }
             if (n.TypeList) { itm.TypeList = n.TypeList; }
             _fltFilterItems.Insert(itm);
@@ -852,6 +880,7 @@
             if (itm.TypeList) { n.TypeList = itm.TypeList; }
             if (itm.Label) { n.Label = itm.Label; }
             if (itm.ParameterName) { n.ParameterName = itm.ParameterName; }
+            n.bHidden = itm.bHidden;
             insertFilterItem(n);
         });
         _fltFilterItems.ShowJoinItemsOnly($('#chkJoinItemsOnly').is(':checked'));

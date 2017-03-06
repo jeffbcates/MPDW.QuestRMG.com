@@ -22,6 +22,7 @@ namespace Quest.Functional.MasterPricing
         public string Identifier { get; set; }
         public string Label { get; set; }
         public string ParameterName { get; set; }
+        public bool bHidden { get; set; }
 
         public int TablesetColumnId { get; set; }
 

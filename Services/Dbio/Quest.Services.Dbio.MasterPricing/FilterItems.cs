@@ -22,5 +22,6 @@ namespace Quest.Services.Dbio.MasterPricing
         public Nullable<int> TypeListId { get; set; }
         public string Label { get; set; }
         public string ParameterName { get; set; }
+        public bool bHidden { get; set; }
     }
 }
