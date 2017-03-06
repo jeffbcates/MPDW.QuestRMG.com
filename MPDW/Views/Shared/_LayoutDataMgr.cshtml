@@ -355,7 +355,7 @@
     function initJoinModal(e) {
         _joinId = $(e.relatedTarget).closest('.questFilterItem').attr('data-id');
         var fi = $(e.relatedTarget).closest('.questFilterItem');
-        var t = $(fi).find('.questFilterColumnTable').text();
+        var t = $(fi).find('.questFilterColumnEntity').text();
         var c = $(fi).find('.questFilterColumn').text();
         var d = $('#joinColumn', '#mdlJoin').text(t + '.' + c);
         $(d).text(t + '.' + c);
@@ -504,7 +504,7 @@
     function initLookupModal(e) {
         _fi = $(e.relatedTarget).closest('.questFilterItem');
         _lookupId = $(_fi).attr('data-id');
-        var tbl = $(_fi).find('.questFilterItemSpecifier .questFilterColumnTable').text();
+        var tbl = $(_fi).find('.questFilterItemSpecifier .questFilterColumnEntity').text();
         var c = $(_fi).find('.questFilterItemSpecifier .questFilterColumn').text();
         var d = $('.lookupColumnInfo', '#mdlLookup');
         $(d).text(tbl + '.' + c);
@@ -622,7 +622,7 @@
     function initTypeListModal(e) {
         _fi = $(e.relatedTarget).closest('.questFilterItem');
         _typeListId = $(_fi).attr('data-id');
-        var tbl = $(_fi).find('.questFilterItemSpecifier .questFilterColumnTable').text();
+        var tbl = $(_fi).find('.questFilterItemSpecifier .questFilterColumnEntity').text();
         var c = $(_fi).find('.questFilterItemSpecifier .questFilterColumn').text();
         var d = $('.typeListColumnInfo', '#mdlTypeList');
         $(d).text(tbl + '.' + c);

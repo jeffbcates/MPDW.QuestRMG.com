@@ -117,7 +117,7 @@
             _h[_i++] = '<div id="hdrFilterEntities" class="panel-tab-banner">';
             _h[_i++] = '    <div class="panel-tab-banner-title">Filter:&nbsp;</div>';
             _h[_i++] = '    <div class="panel-title-select">';
-            _h[_i++] = '       <select id="selCurrentEntitiesFilter" class="form-control filter-select"></select>';
+            _h[_i++] = '       <select id="selCurrentEntitiesFilter" class="panel-control filter-select"></select>';
             _h[_i++] = '    </div>';
             _h[_i++] = '</div>';
             _h[_i++] = '<div class="panel-tab-frame">';
@@ -146,11 +146,17 @@
             _h[_i++] = '<div id="hdrFilterItems" class="panel-tab-banner">';
             _h[_i++] = '    <div class="panel-tab-banner-title">Filter:&nbsp;</div>';
             _h[_i++] = '    <div class="panel-title-select">';
-            _h[_i++] = '       <select id="selCurrentValuesFilter" class="form-control filter-select"></select>';
+            _h[_i++] = '       <select id="selCurrentValuesFilter" class="panel-control filter-select"></select>';
+            _h[_i++] = '    </div>';
+            _h[_i++] = '    <div class="panel-tab-banner-title">Show:&nbsp;</div>';
+            _h[_i++] = '    <div class="panel-entity-select">';
+            _h[_i++] = '       <select id="selFilterItemEntities" class="panel-control" multiple="multiple" size="1">';
+            _h[_i++] = '       <option>ALL Entities</option>';
+            _h[_i++] = '       </select>';
             _h[_i++] = '    </div>';
 
-            _h[_i++] = '    <div class="pull-right" style="margin-right: 10px">';
-            _h[_i++] = '       <input type="checkbox" id="chkJoinItemsOnly" />&nbsp;Join Items Only';
+            _h[_i++] = '    <div class="pull-right" style="margin-right: 10px; padding-top: 10px;">';
+            _h[_i++] = '       <input type="checkbox" id="chkJoinItemsOnly" />&nbsp;All Join Items';
             _h[_i++] = '    </div>';
 
             _h[_i++] = '</div>';
@@ -174,13 +180,58 @@
             }
         }
     }
+    function loadShowEntitesSelect() {
+        var dd = _fltFilterItems.GetData();
+        var ee = [];
+        $.each(dd, function (i, d) {
+            if (ee.indexOf(d.Table) == -1) {
+                ee.push(d.Table);
+            }
+        });
+        $('#selFilterItemEntities').empty().append('<option value="-1">ALL Entities</option>');
+        $.each(ee, function (i, e) {
+            $('#selFilterItemEntities').append('<option value="' + e + '">' + e + '</option');
+        });
+        $('#selFilterItemEntities').val("-1");
+        $('#selFilterItemEntities').unbind('change').bind('change', function () {
+            showSelectedEntities();
+        });
+        $('#selFilterItemEntities').unbind('focus').bind('focus', function () {
+            var size = $('#selFilterItemEntities option').length;
+            $('#selFilterItemEntities').attr('size', size).parent().css('z-index', '99999');
+        });
+        $('#selFilterItemEntities').unbind('blur').bind('blur', function () {
+            $('#selFilterItemEntities').attr('size', 1).parent().css('z-index', 'auto');
+        });
+    }
+    function showSelectedEntities() {
+        var see = $('#selFilterItemEntities option:selected');
+        if (see.length == 1 && $(see)[0].value == "-1") {
+            $('.questFilterItem').show();
+            return;
+        }
+        var seet = [];
+        $.each(see, function (i, st) {
+            seet.push($(st).text());
+        });
+
+        var ii = $('.questFilterItem');
+        $.each(ii, function (j, itm) {
+            if (seet.indexOf($(itm).find('.questFilterColumnEntity').text()) == -1) {
+                $(itm).hide();
+            }
+            else {
+                $(itm).show();
+            }
+        });
+    }
     function cbTabSQL(ud, d) {
         if (ud.Init) {
             var _h = [], _i = 0;
             _h[_i++] = '<div id="hdrFilterSQL" class="panel-tab-banner">';
             _h[_i++] = '    <div class="panel-tab-banner-title">Filter:&nbsp;</div>';
             _h[_i++] = '    <div class="panel-title-select">';
-            _h[_i++] = '       <select id="selCurrentSQLFilter" class="form-control filter-select"></select>';
+            _h[_i++] = '       <select id="selCurrentSQLFilter" class="panel-control filter-select"></select>';
             _h[_i++] = '    </div>';
             _h[_i++] = '    <div class="panel-tab-operations">';
             _h[_i++] = '        <button id="btnGetSQL" type="button" class="btn btn-primary" title="Get filter SQL" onclick="cbGetFilterSQL()">Get SQL</button>';
@@ -214,9 +265,9 @@
         if (ud.Init) {
             var _h = [], _i = 0;
             _h[_i++] = '<div id="hdrFilterProcedures" class="panel-tab-banner">';
-            _h[_i++] = '    <div class="panel-tab-banner-title">Filter Procedures:&nbsp;</div>';
+            _h[_i++] = '    <div class="panel-tab-banner-title">Filter:&nbsp;</div>';
             _h[_i++] = '    <div class="panel-title-select">';
-            _h[_i++] = '       <select id="selCurrentProceduresFilter" class="form-control filter-select"></select>';
+            _h[_i++] = '       <select id="selCurrentProceduresFilter" class="panel-control filter-select"></select>';
             _h[_i++] = '    </div>';
             _h[_i++] = '</div>';
             _h[_i++] = '<div id="frmFilterProcedures" class="panel-tab-banner-space">';
@@ -352,7 +403,7 @@
                 { name: 'TablesetId', type: 'hidden' },
                 { name: 'FillerA', label: '', type: 'labelOnly' },
                 { name: 'FillerB', label: 'Select a filter ...', type: 'labelOnly', classes: 'pnl-tab-instructions' },
-                { name: 'FilterId', label: 'Filters', type: 'select', args: [{ TablesetId: _viewstate.TablesetId, type: 'value' }], callback: cbChangeFilter, classes: 'filter-select' },
+                { name: 'FilterId', label: 'Filters', type: 'select', args: [{ TablesetId: _viewstate.TablesetId, type: 'value' }], callback: cbChangeFilter, classes: 'panel-control filter-select' },
                 { name: 'Filler0', label: '', type: 'labelOnly' },
                 { name: 'Filler1', label: '', type: 'labelOnly' },
                 { name: 'Filler2', label: 'OR', type: 'labelOnly', classes: 'pnl-tab-instructions' },
@@ -773,12 +824,14 @@
             if (n.Lookup) { itm.Lookup = n.Lookup; }
             if (n.TypeList) { itm.TypeList = n.TypeList; }
             _fltFilterItems.Insert(itm);
+            loadShowEntitesSelect();
         }
         else {
             var _key = n.text;
             _key = _key.replace(/[\[\]']+/g, '').replace(/\./g, '_');
             var itm = { Id: n.Id, key: _key, name: lbl, title: lbl, data: n, Operations: n.Operations, Joins: n.Joins };
             _fltFilterItems.Insert(itm);
+            loadShowEntitesSelect();
         }
     }
     function cbFilterItemClose() {

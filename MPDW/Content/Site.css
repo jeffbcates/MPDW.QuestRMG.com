@@ -476,11 +476,20 @@ input[type="file"] {
     padding-left: 14px;
     padding-top: 8px;
     width: auto;
+    vertical-align: top;
 }
 .panel-title-select {
     position: relative;
     display: inline-block;
     width: 600px;
+}
+.panel-entity-select {
+    position: relative;
+    display: inline-block;
+    vertical-align: top;
+}
+.panel-entity-select select {
+
 }
 .panel-select {
   height: 28px !important;

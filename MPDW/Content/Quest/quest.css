@@ -745,6 +745,27 @@ pnlbtn:active {
 .questFilterItem:hover {
     background: #FFFFFF;
 }
+.questFilterItemHidden {
+  background: rgba(255, 255, 255, 1) repeating-linear-gradient(-45deg, rgba(220, 220, 220, 0.3), rgba(220, 220, 220, 0.3) 10px, rgba(128, 128, 128, 0.3) 10px, rgba(128, 128, 128, 0.3) 20px) repeat scroll 0 0 !important;
+}
+.questFilterItemHidden:hover {
+  background: rgba(255, 255, 255, 1) repeating-linear-gradient(-45deg, rgba(220, 220, 220, 0.2), rgba(220, 220, 220, 0.2) 10px, rgba(128, 128, 128, 0.2) 10px, rgba(128, 128, 128, 0.2) 20px) repeat scroll 0 0 !important;
+}
+.panel-control {
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #8298b3;
+  border-radius: 4px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+  color: #001b3b;
+  display: block;
+  font-size: 14px;
+  height: 34px;
+  line-height: 1.42857;
+  padding: 6px 12px;
+  transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+}
+
 .questFilterItemControls {
   cursor: pointer;
   display: inline-block;
@@ -817,7 +838,7 @@ pnlbtn:active {
     font-weight: bold;
 }
 
-.questFilterColumnTable {
+.questFilterColumnEntity {
   display: block;
   font-size: 0.8em;
   position: relative;

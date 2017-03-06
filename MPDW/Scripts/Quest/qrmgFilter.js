@@ -121,11 +121,12 @@ function qrmgFilter(model) {
         _h[_i++] = '        <li data-toggle="modal" data-target="#mdlFilter">Filter/Sub-Select ...</li>';
         _h[_i++] = '        <li data-toggle="modal" data-target="#mdlLookup">Lookup ...</li>';
         _h[_i++] = '        <li data-toggle="modal" data-target="#mdlTypeList">Type List ...</li>';
+        _h[_i++] = '        <li class="filterItemVisibility">Hidden</li>';
         _h[_i++] = '    </ul>';
         _h[_i++] = '</div>';
 
         _h[_i++] = '<div class="questFilterItemSpecifier">';
-        _h[_i++] = '<div class="questFilterColumnTable">' + itm.Parent.text + '</div>';
+        _h[_i++] = '<div class="questFilterColumnEntity">' + itm.Parent.text + '</div>';
         _h[_i++] = '<div id="' + itm.name + '" class="questFilterCogItem questFilterColumn">';
         _h[_i++] = itm.name;
         _h[_i++] = '</div>';
@@ -197,6 +198,7 @@ function qrmgFilter(model) {
         _self._bndddm();
         _self._bndlbl();
         _self._bndprmnm();
+        _self._bnditmvis();
         _self._bnditmctrl();
         _self._bnditmvv();
     }
@@ -205,8 +207,8 @@ function qrmgFilter(model) {
             if ($(this).hasClass('open')) {
                 $(this).closest('.questFilterItem').removeAttr('style');
             }
-            else if ($(this).closest('.questFilterItem').height() < 190) {
-                $(this).closest('.questFilterItem').height(190);
+            else if ($(this).closest('.questFilterItem').height() < 210) {
+                $(this).closest('.questFilterItem').height(210);
             }
         });
     }
@@ -217,7 +219,7 @@ function qrmgFilter(model) {
             }
             else {
                 var fi = $(this).closest('.questFilterItem');
-                $(fi).find('.questFilterItemSpecifier .questFilterItemLabel').empty();   benjie
+                $(fi).find('.questFilterItemSpecifier .questFilterItemLabel').empty();
                 var _d = _self._getdata(fi);
                 delete _d.Label;
             }
@@ -233,6 +235,18 @@ function qrmgFilter(model) {
                 $(fi).find('.questFilterItemSpecifier .questFilterItemParameterName').empty();
                 var _d = _self._getdata(fi);
                 delete _d.ParameterName;
+            }
+        });
+    }
+    _self._bnditmvis = function () {
+        $('.filterItemVisibility', _self._e).unbind('click').on('click', function (e) {
+            if ($(this).text() == "Hidden") {
+                $(this).text("Visible");
+                $(this).closest('.questFilterItem').addClass("questFilterItemHidden");
+            }
+            else {
+                $(this).text("Hidden");
+                $(this).closest('.questFilterItem').removeClass("questFilterItemHidden");
             }
         });
     }
@@ -446,7 +460,7 @@ function qrmgFilter(model) {
         data = [];
         $.each($('.questFilterItem', _fltFilterItems._e), function (i, fi) {
             var item = {};
-            item.Table = $(fi).find('.questFilterItemSpecifier .questFilterColumnTable').text();
+            item.Table = $(fi).find('.questFilterItemSpecifier .questFilterColumnEntity').text();
             item.Name = $(fi).find('.questFilterItemSpecifier .questFilterColumn').text();
             item.Operations = [];
             item.Entity = _self._getentity(fi);
