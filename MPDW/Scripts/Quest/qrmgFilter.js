@@ -690,5 +690,29 @@ function qrmgFilter(model) {
         return (_self._bChanges);
     }
 
+    _self.Validate = function () {
+        $(_self._e).find('.validationError').removeClass('validationError filtverr');
+        var ss = $('.filtsel', _self._e);
+        $.each(ss, function (i, s) {
+            var _opf = $(s).closest('.questFilterItemOpFrame');
+            var _vi = $(_opf).find('input.filtinput');
+            if ($(_vi).val().length > 0) {
+                $(_vi).addClass('validationError');
+            }
+            if ($(s).val() == -1) {
+                if ($(_opf).find('.filttags').children().length > 0) {
+                    $(_opf).find('.filttags').find('.filtvtag').addClass('filtverr');
+                }
+            }
+            else {
+                if ($(_opf).find('.filttags').children().length == 0) {
+                    $(s).addClass('validationError');
+                }
+            }
+        });
+        return (($(_self._e).find('.validationError').length + $(_self._e).find('.filtverr').length) == 0);
+    }
+
+
     _self._init();
 }

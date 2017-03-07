@@ -334,6 +334,12 @@
         }
         $('#tvwSQLFrame').text('');
 
+        ClearUserMessage();
+        if (!_fltFilterItems.Validate()) {
+            DisplayUserMessage('E|Filter items have incorrect settings');
+            return;
+        }
+
         var _d = {};
         _d.TablesetId = _viewstate.TablesetId;
         _d.CurrentTab = _pnlFilters.Tab();
