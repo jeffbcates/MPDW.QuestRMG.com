@@ -639,12 +639,22 @@ function qrmgFilter(model) {
         // TODO: 
         var _jj = [];
         $.each(_d.Joins, function (_i, _j) {
-            if (j.ColumnId == _j.ColumnId) { return; }
+            if (j.ColumnId !== undefined && j.ColumnId !== "undefined") {
+                if (j.ColumnId == _j.ColumnId) { return; }
+            }
+            else {
+                if (j.JoinText == $(e).find('.questFilterItemJoin').text()) { return; }
+            }
             _jj.push(_j);
         });
         _d.Joins = _jj;
         _self.AddData(id, 'Joins', _d.Joins);
-        $('.questFilterItemJoin[data-id="' + j.ColumnId + '"]', _self._e).remove();
+        if (j.ColumnId !== undefined && j.ColumnId !== "undefined") {
+            $('.questFilterItemJoin[data-id="' + j.ColumnId + '"]', _self._e).remove();
+        }
+        else {
+            $(e).find('.questFilterItemJoin:contains("' + j.JoinText + '")').remove();
+        }
         _self.Change(true);
         return (_d.Joins);
     }

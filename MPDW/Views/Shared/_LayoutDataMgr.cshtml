@@ -401,7 +401,7 @@
                 var jj = $('.joinItem', '#mdlJoin').find('input[type="checkbox"]:checked');
                 $.each(jj, function (i, j) {
                     var _id = $(j).parent().attr('data-id');
-                    if (_fltFilterItems.RemoveJoin(_joinId, { ColumnId: _id })) {
+                    if (_fltFilterItems.RemoveJoin(_joinId, { ColumnId: _id, JoinText: $(j).parent().text() })) {
                         $(j).parent().remove();
                     }
                 });
