@@ -910,7 +910,6 @@ namespace Quest.MasterPricing.Services.Data.Filters
             {
                 return (status);
             }
-
             return (new questStatus(Severity.Success));
         }
         public questStatus SaveSQL(Filter filter)

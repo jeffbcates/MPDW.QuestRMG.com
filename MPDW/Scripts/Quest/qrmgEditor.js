@@ -1105,6 +1105,12 @@ function qrmgEditor(model) {
 
     _self.Change = function(v) {
         _self._bChanges = v;
+        var _evt = _self._getevt("OnChange");
+        if (_evt != null) {
+            if (_evt.callback({ OnChange: true }, _self._bChanges)) {
+                return;
+            }
+        }
     }
     _self.bChanges = function() {
         return (_self._bChanges);

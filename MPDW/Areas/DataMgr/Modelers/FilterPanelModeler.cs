@@ -337,43 +337,11 @@ namespace Quest.MasterPricing.DataMgr.Modelers
                     runFilterRequest.FilterId.Id, status.Message)));
             }
 
-            // Get number of entities.
-            int numEntities = 0;
-            status = getNumEntities(resultsSet, out numEntities);
+            // Transfer results to view model.
+            status = TransferResults(runFilterRequest, resultsSet, out filterRunViewModel);
             if (!questStatusDef.IsSuccess(status))
             {
                 return (status);
-            }
-
-
-            // Transfer model
-            filterRunViewModel = new FilterRunViewModel();
-            filterRunViewModel.Id = runFilterRequest.FilterId.Id;
-            filterRunViewModel.FilterId = runFilterRequest.FilterId.Id;
-            foreach (KeyValuePair<string, Column> kvp in resultsSet.ResultColumns)
-            {
-                ColumnHeaderViewModel columnHeaderViewModel = new ColumnHeaderViewModel();
-                BufferMgr.TransferBuffer(kvp.Value, columnHeaderViewModel, true);
-                columnHeaderViewModel.Name = kvp.Value.Name;
-                columnHeaderViewModel.Label = makeColumnLabel(kvp, numEntities);
-                columnHeaderViewModel.Type = kvp.Value.DataTypeName;
-                filterRunViewModel.Results.Columns.Add(columnHeaderViewModel);
-            }
-            foreach (dynamic _dynRow in resultsSet.Data)
-            {
-                DynamicRowViewModel dynamicRowViewModel = new DynamicRowViewModel();
-                int cidx = 0;
-                foreach (KeyValuePair<string, object> kvp in _dynRow)
-                {
-                    ColumnValueViewModel columnValueViewModel = new ColumnValueViewModel();
-                    columnValueViewModel.Name = string.IsNullOrEmpty(filterRunViewModel.Results.Columns[cidx].Label) ? 
-                            filterRunViewModel.Results.Columns[cidx].Name : filterRunViewModel.Results.Columns[cidx].Label;
-                    columnValueViewModel.Label = filterRunViewModel.Results.Columns[cidx].Label;
-                    columnValueViewModel.Value = kvp.Value == null ? "(null)" : kvp.Value.ToString();
-                    dynamicRowViewModel.ColumnValues.Add(columnValueViewModel);
-                    cidx += 1;
-                }
-                filterRunViewModel.Results.Items.Add(dynamicRowViewModel);
             }
             return (new questStatus(Severity.Success));
         }
@@ -426,6 +394,70 @@ namespace Quest.MasterPricing.DataMgr.Modelers
             }
             return (new questStatus(Severity.Success));
         }
+
+        public questStatus Run(FilterRunViewModel filterRunViewModel, out FilterRunViewModel filterRunResultsViewModel)
+        {
+            // Initialize
+            questStatus status = null;
+            filterRunResultsViewModel = null;
+
+
+            // NOTE: THIS IS FOR RUNNING A FILTER THAT IS --NOT-- IN THE DATABASE.  HOWEVER IT IS *BASED* ON A FILTER IN THE DATABASE, THUS A VALID FILTER ID MUST BE GIVEN.
+            FilterMgr filterMgr = new FilterMgr(this.UserSession);
+
+
+            // Get the filter
+            FilterId filterId = new FilterId(filterRunViewModel.FilterId);
+            Quest.Functional.MasterPricing.Filter filterFROMDatabase = null;
+            status = filterMgr.GetFilter(filterId, out filterFROMDatabase);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+            // Merge view model into filter from database.
+            Quest.Functional.MasterPricing.Filter filter = null;
+            status = MergeFilterEditorViewModel(filterRunViewModel, filterFROMDatabase, out filter);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+            // Verify the filter
+            status = filterMgr.Verify(filter);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+
+            // Generate filter SQL
+            Quest.Functional.MasterPricing.Filter filterWithSQL = null;
+            status = filterMgr.GenerateFilterSQL(filter, out filterWithSQL);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+            // Run the filter
+            RunFilterRequest runFilterRequest = new RunFilterRequest();  // Filter Id doesn't matter, non-DB filter run request.
+            runFilterRequest.RowLimit = filterRunViewModel._ResultsOptions.RowLimit;
+            runFilterRequest.ColLimit = filterRunViewModel._ResultsOptions.ColLimit;
+            ResultsSet resultsSet = null;
+            status = filterMgr.Run(runFilterRequest, filterWithSQL, out resultsSet);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+            // Transfer results to view model.
+            status = TransferResults(resultsSet, out filterRunResultsViewModel);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
         #endregion
 
 
@@ -436,49 +468,6 @@ namespace Quest.MasterPricing.DataMgr.Modelers
         private questStatus initialize()
         {
             return (new questStatus(Severity.Success));
-        }
-        private questStatus getNumEntities(ResultsSet resultsSet, out int numEntities)
-        {
-            // Initialize
-            numEntities = 0;
-
-
-            List<string> entityNameList = new List<string>();
-            foreach (dynamic _dynRow in resultsSet.Data)
-            {
-                DynamicRowViewModel dynamicRowViewModel = new DynamicRowViewModel();
-                foreach (KeyValuePair<string, object> kvp in _dynRow)
-                {
-                    string[] pp = kvp.Key.Split('_');
-                    string entityName = pp[0];
-                    string existingEntityName = entityNameList.Find(delegate (string t) { return t == entityName; });
-                    if (existingEntityName == null)
-                    {
-                        entityNameList.Add(entityName);
-                    }
-                }
-            }
-            numEntities = entityNameList.Count;
-
-            return (new questStatus(Severity.Success));
-        }
-        private string makeColumnLabel(KeyValuePair<string, Column> kvp, int numEntities)
-        {
-            string label = null;
-            if (kvp.Value.Label != null)
-            {
-                return (kvp.Value.Label);
-            }
-            if (numEntities == 1)
-            {
-                string[] pp = kvp.Key.Split('_');
-                label = pp[1];
-            }
-            else
-            {
-                label = kvp.Key;
-            }
-            return (label);
         }
         #endregion
     }

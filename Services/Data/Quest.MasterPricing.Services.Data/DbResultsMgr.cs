@@ -70,14 +70,14 @@ namespace Quest.MasterPricing.Services.Data.Filters
         /*==================================================================================================================================
          * Public Methods
          *=================================================================================================================================*/
-        public questStatus ExecuteFilter(RunFilterRequest runFilterRequest, out ResultsSet resultsSet) // 
+        public questStatus ExecuteFilter(RunFilterRequest runFilterRequest, out ResultsSet resultsSet) 
         {
             // Initialize
             questStatus status = null;
             resultsSet = null;
 
 
-            // Read the filter
+            // Get the filter
             FilterId filterId = new FilterId(runFilterRequest.FilterId.Id);
             Filter filter = null;
             DbFilterMgr dbFilterMgr = new DbFilterMgr(this.UserSession);
@@ -220,6 +220,97 @@ namespace Quest.MasterPricing.Services.Data.Filters
                     return (new questStatus(Severity.Error, String.Format("ERROR: invalid filter column {0} entity type id: {1} (determining column identifier)",
                             _filterColumn.FilterEntityId, _filterColumn.FilterEntityTypeId)));
                 }
+            }
+            return (new questStatus(Severity.Success));
+        }
+
+        public questStatus Run(RunFilterRequest runFilterRequest, Filter filter, out ResultsSet resultsSet) 
+        {
+            // Initialize
+            questStatus status = null;
+            resultsSet = null;
+
+
+            // Read the tableset
+            TablesetId tablesetId = new TablesetId(filter.TablesetId);
+            Tableset tableset = null;
+            DbTablesetsMgr dbTablesetsMgr = new DbTablesetsMgr(this.UserSession);
+            status = dbTablesetsMgr.Read(tablesetId, out tableset);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+            // Read the database
+            DatabaseId databaseId = new DatabaseId(tableset.DatabaseId);
+            Quest.Functional.MasterPricing.Database database = null;
+            DbDatabasesMgr dbDatabasesMgr = new DbDatabasesMgr(this.UserSession);
+            status = dbDatabasesMgr.Read(databaseId, out database);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+            // Execute SQL.
+            try
+            {
+                status = executeSQL(runFilterRequest, database, filter, out resultsSet);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+            }
+            catch (System.Exception ex)
+            {
+                return (new questStatus(Severity.Error, String.Format("EXCEPTION: executing filter SQL: {0}", ex.Message)));
+            }
+
+            // Append lookup or type list Id's to result columns with lookups.
+            // NOTE: Lookups and typeList are mutually exclusive.
+            FilterItem filterItem = null;
+            try
+            {
+                for (int idx = 0; idx < filter.FilterItemList.Count; idx += 1)
+                {
+                    filterItem = filter.FilterItemList[idx];
+
+                    string columnIdentifier = null;
+                    FilterColumn filterColumn = null;
+                    status = GetResultsColumnIdentifier(filter, filterItem, out columnIdentifier, out filterColumn);
+                    if (!questStatusDef.IsSuccess(status))
+                    {
+                        return (status);
+                    }
+                    if (columnIdentifier == null)
+                    {
+                        return (new questStatus(Severity.Error, String.Format("ERROR: columnIdentifier is NULL for filterItem {0}  FilterId: {1}",
+                                filterItem.Id, filterItem.FilterId)));
+                    }
+                    if (filterColumn == null)
+                    {
+                        return (new questStatus(Severity.Error, String.Format("ERROR: filterColumn is NULL for filterItem {0}  FilterId: {1}",
+                                filterItem.Id, filterItem.FilterId)));
+                    }
+                    if (!string.IsNullOrEmpty(filterItem.Label))
+                    {
+                        resultsSet.ResultColumns[columnIdentifier].Name = filterColumn.TablesetColumn.Name;
+                        resultsSet.ResultColumns[columnIdentifier].Label = filterItem.Label;
+                    }
+                    if (filterItem.LookupId.HasValue)
+                    {
+                        resultsSet.ResultColumns[columnIdentifier].LookupId = filterItem.LookupId;
+                    }
+                    if (filterItem.TypeListId.HasValue)
+                    {
+                        resultsSet.ResultColumns[columnIdentifier].TypeListId = filterItem.TypeListId;
+                    }
+                    resultsSet.ResultColumns[columnIdentifier].bIsHidden = filterItem.bHidden;
+                }
+            }
+            catch (System.Exception ex)
+            {
+                return (new questStatus(Severity.Error, String.Format("EXCEPTION: building filter results set for FilterItem {0}: {1}",
+                        filterItem.Id, ex.Message)));
             }
             return (new questStatus(Severity.Success));
         }

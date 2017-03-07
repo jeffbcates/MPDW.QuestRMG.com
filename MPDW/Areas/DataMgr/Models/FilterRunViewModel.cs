@@ -16,20 +16,30 @@ namespace Quest.MasterPricing.DataMgr.Models
         public int FilterId { get; set; }
         public FilterResultsViewModel Results = null;
 
+        // Optional. Fill these out if you want to trim down the full filter results.
+        public List<FilterItemViewModel> Items { get; set; }
+        public ResultsOptionsViewModel _ResultsOptions { get; set; }
+
 
         public FilterRunViewModel()
             : base()
         {
+            Items = new List<FilterItemViewModel>();
+            _ResultsOptions = new ResultsOptionsViewModel();
             Results = new FilterResultsViewModel();
         }
         public FilterRunViewModel(UserSession userSession)
             : base(userSession)
         {
+            Items = new List<FilterItemViewModel>();
+            _ResultsOptions = new ResultsOptionsViewModel();
             Results = new FilterResultsViewModel();
         }
         public FilterRunViewModel(UserSession userSession, BaseUserSessionViewModel baseUserSessionViewModel)
             : base(userSession, baseUserSessionViewModel)
         {
+            Items = new List<FilterItemViewModel>();
+            _ResultsOptions = new ResultsOptionsViewModel();
             Results = new FilterResultsViewModel();
         }
     }

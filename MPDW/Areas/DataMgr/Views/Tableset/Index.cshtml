@@ -55,6 +55,7 @@
                 { name: 'SQL', method: 'POST', callback: cbGetFilterSQL, hidden: true },
                 { name: 'Save', label: 'Save', classes: 'btn-success', method: 'POST', callback: cbSaveFilterPanel, title: 'Save filter entities, items and procedures.' },
                 { name: 'Run', label: 'Run', classes: 'btn-danger', method: 'POST', callback: cbRunFilter, title: 'Run the filter' },
+                { name: 'Test', label: 'Test', classes: 'btn-danger', method: 'POST', callback: cbTestFilter, title: 'Test unsaved changes to a filter', uri: '/DataMgr/Filter/Run' },
             ],
             actions: [
                 { name: 'RowLimit', label: 'Row Limit', type: 'text', value: '200', title: 'Set max # of rows to return' },
@@ -68,6 +69,7 @@
                 { name: 'Procedures', callback: cbTabProcedures },
             ],
             events: [
+                { name: 'OnChange', callback: cbPnlFiltersOnChange },
             ],
             minHeight: '1200px'
         }
@@ -89,6 +91,12 @@
             _fltFilterItems.ShowJoinItemsOnly($(this).is(':checked'), true);
         });
     }
+    function cbPnlFiltersOnChange(ud, bChanges) {
+        if (_pnlFilters) {
+            _pnlFilters.Operations(['Run'], !bChanges);
+            _pnlFilters.Operations(['Test'], bChanges);
+        }
+    }
     function loadFilterPanel(d) {
         loadTablesetEntities();
         loadTreeviewFilterEntities(d.Entities);
@@ -108,6 +116,7 @@
             if (ud.Before) {
                 _pnlFilters.Operations(['Save'], null, false);
                 _pnlFilters.Operations(['Run'], _frmFilter._bROS);
+                _pnlFilters.Operations(['Test'], panelChanges());
                 enadisSQLTabButtons();
             }
         }
@@ -137,6 +146,7 @@
             if (ud.Before) {
                 _pnlFilters.Operations(['Save'], null, true);
                 _pnlFilters.Operations(['Save', 'Run'], _frmFilter._bROS);
+                _pnlFilters.Operations(['Test'], panelChanges());
                 enadisSQLTabButtons();
             }
         }
@@ -179,6 +189,7 @@
             if (ud.Before) {
                 _pnlFilters.Operations(['Save'], null, true);
                 _pnlFilters.Operations(['Save', 'Run'], _frmFilter._bROS);
+                _pnlFilters.Operations(['Test'], panelChanges());
                 enadisSQLTabButtons();
             }
         }
@@ -274,6 +285,7 @@
             if (ud.Before) {
                 _pnlFilters.Operations(['Save'], null, false);
                 _pnlFilters.Operations(['Run'], _frmFilter._bROS);
+                _pnlFilters.Operations(['Test'], panelChanges());
                 enadisSQLTabButtons();
             }
         }
@@ -306,6 +318,7 @@
             if (ud.Before) {
                 _pnlFilters.Operations(['Save'], null, true);
                 _pnlFilters.Operations(['Save', 'Run'], _frmFilter._bROS);
+                _pnlFilters.Operations(['Test'], panelChanges());
                 enadisSQLTabButtons();
             }
         }
@@ -358,6 +371,10 @@
             }
         }
         else {
+            if (panelChanges()) {
+                DisplayUserMessage('E|Changes have been made.  Either SAVE changes or re-select this filter.');
+                return;
+            }
             ClearUserMessage();
             clearBulkInsertsGrid();
             clearBulkUpdatesGrid();
@@ -377,6 +394,89 @@
             return (true);
         }
 
+    }
+    function cbTestFilter(ud, d) {
+        if (d.questStatus) {
+            if (IsAppSuccess(d)) {
+                $('#tvwSQLFrame').empty().text(d.SQL);
+                $('.questTableTotalRecordCount').text('');
+                _grdResults.Load(d);
+                $('.questTableTotalRecordCount').text(d.Results.Items.length);
+                loadBulkUpdates(d);
+                _viewstate.Results = d.Results;
+            }
+            else {
+                $('#tvwSQLFrame').empty();
+                DisplayUserMessage(d);
+            }
+        }
+        else {
+            ClearUserMessage();
+            clearBulkInsertsGrid();
+            clearBulkUpdatesGrid();
+            delete _viewstate.Results;
+            var _d = {};
+            _d.Editor = _frmFilter.GetData();
+            if (parseInt(_d.Editor.FilterId) < 1) {
+                DisplayUserMessage('E|Select a filter to run');
+                return;
+            }
+            var data = _frmFilter.GetData();
+            d = {};
+            d._ctx = data._ctx;
+            d._mmI = data._mmI;
+            d._nbI = data._nbI;
+            d._nbX = data._nbX;
+
+            d.Id = _d.Editor.Id;
+            d.FilterId = _d.Editor.FilterId;
+
+            var bValid = true;
+            d.Items = $.extend(true, {}, _viewstate.Items);
+            var filterItems = _fltFilterItems.GetData();
+            $.each(filterItems, function (i, fi) {
+                $.each(fi.Operations, function (j, op) {
+                    if (op.Operator > 0) {
+                        var vsitm = getViewStateItem(fi, d.Items);
+                        if (!vsitm) {
+                            alert('View State Item not found: ' + fi.Table + '.' + fi.Name);
+                            bValid = false;
+                            return(false);
+                        }
+                        vsitm.Operations = fi.Operations;
+                    }
+                });
+                if (!bValid) {
+                    return (false);
+                }
+            });
+            if (!bValid) {
+                return;
+            }
+
+            var _rd = _pnlResults.GetData();
+            d._ResultsOptions = {};
+            d._ResultsOptions.RowLimit = _rd.RowLimit;
+            d._ResultsOptions.ColLimit = _rd.ColLimit;
+            return (d);
+        }
+
+    }
+    function getViewStateItem(fi, vsitms) {
+        var viewStateItems = vsitms || _viewstate.Items;
+        var viewStateItem;
+        $.each(viewStateItems, function (i, itm) {
+            if (fi.Name == itm.Name) {
+                var pp = fi.Table.split('.');
+                var schema = pp[0].replace("[", "").replace("]", "");
+                var entity = pp[1].replace("[", "").replace("]", "");
+                if (schema == itm.ParentEntity.Schema && entity == itm.ParentEntity.Name) {
+                    viewStateItem = itm;
+                    return (false);
+                }
+            }
+        });
+        return (viewStateItem);
     }
     function cbGetFilterSQL(o, d, dd) {
         if (!o) {
@@ -447,11 +547,18 @@
             ],
             events: [
                 { name: 'AfterLoaded', callback: cbAfterLoadedFrmTablesetFilters },
+                { name: 'OnChange', callback: cbFrmFilterOnChange },
             ]
         }
         _frmFilter = new qrmgEditor(frmFilter);
         _frmFilter.SetField('TablesetId', _viewstate.TablesetId);
         _frmFilter.GetOptions();
+    }
+    function cbFrmFilterOnChange(ud, bChanges) {
+        if (_pnlFilters) {
+            _pnlFilters.Operations(['Run'], !bChanges);
+            _pnlFilters.Operations(['Test'], bChanges);
+        }
     }
     function cbTablesetFilterEditor(ud, d) {
         if (ud.PostClear) {
@@ -487,6 +594,7 @@
             loadFilterItems(d.Items);
             loadFilterProcedures(d.Procedures);
             _pnlFilters.Operations(['Save', 'Run'], true);
+            _pnlFilters.Operations(['Test'], false);
             enadisSQLTabButtons(true);
             qrmgmvc.Global.Unmask($('#pnlFilters'));
         }
@@ -524,6 +632,7 @@
         if (ud.Change) {
             if (d == -1) {
                 _pnlFilters.Operations(['Save', 'Run'], false);
+                _pnlFilters.Operations(['Test'], panelChanges());
                 enadisSQLTabButtons(false);
                 setPanelContext(d);
                 _frmFilter.Clear();
@@ -533,8 +642,10 @@
                 _tvwValueEntities.Clear();
                 _fltFilterItems.Clear();
                 loadShowEntitesSelect();
+                _frmFilterProcedures.Clear(false, true);
                 $('#tvwSQLFrame').text('');
                 qrmgmvc.Global.Unmask($('#pnlFilters'));
+                ClearUserMessage();
                 return;
             }
             else {
@@ -544,6 +655,7 @@
             clearFilterProcedures();
             _frmFilter.Read(d, true);
             _pnlFilters.Operations(['Save', 'Run'], false);
+            _pnlFilters.Operations(['Test'], panelChanges());
             enadisSQLTabButtons();
             enadisPanels(false);
             return;
@@ -560,6 +672,7 @@
         qrmgmvc.Global.Unmask($('#pnlFilters'));
     }
     function enadisPanels(bEnable) {
+        // TODO: REGISTER W/ PANEL
         if (bEnable) {
             $('#tvwTablesetTablesFrame').removeClass('disabled');
             $('#tvwFilterTablesFrame').removeClass('disabled');
@@ -614,6 +727,7 @@
                 { name: 'AfterLoaded', callback: cbTvwTablesetEntitiesAfterLoaded },
                 { name: 'OnTreeRender', callback: cbOnTvwTablesetEntitiesRender },
                 { name: 'Refresh', callback: cbTvwTablesetEntitiesRefresh },
+                { name: 'OnChange', callback: cbTvwTablesetEntitiesOnChange },
             ],
             operations: [
                 { name: 'Remove', label: 'Remove', classes: "btn btn-primary" },
@@ -626,6 +740,7 @@
         var _ee = _viewstate.TableList.concat(_viewstate.ViewList);
         var _d = { questStatus: _viewstate.questStatus, Items: _ee };
         _tvwTablesetEntities.Fill(_d);
+        _tvwTablesetEntities.Change(false);
     }
     function cbTvwTablesetEntities(op, msg, n, d) {
     }
@@ -640,6 +755,12 @@
     }
     function cbTvwTablesetEntitiesRefresh(e) {
         $('#draggingContainer').remove();
+    }
+    function cbTvwTablesetEntitiesOnChange(ud, bChanges) {
+        if (_pnlFilters) {
+            _pnlFilters.Operations(['Run'], !bChanges);
+            _pnlFilters.Operations(['Test'], bChanges);
+        }
     }
 </script>
 <script type="text/javascript">
@@ -671,6 +792,7 @@
                 { name: 'AfterLoaded', callback: cbTvwFilterEntitiesAfterLoaded },
                 { name: 'OnTreeRender', callback: cbOnTvwFilterEntitiesRender },
                 { name: 'Refresh', callback: cbTvwFilterEntitiesRefresh },
+                { name: 'OnChange', callback: cbTvwFilterEntitiesOnChange },
             ],
             operations: [
                 { name: 'Add', label: 'Add', classes: "btn btn-primary" },
@@ -688,6 +810,8 @@
         $.each(fee, function (i, fe) {
             _tvwTablesetEntities.Remove(fe.Id);
         });
+        _tvwFilterEntities.Change(false);
+        _tvwTablesetEntities.Change(false);
     }
     function cbTvwFilterEntities(op, msg, n, d) {
     }
@@ -702,6 +826,12 @@
     }
     function cbTvwFilterEntitiesRefresh(e) {
         $('#draggingContainer').remove();
+    }
+    function cbTvwFilterEntitiesOnChange(ud, bChanges) {
+        if (_pnlFilters) {
+            _pnlFilters.Operations(['Run'], !bChanges);
+            _pnlFilters.Operations(['Test'], bChanges);
+        }
     }
 </script>
 
@@ -735,6 +865,7 @@
                 { name: 'OnTreeRender', callback: cbTvwValueEntitiesOnTreeRender },
                 { name: 'OnDrop', callback: cbTvwValueEntitiesOnDrop },
                 { name: 'Refresh', callback: cbTvwValueEntitiesRefresh },
+                { name: 'OnChange', callback: cbTvwValueEntitiesOnChange },
             ],
             operations: [
                 { name: 'Add', label: 'Add', classes: "btn btn-primary" },
@@ -747,6 +878,7 @@
         _tvwValueEntities.Clear();
         var _d = { questStatus: _viewstate.questStatus, Items: tt ? tt : _viewstate.Entities };
         _tvwValueEntities.Fill(_d);
+        _tvwValueEntities.Change(false);
     }
     function cbTvwConfigureTables(op, msg, n, d) {
     }
@@ -783,6 +915,12 @@
     function cbTvwValueEntitiesRefresh(e) {
         $('#draggingContainer').remove();
     }
+    function cbTvwValueEntitiesOnChange(ud, bChanges) {
+        if (_pnlFilters) {
+            _pnlFilters.Operations(['Run'], !bChanges);
+            _pnlFilters.Operations(['Test'], bChanges);
+        }
+    }
 </script>
 <script type="text/javascript">
     var _fltFilterItems = null;
@@ -804,6 +942,7 @@
                 { name: 'OnDrop', callback: cbFilterItemDrop },
                 { name: 'OnClose', callback: cbFilterItemClose },
                 { name: 'OnNew', callback: cbFilterItemNew },
+                { name: 'OnChange', callback: cbFilterOnChange },
             ],
             fields: [
                 { name: 'OperationId', type: 'select', hidden: true },
@@ -884,6 +1023,7 @@
             insertFilterItem(n);
         });
         _fltFilterItems.ShowJoinItemsOnly($('#chkJoinItemsOnly').is(':checked'));
+        _fltFilterItems.Change(false);
     }
     function extractName(txt) {
         if (txt.indexOf(':') > -1) {
@@ -891,6 +1031,12 @@
             txt = pp[0].trim();
         }
         return (txt);
+    }
+    function cbFilterOnChange(ud, bChanges) {
+        if (_pnlFilters) {
+            _pnlFilters.Operations(['Run'], !bChanges);
+            _pnlFilters.Operations(['Test'], bChanges);
+        }
     }
 </script>
 
@@ -926,6 +1072,7 @@
             actions: [
             ],
             events: [
+                { name: 'OnChange', callback: cbFrmFilterProceduresOnChange },
             ]
         }
         _frmFilterProcedures = new qrmgEditor(frmFilterProcedures);
@@ -947,6 +1094,13 @@
         $.each(pp, function (i, p) {
             _frmFilterProcedures.SetField(p.Action, null, p.Name);
         });
+        _frmFilterProcedures.Change(false);
+    }
+    function cbFrmFilterProceduresOnChange(ud, bChanges) {
+        if (_pnlFilters) {
+            _pnlFilters.Operations(['Run'], !bChanges);
+            _pnlFilters.Operations(['Test'], bChanges);
+        }
     }
 </script>
 
@@ -1750,6 +1904,10 @@
     }
     function setPanelContext(id) {
         $('.filter-select').val(id);
+    }
+    function panelChanges() {
+        var bC = (_frmFilter && _frmFilter._bChanges) || (_tvwTablesetEntities && _tvwTablesetEntities._bChanges) || (_tvwFilterEntities && _tvwFilterEntities._bChanges) || (_fltFilterItems && _fltFilterItems._bChanges) || (_frmFilterProcedures && _frmFilterProcedures._bChanges);
+        return (bC);
     }
 </script>
 <script type="text/javascript">

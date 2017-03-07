@@ -74,8 +74,8 @@ namespace Quest.MasterPricing.Services.Data.Filters
             if (filter.FilterItemList.Count == 0)
             {
                 filterWithSQL = filter;
-                filterWithSQL.SQL = null;
-                return (new questStatus(Severity.Success));
+                filterWithSQL.SQL = "SELECT 'Filter has no items' AS 'Filter Results'";
+                return (new questStatus(Severity.Warning, "Filter has no items"));
             }
 
             // Build FROM entities

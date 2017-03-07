@@ -198,7 +198,11 @@ function qrmgPanel(model) {
         }
         if (_o.callback) {
             _d = _self.GetData();
-            if (!_o.callback(_o, _d)) { return; }
+            var _dd = _o.callback(_o, _d);
+            if (!_dd) { return; }
+            if ($.isPlainObject(_dd)) {
+                _d = _dd;
+            }
         }
         if (_o._action) {
             _self[_o._action]();
@@ -218,7 +222,7 @@ function qrmgPanel(model) {
             }
         }
         var _d = d ? d : _self.GetData();
-        var _url = _self._uri + o.name;
+        var _url = o.uri ? o.uri : _self._uri + o.name;
         var _io = new qrmgio(_self._roper, o, o.timeout);
         if (o._m == 'POST') {
             ////_io.PostJSON(_url, _d, o);

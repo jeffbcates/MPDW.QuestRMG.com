@@ -264,7 +264,7 @@ namespace Quest.MasterPricing.DataMgr
             return Json(filterEditorViewModel, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
-        public ActionResult Run(FilterEditorViewModel viewModel)
+        public ActionResult Run(FilterRunViewModel viewModel)
         {
             questStatus status = null;
 
@@ -291,13 +291,9 @@ namespace Quest.MasterPricing.DataMgr
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Perform operation.
              *---------------------------------------------------------------------------------------------------------------------------------*/
-            RunFilterRequest runFilterRequest = new RunFilterRequest();
-            runFilterRequest.FilterId.Id = viewModel.FilterId;
-            runFilterRequest.RowLimit = viewModel._ResultsOptions.RowLimit;
-            runFilterRequest.ColLimit = viewModel._ResultsOptions.ColLimit;
             FilterRunViewModel filterRunViewModel = null;
             FilterPanelModeler filterPanelModeler = new FilterPanelModeler(Request, this.UserSession, viewModel);
-            status = filterPanelModeler.Run(runFilterRequest, out filterRunViewModel);
+            status = filterPanelModeler.Run(viewModel, out filterRunViewModel);
             if (!questStatusDef.IsSuccess(status))
             {
                 viewModel.questStatus = status;

@@ -424,10 +424,20 @@ namespace Quest.MasterPricing.Services.Business.Filters
 
 
             // Make shift validation for now.
-            for (int fiidx=0; fiidx < filter.FilterItemList.Count; fiidx += 1)
+            status = Verify(filter);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus Verify(Filter filter)
+        {
+            // Make shift validation for now.
+            for (int fiidx = 0; fiidx < filter.FilterItemList.Count; fiidx += 1)
             {
                 FilterItem filterItem = filter.FilterItemList[fiidx];
-                for (int foidx=0; foidx < filterItem.OperationList.Count; foidx += 1)
+                for (int foidx = 0; foidx < filterItem.OperationList.Count; foidx += 1)
                 {
                     FilterOperation filterOperation = filterItem.OperationList[foidx];
                     if (filterOperation.FilterOperatorId >= BaseId.VALID_ID)
@@ -435,10 +445,26 @@ namespace Quest.MasterPricing.Services.Business.Filters
                         if (filterOperation.ValueList.Count == 0)
                         {
                             return (new questStatus(Severity.Error, String.Format("ERROR: FilterOperation #{0} has no values",
-                                    (fiidx+1))));
+                                    (fiidx + 1))));
                         }
                     }
                 }
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus Run(RunFilterRequest runFilterRequest, Filter filter, out ResultsSet resultsSet)
+        {
+            // Initialize
+            questStatus status = null;
+            resultsSet = null;
+
+
+            // Run the filter
+            DbResultsMgr dbResultsMgr = new DbResultsMgr(this.UserSession);
+            status = dbResultsMgr.Run(runFilterRequest, filter, out resultsSet);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
             }
             return (new questStatus(Severity.Success));
         }
@@ -476,6 +502,7 @@ namespace Quest.MasterPricing.Services.Business.Filters
             // Generate SQL.
             return (_dbFilterMgr.GenerateFilterSQL(filter, out filterWithSQL));
         }
+
         public questStatus SaveSQL(Filter filter)
         {
             // TODO: business rules about what can/cannot be saved.

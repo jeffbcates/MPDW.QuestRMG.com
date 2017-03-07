@@ -7,6 +7,7 @@ function qrmgFilter(model) {
     _self._uri = model.uri ? (model.uri.charAt(model.uri.length - 1) == '/' ? model.uri : model.uri + '/') : null;
     _self._pkey = null;
     _self._options = [];
+    _self._bChanges = false;
 
 
     _self._init = function () {
@@ -201,12 +202,18 @@ function qrmgFilter(model) {
     }
 
     _self._bnditm = function () {
+        _self._bndops();
         _self._bndddm();
         _self._bndlbl();
         _self._bndprmnm();
         _self._bnditmvis();
         _self._bnditmctrl();
         _self._bnditmvv();
+    }
+    _self._bndops = function () {
+        $('.filtsel', _fltFilterItems._e).unbind('change').bind('change', function () {
+            _self.Change(true);
+        });
     }
     _self._bndddm = function () {
         $('.questFilterItemControls', _self._e).on('click', function (e) {
@@ -222,12 +229,16 @@ function qrmgFilter(model) {
         $('.filterItemLabelEntry', _self._e).unbind('click').on('click', function (e) {
             if ($(this).closest('.questFilterItem').find('.questFilterItemSpecifier .questFilterItemLabel').find('input').length == 0) {
                 $(this).closest('.questFilterItem').find('.questFilterItemSpecifier .questFilterItemLabel').append('<div class="questFilterItemCogLabel">Label:&nbsp;</div>' + '<div class="questFilterItemCogInput questFilterItemLabelText"><input type="text" title="Enter an optional label for results." class="filtinput fltitmlbl"></div>');
+                $('.fltitmlbl', _fltFilterItems._e).unbind('keypress').on('keypress', function () {
+                    _self.Change(true);
+                });
             }
             else {
                 var fi = $(this).closest('.questFilterItem');
                 $(fi).find('.questFilterItemSpecifier .questFilterItemLabel').empty();
                 var _d = _self._getdata(fi);
                 delete _d.Label;
+                _self.Change(true);
             }
         });
     }
@@ -235,12 +246,16 @@ function qrmgFilter(model) {
         $('.filterItemParameterNameEntry', _self._e).unbind('click').on('click', function (e) {
             if ($(this).closest('.questFilterItem').find('.questFilterItemSpecifier .questFilterItemParameterName').find('input').length == 0) {
                 $(this).closest('.questFilterItem').find('.questFilterItemSpecifier .questFilterItemParameterName').append('<div class="questFilterItemCogLabel">Param:&nbsp;</div>' + '<div class="questFilterItemCogInput questFilterItemParameterNameText"><input type="text" title="Enter an optional parameter name for stored procedures." class="filtinput fltitmlbl"></div>');
+                $('.fltitmlbl', _fltFilterItems._e).unbind('keypress').on('keypress', function () {
+                    _self.Change(true);
+                });
             }
             else {
                 var fi = $(this).closest('.questFilterItem');
                 $(fi).find('.questFilterItemSpecifier .questFilterItemParameterName').empty();
                 var _d = _self._getdata(fi);
                 delete _d.ParameterName;
+                _self.Change(true);
             }
         });
     }
@@ -254,11 +269,13 @@ function qrmgFilter(model) {
                 $(this).text("Hidden");
                 $(this).closest('.questFilterItem').removeClass("questFilterItemHidden");
             }
+            _self.Change(true);
         });
     }
     _self._bnditmctrl = function () {
         $('.fltitmop a', _self._e).unbind('click').on('click', function (e) {
             if ($(e.currentTarget).hasClass('fltitmdel')) {
+                _self.Change(true);
                 if ($(e.currentTarget).closest('.questFilterItem').find('.questFilterItemOpFrame').length == 1) {
                     $(e.currentTarget).closest('.questFilterItem').remove();
                     return;
@@ -270,6 +287,7 @@ function qrmgFilter(model) {
                 $(e.currentTarget).closest('.questFilterItemOpFrame').remove();
             }
             else if ($(e.currentTarget).hasClass('fltitmnew')) {
+                _self.Change(true);
                 _self.NewOperation({ name: $(e.currentTarget).closest('.questFilterItem').attr('id').substr(6) });
             }
         });
@@ -295,6 +313,7 @@ function qrmgFilter(model) {
                 e.preventDefault();
                 _self._tagv(this);
             }
+            _self.Change(true);
         });
     }
     _self._tagv = function (e) {
@@ -313,13 +332,13 @@ function qrmgFilter(model) {
         if (_self._model.droppable) {
             $(_self._e).droppable({
                 drop: function (e, ui) {
+                    _self.Change(true);
                     var _evt = _self._getevt("OnDrop");
                     if (_evt != null) {
                         if (_evt.callback("OnDrop", ui)) {
                             return;
                         }
                     }
-                    ////ui.draggable.detach().appendTo($(this).find('ul.list-group'));
                 }
             });
         }
@@ -403,7 +422,6 @@ function qrmgFilter(model) {
         $.each(itm.Operations, function (i, op) {
             var oo = $('.questFilterItemOpFrame', '#fltitm' + itm.key);
             $('.fltitmoo select.filtsel', oo[i]).val(op.Operator);
-
             $.each(op.Values, function (j, v) {
                 var _input = $('.fltitmvv .filtvalues input.filtinput', oo[i]);
                 $(_input).val(v.Value);
@@ -591,6 +609,7 @@ function qrmgFilter(model) {
         if (!e) { return; }
         var d = _self._getdata(e);
         d[n] = v;
+        _self.Change(true);
         return (e);
     }
 
@@ -608,6 +627,7 @@ function qrmgFilter(model) {
         if (!_d.Joins) { _d.Joins = []; }
         _d.Joins.push(j);
         _self.AddData(id, 'Joins', _d.Joins);
+        _self.Change(true);
         return (_d.Joins);
     }
     _self.RemoveJoin = function (id, j) {
@@ -625,7 +645,7 @@ function qrmgFilter(model) {
         _d.Joins = _jj;
         _self.AddData(id, 'Joins', _d.Joins);
         $('.questFilterItemJoin[data-id="' + j.ColumnId + '"]', _self._e).remove();
-
+        _self.Change(true);
         return (_d.Joins);
     }
 
@@ -645,6 +665,19 @@ function qrmgFilter(model) {
         if (_self._model.callback) {
             return (_self._model.callback(ud, data));
         }
+    }
+
+    _self.Change = function (v) {
+        _self._bChanges = v;
+        var _evt = _self._getevt("OnChange");
+        if (_evt != null) {
+            if (_evt.callback({ OnChange: true }, _self._bChanges)) {
+                return;
+            }
+        }
+    }
+    _self.bChanges = function () {
+        return (_self._bChanges);
     }
 
     _self._init();

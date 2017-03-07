@@ -483,6 +483,177 @@ namespace Quest.MasterPricing.DataMgr.Modelers
         //----------------------------------------------------------------------------------------------------------------------------------
         #endregion
 
+
+        #region Post-Processing on Filter Runs
+        //
+        // Post-Processing on Filter Runs
+        //
+        public questStatus TransferResults(ResultsSet resultsSet, out FilterRunViewModel filterRunViewModel)
+        {
+            return (TransferResults(null, resultsSet, out filterRunViewModel));
+        }
+        public questStatus TransferResults(RunFilterRequest runFilterRequest, ResultsSet resultsSet, out FilterRunViewModel filterRunViewModel)
+        {
+            // Initialize
+            questStatus status = null;
+            filterRunViewModel = null;
+
+
+            // Get number of entities.
+            int numEntities = 0;
+            status = GetNumEntities(resultsSet, out numEntities);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+
+            // Transfer model
+            filterRunViewModel = new FilterRunViewModel();
+            filterRunViewModel.Id = runFilterRequest != null ? runFilterRequest.FilterId.Id : BaseId.INVALID_ID;
+            filterRunViewModel.FilterId = runFilterRequest != null ? runFilterRequest.FilterId.Id : BaseId.INVALID_ID;
+            foreach (KeyValuePair<string, Column> kvp in resultsSet.ResultColumns)
+            {
+                ColumnHeaderViewModel columnHeaderViewModel = new ColumnHeaderViewModel();
+                BufferMgr.TransferBuffer(kvp.Value, columnHeaderViewModel, true);
+                columnHeaderViewModel.Name = kvp.Value.Name;
+                columnHeaderViewModel.Label = MakeColumnLabel(kvp, numEntities);
+                columnHeaderViewModel.Type = kvp.Value.DataTypeName;
+                filterRunViewModel.Results.Columns.Add(columnHeaderViewModel);
+            }
+            foreach (dynamic _dynRow in resultsSet.Data)
+            {
+                DynamicRowViewModel dynamicRowViewModel = new DynamicRowViewModel();
+                int cidx = 0;
+                foreach (KeyValuePair<string, object> kvp in _dynRow)
+                {
+                    ColumnValueViewModel columnValueViewModel = new ColumnValueViewModel();
+                    columnValueViewModel.Name = string.IsNullOrEmpty(filterRunViewModel.Results.Columns[cidx].Label) ?
+                            filterRunViewModel.Results.Columns[cidx].Name : filterRunViewModel.Results.Columns[cidx].Label;
+                    columnValueViewModel.Label = filterRunViewModel.Results.Columns[cidx].Label;
+                    columnValueViewModel.Value = kvp.Value == null ? "(null)" : kvp.Value.ToString();
+                    dynamicRowViewModel.ColumnValues.Add(columnValueViewModel);
+                    cidx += 1;
+                }
+                filterRunViewModel.Results.Items.Add(dynamicRowViewModel);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus GetNumEntities(ResultsSet resultsSet, out int numEntities)
+        {
+            // Initialize
+            numEntities = 0;
+
+
+            List<string> entityNameList = new List<string>();
+            foreach (dynamic _dynRow in resultsSet.Data)
+            {
+                DynamicRowViewModel dynamicRowViewModel = new DynamicRowViewModel();
+                foreach (KeyValuePair<string, object> kvp in _dynRow)
+                {
+                    string[] pp = kvp.Key.Split('_');
+                    string entityName = pp[0];
+                    string existingEntityName = entityNameList.Find(delegate (string t) { return t == entityName; });
+                    if (existingEntityName == null)
+                    {
+                        entityNameList.Add(entityName);
+                    }
+                }
+            }
+            numEntities = entityNameList.Count;
+
+            return (new questStatus(Severity.Success));
+        }
+        public string MakeColumnLabel(KeyValuePair<string, Column> kvp, int numEntities)
+        {
+            string label = null;
+            if (kvp.Value.Label != null)
+            {
+                return (kvp.Value.Label);
+            }
+            if (numEntities == 1)
+            {
+                string[] pp = kvp.Key.Split('_');
+                label = pp[1];
+            }
+            else
+            {
+                label = kvp.Key;
+            }
+            return (label);
+        }
+        #endregion
+
+
+        #region Transfers
+        //
+        // Transfers
+        //
+        public questStatus MergeFilterEditorViewModel(FilterRunViewModel filterRunViewModel, Quest.Functional.MasterPricing.Filter filterFROMDatabase, out Quest.Functional.MasterPricing.Filter filter)
+        {
+            // Initialize
+            filter = filterFROMDatabase;
+
+
+            // Copy over general stuff.
+            filter = new Functional.MasterPricing.Filter();
+            filter.Id = filterFROMDatabase.Id;
+            filter.TablesetId = filterFROMDatabase.TablesetId;
+            filter.Name = filterFROMDatabase.Name;
+            filter.Summary = filterFROMDatabase.Summary;
+            filter.FilterTableList = filterFROMDatabase.FilterTableList;
+            filter.FilterViewList = filterFROMDatabase.FilterViewList;
+            filter.FilterColumnList = filterFROMDatabase.FilterColumnList;
+            filter.FilterItemList = new List<FilterItem>();      // Whatever items are sent in is what we're running.
+            filter.FilterProcedureList = filterFROMDatabase.FilterProcedureList;
+
+
+            //
+            // Filter Items - *accumualte* given filter items to the database operations.
+            //
+            if (filterRunViewModel.Items == null)
+            {
+                filter.FilterItemList = filterFROMDatabase.FilterItemList;
+            }
+            else {
+                foreach (FilterItemViewModel filterItemViewModel in filterRunViewModel.Items)
+                {
+                    // Get the FilterItem from the database copy of the filter.
+                    FilterItem filterItem = filterFROMDatabase.FilterItemList.Find(delegate (FilterItem fi)
+                    {
+                        return (filterItemViewModel.Name == fi.FilterColumn.Name
+                                && filterItemViewModel.ParentEntity.type == fi.FilterColumn.ParentEntityType.type
+                                && filterItemViewModel.ParentEntity.Schema == fi.FilterColumn.ParentEntityType.Schema
+                                && filterItemViewModel.ParentEntity.Name == fi.FilterColumn.ParentEntityType.Name);
+                    });
+                    if (filterItem == null)
+                    {
+                        return (new questStatus(Severity.Error, String.Format("ERROR: Item {0} [{1}].[{2}] not found in filter",
+                                filterItemViewModel.ParentEntity.type, filterItemViewModel.ParentEntity.Schema, filterItemViewModel.ParentEntity.Name)));
+                    }
+
+                    // Accumulate any operations given to the operations already on the filter.
+                    foreach (FilterOperationViewModel filterOperationViewModel in filterItemViewModel.Operations)
+                    {
+                        FilterOperation filterOperation = new FilterOperation();
+                        filterOperation.FilterOperatorId = filterOperationViewModel.Operator;
+                        foreach (FilterValueViewModel filterValueViewModel in filterOperationViewModel.Values)
+                        {
+                            FilterValue filterValue = new FilterValue();
+                            filterValue.Value = filterValueViewModel.Value;
+                            filterOperation.ValueList.Add(filterValue);
+                        }
+                        filterItem.OperationList.Add(filterOperation);
+                    }
+
+                    // Add this item to the filter.
+                    filter.FilterItemList.Add(filterItem);
+                }
+            }
+            return (new questStatus(Severity.Success));
+        }
+        #endregion
+
         #endregion
 
 

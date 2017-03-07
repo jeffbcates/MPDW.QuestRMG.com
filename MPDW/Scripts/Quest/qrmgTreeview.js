@@ -9,6 +9,7 @@ function qrmgTreeview(model) {
     _self._tvw;
     _self._kn;
     _self._bInit = false;
+    _self._bChanges = false;
     _self.draggableOptions = {
         start: function (event, ui) {
             ////console.log("draggableOptions start ");
@@ -106,6 +107,7 @@ function qrmgTreeview(model) {
             $(_self._e).droppable({
                 drop: function (e, ui) {
                     ////console.log("droppable drop: ");
+                    _self.Change(true);
                     if ($(ui.draggable).closest('div.treeview').attr('id') == _self._e.substr(1)) {
                         _self.Refresh();
                         return;
@@ -624,6 +626,19 @@ function qrmgTreeview(model) {
     _self.Unmask = function (e, bCM) {
         if (!_self._bMasking) { return; }
         Unmask(e || _self._mask, null, bCM);
+    }
+
+    _self.Change = function (v) {
+        _self._bChanges = v;
+        var _evt = _self._getevt("OnChange");
+        if (_evt != null) {
+            if (_evt.callback({ OnChange: true }, _self._bChanges)) {
+                return;
+            }
+        }
+    }
+    _self.bChanges = function () {
+        return (_self._bChanges);
     }
 
     _self._init();
