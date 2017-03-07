@@ -432,7 +432,7 @@
             d.FilterId = _d.Editor.FilterId;
 
             var bValid = true;
-            d.Items = $.extend(true, {}, _viewstate.Items);
+            d.Items = _viewstate.Items.slice(0);
             var filterItems = _fltFilterItems.GetData();
             $.each(filterItems, function (i, fi) {
                 $.each(fi.Operations, function (j, op) {
