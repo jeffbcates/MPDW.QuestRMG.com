@@ -9,6 +9,7 @@ using Quest.Util.Buffer;
 using Quest.Util.Data;
 using Quest.Util.Encryption;
 using Quest.Functional.ASM;
+using Quest.Functional.FMS;
 using Quest.MPDW.Services.Business;
 using Quest.MPDW.Services.Data;
 using Quest.MPDW.Services.Data.Accounts;

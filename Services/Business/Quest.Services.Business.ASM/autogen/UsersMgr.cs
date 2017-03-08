@@ -8,6 +8,7 @@ using Quest.Util.Status;
 using Quest.Util.Buffer;
 using Quest.Util.Data;
 using Quest.Functional.ASM;
+using Quest.Functional.FMS;
 using Quest.MPDW.Services.Data;
 using Quest.MPDW.Services.Business;
 using Quest.MPDW.Services.Data.Accounts;
@@ -61,6 +62,12 @@ namespace Quest.MPDW.Services.Business.Accounts
             questStatus status = null;
 
 
+            // If no password, use a blank
+            if (string.IsNullOrEmpty(user.Password))
+            {
+                user.Password = "";
+            }
+
             // Create user
             status = _dbUsersMgr.Create(user, out userId);
             if (! questStatusDef.IsSuccess(status))
@@ -88,6 +95,20 @@ namespace Quest.MPDW.Services.Business.Accounts
         {
             // Initialize
             questStatus status = null;
+
+
+            // If no password, read user and copy current password.
+            if (string.IsNullOrEmpty(user.Password))
+            {
+                UserId userId = new UserId(user.Id);
+                User _user = null;
+                status = Read(userId, out _user);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+                user.Password = _user.Password;
+            }
 
 
             // Update user

@@ -1,0 +1,59 @@
+﻿@model Quest.MPDW.Admin.Models.UsersListViewModel
+@{
+    ViewBag.Title = "Users";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="questTableTitle">User List</div>
+
+<div id="tblUsers" class="qrmgTable"></div>
+
+<script type="text/javascript">
+    var _tblUsers;
+    $(function () {
+        var tblUsers = {
+            name: 'tblUsers',
+            element: 'tblUsers',
+            prefix: 'db',
+            uri: '/Admin/Users',
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb']
+            },
+            autoLoad: true,
+            editor: { uri: '/Admin/User' },
+            callback: cbTblUsers,
+            columns: [
+                { name: 'Id', hidden: true, key: true },
+                { name: 'LastName', label: 'Last Name' },
+                { name: 'FirstName', label: 'First Name' },
+                { name: 'Username', label: 'Username' },
+                { name: 'bEnabled', label: 'Enabled', type: 'checkbox' },
+                { name: 'bActive', label: 'Active', type: 'checkbox' },
+            ],
+            paging: {
+                Top: true,
+                Bottom: true,
+                PageSize: 10,
+                PageSizeOptions: [10, 20, 30, 50, 100],
+            },
+            operations: [
+            ],
+            commands: [
+                { name: 'Read', label: 'Edit', edit: true },
+                { name: 'Groups', label: 'Groups', uri: '/User/Groups', type: 'view', single: true },
+                { name: 'Privileges', label: 'Privileges', uri: '/User/Privileges', type: 'view', single: true },
+                { name: 'Sessions', label: 'User Sessions', uri: '/User/Sessions', type: 'view', single: true },
+                { name: 'Message', label: 'Send Message', method: 'POST' },
+                { name: 'Logoff', label: 'Logoff', method: 'POST' },
+            ],
+            events: [
+            ],
+            contextMenu: [
+            ]
+        }
+        _tblUsers = new qrmgTable(tblUsers);
+    });
+    function cbTblUsers(ud, d) {
+
+    }
+</script>

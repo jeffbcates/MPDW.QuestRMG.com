@@ -67,6 +67,7 @@
     <Compile Include="FilterViewNameIdentifier.cs" />
     <Compile Include="FilterTableNameIdentifier.cs" />
     <Compile Include="LookupRequest.cs" />
+    <Compile Include="OptionValuePair.cs" />
     <Compile Include="TablesetColumn.cs" />
     <Compile Include="TablesetColumnId.cs" />
     <Compile Include="TableSetEntityId.cs" />

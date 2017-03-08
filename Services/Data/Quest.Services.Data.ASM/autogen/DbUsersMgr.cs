@@ -17,6 +17,7 @@ using Quest.Util.Buffer;
 using Quest.Util.Data;
 using Quest.Util.Encryption;
 using Quest.Functional.ASM;
+using Quest.Functional.FMS;
 using Quest.MPDW.Services.Data;
 using Quest.Services.Dbio.FMS;
 
@@ -275,11 +276,12 @@ namespace Quest.MPDW.Services.Data.Accounts
 
 
                         ////"DateAdded >= DateTime(2013, 06, 18)"
-                        int _totalRecords2 = dbContext.Users.Where("Created >= DateTime(2016, 07, 08)").Count();
-                        _totalRecords2 = dbContext.Users.Where("( Created >= DateTime(2016, 07, 08) AND Created < DateTime(2016, 07, 09) )").Count();
+                        ////int _totalRecords2 = dbContext.Users.Where("Created >= DateTime(2016, 07, 08)").Count();
+                        ////_totalRecords2 = dbContext.Users.Where("( Created >= DateTime(2016, 07, 08) AND Created < DateTime(2016, 07, 09) )").Count();
 
 
                         PropertyInfo[] dbProperties = typeof(Quest.Services.Dbio.FMS.Users).GetProperties().ToArray();
+                        int totalRecords = dbContext.Users.Where(BuildWhereClause(queryOptions, dbProperties)).Count();
                         List<Quest.Services.Dbio.FMS.Users> _usersList = dbContext.Users.Where(BuildWhereClause(queryOptions, dbProperties))
                                 .OrderBy(BuildSortString(queryOptions.SortColumns))
                                 .Skip(queryOptions.Paging.PageSize * (queryOptions.Paging.PageNumber - 1))
@@ -295,7 +297,7 @@ namespace Quest.MPDW.Services.Data.Accounts
                             BufferMgr.TransferBuffer(_user, user);
                             userList.Add(user);
                         }
-                        status = BuildQueryResponse(_usersList.Count, queryOptions, out queryResponse);
+                        status = BuildQueryResponse(totalRecords, queryOptions, out queryResponse);
                         if (!questStatusDef.IsSuccess(status))
                         {
                             return (status);

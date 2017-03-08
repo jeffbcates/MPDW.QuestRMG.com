@@ -281,7 +281,7 @@ function qrmgNavbar(model) {
     _self._autoexpand = function (opts) {
         $.each(opts, function (i, o) {
             if (o.autoExpand) {
-                $('li[id="' + _self._pfx + o.name + '"').find('.xpander').trigger('click');
+                _self._xpnde($('li[id="' + _self._pfx + o.name + '"').find('.xpander'));
             }
             if (o.options) {
                 _self._autoexpand(o.options);

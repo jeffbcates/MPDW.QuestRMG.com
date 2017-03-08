@@ -485,9 +485,9 @@ namespace Quest.MasterPricing.DataMgr.Modelers
 
 
         #region Post-Processing on Filter Runs
-        //
+        //----------------------------------------------------------------------------------------------------------------------------------
         // Post-Processing on Filter Runs
-        //
+        //----------------------------------------------------------------------------------------------------------------------------------
         public questStatus TransferResults(ResultsSet resultsSet, out FilterRunViewModel filterRunViewModel)
         {
             return (TransferResults(null, resultsSet, out filterRunViewModel));
@@ -586,9 +586,9 @@ namespace Quest.MasterPricing.DataMgr.Modelers
 
 
         #region Transfers
-        //
+        //----------------------------------------------------------------------------------------------------------------------------------
         // Transfers
-        //
+        //----------------------------------------------------------------------------------------------------------------------------------
         public questStatus MergeFilterEditorViewModel(FilterRunViewModel filterRunViewModel, Quest.Functional.MasterPricing.Filter filterFROMDatabase, out Quest.Functional.MasterPricing.Filter filter)
         {
             // Initialize

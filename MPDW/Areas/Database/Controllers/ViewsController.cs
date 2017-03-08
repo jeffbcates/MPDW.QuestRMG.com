@@ -153,12 +153,11 @@ namespace Quest.MasterPricing.Database
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
-             * Get list of requisitions for this user.
+             * Get list of items.
              *---------------------------------------------------------------------------------------------------------------------------------*/
             DatabaseId databaseId = new DatabaseId(viewsListViewModel.DatabaseId);
             Quest.MasterPricing.Database.Models.ViewsListViewModel viewsetsListViewModelNEW = null;
 
-            AuthorId authorId = new AuthorId(this.UserSession.UserId);
             ViewsListModeler viewsListModeler = new ViewsListModeler(this.Request, this.UserSession);
             status = viewsListModeler.List(databaseId, out viewsetsListViewModelNEW);
             if (!questStatusDef.IsSuccess(status))
@@ -203,7 +202,7 @@ namespace Quest.MasterPricing.Database
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
-             * Get list of requisitions for this user.
+             * Get list of items.
              *---------------------------------------------------------------------------------------------------------------------------------*/
             DatabaseId databaseId = new DatabaseId(viewsListViewModel.DatabaseId);
             Quest.MasterPricing.Database.Models.ViewsListViewModel viewsetsListViewModelNEW = null;
@@ -251,7 +250,7 @@ namespace Quest.MasterPricing.Database
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
-             * Get list of requisitions for this user.
+             * Get list of items.
              *---------------------------------------------------------------------------------------------------------------------------------*/
             DatabaseId databaseId = new DatabaseId(viewsListViewModel.DatabaseId);
             Quest.MasterPricing.Database.Models.ViewsListViewModel viewsetsListViewModelNEW = null;
@@ -300,7 +299,7 @@ namespace Quest.MasterPricing.Database
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
-             * Get list of requisitions for this user.
+             * Get list of items.
              *---------------------------------------------------------------------------------------------------------------------------------*/
             DatabaseId databaseId = new DatabaseId(viewsListViewModel.DatabaseId);
             Quest.MasterPricing.Database.Models.ViewsListViewModel viewsetsListViewModelNEW = null;
@@ -348,7 +347,7 @@ namespace Quest.MasterPricing.Database
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
-             * Get list of requisitions for this user.
+             * Get list of items.
              *---------------------------------------------------------------------------------------------------------------------------------*/
             DatabaseId databaseId = new DatabaseId(viewsListViewModel.DatabaseId);
             Quest.MasterPricing.Database.Models.ViewsListViewModel viewsetsListViewModelNEW = null;

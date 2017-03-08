@@ -4,7 +4,6 @@ using System.Web;
 using System.Web.Mvc;
 using Quest.Util.Status;
 using Quest.Util.Buffer;
-using Quest.Functional.FMS;
 using Quest.MPDW.Models;
 using Quest.MasterPricing.Setup.Models;
 using Quest.MasterPricing.Setup.Modelers;
@@ -91,7 +90,7 @@ namespace Quest.MasterPricing.Setup
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
-             * Get list of requisitions for this user.
+             * Get list of items.
              *---------------------------------------------------------------------------------------------------------------------------------*/
             TablesListViewModel tablesetsListViewModelNEW = null;
             TablesListModeler tablesetListModeler = new TablesListModeler(this.Request, this.UserSession);
@@ -143,12 +142,9 @@ namespace Quest.MasterPricing.Setup
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
-             * Get list of requisitions for this user.
+             * Get list of items.
              *---------------------------------------------------------------------------------------------------------------------------------*/
-            // TODO.
             TablesListViewModel tablesetsListViewModelNEW = null;
-
-            AuthorId authorId = new AuthorId(this.UserSession.UserId);
             TablesListModeler tablesetsListModeler = new TablesListModeler(this.Request, this.UserSession);
             status = tablesetsListModeler.List(out tablesetsListViewModelNEW);
             if (!questStatusDef.IsSuccess(status))
@@ -193,7 +189,7 @@ namespace Quest.MasterPricing.Setup
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
-             * Get list of requisitions for this user.
+             * Get list of items.
              *---------------------------------------------------------------------------------------------------------------------------------*/
             // TODO.
             TablesListViewModel tablesetsListViewModelNEW = null;
@@ -241,7 +237,7 @@ namespace Quest.MasterPricing.Setup
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
-             * Get list of requisitions for this user.
+             * Get list of items.
              *---------------------------------------------------------------------------------------------------------------------------------*/
             // TODO.
             TablesListViewModel tablesetsListViewModelNEW = null;
@@ -290,7 +286,7 @@ namespace Quest.MasterPricing.Setup
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
-             * Get list of requisitions for this user.
+             * Get list of items.
              *---------------------------------------------------------------------------------------------------------------------------------*/
             // TODO.
             TablesListViewModel tablesetsListViewModelNEW = null;
@@ -338,7 +334,7 @@ namespace Quest.MasterPricing.Setup
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
-             * Get list of requisitions for this user.
+             * Get list of items.
              *---------------------------------------------------------------------------------------------------------------------------------*/
             // TODO.
             TablesListViewModel tablesetsListViewModelNEW = null;

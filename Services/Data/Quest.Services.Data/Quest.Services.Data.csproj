@@ -54,6 +54,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\..\Functional\Avid.Functional.FMS\Avid.Functional.FMS.csproj">
+      <Project>{47ce02f3-5475-40d9-a83d-ed0b584be22a}</Project>
+      <Name>Avid.Functional.FMS</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Functional\Quest.Functional.ASM\Quest.Functional.ASM.csproj">
       <Project>{2fabe5d5-3871-405c-a9c5-3e95e1f68bb1}</Project>
       <Name>Quest.Functional.ASM</Name>

@@ -15,6 +15,7 @@ using Quest.Util.Status;
 using Quest.Util.Buffer;
 using Quest.Util.Data;
 using Quest.Functional.ASM;
+using Quest.Functional.FMS;
 using Quest.MPDW.Services.Data;
 using Quest.Services.Dbio.FMS;
 
@@ -256,6 +257,7 @@ namespace Quest.MPDW.Services.Data.Accounts
                     try
                     {
                         PropertyInfo[] dbProperties = typeof(Quest.Services.Dbio.FMS.Privileges).GetProperties().ToArray();
+                        int totalRecords = dbContext.Privileges.Where(BuildWhereClause(queryOptions, dbProperties)).Count();
                         List<Quest.Services.Dbio.FMS.Privileges> _privilegesList = dbContext.Privileges.Where(BuildWhereClause(queryOptions, dbProperties))
                                 .OrderBy(BuildSortString(queryOptions.SortColumns))
                                 .Skip(queryOptions.Paging.PageSize * (queryOptions.Paging.PageNumber - 1))
@@ -271,7 +273,7 @@ namespace Quest.MPDW.Services.Data.Accounts
                             BufferMgr.TransferBuffer(_privilege, privilege);
                             privilegeList.Add(privilege);
                         }
-                        status = BuildQueryResponse(_privilegesList.Count, queryOptions, out queryResponse);
+                        status = BuildQueryResponse(totalRecords, queryOptions, out queryResponse);
                         if (!questStatusDef.IsSuccess(status))
                         {
                             return (status);

@@ -16,6 +16,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Quest.Functional.Logging;
 using Quest.Functional.ASM;
+using Quest.Functional.FMS;
 using Quest.Functional.MasterPricing;
 using Quest.Util.Status;
 using Quest.Util.Buffer;
