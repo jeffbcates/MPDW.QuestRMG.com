@@ -691,7 +691,8 @@ function qrmgFilter(model) {
     }
 
     _self.Validate = function () {
-        $(_self._e).find('.validationError').removeClass('validationError filtverr');
+        $(_self._e).find('.validationError').removeClass('validationError');
+        $(_self._e).find('.filtverr').removeClass('filtverr');
         var ss = $('.filtsel', _self._e);
         $.each(ss, function (i, s) {
             var _opf = $(s).closest('.questFilterItemOpFrame');
