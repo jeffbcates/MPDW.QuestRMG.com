@@ -158,6 +158,72 @@ namespace Quest.MPDW.Admin
         }
 
 
+        [HttpGet]
+        public ActionResult Users(GroupEditorViewModel editorViewModel)
+        {
+            questStatus status = null;
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Log Operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = LogOperation();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                // TODO
+                throw new Exception("LogOperation failed");
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Authorize
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = Authorize(editorViewModel._ctx);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                // TODO
+                throw new Exception("Authorize failed");
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Return view.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            // TEMPORARY
+            GroupEditorViewModel groupEditorViewModel = new GroupEditorViewModel(this.UserSession, editorViewModel);
+            return View(groupEditorViewModel);
+        }
+        [HttpGet]
+        public ActionResult Privileges(GroupEditorViewModel editorViewModel)
+        {
+            questStatus status = null;
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Log Operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = LogOperation();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                // TODO
+                throw new Exception("LogOperation failed");
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Authorize
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = Authorize(editorViewModel._ctx);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                // TODO
+                throw new Exception("Authorize failed");
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Return view.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            // TEMPORARY
+            GroupEditorViewModel groupEditorViewModel = new GroupEditorViewModel(this.UserSession, editorViewModel);
+            return View(groupEditorViewModel);
+        }
+
+
         #region Options
         //----------------------------------------------------------------------------------------------------------------------------------
         // Options

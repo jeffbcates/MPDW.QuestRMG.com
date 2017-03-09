@@ -63,7 +63,7 @@ namespace Quest.MPDW.Admin
             return View(tablesetsListViewModel);
         }
         [HttpGet]
-        public ActionResult List(UsersListViewModel tablesetsListViewModel)
+        public ActionResult List(UsersListViewModel usersListViewModel)
         {
             questStatus status = null;
 
@@ -73,18 +73,18 @@ namespace Quest.MPDW.Admin
             status = LogOperation();
             if (!questStatusDef.IsSuccess(status))
             {
-                tablesetsListViewModel.questStatus = status;
-                return Json(tablesetsListViewModel, JsonRequestBehavior.AllowGet);
+                usersListViewModel.questStatus = status;
+                return Json(usersListViewModel, JsonRequestBehavior.AllowGet);
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Authorize
              *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = Authorize(tablesetsListViewModel._ctx);
+            status = Authorize(usersListViewModel._ctx);
             if (!questStatusDef.IsSuccess(status))
             {
-                tablesetsListViewModel.questStatus = status;
-                return Json(tablesetsListViewModel, JsonRequestBehavior.AllowGet);
+                usersListViewModel.questStatus = status;
+                return Json(usersListViewModel, JsonRequestBehavior.AllowGet);
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
@@ -95,8 +95,8 @@ namespace Quest.MPDW.Admin
             status = userListModeler.List(out tablesetsListViewModelNEW);
             if (!questStatusDef.IsSuccess(status))
             {
-                tablesetsListViewModel.questStatus = status;
-                return Json(tablesetsListViewModel, JsonRequestBehavior.AllowGet);
+                usersListViewModel.questStatus = status;
+                return Json(usersListViewModel, JsonRequestBehavior.AllowGet);
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------

@@ -158,6 +158,85 @@ namespace Quest.MPDW.Admin
         }
 
 
+        [HttpGet]
+        public ActionResult Groups(UserEditorViewModel editorViewModel)
+        {
+            questStatus status = null;
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Log Operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = LogOperation();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                // TODO
+                throw new Exception("LogOperation failed");
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Authorize
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = Authorize(editorViewModel._ctx);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                // TODO
+                throw new Exception("Authorize failed");
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Perform operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            UserId userId = new UserId(editorViewModel.Id);
+            UserGroupsViewModel userGroupsViewModel = null;
+            UserGroupsModeler userGroupsModeler = new UserGroupsModeler(this.Request, this.UserSession);
+            status = userGroupsModeler.Read(userId, out userGroupsViewModel);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                // TODO
+                throw new Exception("Authorize failed");
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Return view.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            // TEMPORARY
+            UserEditorViewModel userEditorViewModel = new UserEditorViewModel(this.UserSession, editorViewModel);
+            return View(userEditorViewModel);
+        }
+        [HttpGet]
+        public ActionResult Privileges(UserEditorViewModel editorViewModel)
+        {
+            questStatus status = null;
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Log Operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = LogOperation();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                // TODO
+                throw new Exception("LogOperation failed");
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Authorize
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = Authorize(editorViewModel._ctx);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                // TODO
+                throw new Exception("Authorize failed");
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Return view.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            // TEMPORARY
+            UserEditorViewModel userEditorViewModel = new UserEditorViewModel(this.UserSession, editorViewModel);
+            return View(userEditorViewModel);
+        }
+
+
         #region Options
         //----------------------------------------------------------------------------------------------------------------------------------
         // Options

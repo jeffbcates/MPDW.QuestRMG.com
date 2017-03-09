@@ -103,6 +103,7 @@ function qrmgio(cb, ud, tmo) {
         _self._r = _rr.Add(_self._r);
     }
     this._postJSON = function (url, d, ud) {
+        ////_self._start();
         if (ud !== undefined) { this._ud = ud; }
         var _url = _self._path + url;
         _self._r = $.ajax({
@@ -123,6 +124,8 @@ function qrmgio(cb, ud, tmo) {
                 }
             },
             success: function (Data) {
+                ////_self._end();
+                ////alert('qrmgio Elapsed time ' + (_self.__end - _self.__start) + ' ms.');
                 if (_rr && _rr.bAborting) { return; }
                 _rr.Remove(_self._r);
                 _self._docallback(Data);
@@ -130,6 +133,12 @@ function qrmgio(cb, ud, tmo) {
         });
         _self._r = _rr.Add(_self._r);
     }
+    ////this._start = function () {
+    ////    _self.__start = performance.now();
+    ////}
+    ////this._end = function () {
+    ////    _self.__end = performance.now();
+    ////}
     this._docallback = function (data) {
         if (_self._cb) {
             _self._cb(_self._ud, data);

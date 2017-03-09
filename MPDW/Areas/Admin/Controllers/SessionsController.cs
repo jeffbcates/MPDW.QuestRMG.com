@@ -1,26 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Globalization;
-using System.Linq;
-using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
-using Quest.MPDW.Controllers;
 using Quest.Util.Status;
 using Quest.Util.Buffer;
-using Quest.Util.Data;
-using Quest.Functional.ASM;
-using Quest.MPDW.Services.Data;
 using Quest.MPDW.Models;
-using Quest.MPDW.Modelers;
 using Quest.MPDW.Admin.Models;
 using Quest.MPDW.Admin.Modelers;
 
 
 namespace Quest.MPDW.Admin
 {
-    public class PrivilegeController : AdminBaseController
+    public class SessionsController : AdminBaseController
     {
         #region Declarations
         /*==================================================================================================================================
@@ -41,7 +32,7 @@ namespace Quest.MPDW.Admin
          * GET Methods
          *=================================================================================================================================*/
         [HttpGet]
-        public ActionResult Index(PrivilegeEditorViewModel privilegeEditorViewModel)
+        public ActionResult Index(UserEditorViewModel viewModel)
         {
             questStatus status = null;
 
@@ -51,37 +42,33 @@ namespace Quest.MPDW.Admin
             status = LogOperation();
             if (!questStatusDef.IsSuccess(status))
             {
-                // TODO
-                throw new Exception("LogOperation failed");
+                viewModel.questStatus = status;
+                return (View("Index", viewModel));
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Authorize
              *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = Authorize(privilegeEditorViewModel._ctx);
+            status = Authorize(viewModel._ctx);
             if (!questStatusDef.IsSuccess(status))
             {
-                // TODO
-                throw new Exception("Authorize failed");
+                viewModel.questStatus = status;
+                return (View("Index", viewModel));
             }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Get user sessions.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+             // TODO:
 
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Return view.
              *---------------------------------------------------------------------------------------------------------------------------------*/
-            PrivilegeEditorViewModel privilegeEditorViewModel2 = new PrivilegeEditorViewModel(this.UserSession, privilegeEditorViewModel);
-            privilegeEditorViewModel2.Id = privilegeEditorViewModel.Id;
-            if (privilegeEditorViewModel.Id >= BaseId.VALID_ID)
-            {
-                privilegeEditorViewModel2.questStatus = new questStatus(Severity.Warning);
-            }
-            else
-            {
-                privilegeEditorViewModel2.questStatus = new questStatus(Severity.Success);
-            }
-            return View(privilegeEditorViewModel2);
+            SessionsListViewModel sessionsListViewModel = new SessionsListViewModel(this.UserSession, viewModel);
+            return View(sessionsListViewModel);
         }
         [HttpGet]
-        public ActionResult Read(PrivilegeEditorViewModel editorViewModel)
+        public ActionResult List(SessionsListViewModel viewModel)
         {
             questStatus status = null;
 
@@ -91,140 +78,285 @@ namespace Quest.MPDW.Admin
             status = LogOperation();
             if (!questStatusDef.IsSuccess(status))
             {
-                // TODO
-                throw new Exception("LogOperation failed");
+                viewModel.questStatus = status;
+                return Json(viewModel, JsonRequestBehavior.AllowGet);
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Authorize
              *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = Authorize(editorViewModel._ctx);
+            status = Authorize(viewModel._ctx);
             if (!questStatusDef.IsSuccess(status))
             {
-                // TODO
-                throw new Exception("Authorize failed");
+                viewModel.questStatus = status;
+                return Json(viewModel, JsonRequestBehavior.AllowGet);
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
-             * Perform operation.
+             * Get list of items.
              *---------------------------------------------------------------------------------------------------------------------------------*/
-            PrivilegeId privilegeId = new PrivilegeId(editorViewModel.Id);
-            PrivilegeEditorViewModel privilegeEditorViewModel = null;
-            PrivilegeEditorModeler privilegeEditorModeler = new Modelers.PrivilegeEditorModeler(this.Request, this.UserSession);
-            status = privilegeEditorModeler.Read(privilegeId, out privilegeEditorViewModel);
+            SessionsListViewModel sessionsListViewModelNew = null;
+            SessionsListModeler sessionsListModeler = new SessionsListModeler(this.Request, this.UserSession);
+            status = sessionsListModeler.List(out sessionsListViewModelNew);
             if (!questStatusDef.IsSuccess(status))
             {
-                privilegeEditorViewModel.questStatus = status;
-                return Json(editorViewModel, JsonRequestBehavior.AllowGet);
+                viewModel.questStatus = status;
+                return Json(viewModel, JsonRequestBehavior.AllowGet);
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
-             * Return result.
+             * Return view
              *---------------------------------------------------------------------------------------------------------------------------------*/
             status = new questStatus(Severity.Success);
-            privilegeEditorViewModel.questStatus = status;
-            return Json(privilegeEditorViewModel, JsonRequestBehavior.AllowGet);
-        }
-        [HttpGet]
-        public ActionResult Cancel(PrivilegeEditorViewModel editorViewModel)
-        {
-            questStatus status = null;
-
-            /*----------------------------------------------------------------------------------------------------------------------------------
-             * Log Operation
-             *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = LogOperation();
-            if (!questStatusDef.IsSuccess(status))
-            {
-                // TODO
-                throw new Exception("LogOperation failed");
-            }
-
-            /*----------------------------------------------------------------------------------------------------------------------------------
-             * Authorize
-             *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = Authorize(editorViewModel._ctx);
-            if (!questStatusDef.IsSuccess(status))
-            {
-                // TODO
-                throw new Exception("Authorize failed");
-            }
-
-            /*----------------------------------------------------------------------------------------------------------------------------------
-             * Direct privilege to list
-             *---------------------------------------------------------------------------------------------------------------------------------*/
-            return (RedirectToAction("Index", "Privileges", PropagateQueryString(Request)));
+            sessionsListViewModelNew.questStatus = status;
+            return Json(sessionsListViewModelNew, JsonRequestBehavior.AllowGet);
         }
 
-        [HttpGet]
-        public ActionResult Users(PrivilegeEditorViewModel editorViewModel)
-        {
-            questStatus status = null;
-
-            /*----------------------------------------------------------------------------------------------------------------------------------
-             * Log Operation
-             *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = LogOperation();
-            if (!questStatusDef.IsSuccess(status))
-            {
-                // TODO
-                throw new Exception("LogOperation failed");
-            }
-
-            /*----------------------------------------------------------------------------------------------------------------------------------
-             * Authorize
-             *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = Authorize(editorViewModel._ctx);
-            if (!questStatusDef.IsSuccess(status))
-            {
-                // TODO
-                throw new Exception("Authorize failed");
-            }
-
-            /*----------------------------------------------------------------------------------------------------------------------------------
-             * Return view.
-             *---------------------------------------------------------------------------------------------------------------------------------*/
-            // TEMPORARY
-            PrivilegeEditorViewModel privilegeEditorViewModel = new PrivilegeEditorViewModel(this.UserSession, editorViewModel);
-            return View(privilegeEditorViewModel);
-        }
-        [HttpGet]
-        public ActionResult Groups(PrivilegeEditorViewModel editorViewModel)
-        {
-            questStatus status = null;
-
-            /*----------------------------------------------------------------------------------------------------------------------------------
-             * Log Operation
-             *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = LogOperation();
-            if (!questStatusDef.IsSuccess(status))
-            {
-                // TODO
-                throw new Exception("LogOperation failed");
-            }
-
-            /*----------------------------------------------------------------------------------------------------------------------------------
-             * Authorize
-             *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = Authorize(editorViewModel._ctx);
-            if (!questStatusDef.IsSuccess(status))
-            {
-                // TODO
-                throw new Exception("Authorize failed");
-            }
-
-            /*----------------------------------------------------------------------------------------------------------------------------------
-             * Return view.
-             *---------------------------------------------------------------------------------------------------------------------------------*/
-            // TEMPORARY
-            PrivilegeEditorViewModel privilegeEditorViewModel = new PrivilegeEditorViewModel(this.UserSession, editorViewModel);
-            return View(privilegeEditorViewModel);
-        }
-
-        #region Options
+        #region Paging
         //----------------------------------------------------------------------------------------------------------------------------------
-        // Options
+        // Paging
         //----------------------------------------------------------------------------------------------------------------------------------
+        [HttpGet]
+        public ActionResult First(SessionsListViewModel usersListViewModel)
+        {
+            questStatus status = null;
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Log Operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = LogOperation();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                usersListViewModel.questStatus = status;
+                return Json(usersListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Authorize
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = Authorize(usersListViewModel._ctx);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                usersListViewModel.questStatus = status;
+                return Json(usersListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Get list of items.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            // TODO.
+            SessionsListViewModel sessionsListViewModelNew = null;
+            SessionsListModeler usersListModeler = new SessionsListModeler(this.Request, this.UserSession);
+            status = usersListModeler.List(out sessionsListViewModelNew);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                usersListViewModel.questStatus = status;
+                return Json(usersListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Return view
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = new questStatus(Severity.Success);
+            sessionsListViewModelNew.questStatus = status;
+            return Json(sessionsListViewModelNew, JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        public ActionResult Prev(SessionsListViewModel usersListViewModel)
+        {
+            questStatus status = null;
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Log Operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = LogOperation();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                usersListViewModel.questStatus = status;
+                return Json(usersListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Authorize
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = Authorize(usersListViewModel._ctx);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                usersListViewModel.questStatus = status;
+                return Json(usersListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Get list of items.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            // TODO.
+            SessionsListViewModel sessionsListViewModelNew = null;
+            SessionsListModeler usersListModeler = new SessionsListModeler(this.Request, this.UserSession);
+            status = usersListModeler.List(out sessionsListViewModelNew);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                usersListViewModel.questStatus = status;
+                return Json(usersListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Return view
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = new questStatus(Severity.Success);
+            sessionsListViewModelNew.questStatus = status;
+            return Json(sessionsListViewModelNew, JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        public ActionResult PageNum(SessionsListViewModel usersListViewModel)
+        {
+            questStatus status = null;
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Log Operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = LogOperation();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                usersListViewModel.questStatus = status;
+                return Json(usersListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Authorize
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = Authorize(usersListViewModel._ctx);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                usersListViewModel.questStatus = status;
+                return Json(usersListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Get list of items.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            // TODO.
+            SessionsListViewModel sessionsListViewModelNew = null;
+            SessionsListModeler usersListModeler = new SessionsListModeler(this.Request, this.UserSession);
+            status = usersListModeler.List(out sessionsListViewModelNew);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                usersListViewModel.questStatus = status;
+                return Json(usersListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Return view
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = new questStatus(Severity.Success);
+            sessionsListViewModelNew.questStatus = status;
+            return Json(sessionsListViewModelNew, JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        public ActionResult Next(SessionsListViewModel usersListViewModel)
+        {
+            questStatus status = null;
+
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Log Operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = LogOperation();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                usersListViewModel.questStatus = status;
+                return Json(usersListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Authorize
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = Authorize(usersListViewModel._ctx);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                usersListViewModel.questStatus = status;
+                return Json(usersListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Get list of items.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            // TODO.
+            SessionsListViewModel sessionsListViewModelNew = null;
+            SessionsListModeler usersListModeler = new SessionsListModeler(this.Request, this.UserSession);
+            status = usersListModeler.List(out sessionsListViewModelNew);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                usersListViewModel.questStatus = status;
+                return Json(usersListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Return view
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = new questStatus(Severity.Success);
+            sessionsListViewModelNew.questStatus = status;
+            return Json(sessionsListViewModelNew, JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        public ActionResult Last(SessionsListViewModel usersListViewModel)
+        {
+            questStatus status = null;
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Log Operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = LogOperation();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                usersListViewModel.questStatus = status;
+                return Json(usersListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Authorize
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = Authorize(usersListViewModel._ctx);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                usersListViewModel.questStatus = status;
+                return Json(usersListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Get list of items.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            // TODO.
+            SessionsListViewModel sessionsListViewModelNew = null;
+            SessionsListModeler usersListModeler = new SessionsListModeler(this.Request, this.UserSession);
+            status = usersListModeler.List(out sessionsListViewModelNew);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                usersListViewModel.questStatus = status;
+                return Json(usersListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Return view
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = new questStatus(Severity.Success);
+            sessionsListViewModelNew.questStatus = status;
+            return Json(sessionsListViewModelNew, JsonRequestBehavior.AllowGet);
+        }
         #endregion
 
         #endregion
@@ -239,94 +371,6 @@ namespace Quest.MPDW.Admin
         //----------------------------------------------------------------------------------------------------------------------------------
         // CRUD Operations
         //----------------------------------------------------------------------------------------------------------------------------------
-        [HttpPost]
-        public ActionResult Save(PrivilegeEditorViewModel privilegeEditorViewModel)
-        {
-            questStatus status = null;
-
-            /*----------------------------------------------------------------------------------------------------------------------------------
-             * Log Operation
-             *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = LogOperation();
-            if (!questStatusDef.IsSuccess(status))
-            {
-                privilegeEditorViewModel.questStatus = status;
-                return Json(privilegeEditorViewModel, JsonRequestBehavior.AllowGet);
-            }
-
-            /*----------------------------------------------------------------------------------------------------------------------------------
-             * Authorize
-             *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = Authorize(privilegeEditorViewModel._ctx);
-            if (!questStatusDef.IsSuccess(status))
-            {
-                privilegeEditorViewModel.questStatus = status;
-                return Json(privilegeEditorViewModel, JsonRequestBehavior.AllowGet);
-            }
-
-            /*----------------------------------------------------------------------------------------------------------------------------------
-             * Perform operation.
-             *---------------------------------------------------------------------------------------------------------------------------------*/
-            bool bInitialCreation = privilegeEditorViewModel.Id < BaseId.VALID_ID ? true : false;
-            PrivilegeEditorModeler privilegeEditorModeler = new PrivilegeEditorModeler(this.Request, this.UserSession);
-            status = privilegeEditorModeler.Save(privilegeEditorViewModel);
-            if (!questStatusDef.IsSuccess(status))
-            {
-                privilegeEditorViewModel.questStatus = status;
-                return Json(privilegeEditorViewModel, JsonRequestBehavior.AllowGet);
-            }
-
-            /*----------------------------------------------------------------------------------------------------------------------------------
-             * Return result.
-             *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = new questStatus(Severity.Success, "Privilege successfully" + (bInitialCreation ? " created" : " updated"));
-            privilegeEditorViewModel.questStatus = status;
-            return Json(privilegeEditorViewModel, JsonRequestBehavior.AllowGet);
-        }
-        [HttpPost]
-        public ActionResult Delete(PrivilegeEditorViewModel privilegeEditorViewModel)
-        {
-            questStatus status = null;
-
-            /*----------------------------------------------------------------------------------------------------------------------------------
-             * Log Operation
-             *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = LogOperation();
-            if (!questStatusDef.IsSuccess(status))
-            {
-                // TODO
-                throw new Exception("LogOperation failed");
-            }
-
-            /*----------------------------------------------------------------------------------------------------------------------------------
-             * Authorize
-             *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = Authorize(privilegeEditorViewModel._ctx);
-            if (!questStatusDef.IsSuccess(status))
-            {
-                // TODO
-                throw new Exception("Authorize failed");
-            }
-
-            /*----------------------------------------------------------------------------------------------------------------------------------
-             * Perform operation.
-             *---------------------------------------------------------------------------------------------------------------------------------*/
-            PrivilegeId privilegeId = new PrivilegeId(privilegeEditorViewModel.Id);
-            PrivilegeEditorModeler privilegeEditorModeler = new PrivilegeEditorModeler(this.Request, this.UserSession);
-            status = privilegeEditorModeler.Delete(privilegeId);
-            if (!questStatusDef.IsSuccess(status))
-            {
-                privilegeEditorViewModel.questStatus = status;
-                return Json(privilegeEditorViewModel, JsonRequestBehavior.AllowGet);
-            }
-
-            /*----------------------------------------------------------------------------------------------------------------------------------
-             * Return result.
-             *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = new questStatus(Severity.Success, "Privilege successfully deleted");
-            privilegeEditorViewModel.questStatus = status;
-            return Json(privilegeEditorViewModel, JsonRequestBehavior.AllowGet);
-        }
         #endregion
 
         #endregion
