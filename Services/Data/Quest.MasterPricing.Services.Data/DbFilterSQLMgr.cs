@@ -700,7 +700,7 @@ namespace Quest.MasterPricing.Services.Data.Filters
         }
         public questStatus GenerateGreaterThanOrEqualTo(FilterItem filterItem, FilterOperation filterOperation, out ClauseGenerationResult clauseGenerationResult)
         {
-            return (generateOpClause(filterItem, ">==", filterOperation, out clauseGenerationResult));
+            return (generateOpClause(filterItem, ">=", filterOperation, out clauseGenerationResult));
         }
         public questStatus GenerateMatchesAdvanced(FilterItem filterItem, FilterOperation filterOperation, out ClauseGenerationResult clauseGenerationResult)
         {
