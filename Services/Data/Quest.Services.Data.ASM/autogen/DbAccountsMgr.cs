@@ -120,6 +120,26 @@ namespace Quest.MPDW.Services.Data.Accounts
 
             return (new questStatus(Severity.Success));
         }
+        public questStatus GetUserGroups(UserId userId, out List<Group> groupList)
+        {
+            // Initialize
+            questStatus status = null;
+            groupList = null;
+
+
+            // Get all user groups.
+            UserGroupList userGroupList = null;
+            status = _dbGroupUsersMgr.Read(userId, out userGroupList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+            // Return groups
+            groupList = userGroupList.GroupList;
+
+            return (new questStatus(Severity.Success));
+        }
         public questStatus GetUserPrivileges(UserId userId, out List<Privilege> privilegeList)
         {
             // Initialize

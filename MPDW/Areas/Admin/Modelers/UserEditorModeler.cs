@@ -127,6 +127,62 @@ namespace Quest.MPDW.Admin.Modelers
         //----------------------------------------------------------------------------------------------------------------------------------
         // Options
         //----------------------------------------------------------------------------------------------------------------------------------
+        public questStatus GetUserOptions(out List<OptionValuePair> optionsList, string Value = null, string Name = null)
+        {
+            // Initialize
+            questStatus status = null;
+            optionsList = null;
+
+
+            // TEMPORARY: OPTIMIZE THIS
+            List<SearchField> searchFieldList = new List<SearchField>();
+            SearchOptions searchOptions = new SearchOptions();
+            searchOptions.SearchFieldList = searchFieldList;
+            QueryOptions queryOptions = new QueryOptions();
+            queryOptions.SearchOptions = searchOptions;
+            QueryResponse queryResponse = null;
+
+
+            // Get users for given tableset
+            List<User> userList = null;
+            UsersMgr usersMgr = new UsersMgr(this.UserSession);
+            status = usersMgr.List(queryOptions, out userList, out queryResponse);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+            // Sort 
+            userList.Sort(delegate (User i1, User i2) { return i1.LastName.CompareTo(i2.LastName); });
+
+
+            // Build options
+            // Set selected if specified.
+            optionsList = new List<OptionValuePair>();
+            foreach (User user in userList)
+            {
+                OptionValuePair optionValuePair = new OptionValuePair();
+                optionValuePair.Id = user.Id.ToString();
+                optionValuePair.Label = user.LastName + ", " + user.FirstName;
+                if (Value != null && Value == user.Id.ToString())
+                {
+                    optionValuePair.bSelected = true;
+                }
+                else if (Name != null && Name == user.Username)
+                {
+                    optionValuePair.bSelected = true;
+                }
+                optionsList.Add(optionValuePair);
+            }
+
+            // Insert default option
+            status = AddDefaultOptions(optionsList, "-1", "Select one ...");
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
         #endregion
 
 

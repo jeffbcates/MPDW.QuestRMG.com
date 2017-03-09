@@ -156,7 +156,7 @@ namespace Quest.MPDW.Controllers
             // Initialize
             questStatus status = null;
 
-            UserSessionMgr userSessionMgr = new UserSessionMgr();
+            UserSessionMgr userSessionMgr = new UserSessionMgr(this.UserSession);
             status = userSessionMgr.Read(userSessionId, out userSession);
             if (!questStatusDef.IsSuccess(status))
             {

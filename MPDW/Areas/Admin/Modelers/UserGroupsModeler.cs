@@ -8,6 +8,7 @@ using Quest.Util.Buffer;
 using Quest.Util.Data;
 using Quest.Functional.ASM;
 using Quest.Functional.FMS;
+using Quest.MPDW.Models;
 using Quest.MPDW.Admin.Models;
 using Quest.MPDW.Services.Business.Accounts;
 
@@ -44,6 +45,83 @@ namespace Quest.MPDW.Admin.Modelers
         //----------------------------------------------------------------------------------------------------------------------------------
         // CRUD
         //----------------------------------------------------------------------------------------------------------------------------------
+        public questStatus Read(UserEditorViewModel userEditorViewModel, out UserGroupsViewModel userGroupsViewModel)
+        {
+            // Initialize
+            questStatus status = null;
+            userGroupsViewModel = null;
+
+
+            // Read the user
+            UserId userId = new UserId(userEditorViewModel.Id);
+            UserEditorViewModel _userEditorViewModel = null;
+            UserEditorModeler userEditorModeler = new UserEditorModeler(this.HttpRequestBase, this.UserSession);
+            status = userEditorModeler.Read(userId, out _userEditorViewModel);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+            // Get groups.
+            List<BootstrapTreenodeViewModel> groupNodeList = null;
+            GroupsModeler groupsModeler = new GroupsModeler(this.HttpRequestBase, this.UserSession);
+            status = groupsModeler.Load(out groupNodeList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+            // Get user groups.
+            List<BootstrapTreenodeViewModel> userGroupNodeList = null;
+            status = Load(userEditorViewModel, out userGroupNodeList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+            //
+            // Transfer model
+            //
+            userGroupsViewModel = new UserGroupsViewModel(this.UserSession, userEditorViewModel);
+            userGroupsViewModel.User = _userEditorViewModel;
+            userGroupsViewModel.UserGroups = userGroupNodeList;
+
+            // Groups - Do not add groups already assigned to user.
+            foreach (BootstrapTreenodeViewModel groupNode in groupNodeList)
+            {
+                BootstrapTreenodeViewModel _userGroup = userGroupNodeList.Find(delegate (BootstrapTreenodeViewModel ug) { return (ug.Id == groupNode.Id); });
+                if (_userGroup != null) { continue; }
+                userGroupsViewModel.Groups.Add(groupNode);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus Load(UserEditorViewModel userEditorViewModel, out List<BootstrapTreenodeViewModel> userGroupsNodeList)
+        {
+            // Initialize
+            questStatus status = null;
+            userGroupsNodeList = null;
+
+
+            // Get user groups
+            UserId userId = new UserId(userEditorViewModel.Id);
+            List<Group> userGroupList = null;
+            AccountMgr accountMgr = new AccountMgr(this.UserSession);
+            status = accountMgr.GetUserGroups(userId, out userGroupList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+            // Transfer model
+            userGroupsNodeList = new List<BootstrapTreenodeViewModel>();
+            foreach (Group group in userGroupList)
+            {
+                BootstrapTreenodeViewModel userGroupNode = null;
+                FormatBootstrapTreeviewNode(group, out userGroupNode);
+                userGroupsNodeList.Add(userGroupNode);
+            }
+            return (new questStatus(Severity.Success));
+        }
         public questStatus Save(UserEditorViewModel userEditorViewModel)
         {
             // Initialize
@@ -79,30 +157,6 @@ namespace Quest.MPDW.Admin.Modelers
                     return (status);
                 }
             }
-            return (new questStatus(Severity.Success));
-        }
-        public questStatus Read(UserId userId, out UserGroupsViewModel userGroupsViewModel)
-        {
-            // Initialize
-            questStatus status = null;
-            userGroupsViewModel = null;
-
-
-            // Read
-            Quest.Functional.ASM.User user = null;
-            UsersMgr usersMgr = new UsersMgr(this.UserSession);
-            status = usersMgr.Read(userId, out user);
-            if (!questStatusDef.IsSuccess(status))
-            {
-                return (status);
-            }
-
-            // Transfer model.
-            userGroupsViewModel = new UserGroupsViewModel(this.UserSession);
-            BufferMgr.TransferBuffer(user, userGroupsViewModel.User);
-
-
-
             return (new questStatus(Severity.Success));
         }
         #endregion

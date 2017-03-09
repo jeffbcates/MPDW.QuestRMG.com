@@ -16,7 +16,7 @@ using Quest.MPDW.Services.Data.Accounts;
 
 namespace Quest.MPDW.Services.Business.Accounts
 {
-    public class UsersMgr : Mgr
+    public class UsersMgr : MgrSessionBased
     {
         #region Declarations
         /*==================================================================================================================================
@@ -31,13 +31,8 @@ namespace Quest.MPDW.Services.Business.Accounts
         /*==================================================================================================================================
          * Constructors
          *=================================================================================================================================*/
-        public UsersMgr()
-            : base()
-        {
-            initialize();
-        }
         public UsersMgr(UserSession userSession)
-            : base()
+            : base(userSession)
         {
             initialize();
         }

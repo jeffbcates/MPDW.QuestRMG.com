@@ -1,4 +1,4 @@
-﻿@model Quest.MPDW.Admin.Models.UserEditorViewModel
+﻿@model Quest.MPDW.Admin.Models.UserGroupsViewModel
 @{
     ViewBag.Title = "User Groups";
     Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
@@ -6,5 +6,218 @@
 
 <h1>User Groups</h1>
 
-<input type="hidden" id="__frmUserVIEW_STATE" value="@Html.Raw(Json.Encode(Model))" />
+<input type="hidden" id="__frmUserGroupsVIEW_STATE" value="@Html.Raw(Json.Encode(Model))" />
 
+<div id="frmUser" class="form-frame"></div>
+
+
+<div class="page-frame">
+    <div id="tvwUserGroupsFrame" class="admin-treeview-frame">
+        <div id="tvwUserGroups" class="admin-treeview"></div>
+    </div>
+    <div id="tvwGroupsFrame" class="admin-treeview-frame">
+        <div id="tvwGroups" class="admin-treeview"></div>
+    </div>
+</div>
+
+
+
+
+<script type="text/javascript">
+    var _frmUser = null;
+    function initUserForm() {
+        var frmUser = {
+            element: 'frmUser',
+            prefix: 'usr',
+            uri: '/Admin/User',
+            callback: cbUserEditor,
+            mask: 'body',
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb']
+            },
+            ShortFields: true,
+            fields: [
+                { name: 'Id', type: 'hidden', key: true },
+                { name: 'User', label: 'User', type: 'select', callback: cbUserOptions },
+                { name: 'LastName', label: 'Last Name', readonly: true },
+                { name: 'FirstName', label: 'First Name', readonly: true },
+                { name: 'Username', label: 'Username', readonly: true },
+            ],
+            operations: [
+                { name: 'Privileges', label: 'Privileges', classes: "btn btn-primary", uri: '/Admin/User', view: true },
+                { name: 'Sessions', label: 'Sessions', classes: "btn btn-primary", uri: '/Admin/Sessions/Index', view: true },
+            ],
+            actions: [
+            ]
+        }
+        _frmUser = new qrmgEditor(frmUser);
+        _frmUser.SetField("LastName", _viewstate.User.LastName);
+        _frmUser.SetField("FirstName", _viewstate.User.FirstName);
+        _frmUser.SetField("Username", _viewstate.User.Username);
+    }
+    function cbUserEditor(ud, d) {
+        var x = 4;
+        x = 44;
+    }
+    function cbUserOptions(ud, d) {
+        if (ud.PostLoad) {
+            $('#usrUser').val(_viewstate.User.Id);
+        }
+        else if (ud.Change) {
+            _frmUser.Read($('#usrUser').val());
+        }
+    }
+</script>
+
+
+
+
+<script type="text/javascript">
+    var _tvwUserGroups = null;
+    function initTreeviewUserGroups() {
+        var tvwUserGroups = {
+            element: 'tvwUserGroups',
+            pfx: 'tvwusrgrp',
+            uri: '/Admin/UserGroups',
+            keyname: 'Id',
+            header: {
+                bInlineHeader: true,
+                count: true,
+                label: 'User Groups: ',
+                filter: true
+            },
+            draggable: true,
+            ASMDragging: true,
+            droppable: true,
+            dropsource: _tvwGroups,
+            sorted: false,
+            multiSelect: true,
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb'],
+            },
+            viewstate: { element: '__frmUserGroupsVIEW_STATE' },
+            callback: cbTvwUserGroups,
+            bNoUserMessages: true,
+            events: [
+                { name: 'AfterLoaded', callback: cbTvwUserGroupsAfterLoaded },
+                { name: 'OnTreeRender', callback: cbOnTvwUserGroupsRender },
+                { name: 'Refresh', callback: cbTvwUserGroupsRefresh },
+                { name: 'OnChange', callback: cbTvwUserGroupsOnChange },
+            ],
+            operations: [
+                { name: 'Remove', label: 'Remove', classes: "btn btn-primary" },
+            ],
+        }
+        _tvwUserGroups = new qrmgTreeview(tvwUserGroups);
+        loadUserGroups();
+    }
+    function loadUserGroups() {
+        var _ee = _viewstate.UserGroups;
+        var _d = { questStatus: _viewstate.questStatus, Items: _ee };
+        _tvwUserGroups.Fill(_d);
+        _tvwUserGroups.Change(false);
+    }
+    function cbTvwUserGroups(op, msg, n, d) {
+    }
+    function cbTvwUserGroupsAfterLoaded() {
+    }
+    function cbOnTvwUserGroupsRender(e) {
+        if (!_tvwUserGroups) { return; }
+        _tvwUserGroups.Draggable();
+        _tvwUserGroups.Droppable();
+    }
+    function cbTvwUserGroupsRefresh(e) {
+        $('#draggingContainer').remove();
+    }
+    function cbTvwUserGroupsOnChange(ud, bChanges) {
+    }
+</script>
+<script type="text/javascript">
+    var _tvwGroups = null;
+    function initTreeviewGroups() {
+        var tvwGroups = {
+            element: 'tvwGroups',
+            pfx: 'tvwgrp',
+            uri: '/Admin/Groups',
+            keyname: 'Id',
+            header: {
+                bInlineHeader: true,
+                count: true,
+                label: 'Groups: ',
+                filter: true
+            },
+            draggable: true,
+            droppable: true,
+            dropsource: _tvwUserGroups,
+            sorted: false,
+            multiSelect: true,
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb'],
+            },
+            viewstate: { element: '__frmUserGroupsVIEW_STATE' },
+            callback: cbTvwGroups,
+            bNoUserMessages: true,
+            events: [
+                { name: 'AfterLoaded', callback: cbTvwGroupsAfterLoaded },
+                { name: 'OnTreeRender', callback: cbOnTvwGroupsRender },
+                { name: 'Refresh', callback: cbTvwGroupsRefresh },
+                { name: 'OnChange', callback: cbTvwGroupsOnChange },
+            ],
+            operations: [
+                { name: 'Remove', label: 'Remove', classes: "btn btn-primary" },
+            ],
+        }
+        _tvwGroups = new qrmgTreeview(tvwGroups);
+        loadGroups();
+    }
+    function loadGroups() {
+        var _ee = _viewstate.Groups;
+        var _d = { questStatus: _viewstate.questStatus, Items: _ee };
+        _tvwGroups.Fill(_d);
+        _tvwGroups.Change(false);
+    }
+    function cbTvwGroups(op, msg, n, d) {
+    }
+    function cbTvwGroupsAfterLoaded() {
+    }
+    function cbOnTvwGroupsRender(e) {
+        if (!_tvwGroups) { return; }
+        _tvwGroups.Draggable();
+        _tvwGroups.Droppable();
+    }
+    function cbTvwGroupsRefresh(e) {
+        $('#draggingContainer').remove();
+    }
+    function cbTvwGroupsOnChange(ud, bChanges) {
+    }
+</script>
+
+<script type="text/javascript">
+    var _viewstate;
+    $(function () {
+        initView();
+    });
+    function initView() {
+        initViewstate();
+
+        initUserForm()
+        initTreeviewUserGroups();
+        initTreeviewGroups();
+
+        _tvwGroups.DropSource(_tvwUserGroups);
+        _tvwUserGroups.DropSource(_tvwGroups);
+
+        displayViewMessage();
+    }
+    function initViewstate() {
+        _viewstate = JSON.parse($('#__frmUserGroupsVIEW_STATE').val());
+    }
+    function displayViewMessage() {
+        if (_viewstate.questStatus.Severity == 3) {
+            DisplayUserMessage('E|' + _viewstate.questStatus.Message);
+        }
+        else if (_viewstate.questStatus.Severity == 4) {
+            DisplayUserMessage('F|' + _viewstate.questStatus.Message);
+        }
+    }
+</script>

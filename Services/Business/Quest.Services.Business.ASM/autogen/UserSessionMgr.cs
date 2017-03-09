@@ -16,7 +16,7 @@ using Quest.MPDW.Services.Data.Accounts;
 
 namespace Quest.MPDW.Services.Business.Accounts
 {
-    public class UserSessionMgr : Mgr
+    public class UserSessionMgr : MgrSessionBased
     {
         #region Declarations
         /*==================================================================================================================================
@@ -31,13 +31,8 @@ namespace Quest.MPDW.Services.Business.Accounts
         /*==================================================================================================================================
          * Constructors
          *=================================================================================================================================*/
-        public UserSessionMgr()
-            : base()
-        {
-            initialize();
-        }
         public UserSessionMgr(UserSession userSession)
-            : base()
+            : base(userSession)
         {
             initialize();
         }
@@ -87,7 +82,7 @@ namespace Quest.MPDW.Services.Business.Accounts
             // Get the user
             UserId userId = new UserId(userSession.UserId);
             User user = null;
-            UsersMgr usersMgr = new UsersMgr();
+            UsersMgr usersMgr = new UsersMgr(this.UserSession); // TODO: PLUG UP REAL USER SESSION
             status = usersMgr.Read(userId, out user);
             if (!questStatusDef.IsSuccess(status))
             {

@@ -11,7 +11,7 @@ using Quest.MPDW.Admin.Modelers;
 
 namespace Quest.MPDW.Admin
 {
-    public class GroupsController : AdminBaseController
+    public class UserGroupsController : AdminBaseController
     {
         #region Declarations
         /*==================================================================================================================================
@@ -31,37 +31,6 @@ namespace Quest.MPDW.Admin
         /*==================================================================================================================================
          * GET Methods
          *=================================================================================================================================*/
-        [HttpGet]
-        public ActionResult Index(BaseUserSessionViewModel baseUserSessionViewModel)
-        {
-            questStatus status = null;
-
-            /*----------------------------------------------------------------------------------------------------------------------------------
-             * Log Operation
-             *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = LogOperation();
-            if (!questStatusDef.IsSuccess(status))
-            {
-                baseUserSessionViewModel.questStatus = status;
-                return (View("Index", baseUserSessionViewModel));
-            }
-
-            /*----------------------------------------------------------------------------------------------------------------------------------
-             * Authorize
-             *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = Authorize(baseUserSessionViewModel._ctx);
-            if (!questStatusDef.IsSuccess(status))
-            {
-                baseUserSessionViewModel.questStatus = status;
-                return (View("Index", baseUserSessionViewModel));
-            }
-
-            /*----------------------------------------------------------------------------------------------------------------------------------
-             * Return view.
-             *---------------------------------------------------------------------------------------------------------------------------------*/
-            GroupsListViewModel tablesetsListViewModel = new GroupsListViewModel(this.UserSession, baseUserSessionViewModel);
-            return View(tablesetsListViewModel);
-        }
         [HttpGet]
         public ActionResult Load(UserEditorViewModel viewModel)
         {
@@ -90,9 +59,9 @@ namespace Quest.MPDW.Admin
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Get list of items.
              *---------------------------------------------------------------------------------------------------------------------------------*/
-            List<BootstrapTreenodeViewModel> groupNodeListt = null;
-            GroupsModeler groupsModeler = new GroupsModeler(this.Request, this.UserSession);
-            status = groupsModeler.Load(out groupNodeListt);
+            List<BootstrapTreenodeViewModel> userGroupsNodeList = null;
+            UserGroupsModeler userGroupsModeler = new UserGroupsModeler(this.Request, this.UserSession);
+            status = userGroupsModeler.Load(viewModel, out userGroupsNodeList);
             if (!questStatusDef.IsSuccess(status))
             {
                 viewModel.questStatus = status;
@@ -102,54 +71,7 @@ namespace Quest.MPDW.Admin
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Return view
              *---------------------------------------------------------------------------------------------------------------------------------*/
-            return Json(groupNodeListt, JsonRequestBehavior.AllowGet);
-        }
-
-
-
-        [HttpGet]
-        public ActionResult List(GroupsListViewModel tablesetsListViewModel)
-        {
-            questStatus status = null;
-
-            /*----------------------------------------------------------------------------------------------------------------------------------
-             * Log Operation
-             *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = LogOperation();
-            if (!questStatusDef.IsSuccess(status))
-            {
-                tablesetsListViewModel.questStatus = status;
-                return Json(tablesetsListViewModel, JsonRequestBehavior.AllowGet);
-            }
-
-            /*----------------------------------------------------------------------------------------------------------------------------------
-             * Authorize
-             *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = Authorize(tablesetsListViewModel._ctx);
-            if (!questStatusDef.IsSuccess(status))
-            {
-                tablesetsListViewModel.questStatus = status;
-                return Json(tablesetsListViewModel, JsonRequestBehavior.AllowGet);
-            }
-
-            /*----------------------------------------------------------------------------------------------------------------------------------
-             * Get list of items.
-             *---------------------------------------------------------------------------------------------------------------------------------*/
-            GroupsListViewModel tablesetsListViewModelNEW = null;
-            GroupsListModeler groupListModeler = new GroupsListModeler(this.Request, this.UserSession);
-            status = groupListModeler.List(out tablesetsListViewModelNEW);
-            if (!questStatusDef.IsSuccess(status))
-            {
-                tablesetsListViewModel.questStatus = status;
-                return Json(tablesetsListViewModel, JsonRequestBehavior.AllowGet);
-            }
-
-            /*----------------------------------------------------------------------------------------------------------------------------------
-             * Return view
-             *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = new questStatus(Severity.Success);
-            tablesetsListViewModelNEW.questStatus = status;
-            return Json(tablesetsListViewModelNEW, JsonRequestBehavior.AllowGet);
+            return Json(userGroupsNodeList, JsonRequestBehavior.AllowGet);
         }
 
         #region Paging
@@ -398,7 +320,6 @@ namespace Quest.MPDW.Admin
             return Json(tablesetsListViewModelNEW, JsonRequestBehavior.AllowGet);
         }
         #endregion
-
 
         #endregion
 

@@ -1,29 +1,23 @@
 ﻿using System;
-using System.Text;
 using System.Collections.Generic;
-using System.ComponentModel.DataAnnotations;
 using System.Configuration;
 using System.Linq;
 using System.Web;
-using System.Web.Mvc;
 using Quest.Util.Status;
 using Quest.Util.Buffer;
 using Quest.Util.Data;
 using Quest.Functional.ASM;
 using Quest.Functional.FMS;
-using Quest.Functional.MasterPricing;
-using Quest.MPDW.Models;
+using Quest.MPDW.Models.List;
 using Quest.MPDW.Modelers;
-using Quest.MasterPricing.DataMgr.Models;
-using Quest.MasterPricing.DataMgr.Modelers;
-using Quest.MPDW.Services.Data;
-using Quest.MasterPricing.Services.Business.Tablesets;
-using Quest.MasterPricing.Services.Business.Filters;
+using Quest.MPDW.Models;
+using Quest.MPDW.Admin.Models;
+using Quest.MPDW.Services.Business.Accounts;
 
 
 namespace Quest.MPDW.Admin.Modelers
 {
-    public class AdminBaseModeler : BaseModeler
+    public class GroupsModeler : AdminBaseModeler
     {
         #region Declarations
         /*==================================================================================================================================
@@ -34,9 +28,9 @@ namespace Quest.MPDW.Admin.Modelers
 
         #region Constructors
         /*==================================================================================================================================
-        * Constructors
+        * ConstructorsGroupListModeler
         *=================================================================================================================================*/
-        public AdminBaseModeler(HttpRequestBase httpRequestBase, UserSession userSession)
+        public GroupsModeler(HttpRequestBase httpRequestBase, UserSession userSession)
             : base(httpRequestBase, userSession)
         {
             initialize();
@@ -49,6 +43,48 @@ namespace Quest.MPDW.Admin.Modelers
         * Public Methods
         *=================================================================================================================================*/
 
+        #region LOAD 
+        //----------------------------------------------------------------------------------------------------------------------------------
+        // LOAD
+        //----------------------------------------------------------------------------------------------------------------------------------
+        public questStatus Load(out List<BootstrapTreenodeViewModel> groupNodeList)
+        {
+            // Initialize
+            questStatus status = null;
+            groupNodeList = null;
+
+
+            // Set up query options.
+            // TEMPORARY: OPTIMIZE THIS
+            List<SearchField> searchFieldList = new List<SearchField>();
+            SearchOptions searchOptions = new SearchOptions();
+            searchOptions.SearchFieldList = searchFieldList;
+            QueryOptions queryOptions = new QueryOptions();
+            queryOptions.SearchOptions = searchOptions;
+            QueryResponse queryResponse = null;
+
+
+            // Get groups.
+            List<Group> groupList = null;
+            GroupsMgr groupsMgr = new GroupsMgr(this.UserSession);
+            status = groupsMgr.List(queryOptions, out groupList, out queryResponse);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+            // Transfer model
+            groupNodeList = new List<BootstrapTreenodeViewModel>();
+            foreach (Group group in groupList)
+            {
+                BootstrapTreenodeViewModel groupNode = null;
+                FormatBootstrapTreeviewNode(group, out groupNode);
+                groupNodeList.Add(groupNode);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        #endregion
+
 
         #region Options
         //----------------------------------------------------------------------------------------------------------------------------------
@@ -57,59 +93,9 @@ namespace Quest.MPDW.Admin.Modelers
         #endregion
 
 
-        #region Formatting
-        //----------------------------------------------------------------------------------------------------------------------------------
-        // Formatting
-        //----------------------------------------------------------------------------------------------------------------------------------
-        public questStatus FormatBootstrapTreeviewNode(Group group, out BootstrapTreenodeViewModel bootstrapTreenodeViewModel)
-        {
-            // Initialize
-            bootstrapTreenodeViewModel = new BootstrapTreenodeViewModel();
-            bootstrapTreenodeViewModel.Id = group.Id;
-            bootstrapTreenodeViewModel.type = "group";
-            bootstrapTreenodeViewModel.icon = "fa fa-group padding-right-20";
-            bootstrapTreenodeViewModel.text = group.Name;
-            bootstrapTreenodeViewModel.selectable = "true";
-
-            return (new questStatus(Severity.Success));
-        }
-        public questStatus FormatBootstrapTreeviewNode(Privilege privilege, out BootstrapTreenodeViewModel bootstrapTreenodeViewModel)
-        {
-            // Initialize
-            bootstrapTreenodeViewModel = new BootstrapTreenodeViewModel();
-            bootstrapTreenodeViewModel.Id = privilege.Id;
-            bootstrapTreenodeViewModel.type = "privilege";
-            bootstrapTreenodeViewModel.icon = "fa fa-privilege padding-right-20";
-            bootstrapTreenodeViewModel.text = privilege.Name;
-            bootstrapTreenodeViewModel.selectable = "true";
-
-            return (new questStatus(Severity.Success));
-        }
-        public questStatus FormatBootstrapTreeviewNode(User user, out BootstrapTreenodeViewModel bootstrapTreenodeViewModel)
-        {
-            // Initialize
-            bootstrapTreenodeViewModel = new BootstrapTreenodeViewModel();
-            bootstrapTreenodeViewModel.Id = user.Id;
-            bootstrapTreenodeViewModel.type = "user";
-            bootstrapTreenodeViewModel.icon = "fa fa-user padding-right-20";
-            bootstrapTreenodeViewModel.text = user.FirstName + " " + user.LastName;
-            bootstrapTreenodeViewModel.selectable = "true";
-
-            return (new questStatus(Severity.Success));
-        }
-        #endregion
-
-
         #region Validations
         //----------------------------------------------------------------------------------------------------------------------------------
         // Validations
-        //----------------------------------------------------------------------------------------------------------------------------------
-        #endregion
-
-
-        #region Transfers
-        //----------------------------------------------------------------------------------------------------------------------------------
-        // Transfers
         //----------------------------------------------------------------------------------------------------------------------------------
         #endregion
 

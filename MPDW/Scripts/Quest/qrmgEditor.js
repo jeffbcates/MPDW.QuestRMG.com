@@ -149,25 +149,39 @@ function qrmgEditor(model) {
     }
     _self._rdrff = function () {
         var _h = [], _i = 0;
-        $.each(_self._model.fields, function (i, f) {
-            if (f.type && f.type == 'hidden') {
-            }
-            else {
-                _h[_i++] = '<div class="row-fluid">';
-                _h[_i++] = _self._rdrlbl(f);
-            }
-            _h[_i++] = _self._rdrf(f);
-            if (f.type && f.type == 'hidden') {
-            }
-            else {
-                _h[_i++] = '</div>';
-            }
-        });
+        if (_self._model.ShortFields) { // TEMP: ALL ONE ROW
+            _h[_i++] = '<div class="row-fluid">';
+            $.each(_self._model.fields, function (i, f) {
+                if (f.type && f.type == 'hidden') {
+                }
+                else {
+                    _h[_i++] = _self._rdrlbl(f);
+                }
+                _h[_i++] = _self._rdrf(f);
+            });
+            _h[_i++] = '</div>';
+        }
+        else {
+            $.each(_self._model.fields, function (i, f) {
+                if (f.type && f.type == 'hidden') {
+                }
+                else {
+                    _h[_i++] = '<div class="row-fluid">';
+                    _h[_i++] = _self._rdrlbl(f);
+                }
+                _h[_i++] = _self._rdrf(f);
+                if (f.type && f.type == 'hidden') {
+                }
+                else {
+                    _h[_i++] = '</div>';
+                }
+            });
+        }
         return (_h.join(''));
     }
     _self._rdrlbl = function (f) {
         var _h = [], _i = 0;
-        _h[_i++] = '<label for="' + f._id + '" class="control-label ';
+        _h[_i++] = '<label for="' + f._id + '" class="' + (_self._model.ShortFields ? 'short-label ' : 'control-label ');
         if (f.labelOnly) {
             _h[_i++] = ' ' + f.classes + ' ';
         }
@@ -248,7 +262,7 @@ function qrmgEditor(model) {
         return (_h.join(''));
     }
     _self._rndrfcc = function (f) {
-        return('form-control ' + (f.classes ? f.classes : ''));
+        return((_self._model.ShortFields ? 'short-control' : 'form-control ') + (f.classes ? f.classes : ''));
     }
     _self._rdrfo = function (f) {
         var _h = [], _i = 0;

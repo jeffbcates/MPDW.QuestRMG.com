@@ -27,18 +27,24 @@ function qrmgTreeview(model) {
         },
         drag: function (event, ui) {
             ////console.log("draggableOptions drag ");
-            var currentLoc = $(this).position();
-            var prevLoc = $(this).data('prevLoc');
-            if (!prevLoc) {
-                prevLoc = ui.originalPosition;
+            if (_self._model.ASMDragging) {
+                DisplayUserMessage('W|top: (' + $(this).position().top + ')   left: (' + $(this).position().left) + ')';
             }
+            else {
+                var currentLoc = $(this).position();
+                var prevLoc = $(this).data('prevLoc');
+                if (!prevLoc) {
+                    prevLoc = ui.originalPosition;
+                }
 
-            var offsetLeft = currentLoc.left - prevLoc.left;
-            var offsetTop = currentLoc.top - prevLoc.top;
+                var offsetLeft = currentLoc.left - prevLoc.left;
+                var offsetTop = currentLoc.top - prevLoc.top;
 
-            _self.moveSelected(offsetLeft, offsetTop);
-            $(this).data('prevLoc', currentLoc);
+                _self.moveSelected(offsetLeft, offsetTop);
+                $(this).data('prevLoc', currentLoc);
+            }
         },
+        cursorAt: { top: 5, left: 5 },
         containment: $('#pageContentFrame'),
         appendTo: 'body'
     };

@@ -758,6 +758,38 @@ pnlbtn:active {
   padding: 6px 12px;
   transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
 }
+.panel-control[disabled], .panel-control[readonly] {
+    background-color: #eee;
+    opacity: 1;
+}
+
+.short-label {
+    font-weight: 600;
+    margin-top: 1px;
+    margin-left: 20px;
+    margin-right: 8px;
+}
+.short-control {
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #8298b3;
+  border-radius: 4px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+  color: #001b3b;
+  display: inline-block;
+  font-size: 14px;
+  height: 34px;
+  line-height: 1.42857;
+  padding: 6px 12px;
+  transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+}
+.short-control[disabled], .short-control[readonly] {
+    background-color: #eee;
+    opacity: 1;
+}
+.form-frame {
+    margin-bottom: 20px;
+}
 
 .questFilterItemControls {
   cursor: pointer;
@@ -1045,3 +1077,23 @@ td.td-input {
 }
 
 
+.page-frame {
+    display: block;
+}
+.half-frame {
+}
+.admin-treeview-frame {
+    position: relative;
+    display: inline-block;
+    padding: 4px;
+    border: 1px solid red;
+    vertical-align: top;
+    min-height: 400px;
+}
+.admin-treeview {
+
+    color: #1a4473;
+}
+.admin-treeview .node-icon {
+  color: #65a1c1;
+}

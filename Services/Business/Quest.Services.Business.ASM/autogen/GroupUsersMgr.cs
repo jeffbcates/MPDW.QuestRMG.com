@@ -7,24 +7,22 @@ using System.Threading.Tasks;
 using Quest.Util.Status;
 using Quest.Util.Buffer;
 using Quest.Util.Data;
-using Quest.Util.Encryption;
 using Quest.Functional.ASM;
 using Quest.Functional.FMS;
-using Quest.MPDW.Services.Business;
 using Quest.MPDW.Services.Data;
+using Quest.MPDW.Services.Business;
 using Quest.MPDW.Services.Data.Accounts;
 
 
 namespace Quest.MPDW.Services.Business.Accounts
 {
-    public class AccountMgr : MgrSessionBased
+    public class GroupUsersMgr : MgrSessionBased
     {
         #region Declarations
         /*==================================================================================================================================
          * Declarations
          *=================================================================================================================================*/
-        private DbUsersMgr _dbUsersMgr = null;
-        private DbAccountsMgr _dbAccountsMgr = null;
+        private DbGroupUsersMgr _dbGroupUsersMgr = null;
 
         #endregion
 
@@ -33,7 +31,7 @@ namespace Quest.MPDW.Services.Business.Accounts
         /*==================================================================================================================================
          * Constructors
          *=================================================================================================================================*/
-        public AccountMgr(UserSession userSession)
+        public GroupUsersMgr(UserSession userSession)
             : base(userSession)
         {
             initialize();
@@ -52,85 +50,74 @@ namespace Quest.MPDW.Services.Business.Accounts
         /*==================================================================================================================================
          * Public Methods
          *=================================================================================================================================*/
-        public questStatus Login(LoginRequest loginRequest, out UserSession userSession)
+        public questStatus Create(GroupUser groupUser, out GroupUserId groupUserId)
         {
             // Initialize
-            userSession = null;
+            groupUserId = null;
             questStatus status = null;
 
-            /*
-             * Verify user account requirements to login
-             */
-            // Read user
-            User user = null;
-            status = _dbUsersMgr.Read(loginRequest.Username, out user);
-            if (!questStatusDef.IsSuccess(status))
+
+
+            // Create groupUser
+            status = _dbGroupUsersMgr.Create(groupUser, out groupUserId);
+            if (! questStatusDef.IsSuccess(status))
             {
                 return (status);
             }
-
-            // User must be enabled and active.
-            if (!user.bEnabled)
-            {
-                return (new questStatus(Severity.Error, "User is not enabled"));
-            }
-            if (!user.bActive)
-            {
-                return (new questStatus(Severity.Error, "User is not active"));
-            }
-
-            // Verify password.
-            AESEncryption aesEncryption = new AESEncryption();
-            string encryptedLoginPassword = aesEncryption.Encrypt(loginRequest.Password);
-            if (string.Compare(encryptedLoginPassword, user.Password) != 0)
-            {
-                return (new questStatus(Severity.Error, "Invalid user credentials"));
-            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus Read(GroupUserId groupUserId, out GroupUser groupUser)
+        {
+            // Initialize
+            groupUser = null;
+            questStatus status = null;
 
 
-            // Create user session
-            status = _dbAccountsMgr.Login(loginRequest, user, out userSession);
+            // Read groupUser
+            status = _dbGroupUsersMgr.Read(groupUserId, out groupUser);
             if (!questStatusDef.IsSuccess(status))
             {
                 return (status);
             }
             return (new questStatus(Severity.Success));
         }
-        public questStatus Logout(UserSessionId userSessionId)
+        public questStatus Update(GroupUser groupUser)
         {
             // Initialize
             questStatus status = null;
-            UserSession userSession = null;
 
-            // Get the user session.
-            UserSessionMgr userSessionMgr = new UserSessionMgr(this.UserSession);
-            status = userSessionMgr.Read(userSessionId, out userSession);
+
+            // Update groupUser
+            status = _dbGroupUsersMgr.Update(groupUser);
             if (!questStatusDef.IsSuccess(status))
             {
                 return (status);
-            } 
-
-            // Set termination date to now.
-            userSession.Terminated = DateTime.Now;
-
-
-            // Update the user session.
-            status = userSessionMgr.Update(userSession);
-            if (!questStatusDef.IsSuccess(status))
-            {
-                return (status);
-            } 
+            }
             return (new questStatus(Severity.Success));
         }
-
-        public questStatus GetUserGroups(UserId userId, out List<Group> groupList)
+        public questStatus Delete(GroupUserId groupUserId)
         {
             // Initialize
             questStatus status = null;
 
 
-            // Get user groups
-            status = _dbAccountsMgr.GetUserGroups(userId, out groupList);
+            // Delete groupUser
+            status = _dbGroupUsersMgr.Delete(groupUserId);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus List(QueryOptions queryOptions, out List<GroupUser> groupUserList, out QueryResponse queryResponse)
+        {
+            // Initialize
+            questStatus status = null;
+            groupUserList = null;
+
+
+            // List groupUsers
+            status = _dbGroupUsersMgr.List(queryOptions, out groupUserList, out queryResponse);
             if (!questStatusDef.IsSuccess(status))
             {
                 return (status);
@@ -150,8 +137,7 @@ namespace Quest.MPDW.Services.Business.Accounts
             questStatus status = null;
             try
             {
-                _dbUsersMgr = new DbUsersMgr(this.UserSession);
-                _dbAccountsMgr = new DbAccountsMgr(this.UserSession);
+                _dbGroupUsersMgr = new DbGroupUsersMgr(this.UserSession); 
             }
             catch (System.Exception ex)
             {

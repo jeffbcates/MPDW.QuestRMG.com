@@ -189,6 +189,7 @@
     <Compile Include="Areas\Account\Models\AccountHomeViewModel.cs" />
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminBaseController.cs" />
+    <Compile Include="Areas\Admin\Controllers\UserGroupsController.cs" />
     <Compile Include="Areas\Admin\Controllers\PrivilegeController.cs" />
     <Compile Include="Areas\Admin\Controllers\GroupController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserController.cs" />
@@ -197,6 +198,7 @@
     <Compile Include="Areas\Admin\Controllers\SessionsController.cs" />
     <Compile Include="Areas\Admin\Controllers\UsersController.cs" />
     <Compile Include="Areas\Admin\Modelers\AdminBaseModeler.cs" />
+    <Compile Include="Areas\Admin\Modelers\GroupsModeler.cs" />
     <Compile Include="Areas\Admin\Modelers\PrivilegeEditorModeler.cs" />
     <Compile Include="Areas\Admin\Modelers\GroupEditorModeler.cs" />
     <Compile Include="Areas\Admin\Modelers\UserGroupsModeler.cs" />

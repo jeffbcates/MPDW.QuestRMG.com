@@ -24,11 +24,11 @@
         fields: [
             { name: 'Id', type: 'hidden', key: true },
             { name: 'Name', label: 'Name', required: true, maxlength: 256, size: 55 },
-            { name: 'Description', label: 'Description', required: true, maxlength: 256, size: 55 },
+            { name: 'Description', label: 'Description', maxlength: 256, size: 55 },
         ],
         operations: [
-            { name: 'Groups', label: 'Groups', classes: "btn btn-primary", uri: '/Privilege', view: true },
-            { name: 'Privileges', label: 'Privileges', classes: "btn btn-primary", uri: '/Privilege', view: true },
+            { name: 'Users', label: 'Users', classes: "btn btn-primary", uri: '/Admin/Privilege', view: true },
+            { name: 'Groups', label: 'Groups', classes: "btn btn-primary", uri: '/Admin/Privilege', view: true },
         ],
         actions: [
         ]
