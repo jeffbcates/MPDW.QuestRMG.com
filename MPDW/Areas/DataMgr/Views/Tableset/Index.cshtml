@@ -438,7 +438,8 @@
             d.FilterId = _d.Editor.FilterId;
 
             var bValid = true;
-            d.Items = _viewstate.Items.slice(0);
+            
+            d.Items = copyViewStateItems()
             var filterItems = _fltFilterItems.GetData();
             $.each(filterItems, function (i, fi) {
                 $.each(fi.Operations, function (j, op) {
@@ -468,8 +469,16 @@
         }
 
     }
+    function copyViewStateItems() {
+        var items = [];
+        $.each(_viewstate.Items, function (i, _i) {
+            var itm = $.extend(true, {}, _i);
+            items.push(itm);
+        });
+        return (items);
+    }
     function getViewStateItem(fi, vsitms) {
-        var viewStateItems = vsitms || _viewstate.Items;
+        var viewStateItems = (!vsitms ? _viewstate.Items : vsitms);
         var viewStateItem;
         $.each(viewStateItems, function (i, itm) {
             if (fi.Name == itm.Name) {
