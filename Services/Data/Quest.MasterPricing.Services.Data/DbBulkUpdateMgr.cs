@@ -78,10 +78,10 @@ namespace Quest.MasterPricing.Services.Data.Bulk
             }
 
 
-            sbBulkUPDATE.AppendLine(String.Format("UPDATE [{0}].[{1}] SET ", 
+            sbBulkUPDATE.AppendLine(String.Format("UPDATE [{0}].[{1}] SET ",
                     bulkUpdateRequest.Filter.FilterTableList[0].TablesetTable.Table.Schema, bulkUpdateRequest.Filter.FilterTableList[0].TablesetTable.Table.Name));
             List<string> setClauseList = new List<string>();
-            for (int idx=0; idx < bulkUpdateRequest.Columns.Count; idx += 1)
+            for (int idx = 0; idx < bulkUpdateRequest.Columns.Count; idx += 1)
             {
                 BulkUpdateColumnValue bulkUpdateColumnValue = bulkUpdateRequest.Columns[idx];
                 string setClause = null;
@@ -94,17 +94,10 @@ namespace Quest.MasterPricing.Services.Data.Bulk
 
                 if (bulkUpdateColumnValue.bNull)
                 {
-                    if (setClauseList.Count > 0)
-                    {
-                        if (idx + 1 < bulkUpdateRequest.Columns.Count)
-                        {
-                            setClause = ", ";
-                        }
-                    }
                     setClause += String.Format(" [{0}] = NULL ", bulkUpdateColumnValue.Name);
                     setClauseList.Add(setClause);
                 }
-                else if (! string.IsNullOrEmpty(bulkUpdateColumnValue.Value))
+                else if (!string.IsNullOrEmpty(bulkUpdateColumnValue.Value))
                 {
                     int _value = 0;
                     if (int.TryParse(bulkUpdateColumnValue.Value, out _value))
@@ -114,19 +107,17 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                             continue;
                         }
                     }
-                    if (setClauseList.Count > 0)
-                    {
-                        if (idx + 1 < bulkUpdateRequest.Columns.Count)
-                        {
-                            setClause = ", ";
-                        }
-                    }
                     setClause += String.Format(" [{0}] = {1} ", bulkUpdateColumnValue.Name, getValueIdentifier(bulkUpdateColumnValue));
                     setClauseList.Add(setClause);
                 }
             }
-            foreach (string setClause in setClauseList)
+            for (int idx=0; idx < setClauseList.Count; idx += 1)
             {
+                string setClause = setClauseList[idx];
+                if (idx > 0)
+                {
+                    sbBulkUPDATE.Append("    ,");
+                }
                 sbBulkUPDATE.AppendLine(setClause);
             }
 
