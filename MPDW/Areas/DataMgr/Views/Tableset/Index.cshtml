@@ -990,7 +990,9 @@
             }
             var id = $(e).attr('data-id');
             var n = _tvwValueEntities.GetNode(parseInt(id));
-            insertFilterItem(n);
+            if (insertFilterItem(n)) {
+                return (true);
+            }
             n.state.selected = false;
         });
         _tvwValueEntities.Refresh();
@@ -1000,6 +1002,11 @@
         var lbl = extractName(n.text);
         if (n.ParentId > 0) {
             var pn = _tvwValueEntities.GetNode(n.ParentId);
+            if (columnInFilter(n, pn)) {
+                DisplayUserMessage('E|Column already in filter!');
+                return (true);
+            }
+            ClearUserMessage();
             var _key = pn.text + '.' + lbl;
             _key = _key.replace(/[\[\]']+/g, '').replace(/\./g, '_');
             var itm = { Id: n.Id, key: _key, name: lbl, title: lbl, data: n, Parent: pn, Operations: n.Operations, Joins: n.Joins, Label: n.Label, ParameterName: n.ParameterName, bHidden: n.bHidden };
@@ -1009,12 +1016,39 @@
             loadShowEntitesSelect();
         }
         else {
+            if (entityInFilter(n)) {
+                DisplayUserMessage('E|Entity already in filter!  Remove all entity columns from filter then drop this entity.');
+                return (true);
+            }
+            ClearUserMessage();
             var _key = n.text;
             _key = _key.replace(/[\[\]']+/g, '').replace(/\./g, '_');
             var itm = { Id: n.Id, key: _key, name: lbl, title: lbl, data: n, Operations: n.Operations, Joins: n.Joins };
             _fltFilterItems.Insert(itm);
             loadShowEntitesSelect();
         }
+    }
+    function columnInFilter(n, pn) {
+        var b = false;
+        var _ii = _fltFilterItems.GetData();
+        $.each(_ii, function (i, _i) {
+            if (n.Name == _i.Name) {
+                if (pn.text == _i.Table) {
+                    b = true; return (false);
+                }
+            }
+        });
+        return (b);
+    }
+    function entityInFilter(n) {
+        var b = false;
+        var _ii = _fltFilterItems.GetData();
+        $.each(_ii, function (i, _i) {
+            if (n.text == _i.Table) {
+                b = true; return (false);
+            }
+        });
+        return (b);
     }
     function cbFilterItemClose() {
     }
@@ -1854,16 +1888,6 @@
 
     }
 </script>
-
-
-
-
-
-
-
-
-
-
 
 
 

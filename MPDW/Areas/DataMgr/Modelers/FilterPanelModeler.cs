@@ -271,6 +271,10 @@ namespace Quest.MasterPricing.DataMgr.Modelers
             status = filterMgr.Save(filterId, filter);
             if (!questStatusDef.IsSuccess(status))
             {
+                if (questStatusDef.IsWarning(status))
+                {
+                    return (status);
+                }
                 return (new questStatus(status.Severity, String.Format("Error saving filter items: {0}", status.Message)));
             }
             #endregion

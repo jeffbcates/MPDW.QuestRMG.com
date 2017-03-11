@@ -119,7 +119,6 @@ function qrmgFilter(model) {
         _h[_i++] = '        <li class="filterItemLabelEntry">Label ...</li>';
         _h[_i++] = '        <li class="filterItemParameterNameEntry">Parameter Name ...</li>';
         _h[_i++] = '        <li data-toggle="modal" data-target="#mdlJoin">Join ...</li>';
-        _h[_i++] = '        <li data-toggle="modal" data-target="#mdlFilter">Filter/Sub-Select ...</li>';
         _h[_i++] = '        <li data-toggle="modal" data-target="#mdlLookup">Lookup ...</li>';
         _h[_i++] = '        <li data-toggle="modal" data-target="#mdlTypeList">Type List ...</li>';
         if (itm.bHidden) {

@@ -439,7 +439,7 @@ namespace Quest.MasterPricing.Setup
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Return result.
              *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = new questStatus(Severity.Success, "Database scehema successfully refreshed");
+            status = new questStatus(Severity.Success, "Database schema successfully refreshed");
             databaseEditorViewModel.questStatus = status;
             return Json(databaseEditorViewModel, JsonRequestBehavior.AllowGet);
         }
