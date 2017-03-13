@@ -648,6 +648,9 @@ function qrmgEditor(model) {
         }
     }
     _self.Save = function (o, bNV) {
+        if (!o) {
+            o = _frmTableset._getop('Save');
+        }
         if (!_self._bChanges) {
             _self.Validate();
             _self.Unmask();

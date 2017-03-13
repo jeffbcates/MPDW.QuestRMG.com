@@ -34,9 +34,65 @@
         ]
     }
     function cbTablesetEditor(ud, d) {
+        if (ud.Read) {
+            if (d.questStatus) {
+                if (IsAppSuccess(d)) {
+                    loadViewState(d);
+                }
+            }
+        }
+        else if (ud.Save) {
+            if (d.questStatus) {
+                DisplayUserMessage('W|Tableset successfully saved.  However, all prior tableset configuration and filters were deleted.');
+            }
+            else {
+                if (d.DatabaseId != _viewstate.DatabaseId) {
+                    $('#btnCancel', '#mdlgDelChangeDatabase').unbind('click').on('click', function (e) {
+                        return(true);
+                    });
+                    $('#btnContinue', '#mdlgDelChangeDatabase').unbind('click').on('click', function (e) {
+                        _frmTableset.Save();
+                        return (true);
+                    });
+                    $('#mdlgDelChangeDatabase').modal('show');
+                    return (true);
+                }
+            }
+        }
     }
+    var _viewstate;
     $(function () {
+        _viewstate = JSON.parse($('#__frmTablesetVIEW_STATE').val());
         _frmTableset = new qrmgEditor(frmTableset);
         _frmTableset.DisplayFormMessages();
     });
+    function loadViewState(d) {
+        _viewstate.Id = d.Id;
+        _viewstate.Name = d.Name;
+        _viewstate.bEnabled = d.bEnabled;
+        _viewstate.Summary = d.Summary;
+        _viewstate.DatabaseId = d.DatabaseId;
+    }
 </script>
+
+
+<div class="modal fade" id="mdlgDelChangeDatabase" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Database Changed</h4>
+            </div>
+
+            <div class="modal-body">
+                <p>You have changed the database to this tableset.</p>
+                <p>If you proceed to Save this tableset, all tableset configuration and filters based on this tableset will be deleted.</p>
+            </div>
+
+            <div class="modal-footer">
+                <button id="btnCancel" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button id="btnContinue" type="button" class="btn btn-danger" data-dismiss="modal">Continue</button>
+            </div>
+        </div>
+    </div>
+</div>

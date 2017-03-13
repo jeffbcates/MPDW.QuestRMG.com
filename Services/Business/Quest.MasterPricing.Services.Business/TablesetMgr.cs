@@ -374,66 +374,12 @@ namespace Quest.MasterPricing.Services.Business.Tablesets
             // Initialize 
             questStatus status = null;
 
-
-            // Read tableset.
-            Tableset tableset = null;
             DbTablesetsMgr dbTablesetsMgr = new DbTablesetsMgr(this.UserSession);
-            status = dbTablesetsMgr.Read(tablesetId, out tableset);
+            status = dbTablesetsMgr.ClearTablesetEntities(trans, tablesetId);
             if (!questStatusDef.IsSuccess(status))
             {
                 return (status);
             }
-
-            DbTablesetColumnsMgr dbTablesetColumnsMgr = new DbTablesetColumnsMgr(this.UserSession);
-
-
-            // Read all tableset tables
-            List<TablesetTable> tablesetTableList = null;
-            DbTablesetTablesMgr dbTablesetTablesMgr = new DbTablesetTablesMgr(this.UserSession);
-            status = dbTablesetTablesMgr.Read(tablesetId, out tablesetTableList);
-            if (!questStatusDef.IsSuccess(status))
-            {
-                return (status);
-            }
-
-            // Delete all tablesetColumns to these tables. Then delete all tables in the tableset.
-            EntityType entityType = new EntityType();
-            entityType.Id = EntityType.Table;
-            foreach (TablesetTable tablesetTable in tablesetTableList)
-            {
-                TableSetEntityId tableSetEntityId = new TableSetEntityId(tablesetTable.Id);
-                status = dbTablesetColumnsMgr.Delete(trans, entityType, tableSetEntityId);
-                if (!questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
-            }
-            dbTablesetTablesMgr.Delete(trans, tablesetId);
-
-
-            // Read all tableset views
-            List<TablesetView> tablesetViewList = null;
-            DbTablesetViewsMgr dbTablesetViewsMgr = new DbTablesetViewsMgr(this.UserSession);
-            status = dbTablesetViewsMgr.Read(tablesetId, out tablesetViewList);
-            if (!questStatusDef.IsSuccess(status))
-            {
-                return (status);
-            }
-
-            // Delete all tablesetColumns to these views. Then delete all views in the tableset.
-            entityType.Id = EntityType.View;
-            foreach (TablesetView tablesetView in tablesetViewList)
-            {
-                TableSetEntityId tableSetEntityId = new TableSetEntityId(tablesetView.Id);
-                status = dbTablesetColumnsMgr.Delete(trans, entityType, tableSetEntityId);
-                if (!questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
-            }
-            dbTablesetViewsMgr.Delete(trans, tablesetId);
-
-
             return (new questStatus(Severity.Success));
         }
         

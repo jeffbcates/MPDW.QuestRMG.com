@@ -19,6 +19,7 @@ using Quest.Functional.FMS;
 using Quest.Functional.MasterPricing;
 using Quest.MPDW.Services.Data;
 using Quest.Services.Dbio.MasterPricing;
+using Quest.MasterPricing.Services.Data.Filters;
 
 
 namespace Quest.MasterPricing.Services.Data.Database
@@ -163,6 +164,13 @@ namespace Quest.MasterPricing.Services.Data.Database
             questStatus status = null;
 
 
+            // If the database was changed, delete the tablset configuration and any filters based on the tableset
+            status = RemoveTablesetInfoIFDbChanged(tableset);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
             // Perform update.
             using (MasterPricingEntities dbContext = new MasterPricingEntities())
             {
@@ -181,11 +189,17 @@ namespace Quest.MasterPricing.Services.Data.Database
             bool bCreateTransaction = trans == null;
 
 
+            // Remove all tableset info and filters based on the tableset if the database changed.
+            status = RemoveTablesetInfoIFDbChanged(trans, tableset);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
             // Perform update in this transaction.
             status = update((MasterPricingEntities)trans.DbContext, tableset);
             if (!questStatusDef.IsSuccess(status))
             {
-                RollbackTransaction(trans);
                 return (status);
             }
             return (new questStatus(Severity.Success));
@@ -266,6 +280,161 @@ namespace Quest.MasterPricing.Services.Data.Database
                                 ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
                     }
                 }
+            }
+            return (new questStatus(Severity.Success));
+        }
+
+
+        public questStatus RemoveTablesetInfoIFDbChanged(Tableset tableset)
+        {
+            // Initialize 
+            questStatus status = null;
+
+
+            // Start a new transaction
+            string transactionName = null;
+            status = GetUniqueTransactionName("ClearTablesetConfiguration" + tableset.Id.ToString(), out transactionName);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            DbMgrTransaction trans = null;
+            status = BeginTransaction(transactionName, out trans);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+            // Remove all tableset configuration and filters based on the tableset.
+            status = RemoveTablesetInfoIFDbChanged(trans, tableset);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                RollbackTransaction(trans);
+                return (status);
+            }
+
+
+            // Commit transaction
+            status = CommitTransaction(trans);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                RollbackTransaction(trans);
+                return (status);
+            }
+
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus RemoveTablesetInfoIFDbChanged(DbMgrTransaction trans, Tableset tableset)
+        {
+            // Initialize 
+            questStatus status = null;
+
+
+            // If the database was changed, delete the tablset configuration and any filters based on the tableset
+            TablesetId tablesetId = new TablesetId(tableset.Id);
+            Quest.Functional.MasterPricing.Tableset _tableset = null;
+            status = Read(tablesetId, out _tableset);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            if (tableset.DatabaseId != _tableset.DatabaseId)
+            {
+                // Remove all tableset filters
+                status = RemoveTablesetFilters(trans, tablesetId);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+
+                // Remove all tableset configuration
+                status = ClearTablesetEntities(trans, tablesetId);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus ClearTablesetEntities(DbMgrTransaction trans, TablesetId tablesetId)
+        {
+            // Initialize 
+            questStatus status = null;
+
+
+            // Read tableset.
+            Tableset tableset = null;
+            DbTablesetsMgr dbTablesetsMgr = new DbTablesetsMgr(this.UserSession);
+            status = dbTablesetsMgr.Read(tablesetId, out tableset);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+            DbTablesetColumnsMgr dbTablesetColumnsMgr = new DbTablesetColumnsMgr(this.UserSession);
+
+
+            // Read all tableset tables
+            List<TablesetTable> tablesetTableList = null;
+            DbTablesetTablesMgr dbTablesetTablesMgr = new DbTablesetTablesMgr(this.UserSession);
+            status = dbTablesetTablesMgr.Read(tablesetId, out tablesetTableList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+            // Delete all tablesetColumns to these tables. Then delete all tables in the tableset.
+            EntityType entityType = new EntityType();
+            entityType.Id = EntityType.Table;
+            foreach (TablesetTable tablesetTable in tablesetTableList)
+            {
+                TableSetEntityId tableSetEntityId = new TableSetEntityId(tablesetTable.Id);
+                status = dbTablesetColumnsMgr.Delete(trans, entityType, tableSetEntityId);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+            }
+            dbTablesetTablesMgr.Delete(trans, tablesetId);
+
+
+            // Read all tableset views
+            List<TablesetView> tablesetViewList = null;
+            DbTablesetViewsMgr dbTablesetViewsMgr = new DbTablesetViewsMgr(this.UserSession);
+            status = dbTablesetViewsMgr.Read(tablesetId, out tablesetViewList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+            // Delete all tablesetColumns to these views. Then delete all views in the tableset.
+            entityType.Id = EntityType.View;
+            foreach (TablesetView tablesetView in tablesetViewList)
+            {
+                TableSetEntityId tableSetEntityId = new TableSetEntityId(tablesetView.Id);
+                status = dbTablesetColumnsMgr.Delete(trans, entityType, tableSetEntityId);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+            }
+            dbTablesetViewsMgr.Delete(trans, tablesetId);
+
+
+            return (new questStatus(Severity.Success));
+        }
+
+        public questStatus RemoveTablesetFilters(DbMgrTransaction trans, TablesetId tablesetId)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            DbFilterMgr dbFilterMgr = new DbFilterMgr(this.UserSession);
+            status = dbFilterMgr.Delete(trans, tablesetId);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
             }
             return (new questStatus(Severity.Success));
         }

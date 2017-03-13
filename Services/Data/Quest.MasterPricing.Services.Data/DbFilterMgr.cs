@@ -1122,7 +1122,6 @@ namespace Quest.MasterPricing.Services.Data.Filters
             status = Clear(trans, filterId);
             if (!questStatusDef.IsSuccess(status))
             {
-                RollbackTransaction(trans);
                 return (status);
             }
 
@@ -1131,8 +1130,34 @@ namespace Quest.MasterPricing.Services.Data.Filters
             status = dbFiltersMgr.Delete(trans, filterId);
             if (!questStatusDef.IsSuccess(status))
             {
-                RollbackTransaction(trans);
                 return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus Delete(DbMgrTransaction trans, TablesetId tablesetId)
+        {
+            // Initialize
+            questStatus status = null;
+            DbFiltersMgr dbFiltersMgr = new DbFiltersMgr(this.UserSession);
+
+
+            // Get all filters with this tablesetId
+            List<Quest.Functional.MasterPricing.Filter> filterList = null;
+            status = dbFiltersMgr.Read(trans, tablesetId, out filterList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+            // Remove each filter.
+            foreach (Filter filter in filterList)
+            {
+                FilterId filterId = new FilterId(filter.Id);
+                status = Delete(trans, filterId);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
             }
             return (new questStatus(Severity.Success));
         }
