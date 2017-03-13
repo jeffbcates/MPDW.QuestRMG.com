@@ -43,10 +43,14 @@
         }
         else if (ud.Save) {
             if (d.questStatus) {
-                DisplayUserMessage('W|Tableset successfully saved.  However, all prior tableset configuration and filters were deleted.');
+                if (IsAppSuccess(d)) {
+                    if (d.questStatus.Message.indexOf("updated") > -1) {
+                        DisplayUserMessage('W|Tableset successfully saved.  However, all prior tableset configuration and filters were deleted.');
+                    }
+                }
             }
             else {
-                if (d.DatabaseId != _viewstate.DatabaseId) {
+                if (_viewstate.DatabaseId > 0 && _viewstate.DatabaseId != d.DatabaseId) {
                     $('#btnCancel', '#mdlgDelChangeDatabase').unbind('click').on('click', function (e) {
                         return(true);
                     });
