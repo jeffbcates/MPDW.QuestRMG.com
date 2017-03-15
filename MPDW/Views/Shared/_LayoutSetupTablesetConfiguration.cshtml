@@ -7,7 +7,7 @@
         <link href="~/favicon.png?v=1" rel="shortcut icon" type="image/x-icon" />
         <meta name="viewport" content="width=device-width" />
         <link href="~/Content/bootstrap-3.3.5-dist/css/bootstrap.min.css" rel="stylesheet">
-        <link href="~/Content/font-awesome-4.6.3/css/font-awesome.min.css" rel="stylesheet">
+        <link href="~/Content/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
         <link href="~/Content/animate.min.css" rel="stylesheet">
         <link href="~/Content/creative.css" rel="stylesheet">
         <link href="~/Content/Site.css" rel="stylesheet">
@@ -96,7 +96,7 @@
         <div id="pageContent">
             <div id="navbarMainMenu"></div>
             <div id="pageContentFrame">
-                <div class="umsg" id="__umsg">&nbsp;</div>
+                <div class="umsg" id="__umsg">&nbsp;</div><div class="umsgX fa fa-window-close-o fa-2x" title="Clear user message"></div>
                 @RenderBody()
             </div>
         </div>
@@ -107,7 +107,7 @@
     <footer>
         <div class="content-wrapper">
             <div class="text-center">
-                <div class="copyright">&copy; 2017  Quest Resource Management Group.   All rights reserved.   v.20170315002</div>
+                <div class="copyright">&copy; 2017  Quest Resource Management Group.   All rights reserved.   v.20170315003</div>
             </div>
         </div>
     </footer>
@@ -318,3 +318,10 @@
         </div>
     </div>
 </div>
+<script type="text/javascript">
+    $(function () {
+        $('.umsgX').on('click', function (e) {
+            ClearUserMessage();
+        });
+    });
+</script>

@@ -80,6 +80,7 @@
   width: 30px;
   bottom: 30px;
   background-color: #1a4473;
+  border: 4px solid #486a8f;
 }
 
 .questNavbarHeader {
@@ -199,7 +200,27 @@ a.currentNavbarItem:hover {
     transition: height 0.5s;
     cursor: pointer;
 }
-
+.umsgX {
+  position: fixed;
+  display: inline-block;
+  color: #8da3b9;
+  font-weight: 500;
+  height: 40px;
+  overflow: hidden;
+  padding-top: 12px;
+  right: 1px;
+  text-align: center;
+  top: 50px;
+  width: 50px;
+  cursor: pointer;
+  background-color: transparent;
+  opacity: 0.6;
+  z-index: 2001;
+}
+.umsgX:hover {
+    color: #F05F40 !important;
+    opacity: 0.6;
+}
 .page-title {
 
 }
@@ -709,7 +730,9 @@ pnlbtn:active {
   margin-top: 10px;
   width: 60px;
 }
-
+.purple-stripe-background {
+   background: rgba(0, 0, 0, 0) repeating-linear-gradient(45deg, rgba(96, 109, 188, 0.5), rgba(96, 109, 188, 0.5) 10px, rgba(70, 82, 152, 0.5) 10px, rgba(70, 82, 152, 0.5) 20px) repeat scroll 0 0;
+}
 .questFilterPanel {
   background: rgba(0, 0, 0, 0) repeating-linear-gradient(45deg, rgba(96, 109, 188, 0.5), rgba(96, 109, 188, 0.5) 10px, rgba(70, 82, 152, 0.5) 10px, rgba(70, 82, 152, 0.5) 20px) repeat scroll 0 0;
   bottom: 0;

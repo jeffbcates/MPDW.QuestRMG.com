@@ -259,7 +259,6 @@ input[type="file"] {
   height: 220px;
   margin-top: 10px;
   overflow: auto;
-  padding: 4px;
   position: relative;
   width: 100%;
 }
@@ -413,7 +412,7 @@ input[type="file"] {
   display: block;
   left: 0;
   overflow: auto;
-  padding: 10px;
+  /*padding: 10px;*/
   position: absolute;
   right: 0;
   top: 40px;
