@@ -366,12 +366,14 @@ function SetViewState(e, f, v) {
 function Maskit(e, t) {
     var _e = e ? $(e) : $('#content');
     if (!_e) { return (false); }
+    $('.questmask').remove();
     $(_e).append('<div class="questmask"></div>');
 }
 function Unmaskit(e) {
     $('.questmask').remove();
 }
 function Mask(e, c, umsg) {
+    $('.questmask').remove();
     var _c = c || 'questmask';
     var redraw = $(e).offsetHeight;
     $(e).append('<div class="questmask"></div>').show();

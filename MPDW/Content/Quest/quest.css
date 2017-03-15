@@ -81,6 +81,7 @@
   bottom: 30px;
   background-color: #1a4473;
   border: 4px solid #486a8f;
+  border-right: none;
 }
 
 .questNavbarHeader {
