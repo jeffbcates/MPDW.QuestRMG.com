@@ -499,8 +499,7 @@ pnlbtn:active {
   min-height: 20px;
   font-weight: bold;
   /*margin-top: 10px;*/
-  margin-left: 30px;
-  margin-right: 10px;
+  margin-right: 4px;
   float: right;
   font-size: 24px;
   color: #3598dc;

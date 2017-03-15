@@ -210,12 +210,13 @@ function qrmgTreeview(model) {
             _h[_i++] = '    </div>';
         }
         _h[_i++] = '</div>';
-        _h[_i++] = '    <div class="questTreeviewCommands">';
+        _h[_i++] = '    <div class="' + _self._e.substr(1) + ' questTreeviewCommands">';
         _h[_i++] = _self._rndrcmds();
         _h[_i++] = '    </div>';
         $(_self._e).before(_h.join(''));
     }
     _self._rndrcmds = function () {
+        $("." + _self._e.substr(1)).filter('.questTreeviewCommands').remove();
         var _h = [], _i = 0;
         _self._model.commands = _self._model.commands || [];
         _self._model.commands.push({ name: 'Refresh', classes: 'fa fa-refresh', title: 'Refresh treeview', callback: _self.Refresh });
