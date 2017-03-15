@@ -590,7 +590,6 @@ function qrmgPanel(model) {
         return (_h.join(''));
     }
     
-
     _self.Read = function (id) {
         if (!id) { return; }
         qrmgmvc.Global.Mask(_self._e);

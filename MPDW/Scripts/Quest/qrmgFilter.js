@@ -713,6 +713,23 @@ function qrmgFilter(model) {
         return (($(_self._e).find('.validationError').length + $(_self._e).find('.filtverr').length) == 0);
     }
 
+    _self.NumEntities = function () {
+        var dd = _self.GetData();
+        var ee = [];
+        $.each(dd, function (i, _d) {
+            var b = false;
+            $.each(ee, function (j, _e) {
+                if (_d.Table == _e) {
+                    b = true;
+                    return (false);
+                }
+            });
+            if (!b) {
+                ee.push(_d.Table);
+            }
+        });
+        return (ee.length);
+    }
 
     _self._init();
 }

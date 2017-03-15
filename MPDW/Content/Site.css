@@ -548,3 +548,8 @@ button.active {
     -webkit-box-shadow:inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(192,75,52,.6) !important;
     box-shadow:inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(192,75,52,.6) !important;
 }
+.bulkDisabled {
+    color: #f40f0f !important;
+    padding: 10px;
+    font-size: 1.2em;
+}

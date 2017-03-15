@@ -368,6 +368,7 @@
                 $('.questTableTotalRecordCount').text('');
                 _grdResults.Load(d);
                 $('.questTableTotalRecordCount').text(d.Results.Items.length);
+                prepBulkInserts(d);
                 loadBulkUpdates(d);
                 _viewstate.Results = d.Results;
             }
@@ -1346,26 +1347,14 @@
                 _h[_i++] = '<td class="">';
                 if (p.Lookup) {
                     _h[_i++] = '<select id="' + p.ParameterName + (i + 1) + '" class="form-control bulk-lookup" data-name="' + p.ParameterName + '" data-item-id="' + itm.Id + '" data-id="' + p.Lookup.Id + '" data-type="' + p.SqlDbType.toString().toLowerCase() + '" ';
-                    // TODO: METADATA NOT PROPERLY INDICATING IF REQUIRED OR NOT.
-                    ////if (!p.IsNullable) {
-                    ////    _h[_i++] = ' required ';
-                    ////}
                     _h[_i++] = '></select>';
                 }
                 else if (p.TypeList) {
                     _h[_i++] = '<input id="' + p.ParameterName + (i + 1) + '" type="text" class="form-control bulk-typeList" data-item-id="' + itm.Id + '" data-id="' + p.TypeList.Id + '" data-name="' + p.ParameterName + '" maxlength="' + maxlength(p.SqlDbType) + '" data-type="' + p.SqlDbType.toString().toLowerCase() + '" list="bulkInsertTypeList_' + p.TypeList.Id + '"  placeholder="..." ';
-                    // TODO: METADATA NOT PROPERLY INDICATING IF REQUIRED OR NOT.
-                    ////if (!p.IsNullable) {
-                    ////    _h[_i++] = ' required ';
-                    ////}
                     _h[_i++] = ' />';
                 }
                 else {
                     _h[_i++] = '<input id="' + p.ParameterName + (i + 1) + '" class="form-control" maxlength="' + maxlength(p.SqlDbType) + '" data-name="' + p.ParameterName + '" data-type="' + p.SqlDbType.toString().toLowerCase() + '" placeholder="' + makeParamPlaceholder(p) + '" ';
-                    // TODO: METADATA NOT PROPERLY INDICATING IF REQUIRED OR NOT.
-                    ////if (!p.IsNullable) {
-                    ////    _h[_i++] = ' required ';
-                    ////}
                     _h[_i++] = ' />';
                 }
                 _h[_i++] = '</td>';              
@@ -1401,7 +1390,6 @@
         }
         return(p.SqlDbType);
     }
-
 
     function loadBulkInsertLookups() {
         var ll = $('table.bulkInsertTable').find('select.bulk-lookup');
@@ -1553,6 +1541,16 @@
         });
         $('table.bulkInsertTable').find('input[data-type*="date"]').datepicker({ format: "mm/dd/yyyy", autoclose: true });
     }
+    function prepBulkInserts(d) {
+        if (!_pnlBulkInserts) { return; }
+        if (_fltFilterItems.NumEntities() > 1) {
+            _pnlBulkInserts.Disable();
+            $('#pnlBulkInsertData').append('<p class="bulkDisabled">Bulk Insert supported for single entity filters only.  Use a filter procedure.</p>');
+        }
+        else {
+            _pnlBulkInserts.Enable();
+        }
+    }
 </script>
 
 
@@ -1599,6 +1597,13 @@
         }
     }
     function loadBulkUpdates(d) {
+        clearBulkUpdatesGrid();
+        if (_fltFilterItems.NumEntities() > 1) {
+            _pnlBulkUpdates.Disable();
+            $('#pnlBulkUpdateColumns').append('<p class="bulkDisabled">Bulk Updates supported for single entity filters only.  Use a filter procedure.</p>');
+            return;
+        }
+        _pnlBulkInserts.Enable();
         var _h = [], _i = 0;
         _h[_i++] = '<table class="bulkTable bulkUpdateTable">';
         $.each(d.Results.Columns, function (i, c) {
@@ -1651,7 +1656,6 @@
             _h[_i++] = '</tr>';
         });
         _h[_i++] = '</table>';
-        clearBulkUpdatesGrid();
         $('#pnlBulkUpdateColumns').html(_h.join(''));
         bindBulkUpdateGrid();
         loadBulkUpdatetLookups();
