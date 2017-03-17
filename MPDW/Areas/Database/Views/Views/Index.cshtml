@@ -49,9 +49,10 @@
                 { name: 'StoredProcedures', label: 'Stored Procedures', uri: '/Database/StoredProcedures', args: [{ viewstate: true, field: 'DatabaseId', name: 'Id' }] },
             ],
             commands: [
-                ////{ name: 'Read', label: 'Details', edit: true },
+                { name: 'Columns', label: 'Columns', uri: '/Database/Columns', type: 'view', single: true, callback: cbShowColumns },
             ],
             events: [
+                { name: 'DoubleClick', callback: cbViewsDoubleClick },
             ],
             contextMenu: [
             ]
@@ -60,6 +61,20 @@
     });
     function cbTblViews(ud, d) {
 
+    }
+    function cbViewsDoubleClick(ud, d) {
+        $.extend(d, _tblViews._getctx());
+        d.ParentEntityType = 'view';
+        d.DatabaseId = _viewstate.DatabaseId;
+        var _io = new qrmgio(cbShowColumnView);
+        _io.ShowView('/Database/Columns', d);
+
+    }
+    function cbShowColumnView(ud, d) {
+
+    }
+    function cbShowColumns(ud, d) {
+        $.extend(d, { ParentEntityType: 'view', DatabaseId: _viewstate.DatabaseId });
     }
     function initViewstate() {
         _viewstate = JSON.parse($('#__tblViewsVIEW_STATE').val());

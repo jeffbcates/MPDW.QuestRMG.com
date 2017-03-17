@@ -156,6 +156,38 @@ namespace Quest.MasterPricing.Services.Business.Database
             }
             return (new questStatus(Severity.Success));
         }
+        public questStatus Read(ViewId viewId, out List<Quest.Functional.MasterPricing.Column> columnList)
+        {
+            // Initialize
+            questStatus status = null;
+            columnList = null;
+
+
+            // Read column
+            status = _dbColumnsMgr.Read(viewId, out columnList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus Read(DbMgrTransaction trans, ViewId viewId, out List<Quest.Functional.MasterPricing.Column> columnList)
+        {
+            // Initialize
+            questStatus status = null;
+            columnList = null;
+
+
+            // Read column
+            status = _dbColumnsMgr.Read(trans, viewId, out columnList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+
+
         public questStatus Update(Column column)
         {
             // Initialize

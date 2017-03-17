@@ -471,8 +471,7 @@ function qrmgTable(model) {
             return;
         }
         if (evt.callback) {
-            var _td = $(e.target).parent().find('td')[0];
-            var _d = { Id: _td.innerHTML };
+            var _d = { Id: $(e.target).parent().find('td:first').find('input').attr('data-id') };
             evt.callback(evt.name, _d, e);
         }
     }
@@ -865,7 +864,12 @@ function qrmgTable(model) {
                 _self.Edit({ Id: ids[0] }, _cmd);
                 return;
             }
-            if (_cmd.view == true ||(_cmd.type && _cmd.type == 'view')) {
+            if (_cmd.view == true || (_cmd.type && _cmd.type == 'view')) {
+                if (_cmd.callback) {
+                    if (_cmd.callback(_cmd, _d)) {
+                        return;
+                    }
+                }
                 _io.ShowView(_url, _d, _cmd);
                 return;
             }

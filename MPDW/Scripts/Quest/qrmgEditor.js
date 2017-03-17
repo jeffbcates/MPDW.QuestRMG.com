@@ -730,6 +730,7 @@ function qrmgEditor(model) {
     _self.Cancel = function (o) {
         if (_self._bChanges) {
             $('#btnCancel', '#mdlgLoseChanges').unbind('click').on('click', function (e) {
+                _self.Unmask();
                 return;
             });
             $('#btnDiscard', '#mdlgLoseChanges').unbind('click').on('click', function (e) {
