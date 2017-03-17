@@ -516,6 +516,12 @@ function qrmgFilter(model) {
                 item.ParameterName = pn;
             }
             item.bHidden = $(fi).hasClass('questFilterItemHidden');
+          
+            var _data = _self._getdata(fi);
+            item.Parent = {};
+            item.Parent.Id = _data.ParentId;
+            item.Parent.Type = _data.parentType;
+
             data.push(item);
         });
         return (data);
@@ -713,10 +719,11 @@ function qrmgFilter(model) {
         return (($(_self._e).find('.validationError').length + $(_self._e).find('.filtverr').length) == 0);
     }
 
-    _self.NumEntities = function () {
+    _self.NumEntities = function (type) {
         var dd = _self.GetData();
         var ee = [];
         $.each(dd, function (i, _d) {
+            if (type && type != _d.Parent.Type) { return; }
             var b = false;
             $.each(ee, function (j, _e) {
                 if (_d.Table == _e) {
