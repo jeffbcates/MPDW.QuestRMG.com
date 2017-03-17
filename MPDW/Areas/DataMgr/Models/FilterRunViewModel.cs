@@ -13,7 +13,9 @@ namespace Quest.MasterPricing.DataMgr.Models
     public class FilterRunViewModel : DataMgrBaseListViewModel
     {
         public int Id { get; set; }
+        public string Name { get; set; }
         public int FilterId { get; set; }
+        public bool bExportToExcel { get; set; }
         public FilterResultsViewModel Results = null;
 
         // Optional. Fill these out if you want to trim down the full filter results.

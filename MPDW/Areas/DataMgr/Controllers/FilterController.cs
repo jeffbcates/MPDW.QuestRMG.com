@@ -292,8 +292,9 @@ namespace Quest.MasterPricing.DataMgr
              * Perform operation.
              *---------------------------------------------------------------------------------------------------------------------------------*/
             FilterRunViewModel filterRunViewModel = null;
+            ResultsSet resultsSet = null;
             FilterPanelModeler filterPanelModeler = new FilterPanelModeler(Request, this.UserSession, viewModel);
-            status = filterPanelModeler.Run(viewModel, out filterRunViewModel);
+            status = filterPanelModeler.Run(viewModel, out filterRunViewModel, out resultsSet);
             if (!questStatusDef.IsSuccess(status))
             {
                 viewModel.questStatus = status;
@@ -301,11 +302,23 @@ namespace Quest.MasterPricing.DataMgr
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
-             * Return result.
+             * Return result view model or as Excel
              *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = new questStatus(Severity.Success, "Filter successfully run");
-            filterRunViewModel.questStatus = status;
-            return Json(filterRunViewModel, JsonRequestBehavior.AllowGet);
+            if (viewModel.bExportToExcel)
+            {
+                Response.ClearContent();
+                Response.AddHeader("content-disposition", "atachment;filename=" + viewModel.Name.Replace(" ", "_") + ".xls");
+                Response.AddHeader("Content-Type", "application/vnd.ms-excel");
+                WriteTsv(resultsSet, Response.Output);
+                Response.Flush();
+                Response.End();
+                return new EmptyResult();
+            }
+            else {
+                status = new questStatus(Severity.Success, "Filter successfully run");
+                filterRunViewModel.questStatus = status;
+                return Json(filterRunViewModel, JsonRequestBehavior.AllowGet);
+            }
         }
         [HttpPost]
         public ActionResult Copy(FilterCopyViewModel viewModel)

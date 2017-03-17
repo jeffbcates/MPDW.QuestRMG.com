@@ -1814,7 +1814,8 @@
             ],
             operations: [
                 { name: 'Refresh', label: 'Refresh', method: 'POST', callback: RefreshResults, title: 'Rerun filter to refresh results' },
-                { name: 'Export', label: 'Export', method: 'POST', type: 'tab', callback: cbExportToExcel, title: 'Export results to Excel' },
+                { name: 'Export', label: 'Export All Results', method: 'POST', type: 'tab', callback: cbExportToExcel, title: 'Export results to Excel' },
+                { name: 'ExportGridResultsOnly', label: 'Export Grid Results Only', method: 'POST', type: 'tab', callback: cbExportGridResultsOnly, title: 'Export results to Excel' },
             ],
             actions: [
                 { name: 'RowLimit', label: 'Row Limit', type: 'text', value: '200' },
@@ -1844,7 +1845,10 @@
         _pnlFilters.DoOper('Run');
         $('html, body').animate({ scrollTop: $('#pnlResults').offset().top - 100 });
     }
-    function cbExportToExcel(ud, d) {
+    function cbExportGridResultsOnly(ud, d) {
+        cbExportToExcel(ud, d, true);
+    }
+    function cbExportToExcel(ud, d, bGridResultsOnly) {
         $('#pnlresDataTab').removeClass('hidden'); // klugie
         var d = _frmFilter.GetData();
         if (parseInt(d.FilterId) < 1) {
@@ -1853,7 +1857,7 @@
         }
         d._ResultsOptions = {};
         var p = _pnlFilters.GetData();
-        d.RowLimit = p.RowLimit;
+        d.RowLimit = bGridResultsOnly == undefined ? "" : p.RowLimit;
         d.ColLimit = p.ColLimit;
       
         ExportToExcel(d);

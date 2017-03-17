@@ -106,26 +106,6 @@ namespace Quest.MasterPricing.DataMgr
             Response.End();
             return new EmptyResult();
         }
-        public void WriteTsv(ResultsSet resultsSet, TextWriter output)
-        {
-            foreach (KeyValuePair<string, Column> kvp in resultsSet.ResultColumns)
-            {
-                output.Write(kvp.Key); // header
-                output.Write("\t");
-            }
-            output.WriteLine();
-            foreach (dynamic _dynRow in resultsSet.Data)
-            {
-                foreach (KeyValuePair<string, object> kvp in _dynRow)
-                {
-                    string value = kvp.Value == null ? "(null)" : kvp.Value.ToString();
-                    output.Write(value);
-                    output.Write("\t");
-
-                }
-                output.WriteLine();
-            }
-        }
         #endregion
 
 

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.IO;
+using System.Text;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Linq;
@@ -10,6 +12,7 @@ using Quest.Util.Buffer;
 using Quest.Util.Data;
 using Quest.Functional.ASM;
 using Quest.Functional.FMS;
+using Quest.Functional.MasterPricing;
 using Quest.MPDW.Services.Data;
 using Quest.MPDW.Services.Business.Accounts;
 using Quest.MPDW.Models;
@@ -166,7 +169,35 @@ namespace Quest.MPDW.Controllers
         }
         #endregion
 
+
+        #region Export Routines
+        /*==================================================================================================================================
+         * Export Routines
+         *=================================================================================================================================*/
+        public void WriteTsv(ResultsSet resultsSet, TextWriter output)
+        {
+            foreach (KeyValuePair<string, Column> kvp in resultsSet.ResultColumns)
+            {
+                output.Write(kvp.Key); // header
+                output.Write("\t");
+            }
+            output.WriteLine();
+            foreach (dynamic _dynRow in resultsSet.Data)
+            {
+                foreach (KeyValuePair<string, object> kvp in _dynRow)
+                {
+                    string value = kvp.Value == null ? "(null)" : kvp.Value.ToString();
+                    output.Write(value);
+                    output.Write("\t");
+
+                }
+                output.WriteLine();
+            }
+        }
         #endregion
+
+        #endregion
+
 
 
         #region Private Methods

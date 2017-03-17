@@ -378,13 +378,32 @@ namespace Quest.MasterPricing.DataMgr.Modelers
             // Initialize
             questStatus status = null;
             resultsSet = null;
-
+            if (filterResultsExportViewModel._ResultsOptions == null)
+            {
+                filterResultsExportViewModel._ResultsOptions = new ResultsOptionsViewModel();
+                filterResultsExportViewModel._ResultsOptions.RowLimit = "";
+                filterResultsExportViewModel._ResultsOptions.ColLimit = "";
+            }
 
             // Fill out a run rqeuest
             RunFilterRequest runFilterRequest = new RunFilterRequest();
             runFilterRequest.FilterId.Id = filterResultsExportViewModel.Id;
-            runFilterRequest.RowLimit = filterResultsExportViewModel.RowLimit;
-            runFilterRequest.ColLimit = filterResultsExportViewModel.ColLimit;
+            if ((filterResultsExportViewModel.RowLimit != null) && (filterResultsExportViewModel.RowLimit.Trim().Length > 0))
+            {
+                runFilterRequest.RowLimit = filterResultsExportViewModel.RowLimit.Trim();
+            }
+            else if ((filterResultsExportViewModel._ResultsOptions.RowLimit != null)  && (filterResultsExportViewModel._ResultsOptions.RowLimit.Trim().Length > 0))
+            {
+                runFilterRequest.RowLimit = filterResultsExportViewModel._ResultsOptions.RowLimit.Trim();
+            }
+            if ((filterResultsExportViewModel.ColLimit != null)  && (filterResultsExportViewModel.ColLimit.Trim().Length > 0))
+            {
+                runFilterRequest.ColLimit = filterResultsExportViewModel.ColLimit.Trim();
+            }
+            else if ((filterResultsExportViewModel._ResultsOptions.ColLimit != null)  && (filterResultsExportViewModel._ResultsOptions.ColLimit.Trim().Length > 0))
+            {
+                runFilterRequest.ColLimit = filterResultsExportViewModel._ResultsOptions.ColLimit.Trim();
+            }
 
 
             // Execute filter
@@ -399,11 +418,12 @@ namespace Quest.MasterPricing.DataMgr.Modelers
             return (new questStatus(Severity.Success));
         }
 
-        public questStatus Run(FilterRunViewModel filterRunViewModel, out FilterRunViewModel filterRunResultsViewModel)
+        public questStatus Run(FilterRunViewModel filterRunViewModel, out FilterRunViewModel filterRunResultsViewModel, out ResultsSet resultsSet)
         {
             // Initialize
             questStatus status = null;
             filterRunResultsViewModel = null;
+            resultsSet = null;
 
 
             // NOTE: THIS IS FOR RUNNING A FILTER THAT IS --NOT-- IN THE DATABASE.  HOWEVER IT IS *BASED* ON A FILTER IN THE DATABASE, THUS A VALID FILTER ID MUST BE GIVEN.
@@ -447,7 +467,6 @@ namespace Quest.MasterPricing.DataMgr.Modelers
             RunFilterRequest runFilterRequest = new RunFilterRequest();  // Filter Id doesn't matter, non-DB filter run request.
             runFilterRequest.RowLimit = filterRunViewModel._ResultsOptions.RowLimit;
             runFilterRequest.ColLimit = filterRunViewModel._ResultsOptions.ColLimit;
-            ResultsSet resultsSet = null;
             status = filterMgr.Run(runFilterRequest, filterWithSQL, out resultsSet);
             if (!questStatusDef.IsSuccess(status))
             {
