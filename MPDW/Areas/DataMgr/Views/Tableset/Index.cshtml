@@ -1544,15 +1544,29 @@
     function prepBulkInserts(d) {
         if (!_pnlBulkInserts) { return; }
         if (_fltFilterItems.NumEntities() > 1) {
-            _pnlBulkInserts.Disable();
-            $('#pnlBulkInsertData').append('<p class="bulkDisabled">Bulk Insert supported for single entity filters only.  Use a filter procedure.</p>');
+            if (!isProcedure('Insert')) {
+                _pnlBulkInserts.Disable();
+                $('#pnlBulkInsertData').append('<p class="bulkDisabled">Bulk Insert supported for single entity filters only.  Use a filter procedure.</p>');
+            }
         }
         else {
             _pnlBulkInserts.Enable();
         }
     }
 </script>
-
+<script type="text/javascript">
+    function isProcedure(n) {
+        if (!_viewstate.Procedures) { return (false); }
+        var b = false;
+        $.each(_viewstate.Procedures, function (i, p) {
+            if (n == p.Action) {
+                b = true;
+                return (false);
+            }
+        });
+        return (b);
+    }
+</script>
 
 
 
@@ -1599,9 +1613,11 @@
     function loadBulkUpdates(d) {
         clearBulkUpdatesGrid();
         if (_fltFilterItems.NumEntities() > 1) {
-            _pnlBulkUpdates.Disable();
-            $('#pnlBulkUpdateColumns').append('<p class="bulkDisabled">Bulk Updates supported for single entity filters only.  Use a filter procedure.</p>');
-            return;
+            if (!isProcedure('Update')) {
+                _pnlBulkUpdates.Disable();
+                $('#pnlBulkUpdateColumns').append('<p class="bulkDisabled">Bulk Updates supported for single entity filters only.  Use a filter procedure.</p>');
+                return;
+            }
         }
         _pnlBulkInserts.Enable();
         var _h = [], _i = 0;

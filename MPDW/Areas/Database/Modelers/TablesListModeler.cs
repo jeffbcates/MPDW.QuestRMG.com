@@ -103,6 +103,7 @@ namespace Quest.MasterPricing.Database.Modelers
             // Transfer model.
             // TODO: USE BaseListModeler to xfer queryOptions to QueryOptionsViewModel.
             tablesListViewModel = new TablesListViewModel(this.UserSession);
+            tablesListViewModel.DatabaseId = databaseId.Id;
             QueryResponseViewModel queryResponseViewModel = null;
             status = TransferQueryResponse(queryResponse, out queryResponseViewModel);
             if (!questStatusDef.IsSuccess(status))

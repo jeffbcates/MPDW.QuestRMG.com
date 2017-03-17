@@ -17,7 +17,7 @@ using Quest.MPDW.Modelers;
 using Quest.MasterPricing.Database.Models;
 using Quest.MasterPricing.Database.Modelers;
 using Quest.MPDW.Services.Data;
-using Quest.MasterPricing.Services.Business.Tablesets;
+using Quest.MasterPricing.Services.Business.Database;
 using Quest.MasterPricing.Services.Business.Filters;
 
 
@@ -48,6 +48,30 @@ namespace Quest.MasterPricing.Database.Modelers
         /*==================================================================================================================================
         * Public Methods
         *=================================================================================================================================*/
+        public questStatus GetDatabase(DatabaseId databaseId, out DatabaseBaseViewModel databaseBaseViewModel)
+        {
+            // Initialize
+            questStatus status = null;
+            databaseBaseViewModel = null;
+
+
+            // Read the database
+            Quest.Functional.MasterPricing.Database database = null;
+            DatabasesMgr databasesMgr = new DatabasesMgr(this.UserSession);
+            status = databasesMgr.Read(databaseId, out database);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+            // Transfer model.
+            databaseBaseViewModel = new DatabaseBaseViewModel(this.UserSession);
+            BufferMgr.TransferBuffer(database, databaseBaseViewModel);
+            databaseBaseViewModel.LastRefresh = database.LastRefresh.HasValue ?
+                    database.LastRefresh.Value.ToString("MM/dd/yyyy HH:mm:ss") : "";
+
+            return (new questStatus(Severity.Success));
+        }
 
 
         #region Options

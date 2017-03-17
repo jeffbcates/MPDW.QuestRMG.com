@@ -65,12 +65,25 @@ namespace Quest.MasterPricing.Database
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
+             * Read the database info.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            DatabaseId databaseId = new DatabaseId(databaseEditorViewModel.Id);
+            DatabaseBaseViewModel databaseBaseViewModel = null;
+            DatabaseBaseModeler databaseBaseModeler = new DatabaseBaseModeler(this.Request, this.UserSession);
+            status = databaseBaseModeler.GetDatabase(databaseId, out databaseBaseViewModel);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                databaseEditorViewModel.questStatus = status;
+                return (View("Index", databaseEditorViewModel));
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
              * Return view.
              *---------------------------------------------------------------------------------------------------------------------------------*/
             Quest.MasterPricing.Database.Models.StoredProceduresListViewModel storedProceduresListViewModel = new Quest.MasterPricing.Database.Models.StoredProceduresListViewModel(this.UserSession, databaseEditorViewModel);
-            storedProceduresListViewModel.DatabaseId = databaseEditorViewModel.Id;
+            storedProceduresListViewModel.DatabaseId = databaseBaseViewModel.Id;
+            storedProceduresListViewModel.Database = databaseBaseViewModel;
             return View(storedProceduresListViewModel);
-
         }
         [HttpGet]
         public ActionResult List(Quest.MasterPricing.Database.Models.StoredProceduresListViewModel storedProceduresListViewModel)

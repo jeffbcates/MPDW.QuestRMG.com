@@ -65,12 +65,25 @@ namespace Quest.MasterPricing.Database
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
+             * Read the database info.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            DatabaseId databaseId = new DatabaseId(databaseEditorViewModel.Id);
+            DatabaseBaseViewModel databaseBaseViewModel = null;
+            DatabaseBaseModeler databaseBaseModeler = new DatabaseBaseModeler(this.Request, this.UserSession);
+            status = databaseBaseModeler.GetDatabase(databaseId, out databaseBaseViewModel);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                databaseEditorViewModel.questStatus = status;
+                return (View("Index", databaseEditorViewModel));
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
              * Return view.
              *---------------------------------------------------------------------------------------------------------------------------------*/
             Quest.MasterPricing.Database.Models.TablesListViewModel tablesListViewModel = new Quest.MasterPricing.Database.Models.TablesListViewModel(this.UserSession, databaseEditorViewModel);
-            tablesListViewModel.DatabaseId = databaseEditorViewModel.Id;
+            tablesListViewModel.DatabaseId = databaseBaseViewModel.Id;
+            tablesListViewModel.Database = databaseBaseViewModel;
             return View(tablesListViewModel);
-
         }
         [HttpGet]
         public ActionResult List(Quest.MasterPricing.Database.Models.TablesListViewModel tablesListViewModel)
@@ -364,6 +377,7 @@ namespace Quest.MasterPricing.Database
              * Return view
              *---------------------------------------------------------------------------------------------------------------------------------*/
             status = new questStatus(Severity.Success);
+            tablesetsListViewModelNEW.DatabaseId = tablesListViewModel.DatabaseId;
             tablesetsListViewModelNEW.questStatus = status;
             return Json(tablesetsListViewModelNEW, JsonRequestBehavior.AllowGet);
         }

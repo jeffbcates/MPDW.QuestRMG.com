@@ -7,12 +7,18 @@
 <input type="hidden" id="__tblTablesVIEW_STATE" value="@Html.Raw(Json.Encode(Model))" />
 
 <div class="questTableTitle">Database Tables List</div>
+<div class="page-subtitle-frame">
+    <div id="pDatabaseName" class="page-subtitle pull-left"><b>Name:</b></div>
+    <div id="pTablesetLastRefresh" class="page-subtitle pull-right"><b>Last Refresh:</b></div>
+</div>
 
 <div id="tblTables" class="qrmgTable"></div>
 
 <script type="text/javascript">
+    var _viewstate;
     var _tblTables;
     $(function () {
+        initViewstate();
         var tblTables = {
             name: 'tblTables',
             element: 'tblTables',
@@ -29,7 +35,7 @@
             columns: [
                 { name: 'Id', hidden: true, key: true },
                 { name: 'Schema', label: 'Schema' },
-                { name: 'Name', label: 'Database Name' },
+                { name: 'Name', label: 'Table Name' },
             ],
             paging: {
                 Top: true,
@@ -54,6 +60,11 @@
     });
     function cbTblTables(ud, d) {
 
+    }
+    function initViewstate() {
+        _viewstate = JSON.parse($('#__tblTablesVIEW_STATE').val());
+        $('#pDatabaseName').html('<b>Name:</b>&nbsp;' + _viewstate.Database.Name);
+        $('#pTablesetLastRefresh').html('<b>Last Refresh:</b>&nbsp;' + _viewstate.Database.LastRefresh);
     }
 </script>
 

@@ -447,13 +447,13 @@ input[type="file"] {
     background-color: #9ae2bd;
 }
 .tvwTable:hover {
-    background-color: rgba(154, 226, 189, 0.5) !important;
+    background-color: #C2EED9 !important;
 }
 .tvwView {
     background-color: #9acfe2;
 }
 .tvwView:hover {
-    background-color: rgba(154, 207, 226, 0.5) !important;
+    background-color: #C2E3EE !important;
 }
 
 .panel-tab-banner {

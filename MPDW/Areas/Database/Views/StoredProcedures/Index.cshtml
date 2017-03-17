@@ -7,12 +7,18 @@
 <input type="hidden" id="__tblStoredProceduresVIEW_STATE" value="@Html.Raw(Json.Encode(Model))" />
 
 <div class="questTableTitle">Database Stored Procedures List</div>
+<div class="page-subtitle-frame">
+    <div id="pDatabaseName" class="page-subtitle pull-left"><b>Name:</b></div>
+    <div id="pTablesetLastRefresh" class="page-subtitle pull-right"><b>Last Refresh:</b></div>
+</div>
 
 <div id="tblStoredProcedures" class="qrmgTable"></div>
 
 <script type="text/javascript">
+    var _viewstate;
     var _tblStoredProcedures;
     $(function () {
+        initViewstate();
         var tblStoredProcedures = {
             name: 'tblStoredProcedures',
             element: 'tblStoredProcedures',
@@ -28,7 +34,7 @@
             callback: cbTblStoredProcedures,
             columns: [
                 { name: 'Id', hidden: true, key: true },
-                { name: 'Name', label: 'Database Name' },
+                { name: 'Name', label: 'Stored Procedure Name' },
             ],
             paging: {
                 Top: true,
@@ -53,6 +59,11 @@
     });
     function cbTblStoredProcedures(ud, d) {
 
+    }
+    function initViewstate() {
+        _viewstate = JSON.parse($('#__tblStoredProceduresVIEW_STATE').val());
+        $('#pDatabaseName').html('<b>Name:</b>&nbsp;' + _viewstate.Database.Name);
+        $('#pTablesetLastRefresh').html('<b>Last Refresh:</b>&nbsp;' + _viewstate.Database.LastRefresh);
     }
 </script>
 
