@@ -734,6 +734,7 @@ function qrmgEditor(model) {
                 return;
             });
             $('#btnDiscard', '#mdlgLoseChanges').unbind('click').on('click', function (e) {
+                _self.Unmask();
                 _self._cancel(o);
             });
             $('#mdlgLoseChanges').modal('show');
@@ -770,6 +771,7 @@ function qrmgEditor(model) {
     _self.Delete = function () {
         if (_self._bChanges) {
             $('#btnCancel', '#mdlgDelChanges').unbind('click').on('click', function (e) {
+                _self.Unmask();
                 return;
             });
             $('#btnRefresh', '#mdlgDelChanges').unbind('click').on('click', function (e) {
@@ -781,6 +783,7 @@ function qrmgEditor(model) {
         }
         else {
             $('#btnCancel', '#mdlgConfirmDelete').unbind('click').on('click', function (e) {
+                _self.Unmask();
                 return;
             });
             $('#btnConfirm', '#mdlgConfirmDelete').unbind('click').on('click', function (e) {

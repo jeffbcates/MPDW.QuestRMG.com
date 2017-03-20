@@ -76,18 +76,41 @@ namespace Quest.MasterPricing.Setup.Modelers
             dbTableNodeList = null;
             dbViewNodeList = null;
 
-            // Tables
-            status = GetDatabaseTables(databaseId, out dbTableNodeList);
+
+            // Read database entities
+            DatabaseEntities databaseEntities = null;
+            DatabaseMgr databaseMgr = new DatabaseMgr(this.UserSession);
+            status = databaseMgr.ReadDatabaseEntities(databaseId, out databaseEntities);
             if (!questStatusDef.IsSuccess(status))
             {
                 return (status);
             }
 
-            // Views
-            status = GetDatabaseViews(databaseId, out dbViewNodeList);
-            if (!questStatusDef.IsSuccess(status))
+            // Transfer model
+            // Tables
+            dbTableNodeList = new List<BootstrapTreenodeViewModel>();
+            foreach (Table dbTable in databaseEntities.TableList)
             {
-                return (status);
+                BootstrapTreenodeViewModel bootstrapTreenodeViewModel = null;
+                status = FormatBootstrapTreeviewNode(dbTable, out bootstrapTreenodeViewModel);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+                dbTableNodeList.Add(bootstrapTreenodeViewModel);
+            }
+
+            // Views
+            dbViewNodeList = new List<BootstrapTreenodeViewModel>();
+            foreach (View dbView in databaseEntities.ViewList)
+            {
+                BootstrapTreenodeViewModel bootstrapTreenodeViewModel = null;
+                status = FormatBootstrapTreeviewNode(dbView, out bootstrapTreenodeViewModel);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+                dbViewNodeList.Add(bootstrapTreenodeViewModel);
             }
             return (new questStatus(Severity.Success));
         }
@@ -218,6 +241,14 @@ namespace Quest.MasterPricing.Setup.Modelers
             tablesetConfigurationViewModel = null;
 
 
+            // If no tablesetId, return empty view model
+            if (tablesetId.Id < BaseId.VALID_ID)
+            {
+                tablesetConfigurationViewModel = new TablesetConfigurationViewModel(this.UserSession, this._setupBaseViewModel);
+                return (new questStatus(Severity.Success));
+            }
+
+
             // Read
             TablesetConfiguration tablesetConfiguration = null;
             TablesetMgr tablesetMgr = new TablesetMgr(this.UserSession);
@@ -305,9 +336,9 @@ namespace Quest.MasterPricing.Setup.Modelers
             questStatus status = null;
 
 
-            // Delete
-            TablesetsMgr tablesetsMgr = new TablesetsMgr(this.UserSession);
-            status = tablesetsMgr.Delete(tablesetId);
+            // Delete the tableset configuration
+            TablesetMgr tablesetMgr = new TablesetMgr(this.UserSession);
+            status = tablesetMgr.ClearTablesetEntities(tablesetId);
             if (!questStatusDef.IsSuccess(status))
             {
                 return (status);

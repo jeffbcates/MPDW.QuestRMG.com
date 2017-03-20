@@ -65,6 +65,10 @@ namespace Quest.MasterPricing.Setup.Modelers
                 status = databaseMgr.Create(database, out databaseId);
                 if (!questStatusDef.IsSuccess(status))
                 {
+                    if (databaseId != null && databaseId.Id >= BaseId.VALID_ID)
+                    {
+                        databaseEditorViewModel.Id = databaseId.Id;
+                    }
                     FormatErrorMessage(status, databaseEditorViewModel);
                     return (status);
                 }

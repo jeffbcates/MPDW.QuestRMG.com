@@ -1123,6 +1123,12 @@ function qrmgTable(model) {
         }
     }
 
+    _self.FixHeader = function () {
+        $(_self._e).closest('.questTableBodyFrame').scroll(function () {
+            var translate = "translate(0," + this.scrollTop + "px)";
+            this.querySelector("thead").style.transform = translate;
+        });
+    }
     _self._init();
 }
 

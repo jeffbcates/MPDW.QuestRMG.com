@@ -801,6 +801,7 @@
     <Content Include="Scripts\jquery-ui-1.8.24.min.js" />
     <Content Include="Scripts\jquery.easing.min.js" />
     <Content Include="Scripts\jquery.fittext.js" />
+    <Content Include="Scripts\jquery.sticky.js" />
     <Content Include="Scripts\jquery.ui\jquery-ui-1.9.2.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.js" />
     <Content Include="Scripts\jquery.unobtrusive-ajax.min.js" />

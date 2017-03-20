@@ -12,6 +12,6 @@ namespace Quest.MasterPricing.Setup.Models
         public string Server { get; set; }
         public string Name { get; set; }
         public string Summary { get; set; }
-        public string ConnectionString { get; set; }
+        public string LastRefresh { get; set; }
     }
 }

@@ -369,6 +369,34 @@ namespace Quest.MasterPricing.Services.Business.Tablesets
             }
             return (new questStatus(Severity.Success));
         }
+        public questStatus ClearTablesetEntities(TablesetId tablesetId)
+        {
+            // Initialize 
+            questStatus status = null;
+            DbMgrTransaction trans = null;
+
+            // BEGIN TRANSACTION
+            status = BeginTransaction("SaveTablesetConfiguration" + Guid.NewGuid().ToString(), out trans);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+            status = ClearTablesetEntities(trans, tablesetId);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                RollbackTransaction(trans);
+                return (status);
+            }
+
+            // COMMIT TRANSACTION
+            status = CommitTransaction(trans);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
         public questStatus ClearTablesetEntities(DbMgrTransaction trans, TablesetId tablesetId)
         {
             // Initialize 
@@ -453,6 +481,7 @@ namespace Quest.MasterPricing.Services.Business.Tablesets
 
             return (new questStatus(Severity.Success));
         }
+        
         #endregion
 
         #endregion

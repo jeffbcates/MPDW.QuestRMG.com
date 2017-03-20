@@ -114,6 +114,7 @@ namespace Quest.MasterPricing.Setup.Modelers
             {
                 DatabaseLineItemViewModel databaseLineItemViewModel = new DatabaseLineItemViewModel();
                 BufferMgr.TransferBuffer(database, databaseLineItemViewModel);
+                databaseLineItemViewModel.LastRefresh = database.LastRefresh.HasValue ? database.LastRefresh.Value.ToString("MM/dd/yyyy HH:mm:ss") : "";
                 databasesListViewModel.Items.Add(databaseLineItemViewModel);
             }
             return (new questStatus(Severity.Success));

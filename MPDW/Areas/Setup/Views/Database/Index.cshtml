@@ -40,6 +40,16 @@
         ]
     }
     function cbDatabaseEditor(ud, d) {
+        if (d.questStatus) {
+            // klugie: db may not have been connected to, but put editor in update mode, not re-create same db repeatedly.
+            var _d = _frmDatabase.GetData();
+            if (_d.Id == 0) {
+                if (d.Id > 0) {
+                    _frmDatabase.SetField("Id", d.Id);
+                    _frmDatabase._bROS = true;
+                }
+            }
+        }
     }
     $(function () {
         _frmDatabase = new qrmgEditor(frmDatabase);

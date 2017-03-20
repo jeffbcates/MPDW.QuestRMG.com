@@ -299,8 +299,8 @@ namespace Quest.MasterPricing.Setup
              * Perform operation.
              *---------------------------------------------------------------------------------------------------------------------------------*/
             TablesetId tablesetId = new TablesetId(tablesetEditorViewModel.Id);
-            TablesetEditorModeler tablesetEditorModeler = new TablesetEditorModeler(this.Request, this.UserSession);
-            status = tablesetEditorModeler.Delete(tablesetId);
+            TablesetConfigurationModeler tablesetConfigurationModeler = new TablesetConfigurationModeler(this.Request, this.UserSession, tablesetEditorViewModel);
+            status = tablesetConfigurationModeler.Delete(tablesetId);
             if (!questStatusDef.IsSuccess(status))
             {
                 tablesetEditorViewModel.questStatus = status;
@@ -310,7 +310,7 @@ namespace Quest.MasterPricing.Setup
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Return result.
              *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = new questStatus(Severity.Success, "Tableset successfully deleted");
+            status = new questStatus(Severity.Success, "Tableset configuration successfully deleted");
             tablesetEditorViewModel.questStatus = status;
             return Json(tablesetEditorViewModel, JsonRequestBehavior.AllowGet);
         }

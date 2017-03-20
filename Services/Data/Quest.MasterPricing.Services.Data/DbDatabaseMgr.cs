@@ -462,12 +462,13 @@ namespace Quest.MasterPricing.Services.Data.Setup
             }
             catch (System.ArgumentException ex)
             {
-                status = new questStatus(Severity.Fatal, String.Format("Cannot open database {0}.  Verify your connection string.", database.Name));
+                status = new questStatus(Severity.Fatal, String.Format("Cannot connect to database {0}.  Verify your connection string: {1}", 
+                        database.Name, ex.Message));
                 return (status);
             }
             catch (System.Exception ex)
             {
-                status = new questStatus(Severity.Fatal, String.Format("Cannot open database {0}: {1}", database.Name, ex.Message));
+                status = new questStatus(Severity.Warning, String.Format("Cannot open database {0}: {1}", database.Name, ex.Message));
                 return (status);
             }
             return (new questStatus(Severity.Success));

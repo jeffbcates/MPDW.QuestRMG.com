@@ -3,7 +3,7 @@ function qrmgio(cb, ud, tmo) {
     var _self = this;
     this._cb = cb;
     this._ud = ud;
-    this._tmo = tmo == undefined ? 600000 : tmo;
+    this._tmo = tmo == undefined ? 900000 : tmo;
     this._url;
     this._path;
     this._r = null;
@@ -183,8 +183,6 @@ function _questreqs() {
     }
     this.Remove = function (r) {
         if (_self._rr.length == 1) {
-            var x = 0;
-            x = 4;
         }
         var _rr = [];
         $.each(_self._rr, function (i, _r) {

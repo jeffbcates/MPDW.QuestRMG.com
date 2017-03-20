@@ -138,22 +138,25 @@
         if (ud.Change) {
             qrmgmvc.Global.Mask($('#pageContentFrame'));
             _frmTablesetConfiguration.Change(true);
-            var _ctx = _frmDatabase._getctx();
             var _d = _frmDatabase.GetData();
             _d.Id = _d.DatabaseId;
             $.extend(_d, _ctx);
-            var _ioDBTables = new qrmgio(cbLoadDatabaseTables);
-            _ioDBTables.GetJSON('/Setup/Database/Tables', _d);
+            var _ioDBTables = new qrmgio(cbLoadDatabaseEntities);
+            _ioDBTables.GetJSON('/Setup/Database/Entities', _d);
         }
     }
-    function cbLoadDatabaseTables(ud, d) {
+    function cbLoadDatabaseEntities(ud, d) {
         if (d.UserMessage) {
             DisplayUserMessage(d.UserMessage);
         }
         else {
-            _viewstate.DBTableList = d;
+            _viewstate.DBTableList = d.Tables;
             _tvwTablesetTables.Clear();
-            loadTreeviewDatabaseTables(d);
+            loadTreeviewDatabaseTables(d.Tables);
+
+            _viewstate.DBViewList = d.Views;
+            _tvwTablesetViews.Clear();
+            loadTreeviewDatabaseViews(d.Views);
         }
         qrmgmvc.Global.Unmask();
     }
@@ -245,6 +248,7 @@
         $.each(_idd, function (i, id) {
             _tvwTablesetTables.Remove(id);
         });
+        _frmTablesetConfiguration.Change(true);
     }
 </script>
 <script type="text/javascript">
@@ -333,6 +337,7 @@
         $.each(_idd, function (i, id) {
             _tvwDatabaseTables.Remove(id);
         });
+        _frmTablesetConfiguration.Change(true);
     }
 </script>
 
@@ -423,6 +428,7 @@
         $.each(_idd, function (i, id) {
             _tvwTablesetViews.Remove(id);
         });
+        _frmTablesetConfiguration.Change(true);
     }
 </script>
 <script type="text/javascript">
@@ -511,9 +517,9 @@
         $.each(_idd, function (i, id) {
             _tvwDatabaseViews.Remove(id);
         });
+        _frmTablesetConfiguration.Change(true);
     }
 </script>
-
 
 
 <script type="text/javascript">
@@ -545,8 +551,44 @@
         _frmTablesetConfiguration.SetField('Id', _viewstate.TablesetId);
     }
     function cbTablesetConfigurationEditor(ud, d) {
-        if (_frmTablesetConfiguration) {
-            _frmTablesetConfiguration.Change(true);
+        if (ud.Save) {
+            if (d.questStatus) {
+                if (IsAppSuccess(d)) {
+                    _frmTablesetConfiguration.Change(false);
+                }
+                // klugie
+                qrmgmvc.Global.Unmask($('#pageContent'));
+            }
+        }
+        else if (ud.Delete) {
+            if (d.questStatus) {
+                if (IsAppSuccess(d)) {
+                    _tvwTablesetTables.Clear();
+                    _tvwDatabaseTables.Clear();
+                    _tvwTablesetViews.Clear();
+                    _tvwDatabaseViews.Clear();
+                    cbDatabaseId({ Change: true });
+                }
+            }
+            else {
+                var ts = _frmTableset.GetData();
+                if (ts.TablesetId > 0) {
+                    _frmTablesetConfiguration.SetField("Id", ts.TablesetId);
+                    _frmTablesetConfiguration._bROS = true;
+                }
+            }
+        }
+        else if (ud.Clear) {
+            if (d.questStatus) {
+            }
+            else {
+                _frmDatabase.Clear();
+                _frmTableset.Clear();
+                _tvwTablesetTables.Clear();
+                _tvwDatabaseTables.Clear();
+                _tvwTablesetViews.Clear();
+                _tvwDatabaseViews.Clear();
+            }
         }
     }
     function cbFrmTablesetConfigurationBeforeSave(ud, d) {
@@ -611,8 +653,6 @@
 
         initTablesetConfigurationEditor();
         tempDisplayMessage();
-
-        _frmTablesetConfiguration.Change(true);
     });
     function initViewstate() {
         _viewstate = JSON.parse($('#__frmTablesetConfigurationVIEW_STATE').val());
