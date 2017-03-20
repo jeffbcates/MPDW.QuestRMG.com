@@ -70,7 +70,6 @@ namespace Quest.MasterPricing.Services.Data.Bulk
         //
         // Filter Procedure-Based
         //
-
         #endregion
 
 
@@ -239,7 +238,7 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                                     }
                                     else
                                     {
-                                        sqlParameter.Value = Convert.ToDecimal(bulkInsertColumnValue.Value);
+                                        sqlParameter.Value = Convert.ToDateTime(bulkInsertColumnValue.Value);
                                     }
                                 }
                                 else if (sqlDbType == SqlDbType.Decimal)
@@ -298,7 +297,7 @@ namespace Quest.MasterPricing.Services.Data.Bulk
             }
             catch (System.Exception ex)
             {
-                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: Bulk Insert Operation: {0}.{1}: {2}",
                         this.GetType().Name, MethodBase.GetCurrentMethod().Name,
                         ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
             }

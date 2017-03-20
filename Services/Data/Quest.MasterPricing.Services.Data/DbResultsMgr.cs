@@ -128,6 +128,19 @@ namespace Quest.MasterPricing.Services.Data.Filters
                 return (new questStatus(Severity.Error, String.Format("EXCEPTION: executing filter SQL: {0}", ex.Message)));
             }
 
+            // klugie: Get number of FROM entities
+            string FROMClause = null;
+            List<FilterEntity> FROMEntityList = null;
+            List<JoinEntity> joinEntityList = null;
+            DbFilterSQLMgr dbFilterSQLMgr = new DbFilterSQLMgr();
+            status = dbFilterSQLMgr.GetFROMEntities(filter, out FROMClause, out FROMEntityList, out joinEntityList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            int numItemEntities = FROMEntityList.Count + joinEntityList.Count;
+
+
             // Append lookup or type list Id's to result columns with lookups.
             // NOTE: Lookups and typeList are mutually exclusive.
             FilterItem filterItem = null;
@@ -138,7 +151,7 @@ namespace Quest.MasterPricing.Services.Data.Filters
 
                     string columnIdentifier = null;
                     FilterColumn filterColumn = null;
-                    status = GetResultsColumnIdentifier(filter, filterItem, out columnIdentifier, out filterColumn);
+                    status = GetResultsColumnIdentifier(filter, filterItem, numItemEntities, out columnIdentifier, out filterColumn);
                     if (!questStatusDef.IsSuccess(status))
                     {
                         return (status);
@@ -171,17 +184,16 @@ namespace Quest.MasterPricing.Services.Data.Filters
             }
             catch (System.Exception ex)
             {
-                return (new questStatus(Severity.Error, String.Format("EXCEPTION: building filter results set for FilterItem {0}: {1}", 
+                return (new questStatus(Severity.Error, String.Format("EXCEPTION: building filter results set with FilterItem {0}: {1}", 
                         filterItem.Id, ex.Message)));
             }
             return (new questStatus(Severity.Success));
         }
-        public questStatus GetResultsColumnIdentifier(Filter filter, FilterItem filterItem, out string columnIdentifier, out FilterColumn filterColumn)
+        public questStatus GetResultsColumnIdentifier(Filter filter, FilterItem filterItem, int numItemEntities, out string columnIdentifier, out FilterColumn filterColumn)
         {
             // Initialize
             columnIdentifier = null;
             filterColumn = null;
-            int numEntities = filter.FilterTableList.Count + filter.FilterViewList.Count;
 
 
             FilterColumn _filterColumn = filterItem.FilterColumn;
@@ -201,7 +213,7 @@ namespace Quest.MasterPricing.Services.Data.Filters
             // Determine column identifier.
             // Single-entity filters, it's the column name alone.
             // More than one entity, it's the entity name  + "_" +  column name.
-            if (numEntities == 1)
+            if (numItemEntities == 1)
             {
                 columnIdentifier = _filterColumn.TablesetColumn.Column.Name;
             }
@@ -266,6 +278,19 @@ namespace Quest.MasterPricing.Services.Data.Filters
                 return (new questStatus(Severity.Error, String.Format("EXCEPTION: executing filter SQL: {0}", ex.Message)));
             }
 
+            // klugie: Get number of FROM entities
+            string FROMClause = null;
+            List<FilterEntity> FROMEntityList = null;
+            List<JoinEntity> joinEntityList = null;
+            DbFilterSQLMgr dbFilterSQLMgr = new DbFilterSQLMgr();
+            status = dbFilterSQLMgr.GetFROMEntities(filter, out FROMClause, out FROMEntityList, out joinEntityList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            int numItemEntities = FROMEntityList.Count + joinEntityList.Count;
+
+
             // Append lookup or type list Id's to result columns with lookups.
             // NOTE: Lookups and typeList are mutually exclusive.
             FilterItem filterItem = null;
@@ -277,7 +302,7 @@ namespace Quest.MasterPricing.Services.Data.Filters
 
                     string columnIdentifier = null;
                     FilterColumn filterColumn = null;
-                    status = GetResultsColumnIdentifier(filter, filterItem, out columnIdentifier, out filterColumn);
+                    status = GetResultsColumnIdentifier(filter, filterItem, numItemEntities, out columnIdentifier, out filterColumn);
                     if (!questStatusDef.IsSuccess(status))
                     {
                         return (status);

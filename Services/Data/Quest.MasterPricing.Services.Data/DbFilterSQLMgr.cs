@@ -280,7 +280,8 @@ namespace Quest.MasterPricing.Services.Data.Filters
                     // Label, use if provided.  Otherwise, column name only when only 1 entity in filter.
                     if (string.IsNullOrEmpty(filterItem.Label))
                     {
-                        if ((filter.FilterTableList.Count + filter.FilterViewList.Count) == 1)
+                        if (FROMEntityList.Count + joinEntityList.Count == 1)
+                        ////if ((filter.FilterTableList.Count + filter.FilterViewList.Count) == 1)
                         {
                             filterItem.Label = filterItem.FilterColumn.Name;
                         }
@@ -720,112 +721,169 @@ namespace Quest.MasterPricing.Services.Data.Filters
         //
         // Major Clauses
         //
-        public questStatus BuildFROMClause(Filter filter, out string FROMClause)
+        public questStatus GetFROMEntities(Filter filter, out string FROMClause, out List<FilterEntity> FROMEntityList, out List<JoinEntity> joinEntityList)
         {
             // Initialize
             questStatus status = null;
             FROMClause = null;
+            FROMEntityList = null;
+            joinEntityList = null;
+            Filter filterWithSQL = null;
 
 
             // There has to be at least one item.
             if (filter.FilterItemList.Count == 0)
             {
-                return (new questStatus(Severity.Success));
+                filterWithSQL = filter;
+                filterWithSQL.SQL = "SELECT 'Filter has no items' AS 'Filter Results'";
+                return (new questStatus(Severity.Warning, "Filter has no items"));
             }
 
             // Build FROM entities
-            List<FilterEntity> FROMEntityList = null;
-            status = buildFROMEntities(filter, out FROMEntityList);
-            if (!questStatusDef.IsSuccess(status))
+            FROMEntityList = null;
+            try
             {
-                return (status);
+                status = buildFROMEntities(filter, out FROMEntityList);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+            }
+            catch (System.Exception ex)
+            {
+                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: generating filter SQL: Build FROM entities: {0}",
+                    ex.Message)));
             }
 
+
             // Build JOIN entity list
-            List<JoinEntity> joinEntityList = null;
-            status = getJoinEntities(filter, out joinEntityList);
-            if (!questStatusDef.IsSuccess(status))
+            joinEntityList = null;
+            try
             {
-                return (status);
+                status = getJoinEntities(filter, out joinEntityList);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
             }
+            catch (System.Exception ex)
+            {
+                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: generating filter SQL: Build JOIN entity list: {0}",
+                    ex.Message)));
+            }
+
 
             // Remove FROM entities being joined to except self-joins.
             List<FilterEntity> FROMEntityList2 = new List<FilterEntity>();
-            foreach (FilterEntity filterEntity in FROMEntityList)
+            try
             {
-                JoinEntity joinEntity = null;
-                if (filterEntity.Type.Id == FilterEntityType.Table)
+                foreach (FilterEntity filterEntity in FROMEntityList)
                 {
-                    joinEntity = joinEntityList.Find(delegate (JoinEntity e) { return e.FilterTable != null && e.FilterTable.TablesetTable.Table.Id == filterEntity.FilterTable.TablesetTable.Table.Id; });
+                    JoinEntity joinEntity = null;
+                    if (filterEntity.Type.Id == FilterEntityType.Table)
+                    {
+                        joinEntity = joinEntityList.Find(delegate (JoinEntity e) { return e.FilterTable != null && e.FilterTable.Schema == filterEntity.FilterTable.Schema && e.FilterTable.Name == filterEntity.FilterTable.Name; });
+                    }
+                    else if (filterEntity.Type.Id == FilterEntityType.View)
+                    {
+                        joinEntity = joinEntityList.Find(delegate (JoinEntity e) { return e.FilterView != null && e.FilterView.Schema == filterEntity.FilterView.Schema && e.FilterView.Name == filterEntity.FilterView.Name; });
+                    }
+                    else
+                    {
+                        return (new questStatus(Severity.Error, String.Format("ERROR: unknown filter entity type {0}", filterEntity.Type.Id)));
+                    }
+                    if (joinEntity == null)
+                    {
+                        FROMEntityList2.Add(filterEntity);
+                    }
+                    else if (isSelfJoin(filter, joinEntity))
+                    {
+                        FROMEntityList2.Add(filterEntity);
+                    }
                 }
-                else if (filterEntity.Type.Id == FilterEntityType.View)
-                {
-                    joinEntity = joinEntityList.Find(delegate (JoinEntity e) { return e.FilterView != null && e.FilterView.TablesetView.View.Id == filterEntity.FilterView.TablesetView.View.Id; });
-                }
-                else
-                {
-                    return (new questStatus(Severity.Error, String.Format("ERROR: unknown filter entity type {0}", filterEntity.Type.Id)));
-                }
-                if (joinEntity == null)
-                {
-                    FROMEntityList2.Add(filterEntity);
-                }
-                else if (isSelfJoin(filter, joinEntity))
-                {
-                    FROMEntityList2.Add(filterEntity);
-                }
+                FROMEntityList = FROMEntityList2;
             }
-            FROMEntityList = FROMEntityList2;
+            catch (System.Exception ex)
+            {
+                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: generating filter SQL: Remove FROM entities being joined to except self-joins: {0}",
+                    ex.Message)));
+            }
+
 
             // Set aliases
             // TODO: OPTIMIZE.  DONE ABOVE, BUT COULD BE MESSED UP AFTER PREVIOUS BLOCK.
-            status = setAliases(FROMEntityList, out FROMEntityList2);
-            if (!questStatusDef.IsSuccess(status))
+            try
             {
-                return (status);
-            }
-            FROMEntityList = FROMEntityList2;
+                status = setAliases(FROMEntityList, out FROMEntityList2);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+                FROMEntityList = FROMEntityList2;
 
-            List<JoinEntity> joinEntityList2 = null;
-            status = setAliases(joinEntityList, out joinEntityList2);
-            if (!questStatusDef.IsSuccess(status))
-            {
-                return (status);
+                List<JoinEntity> joinEntityList2 = null;
+                status = setAliases(joinEntityList, out joinEntityList2);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+                joinEntityList = joinEntityList2;
             }
-            joinEntityList = joinEntityList2;
+            catch (System.Exception ex)
+            {
+                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: generating filter SQL: Set aliases: {0}",
+                    ex.Message)));
+            }
+
 
 
             // Build FROM Clause
             StringBuilder sbFROM = new StringBuilder("    FROM ");
-            for (int fedx = 0; fedx < FROMEntityList.Count; fedx += 1)
+            try
             {
-                FilterEntity filterEntity = FROMEntityList2[fedx];
+                for (int fedx = 0; fedx < FROMEntityList.Count; fedx += 1)
+                {
+                    FilterEntity filterEntity = FROMEntityList2[fedx];
 
-                if (fedx > 0)
-                {
-                    sbFROM.Append(",");
-                }
+                    if (fedx > 0)
+                    {
+                        sbFROM.Append("        ,");
+                    }
 
-                if (filterEntity.Type.Id == FilterEntityType.Table)
-                {
-                    sbFROM.Append(BracketIdentifier(filterEntity.FilterTable.TablesetTable.Table.Schema));
-                    sbFROM.Append(".");
-                    sbFROM.Append(BracketIdentifier(filterEntity.FilterTable.TablesetTable.Table.Name));
+                    if (filterEntity.Type.Id == FilterEntityType.Table)
+                    {
+                        sbFROM.Append(BracketIdentifier(filterEntity.FilterTable.TablesetTable.Table.Schema));
+                        sbFROM.Append(".");
+                        sbFROM.Append(BracketIdentifier(filterEntity.FilterTable.TablesetTable.Table.Name));
+                    }
+                    else if (filterEntity.Type.Id == FilterEntityType.View)
+                    {
+                        sbFROM.Append(BracketIdentifier(filterEntity.FilterView.TablesetView.View.Schema));
+                        sbFROM.Append(".");
+                        sbFROM.Append(BracketIdentifier(filterEntity.FilterView.TablesetView.View.Name));
+                    }
+                    sbFROM.Append(" " + filterEntity.Alias);
+                    sbFROM.AppendLine();
                 }
-                else if (filterEntity.Type.Id == FilterEntityType.View)
-                {
-                    sbFROM.Append(BracketIdentifier(filterEntity.FilterView.TablesetView.View.Schema));
-                    sbFROM.Append(".");
-                    sbFROM.Append(BracketIdentifier(filterEntity.FilterView.TablesetView.View.Name));
-                }
-                sbFROM.Append(" " + filterEntity.Alias);
-                sbFROM.AppendLine();
+            }
+            catch (System.Exception ex)
+            {
+                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: generating filter SQL: Build FROM Clause: {0}",
+                    ex.Message)));
             }
 
-            // Return FROM clause
-            FROMClause = sbFROM.ToString();
 
-
+            // Append JOINs onto FROM clause
+            List<string> joinClauseList = null;
+            status = buildJOINclauses(filter, FROMEntityList, joinEntityList, out joinClauseList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            foreach (string joinClause in joinClauseList)
+            {
+                sbFROM.AppendLine(joinClause);
+            }
             return (new questStatus(Severity.Success));
         }
         #endregion

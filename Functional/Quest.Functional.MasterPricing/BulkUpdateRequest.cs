@@ -9,9 +9,10 @@ namespace Quest.Functional.MasterPricing
 {
     public class BulkUpdateRequest
     {
-        public List<BulkUpdateColumnValue> Columns { get; set; }
-        public int FilterId { get; set;  }
+        public int FilterId { get; set; }
         public Filter Filter { get; set; }
+        public string StoredProcedure { get; set; }
+        public List<BulkUpdateColumnValue> Columns { get; set; }
         public string SQL { get; set; }
 
 

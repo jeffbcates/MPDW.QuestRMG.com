@@ -77,6 +77,14 @@ namespace Quest.MasterPricing.Services.Business.Bulk
             numRows = -1;
 
 
+            // Determine if bulk update filter procedure exists.
+            FilterProcedure filterProcedure = null;
+            status = _dbBulkUpdateMgr.GetFilterProcedure(bulkUpdateRequest, "Update", out filterProcedure);
+            if (!questStatusDef.IsSuccessOrWarning(status))
+            {
+                return (status);
+            }
+
             // Get the filter
             Filter filter = null;
             FilterId filterId = new FilterId(bulkUpdateRequest.FilterId);
@@ -88,6 +96,16 @@ namespace Quest.MasterPricing.Services.Business.Bulk
             }
             bulkUpdateRequest.Filter = filter;
 
+
+            //  Perform bulk update filter procedure if exists.
+            if (questStatusDef.IsSuccess(status))
+            {
+                return (PerformBulkUpdateFilterProcedure(bulkUpdateRequest, filterProcedure));
+            }
+
+
+
+
             // Generate the SQL
             status = _dbBulkUpdateMgr.GenerateBulkUpdateSQL(bulkUpdateRequest);
             if (!questStatusDef.IsSuccess(status))
@@ -98,6 +116,33 @@ namespace Quest.MasterPricing.Services.Business.Bulk
 
             // Perform bulk update.
             status = _dbBulkUpdateMgr.PerformBulkUpdate(bulkUpdateRequest, out numRows);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus PerformBulkUpdateFilterProcedure(BulkUpdateRequest bulkUpdateRequest, FilterProcedure filterProcedure)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            // Execute filter
+            RunFilterRequest runFilterRequest = new RunFilterRequest();
+            runFilterRequest.FilterId.Id = bulkUpdateRequest.FilterId;
+            ResultsSet resultsSet = null;
+            FilterMgr filterMgr = new FilterMgr(this.UserSession);
+            status = filterMgr.ExecuteFilter(runFilterRequest, out resultsSet);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (new questStatus(status.Severity, String.Format("Error executing filter Id={0}: {1}",
+                    runFilterRequest.FilterId.Id, status.Message)));
+            }
+
+
+            // Perform operation.
+            status = _dbBulkUpdateMgr.PerformBulkUpdateFilterProcedure(bulkUpdateRequest, filterProcedure, resultsSet);
             if (!questStatusDef.IsSuccess(status))
             {
                 return (status);

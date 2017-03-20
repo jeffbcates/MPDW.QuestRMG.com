@@ -77,6 +77,16 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                 return (new questStatus(Severity.Error, String.Format("ERROR: currently, only single-table filters supported with BUlk Update")));
             }
 
+            // Get info on FROM clause on filter SQL
+            string FROMClause = null;
+            List<FilterEntity> FROMEntityList = null;
+            List<JoinEntity> joinEntityList = null;
+            DbFilterSQLMgr dbFilterSQLMgr = new DbFilterSQLMgr();
+            status = dbFilterSQLMgr.GetFROMEntities(bulkUpdateRequest.Filter, out FROMClause, out FROMEntityList, out joinEntityList);
+            if (! questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
 
             sbBulkUPDATE.AppendLine(String.Format("UPDATE [{0}].[{1}] SET ",
                     bulkUpdateRequest.Filter.FilterTableList[0].TablesetTable.Table.Schema, bulkUpdateRequest.Filter.FilterTableList[0].TablesetTable.Table.Name));
@@ -86,7 +96,7 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                 BulkUpdateColumnValue bulkUpdateColumnValue = bulkUpdateRequest.Columns[idx];
                 string setClause = null;
 
-                status = getFilterColumn(bulkUpdateColumnValue, bulkUpdateRequest.Filter);
+                status = getFilterColumn(bulkUpdateColumnValue, bulkUpdateRequest.Filter, FROMEntityList.Count);
                 if (!questStatusDef.IsSuccess(status))
                 {
                     return (status);
@@ -205,6 +215,286 @@ namespace Quest.MasterPricing.Services.Data.Bulk
             }
             return (new questStatus(Severity.Success));
         }
+
+
+        #region Filter Procedure Utility Routines
+        //
+        // Filter Procedure Utility Routines
+        //
+        public questStatus GetFilterProcedure(BulkUpdateRequest bulkUpdateRequest, string Action, out FilterProcedure filterProcedure)
+        {
+            // Initialize
+            questStatus status = null;
+            filterProcedure = null;
+
+
+            // Get the filter procedures.
+            FilterId filterId = new FilterId(bulkUpdateRequest.FilterId);
+            List<FilterProcedure> filterProcedureList = null;
+            DbFilterProceduresMgr dbFilterProceduresMgr = new DbFilterProceduresMgr(this.UserSession);
+            status = dbFilterProceduresMgr.Read(filterId, out filterProcedureList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+            // Determine if given action exists.
+            FilterProcedure UPDATEsproc = filterProcedureList.Find(delegate (FilterProcedure fp) { return (fp.Action == Action); });
+            if (UPDATEsproc == null)
+            {
+                return (new questStatus(Severity.Warning, String.Format("No {0} filter procedure", Action)));
+            }
+
+            // Get parameters
+            FilterProcedureId filterProcedureId = new FilterProcedureId(UPDATEsproc.Id);
+            List<FilterProcedureParameter> filterProcedureParameterList = null;
+            DbFilterProcedureParametersMgr dbFilterProcedureParametersMgr = new DbFilterProcedureParametersMgr(this.UserSession);
+            status = dbFilterProcedureParametersMgr.Read(filterProcedureId, out filterProcedureParameterList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+            // Return filter procedure with parameters.
+            UPDATEsproc.ParameterList = filterProcedureParameterList;
+            filterProcedure = UPDATEsproc;
+
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus PerformBulkUpdateFilterProcedure(BulkUpdateRequest bulkUpdateRequest, FilterProcedure filterProcedure, ResultsSet resultsSet)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            try
+            {
+                // Get database connection string
+                TablesetId tablesetId = new TablesetId(bulkUpdateRequest.Filter.TablesetId);
+                Tableset tableset = null;
+                DbTablesetsMgr dbTablesetsMgr = new DbTablesetsMgr(this.UserSession);
+                status = dbTablesetsMgr.Read(tablesetId, out tableset);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+                DatabaseId databaseId = new DatabaseId(tableset.DatabaseId);
+                Quest.Functional.MasterPricing.Database database = null;
+                DbDatabasesMgr dbDatabasesMgr = new DbDatabasesMgr(this.UserSession);
+                status = dbDatabasesMgr.Read(databaseId, out database);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+
+                // Execute sproc
+                bool bTransaction = true;  // Update all rows are none of them.
+                using (SqlConnection conn = new SqlConnection(database.ConnectionString))
+                {
+                    conn.Open();
+                    SqlTransaction trans = null;
+                    if (bTransaction)
+                    {
+                        trans = conn.BeginTransaction();
+                    }
+                    foreach (dynamic _dynRow in resultsSet.Data)
+                    {
+                        using (SqlCommand cmd = new SqlCommand(null, conn, trans))
+                        {
+                            cmd.CommandType = CommandType.StoredProcedure;
+                            cmd.CommandText = filterProcedure.Name;
+                            foreach (FilterProcedureParameter filterParam in filterProcedure.ParameterList)
+                            {
+                                if (filterParam.Direction != "Input")
+                                {
+                                    continue;
+                                }
+                                
+                                // Get the column name from the parameter name
+                                FilterItem bulkUpdateFilterItem = bulkUpdateRequest.Filter.FilterItemList.Find(delegate (FilterItem fi)
+                                {
+                                    return (String.Equals(fi.ParameterName, filterParam.ParameterName, StringComparison.CurrentCultureIgnoreCase));
+                                });
+                                if (bulkUpdateFilterItem == null)
+                                {
+                                    trans.Rollback();
+                                    return (new questStatus(Severity.Error, String.Format("ERROR: filter item not found for sproc parameter {0}",
+                                            filterParam.ParameterName)));
+                                }
+
+                                // Get the bulk update value.
+                                BulkUpdateColumnValue bulkUpdateColumnValue = bulkUpdateRequest.Columns.Find(delegate (BulkUpdateColumnValue cv)
+                                {
+                                    return (cv.Name == bulkUpdateFilterItem.FilterColumn.Name);
+                                });
+                                if (bulkUpdateColumnValue == null)
+                                {
+                                    return (new questStatus(Severity.Error, String.Format("ERROR: bulk update column value {0} not found in bulk update columns",
+                                            bulkUpdateFilterItem.FilterColumn.Name)));
+                                }
+
+                                //  If a value is specified, use it.  If no value, if NULL=true, null it.  Otherwise, use results value.
+                                string updateValue = null;
+                                if (!string.IsNullOrEmpty(bulkUpdateColumnValue.Value))
+                                {
+                                    updateValue = bulkUpdateColumnValue.Value;
+                                }
+                                else if (bulkUpdateColumnValue.bNull)
+                                {
+                                    updateValue = null;
+                                }
+                                else
+                                {
+                                    // Indexing not working, but should be ...
+                                    ////updateValue = _dynRow[bulkUpdateColumnValue.Name];
+                                    bool bFound = false;
+                                    foreach (KeyValuePair<string, object> kvp in _dynRow)
+                                    {
+                                        if (kvp.Key == bulkUpdateColumnValue.Name)
+                                        {
+                                            updateValue = kvp.Value != null ? kvp.Value.ToString() : null;  // Not sure if we go w/ Null here. But, oh well ...
+                                            bFound = true;
+                                            break;
+                                        }
+                                    }
+                                    if (! bFound)
+                                    {
+                                        return (new questStatus(Severity.Error, String.Format("ERROR: filter results column {0} not found to use in bulk update operation",
+                                                bulkUpdateColumnValue.Name)));
+                                    }
+                                }
+
+                                // Bind the parameter
+                                // TODO:REFACTOR
+                                SqlDbType sqlDbType = (SqlDbType)Enum.Parse(typeof(SqlDbType), filterParam.SqlDbType, true);
+                                SqlParameter sqlParameter = new SqlParameter(filterParam.ParameterName, sqlDbType);
+
+                                if (sqlDbType == SqlDbType.Bit)
+                                {
+                                    bool bValue = updateValue != "0";
+                                    sqlParameter.Value = bValue;
+                                }
+                                else if (sqlDbType == SqlDbType.Int)
+                                {
+                                    int intValue = Convert.ToInt32(updateValue);
+                                    sqlParameter.Value = intValue;
+                                }
+                                else if (sqlDbType == SqlDbType.NVarChar)
+                                {
+                                    if (updateValue == null)
+                                    {
+                                        sqlParameter.Value = DBNull.Value;
+                                    }
+                                    else
+                                    {
+                                        sqlParameter.Value = updateValue.ToString();
+                                    }
+                                }
+                                else if (sqlDbType == SqlDbType.VarChar)
+                                {
+                                    if (updateValue == null)
+                                    {
+                                        sqlParameter.Value = DBNull.Value;
+                                    }
+                                    else
+                                    {
+                                        sqlParameter.Value = updateValue.ToString();
+                                    }
+                                }
+                                else if (sqlDbType == SqlDbType.DateTime)
+                                {
+                                    if (updateValue == null)
+                                    {
+                                        sqlParameter.Value = DBNull.Value;
+                                    }
+                                    else
+                                    {
+                                        sqlParameter.Value = Convert.ToDateTime(updateValue);
+                                    }
+                                }
+                                else if (sqlDbType == SqlDbType.DateTime2)
+                                {
+                                    if (updateValue == null)
+                                    {
+                                        sqlParameter.Value = DBNull.Value;
+                                    }
+                                    else
+                                    {
+                                        sqlParameter.Value = Convert.ToDateTime(updateValue);
+                                    }
+                                }
+                                else if (sqlDbType == SqlDbType.Date)
+                                {
+                                    if (updateValue == null)
+                                    {
+                                        sqlParameter.Value = DBNull.Value;
+                                    }
+                                    else
+                                    {
+                                        sqlParameter.Value = Convert.ToDateTime(updateValue);
+                                    }
+                                }
+                                else if (sqlDbType == SqlDbType.Decimal)
+                                {
+                                    if (updateValue == null)
+                                    {
+                                        sqlParameter.Value = DBNull.Value;
+                                    }
+                                    else
+                                    {
+                                        sqlParameter.Value = Convert.ToDecimal(updateValue);
+                                    }
+                                }
+                                else
+                                {
+                                    if (updateValue == null)
+                                    {
+                                        sqlParameter.Value = DBNull.Value;
+                                    }
+                                    else
+                                    {
+                                        sqlParameter.Value = updateValue;
+                                    }
+                                }
+                                cmd.Parameters.Add(sqlParameter);
+                            }
+                            // Execute the command
+                            try
+                            {
+                                int numRows = cmd.ExecuteNonQuery();
+                                if (numRows < 1)
+                                {
+                                    return (new questStatus(Severity.Error, String.Format("ERROR: Bulk update stored procedure failed: Rows: {0}", numRows)));
+                                }
+                            }
+                            catch (SqlException ex)
+                            {
+                                return (new questStatus(Severity.Error, String.Format("SQL EXCEPTION: Bulk update stored procedure {0}: {1}",
+                                        filterProcedure.Name, ex.Message)));
+                            }
+                            catch (System.Exception ex)
+                            {
+                                return (new questStatus(Severity.Error, String.Format("EXCEPTION: Bulk update stored procedure {0}: {1}",
+                                        filterProcedure.Name, ex.Message)));
+                            }
+                        }
+                    }
+                    if (bTransaction)
+                    {
+                        trans.Commit();
+                    }
+                }
+            }
+            catch (System.Exception ex)
+            {
+                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: Bulk Update Operation: {0}.{1}: {2}",
+                        this.GetType().Name, MethodBase.GetCurrentMethod().Name,
+                        ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+            }
+            return (new questStatus(Severity.Success));
+        }
+        #endregion
+
         #endregion
 
 
@@ -227,7 +517,7 @@ namespace Quest.MasterPricing.Services.Data.Bulk
             }
             return (new questStatus(Severity.Success));
         }
-        private questStatus getFilterColumn(BulkUpdateColumnValue bulkUpdateColumnValue, Filter filter)
+        private questStatus getFilterColumn(BulkUpdateColumnValue bulkUpdateColumnValue, Filter filter, int numFROMEntities)
         {
             // Initialize
             string[] pp = null;
