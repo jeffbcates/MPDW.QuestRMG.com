@@ -307,7 +307,7 @@ namespace Quest.MasterPricing.DataMgr
             if (viewModel.bExportToExcel)
             {
                 Response.ClearContent();
-                Response.AddHeader("content-disposition", "atachment;filename=" + viewModel.Name.Replace(" ", "_") + ".xls");
+                Response.AddHeader("content-disposition", "atachment;filename=" + filterRunViewModel.Name.Replace(" ", "_") + ".xls");
                 Response.AddHeader("Content-Type", "application/vnd.ms-excel");
                 WriteTsv(resultsSet, Response.Output);
                 Response.Flush();

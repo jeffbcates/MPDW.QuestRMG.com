@@ -479,6 +479,10 @@ namespace Quest.MasterPricing.DataMgr.Modelers
             {
                 return (status);
             }
+            if (string.IsNullOrEmpty(filterRunViewModel.Name))
+            {
+                filterRunResultsViewModel.Name = filterFROMDatabase.Name;
+            }
             return (new questStatus(Severity.Success));
         }
         #endregion
