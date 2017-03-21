@@ -609,7 +609,7 @@ function qrmgTreeview(model) {
     }
     _self.Filter = function (v) {
         $(_self._e).find('ul.list-group li').each(function (i, e) {
-            if ($(this).text().indexOf(v) > -1) {
+            if ($(this).text().match(new RegExp(v, 'gi'))) {
                 $(this).show();
             }
             else {
