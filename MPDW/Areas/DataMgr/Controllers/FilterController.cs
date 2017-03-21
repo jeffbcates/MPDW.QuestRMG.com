@@ -321,6 +321,55 @@ namespace Quest.MasterPricing.DataMgr
             }
         }
         [HttpPost]
+        public ActionResult ExportRun(FilterRunViewModel viewModel)
+        {
+            questStatus status = null;
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Log Operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = LogOperation();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                viewModel.questStatus = status;
+                return Json(viewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Authorize
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = Authorize(viewModel._ctx);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                viewModel.questStatus = status;
+                return Json(viewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Perform operation.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            FilterRunViewModel filterRunViewModel = null;
+            ResultsSet resultsSet = null;
+            FilterPanelModeler filterPanelModeler = new FilterPanelModeler(Request, this.UserSession, viewModel);
+            status = filterPanelModeler.Run(viewModel, out filterRunViewModel, out resultsSet);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                viewModel.questStatus = status;
+                return Json(viewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Return result view model or as Excel
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            Response.ClearContent();
+            Response.AddHeader("content-disposition", "atachment;filename=" + filterRunViewModel.Name.Replace(" ", "_") + ".xls");
+            Response.AddHeader("Content-Type", "application/vnd.ms-excel");
+            WriteTsv(resultsSet, Response.Output);
+            Response.Flush();
+            Response.End();
+            return new EmptyResult();
+        }
+        [HttpPost]
         public ActionResult Copy(FilterCopyViewModel viewModel)
         {
             questStatus status = null;

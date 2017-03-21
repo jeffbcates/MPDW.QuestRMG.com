@@ -56,6 +56,7 @@
                 { name: 'Save', label: 'Save', classes: 'btn-success', method: 'POST', callback: cbSaveFilterPanel, title: 'Save filter entities, items and procedures.' },
                 { name: 'Run', label: 'Run', classes: 'btn-danger', method: 'POST', callback: cbRunFilter, title: 'Run the filter' },
                 { name: 'Test', label: 'Test', classes: 'btn-danger', method: 'POST', callback: cbTestFilter, title: 'Test unsaved changes to a filter', uri: '/DataMgr/Filter/Run' },
+                { name: 'TestExport', label: 'Test & Export', classes: 'btn-danger', method: 'POST', callback: cbTestExportFilter, title: 'Test unsaved changes to a filter', uri: '/DataMgr/Filter/Run' },
             ],
             actions: [
                 { name: 'RowLimit', label: 'Row Limit', type: 'text', value: '200', title: 'Set max # of rows to return' },
@@ -402,6 +403,10 @@
         }
 
     }
+    function cbTestExportFilter(ud, d) {
+        ud.bExportToExcel = true;
+        return (cbTestFilter(ud, d));
+    }
     function cbTestFilter(ud, d) {
         if (d.questStatus) {
             if (IsAppSuccess(d)) {
@@ -434,6 +439,9 @@
             d._mmI = data._mmI;
             d._nbI = data._nbI;
             d._nbX = data._nbX;
+            if (ud.bExportToExcel) {
+                d.bExportToExcel = true;
+            }
 
             d.Id = _d.Editor.Id;
             d.FilterId = _d.Editor.FilterId;
