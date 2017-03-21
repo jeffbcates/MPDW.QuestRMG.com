@@ -581,9 +581,9 @@
     <Content Include="Content\themes\metronic\images\portlet-remove-icon-white.png" />
     <Content Include="Content\themes\metronic\images\remove-icon-small.png" />
     <Content Include="Content\themes\metronic\layout.min.css" />
-    <Content Include="favicon.ico" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="Global.asax" />
+    <Content Include="favicon.png" />
     <Content Include="Scripts\bootstrap-datepicker\css\bootstrap-datepicker.css" />
     <Content Include="Scripts\bootstrap-datepicker\css\bootstrap-datepicker.min.css" />
     <Content Include="Scripts\bootstrap-datepicker\css\bootstrap-datepicker.standalone.css" />

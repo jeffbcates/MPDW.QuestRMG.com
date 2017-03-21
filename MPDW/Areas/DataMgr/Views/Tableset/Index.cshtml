@@ -1324,6 +1324,14 @@
         return (itm);
     }
     function buildSprocBulkInsert(proc, num) {
+        var pps = 0;
+        $.each(proc.Parameters, function (i, p) {
+            if (p.Direction == 'Input') {
+                pps += 1;
+            }
+        });
+        if (proc.Parameters.length == 0 || pps == 0) { DisplayUserMessage('E|The Insert procedure has no parameters.  Bulk Inserts cannot be done using it.'); return (''); }
+
         var _h = [], _i = 0;
         _h[_i++] = '<table class="bulkTable bulkInsertTable">';
         _h[_i++] = '<thead>';
@@ -1792,8 +1800,6 @@
         _d.FilterId = _fd.FilterId;
         $.extend(d, _d);
         return (true);
-
-
     }
     function bindBulkUpdateGrid() {
         $('table.bulkUpdateTable').find('input[data-type*="date"]').datepicker({ format: "mm/dd/yyyy", autoclose: true });
