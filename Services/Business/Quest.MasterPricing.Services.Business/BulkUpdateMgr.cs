@@ -76,15 +76,6 @@ namespace Quest.MasterPricing.Services.Business.Bulk
             questStatus status = null;
             numRows = -1;
 
-
-            // Determine if bulk update filter procedure exists.
-            FilterProcedure filterProcedure = null;
-            status = _dbBulkUpdateMgr.GetFilterProcedure(bulkUpdateRequest, "Update", out filterProcedure);
-            if (!questStatusDef.IsSuccessOrWarning(status))
-            {
-                return (status);
-            }
-
             // Get the filter
             Filter filter = null;
             FilterId filterId = new FilterId(bulkUpdateRequest.FilterId);
@@ -96,6 +87,15 @@ namespace Quest.MasterPricing.Services.Business.Bulk
             }
             bulkUpdateRequest.Filter = filter;
 
+
+
+            // Determine if bulk update filter procedure exists.
+            FilterProcedure filterProcedure = null;
+            status = _dbBulkUpdateMgr.GetFilterProcedure(bulkUpdateRequest, "Update", out filterProcedure);
+            if (!questStatusDef.IsSuccessOrWarning(status))
+            {
+                return (status);
+            }
 
             //  Perform bulk update filter procedure if exists.
             if (questStatusDef.IsSuccess(status))

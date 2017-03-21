@@ -315,52 +315,61 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                                 {
                                     return (String.Equals(fi.ParameterName, filterParam.ParameterName, StringComparison.CurrentCultureIgnoreCase));
                                 });
+                                bool bOptionalParameter = false;
                                 if (bulkUpdateFilterItem == null)
                                 {
-                                    trans.Rollback();
-                                    return (new questStatus(Severity.Error, String.Format("ERROR: filter item not found for sproc parameter {0}",
-                                            filterParam.ParameterName)));
+                                    // ADO.NET NOT REPORTING PARAMETER AS OPTIONAL.  THEREFORE, PER PHIL, ASSUME IT IS OPTIONAL.
+                                    ////trans.Rollback();
+                                    ////return (new questStatus(Severity.Error, String.Format("ERROR: filter item not found for sproc parameter {0}",
+                                    ////        filterParam.ParameterName)));
+                                    bOptionalParameter = true;
                                 }
 
                                 // Get the bulk update value.
-                                BulkUpdateColumnValue bulkUpdateColumnValue = bulkUpdateRequest.Columns.Find(delegate (BulkUpdateColumnValue cv)
-                                {
-                                    return (cv.Name == bulkUpdateFilterItem.FilterColumn.Name);
-                                });
-                                if (bulkUpdateColumnValue == null)
-                                {
-                                    return (new questStatus(Severity.Error, String.Format("ERROR: bulk update column value {0} not found in bulk update columns",
-                                            bulkUpdateFilterItem.FilterColumn.Name)));
-                                }
-
-                                //  If a value is specified, use it.  If no value, if NULL=true, null it.  Otherwise, use results value.
                                 string updateValue = null;
-                                if (!string.IsNullOrEmpty(bulkUpdateColumnValue.Value))
+                                if (bOptionalParameter)
                                 {
-                                    updateValue = bulkUpdateColumnValue.Value;
+                                    updateValue = null; // Assume, because that's always a safe thing to do, this is an optional parameter.
                                 }
-                                else if (bulkUpdateColumnValue.bNull)
-                                {
-                                    updateValue = null;
-                                }
-                                else
-                                {
-                                    // Indexing not working, but should be ...
-                                    ////updateValue = _dynRow[bulkUpdateColumnValue.Name];
-                                    bool bFound = false;
-                                    foreach (KeyValuePair<string, object> kvp in _dynRow)
+                                else { 
+                                    BulkUpdateColumnValue bulkUpdateColumnValue = bulkUpdateRequest.Columns.Find(delegate (BulkUpdateColumnValue cv)
                                     {
-                                        if (kvp.Key == bulkUpdateColumnValue.Name)
-                                        {
-                                            updateValue = kvp.Value != null ? kvp.Value.ToString() : null;  // Not sure if we go w/ Null here. But, oh well ...
-                                            bFound = true;
-                                            break;
-                                        }
+                                        return (cv.Name == bulkUpdateFilterItem.FilterColumn.Name);
+                                    });
+                                    if (bulkUpdateColumnValue == null)
+                                    {
+                                        return (new questStatus(Severity.Error, String.Format("ERROR: bulk update column value {0} not found in bulk update columns",
+                                                bulkUpdateFilterItem.FilterColumn.Name)));
                                     }
-                                    if (! bFound)
+
+                                    //  If a value is specified, use it.  If no value, if NULL=true, null it.  Otherwise, use results value.
+                                    if (!string.IsNullOrEmpty(bulkUpdateColumnValue.Value))
                                     {
-                                        return (new questStatus(Severity.Error, String.Format("ERROR: filter results column {0} not found to use in bulk update operation",
-                                                bulkUpdateColumnValue.Name)));
+                                        updateValue = bulkUpdateColumnValue.Value;
+                                    }
+                                    else if (bulkUpdateColumnValue.bNull)
+                                    {
+                                        updateValue = null;
+                                    }
+                                    else
+                                    {
+                                        // Indexing not working, but should be ...
+                                        ////updateValue = _dynRow[bulkUpdateColumnValue.Name];
+                                        bool bFound = false;
+                                        foreach (KeyValuePair<string, object> kvp in _dynRow)
+                                        {
+                                            if (kvp.Key == bulkUpdateColumnValue.Name)
+                                            {
+                                                updateValue = kvp.Value != null ? kvp.Value.ToString() : null;  // Not sure if we go w/ Null here. But, oh well ...
+                                                bFound = true;
+                                                break;
+                                            }
+                                        }
+                                        if (! bFound)
+                                        {
+                                            return (new questStatus(Severity.Error, String.Format("ERROR: filter results column {0} not found to use in bulk update operation",
+                                                    bulkUpdateColumnValue.Name)));
+                                        }
                                     }
                                 }
 

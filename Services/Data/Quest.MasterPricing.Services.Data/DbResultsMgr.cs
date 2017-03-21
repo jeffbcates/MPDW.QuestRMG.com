@@ -387,7 +387,7 @@ namespace Quest.MasterPricing.Services.Data.Filters
                     // TODO: TEMPORARY
                     if (runFilterRequest != null)
                     {
-                        if (! string.IsNullOrEmpty(runFilterRequest.RowLimit))
+                        if (runFilterRequest.RowLimit != null && runFilterRequest.RowLimit.Trim().Length > 0)
                         {
                             var _sql = sql.Replace("SELECT DISTINCT", "SELECT DISTINCT TOP " + runFilterRequest.RowLimit);
                             sql = _sql;
