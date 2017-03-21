@@ -711,12 +711,24 @@ function qrmgFilter(model) {
                 }
             }
             else {
-                if ($(_opf).find('.filttags').children().length == 0) {
-                    $(s).addClass('validationError');
+                if (!_self._nvok(s)) {
+                    if ($(_opf).find('.filttags').children().length == 0) {
+                        $(s).addClass('validationError');
+                    }
                 }
             }
         });
         return (($(_self._e).find('.validationError').length + $(_self._e).find('.filtverr').length) == 0);
+    }
+    _self._nvok = function (s) {
+        var nvOK = [
+            'is blank',
+            'is null',
+            'is NOT blank',
+            'is NOT null'
+        ]
+        var t = $(s).find('option:selected').text();
+        return (nvOK.indexOf(t) > -1);
     }
 
     _self.NumEntities = function (type) {

@@ -307,9 +307,26 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                             {
                                 if (filterParam.Direction != "Input")
                                 {
+                                    SqlParameter sqlParam= new SqlParameter();
+                                    if (filterParam.Direction == "ReturnValue")
+                                    {
+                                        sqlParam.Direction = ParameterDirection.ReturnValue;
+                                    }
+                                    else if (filterParam.Direction == "Output")
+                                    {
+                                        sqlParam.Direction = ParameterDirection.Output;
+                                    }
+                                    else
+                                    {
+                                        continue; // Input/ouput TODO
+                                    }
+                                    sqlParam.ParameterName = filterParam.ParameterName;
+
+
+                                    // TEMPORARY
                                     continue;
                                 }
-                                
+
                                 // Get the column name from the parameter name
                                 FilterItem bulkUpdateFilterItem = bulkUpdateRequest.Filter.FilterItemList.Find(delegate (FilterItem fi)
                                 {

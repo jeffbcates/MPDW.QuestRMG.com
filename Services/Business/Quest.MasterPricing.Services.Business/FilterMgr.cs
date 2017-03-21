@@ -443,15 +443,24 @@ namespace Quest.MasterPricing.Services.Business.Filters
                     FilterOperation filterOperation = filterItem.OperationList[foidx];
                     if (filterOperation.FilterOperatorId >= BaseId.VALID_ID)
                     {
-                        if (filterOperation.ValueList.Count == 0)
+                        if (!NonValueOK(filterOperation.FilterOperatorId))
                         {
-                            return (new questStatus(Severity.Error, String.Format("ERROR: FilterOperation #{0} has no values",
-                                    (fiidx + 1))));
+                            if (filterOperation.ValueList.Count == 0)
+                            {
+                                return (new questStatus(Severity.Error, String.Format("ERROR: FilterOperation #{0} has no values",
+                                        (fiidx + 1))));
+                            }
                         }
                     }
                 }
             }
             return (new questStatus(Severity.Success));
+        }
+        private bool NonValueOK(int operatorId)
+        {
+            // These operators do not require a value:
+            List<int> nonValueOperatorIds = new List<int> { 5, 6, 11, 12 };  // Is blank, Is Null, Is NOT blank, is NOT null
+            return (nonValueOperatorIds.Contains(operatorId));
         }
         public questStatus Run(RunFilterRequest runFilterRequest, Filter filter, out ResultsSet resultsSet)
         {
