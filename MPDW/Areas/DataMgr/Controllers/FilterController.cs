@@ -298,6 +298,11 @@ namespace Quest.MasterPricing.DataMgr
                 JavaScriptSerializer javaScriptSerializer = new JavaScriptSerializer();
                 List<FilterItemViewModel> itemsList = javaScriptSerializer.Deserialize<List<FilterItemViewModel>>(items);
                 viewModel.Items = itemsList;
+
+
+                string resultsOptions = Request.Form["_ResultsOptions"].ToString();
+                ResultsOptionsViewModel _ResultsOptions = javaScriptSerializer.Deserialize<ResultsOptionsViewModel>(resultsOptions);
+                viewModel._ResultsOptions = _ResultsOptions;
             }
             FilterRunViewModel filterRunViewModel = null;
             ResultsSet resultsSet = null;

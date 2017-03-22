@@ -56,8 +56,8 @@
                 { name: 'Save', label: 'Save', classes: 'btn-success', method: 'POST', callback: cbSaveFilterPanel, title: 'Save filter entities, items and procedures.' },
                 { name: 'Run', label: 'Run', classes: 'btn-danger', method: 'POST', callback: cbRunFilter, title: 'Run the filter' },
                 { name: 'Test', label: 'Test', classes: 'btn-danger', method: 'POST', callback: cbTestFilter, title: 'Test unsaved changes to a filter', uri: '/DataMgr/Filter/Run' },
-                { name: 'TestExport', label: 'Test & Export', classes: 'btn-danger', method: 'POST', callback: cbTestExportFilter, title: 'Test unsaved changes to a filter', uri: '/DataMgr/Filter/Run' },
-                { name: 'ExportAsForm', label: 'Export as Form', classes: 'btn-danger', method: 'POST', callback: cbExportAsForm, title: 'Test unsaved changes to a filter', uri: '/DataMgr/Filter/Run' },
+                ////{ name: 'TestExport', label: 'Test & Export', classes: 'btn-danger', method: 'POST', callback: cbTestExportFilter, title: 'Test unsaved changes to a filter', uri: '/DataMgr/Filter/Run' },
+                ////{ name: 'ExportAsForm', label: 'Export as Form', classes: 'btn-danger', method: 'POST', callback: cbExportAsForm, title: 'Test unsaved changes to a filter', uri: '/DataMgr/Filter/Run' },
             ],
             actions: [
                 { name: 'RowLimit', label: 'Row Limit', type: 'text', value: '200', title: 'Set max # of rows to return' },
@@ -431,6 +431,24 @@
         _items.setAttribute("value", JSON.stringify(items));
         _frmExport.appendChild(_items);
 
+
+
+
+        var _rd = _pnlResults.GetData();
+        var ro = {};
+        ro.RowLimit = _rd.RowLimit;
+        ro.ColLimit = _rd.ColLimit;
+        var _resultOptions = document.createElement("input");
+        _resultOptions.setAttribute("type", "hidden");
+        _resultOptions.setAttribute("name", "_ResultsOptions");
+        _resultOptions.setAttribute("value", JSON.stringify(ro));
+        _frmExport.appendChild(_resultOptions);
+
+
+
+
+
+
         var _bExportToExcel = document.createElement("input");
         _bExportToExcel.setAttribute("type", "hidden");
         _bExportToExcel.setAttribute("name", "bExportToExcel");
@@ -774,6 +792,7 @@
                 filter: true
             },
             draggable: true,
+            dragclass: 'tvwTable',
             droppable: true,
             dropsource: _tvwFilterEntities,
             sorted: false,
@@ -811,7 +830,7 @@
         if (!_tvwTablesetEntities) { return; }
         $(_tvwTablesetEntities._e + ' ul li span.fa-table').closest('li').addClass('tvwTable');
         $(_tvwTablesetEntities._e + ' ul li span.fa-th').closest('li').addClass('tvwView');
-        _tvwTablesetEntities.Draggable();
+        _tvwTablesetEntities.Draggable('tvwTable');
         _tvwTablesetEntities.Droppable();
     }
     function cbTvwTablesetEntitiesRefresh(e) {
@@ -882,7 +901,7 @@
         if (!_tvwFilterEntities) { return; }
         $(_tvwFilterEntities._e + ' ul li span.fa-table').closest('li').addClass('tvwTable');
         $(_tvwFilterEntities._e + ' ul li span.fa-th').closest('li').addClass('tvwView');
-        _tvwFilterEntities.Draggable();
+        _tvwFilterEntities.Draggable('tvwTable');
         _tvwFilterEntities.Droppable();
     }
     function cbTvwFilterEntitiesRefresh(e) {

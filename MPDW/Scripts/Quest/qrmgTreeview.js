@@ -11,6 +11,7 @@ function qrmgTreeview(model) {
     _self._bInit = false;
     _self._bChanges = false;
     _self.draggableOptions = {
+        distance: 10,
         start: function (event, ui) {
             ////console.log("draggableOptions start ");
             _self.draggingObjs = $('li.node-selected', _self._e);
@@ -78,7 +79,7 @@ function qrmgTreeview(model) {
             _self._rndrhdr();
         }
         _self.UpdateHeader();
-        _self.Draggable();
+        _self.Draggable(_self._model.dragclass);
         _self.Droppable();
         _self.Sortable();
         _self.Selectable();
@@ -88,7 +89,7 @@ function qrmgTreeview(model) {
         alert('onNodeSelected');
     }
 
-    _self.Draggable = function (b) {
+    _self.Draggable = function () {
         if (_self._model.draggable) {
             $(_self._e).find('li').addClass('tvwDraggable').draggable(
                 _self.draggableOptions
