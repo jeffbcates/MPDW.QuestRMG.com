@@ -56,7 +56,8 @@
                 { name: 'Save', label: 'Save', classes: 'btn-success', method: 'POST', callback: cbSaveFilterPanel, title: 'Save filter entities, items and procedures.' },
                 { name: 'Run', label: 'Run', classes: 'btn-danger', method: 'POST', callback: cbRunFilter, title: 'Run the filter' },
                 { name: 'Test', label: 'Test', classes: 'btn-danger', method: 'POST', callback: cbTestFilter, title: 'Test unsaved changes to a filter', uri: '/DataMgr/Filter/Run' },
-                ////{ name: 'TestExport', label: 'Test & Export', classes: 'btn-danger', method: 'POST', callback: cbTestExportFilter, title: 'Test unsaved changes to a filter', uri: '/DataMgr/Filter/Run' },
+                { name: 'TestExport', label: 'Test & Export', classes: 'btn-danger', method: 'POST', callback: cbTestExportFilter, title: 'Test unsaved changes to a filter', uri: '/DataMgr/Filter/Run' },
+                { name: 'ExportAsForm', label: 'Export as Form', classes: 'btn-danger', method: 'POST', callback: cbExportAsForm, title: 'Test unsaved changes to a filter', uri: '/DataMgr/Filter/Run' },
             ],
             actions: [
                 { name: 'RowLimit', label: 'Row Limit', type: 'text', value: '200', title: 'Set max # of rows to return' },
@@ -402,6 +403,42 @@
             return (true);
         }
 
+    }
+    function cbExportAsForm(ud, d) {
+        var filter = _frmFilter.GetData();
+        var _name = filter.Name.replace(/\s/g, "");
+        var _frmId = _name + '_frmExportAsForm';
+        $('.frmExportAsForm').remove();
+
+        var _frmExport = document.createElement("form");
+        _frmExport.setAttribute("id", _frmId);
+        _frmExport.setAttribute("method", "post");
+        _frmExport.setAttribute("action", "/DataMgr/Filter/Run");
+        _frmExport.setAttribute("target", "view");
+        _frmExport.setAttribute("class", "frmExportAsForm");
+
+        for (var f in filter) {
+            var _in = document.createElement("input");
+            _in.setAttribute("type", "hidden");
+            _in.setAttribute("name", f);
+            _in.setAttribute("value", filter[f]);
+            _frmExport.appendChild(_in);
+        }
+        var items = _fltFilterItems.GetData();
+        var _items = document.createElement("input");
+        _items.setAttribute("type", "hidden");
+        _items.setAttribute("name", "Items");
+        _items.setAttribute("value", JSON.stringify(items));
+        _frmExport.appendChild(_items);
+
+        var _bExportToExcel = document.createElement("input");
+        _bExportToExcel.setAttribute("type", "hidden");
+        _bExportToExcel.setAttribute("name", "bExportToExcel");
+        _bExportToExcel.setAttribute("value", true);
+        _frmExport.appendChild(_bExportToExcel);
+
+        document.body.appendChild(_frmExport);
+        _frmExport.submit();
     }
     function cbTestExportFilter(ud, d) {
         ud.bExportToExcel = true;
@@ -2008,17 +2045,4 @@
         _frmExport.submit();
     }
 </script>
-<script type="text/javascript">
-    ////function fixTableHedaderJquery() {
-    ////    $("#grdResultsTableBodyFrame").scroll(function () {
-    ////        var translate = "translate(0," + this.scrollTop + "px)";
-    ////        this.querySelector("thead").style.transform = translate;
-    ////    });
-    ////}
-    ////function fixTableHeader(e) {
-    ////    $(e).scroll(function () {
-    ////        var translate = "translate(0," + this.scrollTop + "px)";
-    ////        this.querySelector("thead").style.transform = translate;
-    ////    });
-    ////}
-</script>
+

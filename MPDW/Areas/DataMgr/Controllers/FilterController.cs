@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
+using System.Web.Script.Serialization;
 using System.Web.Mvc;
 using Quest.MPDW.Controllers;
 using Quest.Util.Status;
@@ -291,6 +292,13 @@ namespace Quest.MasterPricing.DataMgr
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Perform operation.
              *---------------------------------------------------------------------------------------------------------------------------------*/
+            if (viewModel.Items.Count == 0)
+            {
+                string items = Request.Form["Items"].ToString();
+                JavaScriptSerializer javaScriptSerializer = new JavaScriptSerializer();
+                List<FilterItemViewModel> itemsList = javaScriptSerializer.Deserialize<List<FilterItemViewModel>>(items);
+                viewModel.Items = itemsList;
+            }
             FilterRunViewModel filterRunViewModel = null;
             ResultsSet resultsSet = null;
             FilterPanelModeler filterPanelModeler = new FilterPanelModeler(Request, this.UserSession, viewModel);
