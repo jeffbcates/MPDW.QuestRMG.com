@@ -92,7 +92,9 @@ namespace Quest.MasterPricing.DataMgr
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Return result.
              *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = new questStatus(Severity.Success, String.Format("Bulk updated {0} rows", numRows));
+             // TODO: WORK OUT NUM ROWS WHEN USING A PROCEDURE.
+            ////status = new questStatus(Severity.Success, String.Format("Bulk updated {0} rows", numRows));
+            status = new questStatus(Severity.Success, String.Format("Bulk update performed successfully"));
             BulkUpdateViewModel bulkUpdateViewModel = new BulkUpdateViewModel(this.UserSession, viewModel);
             bulkUpdateViewModel.questStatus = status;
             return Json(bulkUpdateViewModel, JsonRequestBehavior.AllowGet);

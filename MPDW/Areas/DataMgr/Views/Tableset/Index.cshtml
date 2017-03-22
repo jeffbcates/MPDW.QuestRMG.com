@@ -792,7 +792,6 @@
                 filter: true
             },
             draggable: true,
-            dragclass: 'tvwTable',
             droppable: true,
             dropsource: _tvwFilterEntities,
             sorted: false,
@@ -805,7 +804,7 @@
             bNoUserMessages: true,
             events: [
                 { name: 'AfterLoaded', callback: cbTvwTablesetEntitiesAfterLoaded },
-                { name: 'OnTreeRender', callback: cbOnTvwTablesetEntitiesRender },
+                { name: 'OnTreeRender', callback: cbTvwTablesetEntitiesOnTreeRender },
                 { name: 'Refresh', callback: cbTvwTablesetEntitiesRefresh },
                 { name: 'OnChange', callback: cbTvwTablesetEntitiesOnChange },
             ],
@@ -826,12 +825,10 @@
     }
     function cbTvwTablesetEntitiesAfterLoaded() {
     }
-    function cbOnTvwTablesetEntitiesRender(e) {
+    function cbTvwTablesetEntitiesOnTreeRender(e) {
         if (!_tvwTablesetEntities) { return; }
         $(_tvwTablesetEntities._e + ' ul li span.fa-table').closest('li').addClass('tvwTable');
         $(_tvwTablesetEntities._e + ' ul li span.fa-th').closest('li').addClass('tvwView');
-        _tvwTablesetEntities.Draggable('tvwTable');
-        _tvwTablesetEntities.Droppable();
     }
     function cbTvwTablesetEntitiesRefresh(e) {
         $('#draggingContainer').remove();
@@ -870,7 +867,7 @@
             bNoUserMessages: true,
             events: [
                 { name: 'AfterLoaded', callback: cbTvwFilterEntitiesAfterLoaded },
-                { name: 'OnTreeRender', callback: cbOnTvwFilterEntitiesRender },
+                { name: 'OnTreeRender', callback: cbTvwFilterEntitiesOnTreeRender },
                 { name: 'Refresh', callback: cbTvwFilterEntitiesRefresh },
                 { name: 'OnChange', callback: cbTvwFilterEntitiesOnChange },
             ],
@@ -897,12 +894,10 @@
     }
     function cbTvwFilterEntitiesAfterLoaded() {
     }
-    function cbOnTvwFilterEntitiesRender(e) {
+    function cbTvwFilterEntitiesOnTreeRender(e) {
         if (!_tvwFilterEntities) { return; }
         $(_tvwFilterEntities._e + ' ul li span.fa-table').closest('li').addClass('tvwTable');
         $(_tvwFilterEntities._e + ' ul li span.fa-th').closest('li').addClass('tvwView');
-        _tvwFilterEntities.Draggable('tvwTable');
-        _tvwFilterEntities.Droppable();
     }
     function cbTvwFilterEntitiesRefresh(e) {
         $('#draggingContainer').remove();
@@ -971,8 +966,6 @@
         if (!_tvwValueEntities) { return; }
         $(_tvwValueEntities._e + ' ul li span.fa-table').closest('li').addClass('tvwTable');
         $(_tvwValueEntities._e + ' ul li span.fa-th').closest('li').addClass('tvwView');
-        _tvwValueEntities.Draggable();
-        _tvwValueEntities.Droppable();
     }
     function cbTvwValueEntitiesOnDrop(e, ui) {
         var _nn = [];
@@ -1682,12 +1675,13 @@
     }
     function loadBulkUpdates(d) {
         clearBulkUpdatesGrid();
-        if (((_fltFilterItems.NumEntities('table') > 1) || (_fltFilterItems.NumEntities('view') > 0)) && (!isProcedure('Update'))) {
+        var bIsUpdateProcedure = isProcedure('Update');
+        if (((_fltFilterItems.NumEntities('table') > 1) || (_fltFilterItems.NumEntities('view') > 0)) && (!bIsUpdateProcedure)) {
             _pnlBulkUpdates.Disable();
             $('#pnlBulkUpdateColumns').append('<p class="bulkDisabled">Bulk Updates supported for single entity filters only.  Use a filter procedure.</p>');
             return;
         }
-        _pnlBulkInserts.Enable();
+        _pnlBulkUpdates.Enable();
         var _h = [], _i = 0;
         _h[_i++] = '<table class="bulkTable bulkUpdateTable">';
         $.each(d.Results.Columns, function (i, c) {
@@ -1696,8 +1690,13 @@
                 DisplayUserMessage('E|FilterItem ' + c.Name + ' not found in view state.  Cannot build Bulk Update grid');
                 return ('');
             }
+            if (bIsUpdateProcedure) {
+                if (!itm.ParameterName) {
+                    return;
+                }
+            }
             _h[_i++] = '<tr>';
-            _h[_i++] = '<td class="td-label">' + c.Label + ':&nbsp;</td>';
+            _h[_i++] = '<td class="td-label">' + (bIsUpdateProcedure ? itm.ParameterName : c.Label) + ':&nbsp;</td>';
             _h[_i++] = '<td class="td-input">';
             if (c.bIsIdentity) {
                 _h[_i++] = '<input id="bulkUpdate_' + c.Name + '" class="form-control colval" readonly="readonly" placeholder="Identity column" data-item-id="' + itm.Id + '" data-name="' + c.Name + '" data-type="' + c.Type + '" />';

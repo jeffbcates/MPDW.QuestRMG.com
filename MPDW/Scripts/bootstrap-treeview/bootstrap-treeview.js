@@ -327,7 +327,7 @@
 	};
 
 	Tree.prototype.clickHandler = function (event) {
-
+	    console.log('Tree.prototype.clickHandler');
 		if (!this.options.enableLinks) event.preventDefault();
 
 		var target = $(event.target);
@@ -411,10 +411,11 @@
 	};
 
 	Tree.prototype.setSelectedState = function (node, state, options) {
-
+	    console.log('Tree.prototype.setSelectedState');
 		if (state === node.state.selected) return;
 
 		if (state) {
+		    console.log('    state = true');
 
 			// If multiSelect false, unselect previously selected
 			if (!this.options.multiSelect) {
@@ -430,6 +431,7 @@
 			}
 		}
 		else {
+		    console.log('    state = false');
 
 			// Unselect node
 			node.state.selected = false;

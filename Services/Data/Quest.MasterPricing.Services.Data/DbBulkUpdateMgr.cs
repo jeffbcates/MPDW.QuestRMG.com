@@ -189,15 +189,16 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                         cmd.CommandText = bulkUpdateRequest.SQL;
                         try
                         {
-                            numRows = cmd.ExecuteNonQuery();
-                            if (numRows < 0)
+                            int retval = cmd.ExecuteNonQuery();
+                            if (retval < 0)
                             {
                                 return (new questStatus(Severity.Error, String.Format("ERROR: Bulk update failed: {0}", numRows)));
                             }
-                            if (numRows == 0)
+                            if (retval == 0)
                             {
                                 return (new questStatus(Severity.Warning, String.Format("WARNING: {0} rows bulk updated", numRows)));
                             }
+                            numRows += retval;
                         }
                         catch (System.Exception ex)
                         {
@@ -349,10 +350,26 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                                     updateValue = null; // Assume, because that's always a safe thing to do, this is an optional parameter.
                                 }
                                 else { 
+                                    // NOTE: THIS COULD BE A TROUBLE SPOT.  ORIGINAL REQUIREMENT WAS SINGLE-ENTITY FILTERS ONLY HAD PROCEDURES.  THUS, THOSE FILTER ITEMS
+                                    //       WOULD NEVER HAVE NAMES QUALIFIED BY THE ENTITY THEY'RE IN.  BUT, FILTERS WITH ENTITIES THAT HAVE NO COLUMNS IN THE FILTER ITEMS 
+                                    //       TECHNICALLY QUALIFY AS 'SINGLE-ENTITY FILTER'.  THUS, IF THE NAME ALONE DOESN'T MATCH.  GO FOR THE ENTITY_NAME AS A MATCH.
                                     BulkUpdateColumnValue bulkUpdateColumnValue = bulkUpdateRequest.Columns.Find(delegate (BulkUpdateColumnValue cv)
                                     {
                                         return (cv.Name == bulkUpdateFilterItem.FilterColumn.Name);
                                     });
+                                    if (bulkUpdateColumnValue == null)
+                                    {
+                                        bulkUpdateColumnValue = bulkUpdateRequest.Columns.Find(delegate (BulkUpdateColumnValue cv)
+                                        {
+                                            string[] parts = cv.Name.Split('_');
+                                            if (parts.Length == 2)
+                                            {
+                                                return (parts[0] == bulkUpdateFilterItem.FilterColumn.ParentEntityType.Name && parts[1] == bulkUpdateFilterItem.FilterColumn.Name);
+                                            }
+                                            return (false);
+                                        });
+
+                                    }
                                     if (bulkUpdateColumnValue == null)
                                     {
                                         return (new questStatus(Severity.Error, String.Format("ERROR: bulk update column value {0} not found in bulk update columns",

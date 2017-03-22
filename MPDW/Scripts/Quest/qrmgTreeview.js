@@ -79,7 +79,7 @@ function qrmgTreeview(model) {
             _self._rndrhdr();
         }
         _self.UpdateHeader();
-        _self.Draggable(_self._model.dragclass);
+        _self.Draggable();
         _self.Droppable();
         _self.Sortable();
         _self.Selectable();
@@ -252,6 +252,7 @@ function qrmgTreeview(model) {
         var _evt;
         var n;
         $(_self._e).on('nodeSelected', function (e, d) {
+            console.log();
             _evt = _self._getevt("NodeSelected");
             if (_evt != null) {
                 _evt.callback({ NodeSelected: true }, d, e);
@@ -556,6 +557,7 @@ function qrmgTreeview(model) {
     }
 
     _self.Refresh = function () {
+        _self._clrsel();
         var _d = { questStatus: _viewstate.questStatus, Items: _self._tvw.Tree };
         _self.Fill(_d);
         if (_self._model.sorted) {
@@ -567,6 +569,13 @@ function qrmgTreeview(model) {
                 return;
             }
         }
+    }
+    _self._clrsel = function () {
+        $(_self._e).find('li').removeClass('node-selected').removeAttr('style').attr('style', 'color:null;background-color:null;');
+        $.each(_self._tvw.Nodes, function (i, n) {
+            n.state.selected = false;
+        });
+
     }
 
     _self._getctx = function () {
