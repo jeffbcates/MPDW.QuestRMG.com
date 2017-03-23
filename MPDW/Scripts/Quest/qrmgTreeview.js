@@ -252,9 +252,10 @@ function qrmgTreeview(model) {
         var _evt;
         var n;
         $(_self._e).on('nodeSelected', function (e, d) {
-            console.log();
+            console.log('qrmgTreeview nodeSelected' );
             _evt = _self._getevt("NodeSelected");
             if (_evt != null) {
+                console.log('    calling NodeSelected event');
                 _evt.callback({ NodeSelected: true }, d, e);
             }
             n = d;
@@ -266,13 +267,18 @@ function qrmgTreeview(model) {
         _self._bndcmds();
     }
     _self._bindnodes = function () {
+        console.log('qrmgTreeview._bindnodes');
         $(_self._e).find('ul.list-group li').unbind('click').on('click', function (e) {
+            console.log('qrmgTreeview._bindnodes: click li');
             _evt = _self._getevt("Click");
             if (_evt != null) {
+                console.log('    calling Click event');
                 if (_evt.callback({ Click: true, node: n, event: e })) {
+                    console.log('    Click event true');
                     e.stopPropagation();
                     e.preventDefault();
                 }
+                console.log('    Click event false');
             }
             else if (_self._model.bRangeSelect) {
                 var n = _self.GetNode($(e.currentTarget).attr('data-id'));
@@ -557,6 +563,7 @@ function qrmgTreeview(model) {
     }
 
     _self.Refresh = function () {
+        console.log('qrmgTreeview: Refresh');
         _self._clrsel();
         var _d = { questStatus: _viewstate.questStatus, Items: _self._tvw.Tree };
         _self.Fill(_d);
@@ -571,11 +578,11 @@ function qrmgTreeview(model) {
         }
     }
     _self._clrsel = function () {
-        $(_self._e).find('li').removeClass('node-selected').removeAttr('style').attr('style', 'color:null;background-color:null;');
-        $.each(_self._tvw.Nodes, function (i, n) {
-            n.state.selected = false;
-        });
-
+        ////console.log('qrmgTreeview: _clrsel');
+        ////$(_self._e).find('li').removeClass('node-selected').removeAttr('style').attr('style', 'color:null;background-color:null;');
+        ////$.each(_self._tvw.Nodes, function (i, n) {
+        ////    n.state.selected = false;
+        ////});
     }
 
     _self._getctx = function () {

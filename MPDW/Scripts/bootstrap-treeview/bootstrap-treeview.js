@@ -327,27 +327,32 @@
 	};
 
 	Tree.prototype.clickHandler = function (event) {
-	    console.log('Tree.prototype.clickHandler');
+	    ////console.log('Tree.prototype.clickHandler');
 		if (!this.options.enableLinks) event.preventDefault();
 
 		var target = $(event.target);
 		var node = this.findNode(target);
+		console.log('Tree.prototype.clickHandler: node: (' + node.Id + ') ' + node.text + ' select=' + node.state.selected);
 		if (!node || node.state.disabled) return;
+
 		
 		var classList = target.attr('class') ? target.attr('class').split(' ') : [];
 		////if ((classList.indexOf('expand-icon') !== -1)) {
-        if ((classList.indexOf('glyphicon') !== -1)) {
+		if ((classList.indexOf('glyphicon') !== -1)) {
+		    ////console.log('Tree.prototype.clickHandler glyphicon');
 
 			this.toggleExpandedState(node, _default.options);
 			this.render();
 		}
 		else if ((classList.indexOf('check-icon') !== -1)) {
-			
+		    ////console.log('Tree.prototype.clickHandler check-icon');
+
 			this.toggleCheckedState(node, _default.options);
 			this.render();
 		}
 		else {
-			
+		    ////console.log('Tree.prototype.clickHandler else  node.state.selected =' + node.state.selected + '  node.selectable=' + node.selectable);
+
 			if (node.selectable) {
 				this.toggleSelectedState(node, _default.options);
 			} else {
@@ -366,7 +371,7 @@
 		var node = this.nodes[nodeId];
 
 		if (!node) {
-			console.log('Error: node does not exist');
+			////console.log('Error: node does not exist');
 		}
 		return node;
 	};
@@ -406,16 +411,17 @@
 	};
 
 	Tree.prototype.toggleSelectedState = function (node, options) {
-		if (!node) return;
+	    if (!node) return;
+	    console.log('Tree.prototype.toggleSelectedState  selected=' + node.state.selected);
 		this.setSelectedState(node, !node.state.selected, options);
 	};
 
 	Tree.prototype.setSelectedState = function (node, state, options) {
-	    console.log('Tree.prototype.setSelectedState');
+	    ////console.log('Tree.prototype.setSelectedState');
 		if (state === node.state.selected) return;
 
 		if (state) {
-		    console.log('    state = true');
+		    ////console.log('    state = true');
 
 			// If multiSelect false, unselect previously selected
 			if (!this.options.multiSelect) {
@@ -426,12 +432,13 @@
 
 			// Continue selecting node
 			node.state.selected = true;
+			////console.log('Tree.prototype.setSelectedState  node.state.selected = true');
 			if (!options.silent) {
 				this.$element.trigger('nodeSelected', $.extend(true, {}, node));
 			}
 		}
 		else {
-		    console.log('    state = false');
+		    ////console.log('    state = false');
 
 			// Unselect node
 			node.state.selected = false;
@@ -647,23 +654,33 @@
 	// 1. selectedNode
 	// 2. node|data assigned color overrides
 	Tree.prototype.buildStyleOverride = function (node) {
+	    ////console.log('Tree.prototype.buildStyleOverride: node:'+node.text);
 
 		if (node.state.disabled) return '';
+		////console.log('    buildStyleOverride...');
 
 		var color = node.color;
 		var backColor = node.backColor;
 
+		console.log('Tree.prototype.buildStyleOverride: highlightSelected=' + this.options.highlightSelected + '   node.state.selected=' + node.state.selected);
+
 		if (this.options.highlightSelected && node.state.selected) {
-			if (this.options.selectedColor) {
+		    ////console.log('Tree.prototype.buildStyleOverride: this.options.highlightSelected && node.state.selected');
+
+		    if (this.options.selectedColor) {
+		        ////console.log('Tree.prototype.buildStyleOverride: this.options.selectedColor');
 				color = this.options.selectedColor;
 			}
 			if (this.options.selectedBackColor) {
-				backColor = this.options.selectedBackColor;
+			    ////console.log('Tree.prototype.buildStyleOverride: this.options.selectedBackColor');
+			    backColor = this.options.selectedBackColor;
 			}
 		}
 
 		if (this.options.highlightSearchResults && node.searchResult && !node.state.disabled) {
-			if (this.options.searchResultColor) {
+		    ////console.log('Tree.prototype.buildStyleOverride: this.options.highlightSearchResults && node.searchResult && !node.state.disabled');
+
+		    if (this.options.searchResultColor) {
 				color = this.options.searchResultColor;
 			}
 			if (this.options.searchResultBackColor) {

@@ -820,10 +820,13 @@
         var _d = { questStatus: _viewstate.questStatus, Items: _ee };
         _tvwTablesetEntities.Fill(_d);
         _tvwTablesetEntities.Change(false);
+        console.log('_tvwTablesetEntities.Refresh()');
+        _tvwTablesetEntities.Refresh();
     }
     function cbTvwTablesetEntities(op, msg, n, d) {
     }
     function cbTvwTablesetEntitiesAfterLoaded() {
+        alert('After loaded');
     }
     function cbTvwTablesetEntitiesOnTreeRender(e) {
         if (!_tvwTablesetEntities) { return; }
@@ -889,6 +892,7 @@
         });
         _tvwFilterEntities.Change(false);
         _tvwTablesetEntities.Change(false);
+        _tvwTablesetEntities.Refresh();
     }
     function cbTvwFilterEntities(op, msg, n, d) {
     }
