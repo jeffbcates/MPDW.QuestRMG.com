@@ -54,6 +54,8 @@ namespace Quest.MasterPricing.DataMgr.Modelers
         {
             // Initialize
             questStatus status = null;
+            Quest.Functional.MasterPricing.Filter filter = null;
+            FilterId filterId = null;
 
 
             // Validate
@@ -63,7 +65,19 @@ namespace Quest.MasterPricing.DataMgr.Modelers
             }
             if (filterPanelViewModel.Editor.FilterId < BaseId.VALID_ID)
             {
-                return (new questStatus(Severity.Error, "Please select a filter."));
+                // For headless agents that want to save all-in-one, not via the Filters panel.
+                filter = new Functional.MasterPricing.Filter();
+                BufferMgr.TransferBuffer(filterPanelViewModel.Editor, filter);
+
+                filterId = null;
+                FiltersMgr filtersMgr = new FiltersMgr(this.UserSession);
+                status = filtersMgr.Create(filter, out filterId);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+                filterPanelViewModel.Editor.Id = filterId.Id;
+                filterPanelViewModel.Editor.FilterId = filterId.Id;
             }
 
 
@@ -82,7 +96,7 @@ namespace Quest.MasterPricing.DataMgr.Modelers
             //
             // Transfer filter entities
             //
-            Quest.Functional.MasterPricing.Filter filter = new Functional.MasterPricing.Filter();
+            filter = new Functional.MasterPricing.Filter();
             filter.TablesetId = filterPanelViewModel.Editor.TablesetId;
             filter.Id = filterPanelViewModel.Editor.Id;
             foreach (BootstrapTreenodeViewModel filterEntity in filterPanelViewModel.Entities)
@@ -266,7 +280,7 @@ namespace Quest.MasterPricing.DataMgr.Modelers
             //
             // Save filter
             //
-            FilterId filterId = new FilterId(filterPanelViewModel.Editor.FilterId);
+            filterId = new FilterId(filterPanelViewModel.Editor.FilterId);
             FilterMgr filterMgr = new FilterMgr(this.UserSession);
             status = filterMgr.Save(filterId, filter);
             if (!questStatusDef.IsSuccess(status))

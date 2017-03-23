@@ -332,7 +332,7 @@
 
 		var target = $(event.target);
 		var node = this.findNode(target);
-		console.log('Tree.prototype.clickHandler: node: (' + node.Id + ') ' + node.text + ' select=' + node.state.selected);
+		////console.log('Tree.prototype.clickHandler: node: (' + node.Id + ') ' + node.text + ' select=' + node.state.selected);
 		if (!node || node.state.disabled) return;
 
 		
@@ -412,7 +412,7 @@
 
 	Tree.prototype.toggleSelectedState = function (node, options) {
 	    if (!node) return;
-	    console.log('Tree.prototype.toggleSelectedState  selected=' + node.state.selected);
+	    ////console.log('Tree.prototype.toggleSelectedState  selected=' + node.state.selected);
 		this.setSelectedState(node, !node.state.selected, options);
 	};
 
@@ -662,7 +662,7 @@
 		var color = node.color;
 		var backColor = node.backColor;
 
-		console.log('Tree.prototype.buildStyleOverride: highlightSelected=' + this.options.highlightSelected + '   node.state.selected=' + node.state.selected);
+		////console.log('Tree.prototype.buildStyleOverride: highlightSelected=' + this.options.highlightSelected + '   node.state.selected=' + node.state.selected);
 
 		if (this.options.highlightSelected && node.state.selected) {
 		    ////console.log('Tree.prototype.buildStyleOverride: this.options.highlightSelected && node.state.selected');

@@ -13,11 +13,11 @@ function qrmgTreeview(model) {
     _self.draggableOptions = {
         distance: 10,
         start: function (event, ui) {
-            ////console.log("draggableOptions start ");
+            //////console.log("draggableOptions start ");
             _self.draggingObjs = $('li.node-selected', _self._e);
         },
         helper: function (e) {
-            ////console.log("draggableOptions helper ");
+            //////console.log("draggableOptions helper ");
             var selected = $('li.node-selected', _self._e);
             if (selected.length === 0) {
                 selected = $(this);
@@ -27,7 +27,7 @@ function qrmgTreeview(model) {
             return container;
         },
         drag: function (event, ui) {
-            ////console.log("draggableOptions drag ");
+            //////console.log("draggableOptions drag ");
             if (_self._model.ASMDragging) {
                 DisplayUserMessage('W|top: (' + $(this).position().top + ')   left: (' + $(this).position().left) + ')';
             }
@@ -97,13 +97,13 @@ function qrmgTreeview(model) {
         }
     }
     _self.moveSelected = function (ol, ot) {
-        ////console.log("moving to: " + ol + ":" + ot);
+        //////console.log("moving to: " + ol + ":" + ot);
         _self.draggingObjs.each(function () {
             $this = $(this);
             var p = $this.position();
             var l = p.left;
             var t = p.top;
-            ////console.log({ id: $this.attr('id'), l: l, t: t });
+            //////console.log({ id: $this.attr('id'), l: l, t: t });
 
             $this.css('left', l + ol);
             $this.css('top', t + ot);
@@ -113,7 +113,7 @@ function qrmgTreeview(model) {
         if (_self._model.droppable) {
             $(_self._e).droppable({
                 drop: function (e, ui) {
-                    ////console.log("droppable drop: ");
+                    //////console.log("droppable drop: ");
                     _self.Change(true);
                     if ($(ui.draggable).closest('div.treeview').attr('id') == _self._e.substr(1)) {
                         _self.Refresh();
@@ -252,10 +252,10 @@ function qrmgTreeview(model) {
         var _evt;
         var n;
         $(_self._e).on('nodeSelected', function (e, d) {
-            console.log('qrmgTreeview nodeSelected' );
+            //console.log('qrmgTreeview nodeSelected' );
             _evt = _self._getevt("NodeSelected");
             if (_evt != null) {
-                console.log('    calling NodeSelected event');
+                //console.log('    calling NodeSelected event');
                 _evt.callback({ NodeSelected: true }, d, e);
             }
             n = d;
@@ -267,18 +267,18 @@ function qrmgTreeview(model) {
         _self._bndcmds();
     }
     _self._bindnodes = function () {
-        console.log('qrmgTreeview._bindnodes');
+        //console.log('qrmgTreeview._bindnodes');
         $(_self._e).find('ul.list-group li').unbind('click').on('click', function (e) {
-            console.log('qrmgTreeview._bindnodes: click li');
+            //console.log('qrmgTreeview._bindnodes: click li');
             _evt = _self._getevt("Click");
             if (_evt != null) {
-                console.log('    calling Click event');
+                //console.log('    calling Click event');
                 if (_evt.callback({ Click: true, node: n, event: e })) {
-                    console.log('    Click event true');
+                    //console.log('    Click event true');
                     e.stopPropagation();
                     e.preventDefault();
                 }
-                console.log('    Click event false');
+                //console.log('    Click event false');
             }
             else if (_self._model.bRangeSelect) {
                 var n = _self.GetNode($(e.currentTarget).attr('data-id'));
@@ -563,7 +563,7 @@ function qrmgTreeview(model) {
     }
 
     _self.Refresh = function () {
-        console.log('qrmgTreeview: Refresh');
+        //console.log('qrmgTreeview: Refresh');
         _self._clrsel();
         var _d = { questStatus: _viewstate.questStatus, Items: _self._tvw.Tree };
         _self.Fill(_d);
@@ -578,7 +578,7 @@ function qrmgTreeview(model) {
         }
     }
     _self._clrsel = function () {
-        ////console.log('qrmgTreeview: _clrsel');
+        //////console.log('qrmgTreeview: _clrsel');
         ////$(_self._e).find('li').removeClass('node-selected').removeAttr('style').attr('style', 'color:null;background-color:null;');
         ////$.each(_self._tvw.Nodes, function (i, n) {
         ////    n.state.selected = false;
