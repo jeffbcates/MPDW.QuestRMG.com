@@ -90,6 +90,7 @@ namespace Quest.MasterPricing.DataMgr.Modelers
 
             foreach (TablesetTable tablesetTable in tablesetDataManagement.TablesetConfiguration.TablesetTables)
             {
+                tablesetTable.bColumnsSelectable = false;
                 BootstrapTreenodeViewModel bootstrapTreenodeViewModel = null;
                 status = FormatBootstrapTreeviewNode(tablesetTable, out bootstrapTreenodeViewModel);
                 if (!questStatusDef.IsSuccess(status))

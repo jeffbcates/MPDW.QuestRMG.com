@@ -74,7 +74,7 @@ namespace Quest.MasterPricing.Services.Business.Filters
         {
             // Initialize 
             questStatus status = null;
-            Mgr mgr = new Mgr();
+            Mgr mgr = new Mgr(this.UserSession);
             DbMgrTransaction trans = null;
             ColumnsMgr columnMgr = new ColumnsMgr(this.UserSession);
 

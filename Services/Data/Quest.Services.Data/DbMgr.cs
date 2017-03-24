@@ -766,44 +766,6 @@ namespace Quest.MPDW.Services.Data
             }
             return (new questStatus(Severity.Success));
         }
-        public questStatus GetStoredProdecureParameters(Quest.Functional.MasterPricing.Database database, string storedProcedureName, out List<Quest.Functional.MasterPricing.FilterProcedureParameter> filterProcedureParameterList)
-        {
-            // Initialize 
-            questStatus status = null;
-            filterProcedureParameterList = null;
-
-            try
-            {
-                using (SqlConnection conn = new SqlConnection(database.ConnectionString))
-                {
-                    using (SqlCommand cmd = new SqlCommand(storedProcedureName, conn))
-                    {
-                        cmd.CommandType = CommandType.StoredProcedure;
-                        conn.Open();
-                        SqlCommandBuilder.DeriveParameters(cmd);
-                        filterProcedureParameterList = new List<FilterProcedureParameter>();
-                        foreach (SqlParameter sqlParameter in cmd.Parameters)
-                        {
-                            FilterProcedureParameter filterProcedureParameter = new FilterProcedureParameter();
-                            BufferMgr.TransferBuffer(sqlParameter, filterProcedureParameter, true);
-                            filterProcedureParameter.DbType = Enum.GetName(typeof(DbType), sqlParameter.DbType);
-                            filterProcedureParameter.SqlDbType = Enum.GetName(typeof(SqlDbType), sqlParameter.SqlDbType);
-                            filterProcedureParameter.Precision[0] = sqlParameter.Precision;
-                            filterProcedureParameter.Scale[0] = sqlParameter.Scale;
-                            filterProcedureParameterList.Add(filterProcedureParameter);
-                        }
-                    }
-                }
-            }
-            catch (System.Exception ex)
-            {
-                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
-                        this.GetType().ToString(), MethodInfo.GetCurrentMethod().Name, ex.Message));
-                return (status);
-            }
-            return (new questStatus(Severity.Success));
-        }
-
         public questStatus GetDatabaseStoredProcedures(Quest.Functional.MasterPricing.Database database, out List<Quest.Functional.MasterPricing.StoredProcedure> storedProcedureList)
         {
             // Initialize
@@ -857,6 +819,44 @@ namespace Quest.MPDW.Services.Data
             }
             return (new questStatus(Severity.Success));
         }
+
+        public questStatus GetStoredProdecureParameters(Quest.Functional.MasterPricing.Database database, string storedProcedureName, out List<Quest.Functional.MasterPricing.FilterProcedureParameter> filterProcedureParameterList)
+        {
+            // Initialize 
+            questStatus status = null;
+            filterProcedureParameterList = null;
+
+            try
+            {
+                using (SqlConnection conn = new SqlConnection(database.ConnectionString))
+                {
+                    using (SqlCommand cmd = new SqlCommand(storedProcedureName, conn))
+                    {
+                        cmd.CommandType = CommandType.StoredProcedure;
+                        conn.Open();
+                        SqlCommandBuilder.DeriveParameters(cmd);
+                        filterProcedureParameterList = new List<FilterProcedureParameter>();
+                        foreach (SqlParameter sqlParameter in cmd.Parameters)
+                        {
+                            FilterProcedureParameter filterProcedureParameter = new FilterProcedureParameter();
+                            BufferMgr.TransferBuffer(sqlParameter, filterProcedureParameter, true);
+                            filterProcedureParameter.DbType = Enum.GetName(typeof(DbType), sqlParameter.DbType);
+                            filterProcedureParameter.SqlDbType = Enum.GetName(typeof(SqlDbType), sqlParameter.SqlDbType);
+                            filterProcedureParameter.Precision[0] = sqlParameter.Precision;
+                            filterProcedureParameter.Scale[0] = sqlParameter.Scale;
+                            filterProcedureParameterList.Add(filterProcedureParameter);
+                        }
+                    }
+                }
+            }
+            catch (System.Exception ex)
+            {
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                        this.GetType().ToString(), MethodInfo.GetCurrentMethod().Name, ex.Message));
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
         public questStatus GetStoredProdecureParameters(Quest.Functional.MasterPricing.Database database, string storedProcedureName, out List<Quest.Functional.MasterPricing.StoredProcedureParameter> storedProcedureParameterList)
         {
             // Initialize 
@@ -882,6 +882,11 @@ namespace Quest.MPDW.Services.Data
                             storedProcedureParameter.Precision[0] = sqlParameter.Precision;
                             storedProcedureParameter.Scale[0] = sqlParameter.Scale;
                             storedProcedureParameterList.Add(storedProcedureParameter);
+                        }
+                        status = determineOptionalParameters(database, storedProcedureName, storedProcedureParameterList);
+                        if (! questStatusDef.IsSuccess(status))
+                        {
+                            return (status);
                         }
                     }
                 }
@@ -1120,6 +1125,58 @@ namespace Quest.MPDW.Services.Data
             String exceptionMessage = string.Concat("DbEntityValidationException: ", fullErrorMessage);
 
             return (exceptionMessage.ToString());
+        }
+        private questStatus determineOptionalParameters(Quest.Functional.MasterPricing.Database database, string storedProcedureName, 
+                List<Quest.Functional.MasterPricing.StoredProcedureParameter> storedProcedureParameterList)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            // NOTE: ADO.NET NOR SQL SERVER ACCURATELY REPORT OPTIONAL PARAMETERS.  THEREFORE, WE HAVE TO GET THE SPROC TEXT AND DETERMINE IT OURSELVES.
+            using (SqlConnection conn = new SqlConnection(database.ConnectionString))
+            {
+                conn.Open();
+                using (SqlCommand cmd = new SqlCommand("sys.sp_helptext", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+                    cmd.Parameters.AddWithValue("@objname", storedProcedureName);
+                    DataSet ds = new DataSet();
+                    SqlDataAdapter sqlDataAdapter = new SqlDataAdapter();
+                    sqlDataAdapter.SelectCommand = cmd;
+                    sqlDataAdapter.Fill(ds);
+
+                    StringBuilder sbTSQL = new StringBuilder();
+                    foreach (DataRow dataRow in ds.Tables[0].Rows)
+                    {
+                        sbTSQL.AppendLine(dataRow.ItemArray[0].ToString());
+                    }
+
+                    // Parse the entry mask.  NOTE: THE REAL WAY TO DO THIS IS VIA A T-SQL GRAMMAR.  BUT, THAT'S AN ANOTHER EFFORT WAAAAY OUT OF SCHEDULE.
+                    //                              THEREFORE WE STRING PARSE AND HOPE FOR THE BEST.
+                    Dictionary<string, bool> optionalParameters = null;
+                    status = parseEntryMask(sbTSQL.ToString(), out optionalParameters);
+                    if (!questStatusDef.IsSuccess(status))
+                    {
+                        return (new questStatus(status.Severity, "ERROR: parsing stored procedure {0}: {1}", storedProcedureName, status.Message));
+                    }
+
+
+                }
+
+            }
+            return (new questStatus(Severity.Success));
+        }
+        private questStatus parseEntryMask(string TSQL, out Dictionary<string, bool> optionalParameters)
+        {
+            // Initialize
+            optionalParameters = new Dictionary<string, bool>();
+
+            // Going to need an ANTLR grammar to do this right.
+            // See this for HOW-TO and issues involved: https://github.com/antlr/grammars-v4/tree/master/tsql
+
+
+            return (new questStatus(Severity.Success));
         }
         #endregion
     }

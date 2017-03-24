@@ -792,6 +792,7 @@
                 filter: true
             },
             draggable: true,
+            dragclass: ['tvwTable','tvwView'],
             droppable: true,
             dropsource: _tvwFilterEntities,
             sorted: false,
@@ -883,9 +884,8 @@
     }
     function loadTreeviewFilterEntities(tt) {
         _tvwFilterEntities.Clear();
-        var _d = { questStatus: _viewstate.questStatus, Items: tt ? tt : _viewstate.Entities };
-        _tvwFilterEntities.Fill(_d);
-
+        var dd = { questStatus: _viewstate.questStatus, Items: tt ? tt : _viewstate.Entities };
+        _tvwFilterEntities.Fill(dd);
         var fee = _tvwFilterEntities.GetData();
         $.each(fee, function (i, fe) {
             _tvwTablesetEntities.Remove(fe.Id);

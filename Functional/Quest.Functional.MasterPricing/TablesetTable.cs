@@ -12,6 +12,7 @@ namespace Quest.Functional.MasterPricing
         public int TablesetId { get; set; }
         public string Schema { get; set; }
         public string Name { get; set; }
+        public bool bColumnsSelectable { get; set; }
         public List<TablesetColumn> TablesetColumnList { get; set; }
         public Table Table { get; set; }
 
@@ -20,6 +21,7 @@ namespace Quest.Functional.MasterPricing
         {
             TablesetColumnList = new List<TablesetColumn>();
             Table = new Table();
+            bColumnsSelectable = true;
         }
     }
 }

@@ -30,7 +30,6 @@
                 ////master: { element: true, name: 'DatabaseId', value: '#DatabaseId' }
             },
             autoLoad: true,
-            ////editor: { uri: '/Database/StoredProcedures' },
             callback: cbTblStoredProcedures,
             columns: [
                 { name: 'Id', hidden: true, key: true },
@@ -42,15 +41,17 @@
                 PageSize: 100,
                 PageSizeOptions: [100, 200, 300, 1000],
             },
+            bNoDefaultOptions: true,
             operations: [
                 { name: 'Database', label: 'Database', uri: '/Setup/Database', args: [{ viewstate: true, field: 'DatabaseId', name: 'Id' }] },
                 { name: 'Tables', label: 'Tables', uri: '/Database/Tables', args: [{ viewstate: true, field: 'DatabaseId', name: 'Id' }] },
                 { name: 'Views', label: 'Views', uri: '/Database/Views', args: [{ viewstate: true, field: 'DatabaseId', name: 'Id' }] },
             ],
             commands: [
-                ////{ name: 'Read', label: 'Details', edit: true },
+                { name: 'Parameters', label: 'Parameters', uri: '/Database/Parameters', type: 'view', single: true, callback: cbShowParameters },
             ],
             events: [
+                { name: 'DoubleClick', callback: cbStoredProceduresDoubleClick },
             ],
             contextMenu: [
             ]
@@ -59,6 +60,20 @@
     });
     function cbTblStoredProcedures(ud, d) {
 
+    }
+    function cbStoredProceduresDoubleClick(ud, d) {
+        $.extend(d, _tblStoredProcedures._getctx());
+        d.ParentEntityType = 'sproc';
+        d.DatabaseId = _viewstate.DatabaseId;
+        var _io = new qrmgio(cbShowParameterView);
+        _io.ShowView('/Database/Parameters', d);
+
+    }
+    function cbShowParameterView(ud, d) {
+
+    }
+    function cbShowParameters(ud, d) {
+        $.extend(d, { ParentEntityType: 'sproc', DatabaseId: _viewstate.DatabaseId });
     }
     function initViewstate() {
         _viewstate = JSON.parse($('#__tblStoredProceduresVIEW_STATE').val());

@@ -86,7 +86,7 @@ namespace Quest.MasterPricing.Database.Modelers
             QueryResponse queryResponse = null;
 
 
-            // Get Database storedProceduresets
+            // Get Database storedProcedures
             List<StoredProcedure> storedProceduresetList = null;
             StoredProceduresMgr storedProceduresMgr = new StoredProceduresMgr(this.UserSession);
             status = storedProceduresMgr.List(queryOptions, out storedProceduresetList, out queryResponse);

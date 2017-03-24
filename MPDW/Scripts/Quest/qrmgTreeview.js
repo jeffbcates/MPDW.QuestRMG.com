@@ -91,9 +91,22 @@ function qrmgTreeview(model) {
 
     _self.Draggable = function () {
         if (_self._model.draggable) {
-            $(_self._e).find('li').addClass('tvwDraggable').draggable(
-                _self.draggableOptions
-            );
+            var _li = 'li';
+            if (_self._model.dragclass) {
+                if ($.isArray(_self._model.dragclass)) {
+                    $.each(_self._model.dragclass, function (i, c) {
+                        var _dc = 'li.' + c;
+                        $(_self._e).find(_dc).addClass('tvwDraggable').draggable(
+                            _self.draggableOptions
+                        );
+                    });
+                }
+            }
+            else {
+                $(_self._e).find(_li).addClass('tvwDraggable').draggable(
+                    _self.draggableOptions
+                );
+            }
         }
     }
     _self.moveSelected = function (ol, ot) {

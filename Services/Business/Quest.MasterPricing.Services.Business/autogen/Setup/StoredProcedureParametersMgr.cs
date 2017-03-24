@@ -111,6 +111,36 @@ namespace Quest.MasterPricing.Services.Business.Database
             }
             return (new questStatus(Severity.Success));
         }
+        public questStatus Read(StoredProcedureId storedProcedureId, out List<Quest.Functional.MasterPricing.StoredProcedureParameter> storedProcedureParameterList)
+        {
+            // Initialize
+            questStatus status = null;
+            storedProcedureParameterList = null;
+
+
+            // Get stored procedure parameters.
+            status = _dbStoredProcedureParametersMgr.Read(storedProcedureId, out storedProcedureParameterList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus Read(DbMgrTransaction trans, StoredProcedureId storedProcedureId, out List<Quest.Functional.MasterPricing.StoredProcedureParameter> storedProcedureParameterList)
+        {
+            // Initialize
+            questStatus status = null;
+            storedProcedureParameterList = null;
+
+
+            // Get stored procedure parameters.
+            status = _dbStoredProcedureParametersMgr.Read(trans, storedProcedureId, out storedProcedureParameterList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
         public questStatus Update(StoredProcedureParameter storedProcedureParameter)
         {
             // Initialize

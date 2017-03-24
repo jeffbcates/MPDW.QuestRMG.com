@@ -306,7 +306,7 @@ namespace Quest.MasterPricing.DataMgr.Modelers
             bootstrapTreenodeViewModel.text = tablesetColumn.Name + " : " + GetColumnDataType(tablesetColumn.Column);
             bootstrapTreenodeViewModel.Schema = null;
             bootstrapTreenodeViewModel.Name = tablesetColumn.Name;
-            bootstrapTreenodeViewModel.selectable = "true";
+            bootstrapTreenodeViewModel.selectable = tablesetTable.bColumnsSelectable ? "true" : "false";
 
             return (new questStatus(Severity.Success));
         }

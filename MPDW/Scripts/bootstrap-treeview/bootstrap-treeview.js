@@ -353,10 +353,11 @@
 		else {
 		    ////console.log('Tree.prototype.clickHandler else  node.state.selected =' + node.state.selected + '  node.selectable=' + node.selectable);
 
-			if (node.selectable) {
-				this.toggleSelectedState(node, _default.options);
+			if (node.selectable && node.selectable != "false") { // klugie: jmiles using *strings* as bools = always true.
+			    this.toggleSelectedState(node, _default.options);
 			} else {
-				this.toggleExpandedState(node, _default.options);
+			    console.log('this.toggleExpandedState(node, _default.options)');
+			    this.toggleExpandedState(node, _default.options);
 			}
 
 			this.render();

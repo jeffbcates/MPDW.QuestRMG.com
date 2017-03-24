@@ -726,7 +726,24 @@ pnlbtn:active {
     z-index: 100000 !important;
 }
 
-
+.table-header-control {
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #8298b3;
+  border-radius: 4px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+  color: #001b3b;
+  display: inline-block;
+  font-size: 14px;
+  height: 34px;
+  line-height: 1.42857;
+  padding: 6px 12px;
+  transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+}
+.table-header-control[disabled], .table-header-control[readonly] {
+    background-color: #eee;
+    opacity: 1;
+}
 .portlet-toolbar-label {
   font-size: 0.9em;
   padding-left: 10px;

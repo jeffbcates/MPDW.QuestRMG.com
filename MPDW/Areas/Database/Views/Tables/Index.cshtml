@@ -42,6 +42,7 @@
                 PageSize: 100,
                 PageSizeOptions: [100, 200, 300, 1000],
             },
+            bNoDefaultOptions: true,
             operations: [
                 { name: 'Database', label: 'Database', uri: '/Setup/Database', args: [{ viewstate: true, field: 'DatabaseId', name: 'Id' }] },
                 { name: 'Views', label: 'Views', uri: '/Database/Views', args: [{ viewstate: true, field: 'DatabaseId', name: 'Id' }] },

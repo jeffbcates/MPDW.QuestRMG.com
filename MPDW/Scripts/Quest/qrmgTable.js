@@ -7,6 +7,9 @@ function qrmgTable(model) {
     _self._uri = model.uri.charAt(model.uri.length - 1) == '/' ? model.uri : model.uri + '/';
     _self._cb = model.callback ? model.callback : null;
     _self._name = model.name || model.element;
+    _self._opers = [
+        { name: 'Refresh', classes: 'btn-default', Refresh: true }
+    ];
     _self._defopers = [
         { name: 'New', label: '&nbsp;&nbsp;New&nbsp;&nbsp;', classes: 'btn-new', editor: true, New: true },
         { name: 'Save', label: '&nbsp;Save&nbsp;', classes: 'btn-default', hidden: true, Save: true },
@@ -90,6 +93,7 @@ function qrmgTable(model) {
         }
     }
     _self._initops = function () {
+        _self._initoo();
         _self._initdefoo();
         if (!_self._model.operations) {
             _self._model.operations = [];
@@ -116,12 +120,39 @@ function qrmgTable(model) {
             _self._model.operations = _oo;
             _self._model.operations = _self._defopers.concat(_self._model.operations);
         }
+        else {
+            var _oo = [];
+            $.each(_self._model.operations, function (i, o) {
+                var _do = _self._getdefo(o.name);
+                if (!_do) {
+                    _oo.push(o);
+                }
+            });
+            _self._model.operations = _oo;
+            _self._model.operations = _self._opers.concat(_self._model.operations);
+        }
+    }
+    _self._initoo = function () {
+        $.each(_self._opers, function (i, o) {
+            o._id = _self._pfx + o.name;
+            o._lbl = o._lbl || o.name;
+        });
     }
     _self._initdefoo = function () {
         $.each(_self._defopers, function (i, o) {
             o._id = _self._pfx + o.name;
             o._lbl = o._lbl || o.name;
         });
+    }
+    _self._get_o = function (n) {
+        var _o;
+        $.each(_self._opers, function (i, o) {
+            if (n == o.name) {
+                _o = o;
+                return (false);
+            }
+        })
+        return (_o);
     }
     _self._getdefo = function (n) {
         var _o;
@@ -753,7 +784,9 @@ function qrmgTable(model) {
 
     _self._dooper = function (o) {
         // TODO: mask
-
+        if (_self._docallback(o, {})) {
+            return;
+        }
         if (o.Refresh) {
             _self.Load();
             return;
@@ -829,7 +862,7 @@ function qrmgTable(model) {
         qrmgmvc.Global.Mask(_self._mask);
         try {
             var ids = _self._getseltr();
-            if (!ids.length) {
+            if (!ids.length && !_cmd.NoSelectionsAllowed) {
                 DisplayUserMessage('E|' + n + ': no rows are selected');
                 qrmgmvc.Global.Unmask(_self._mask);
                 return;
@@ -844,20 +877,25 @@ function qrmgTable(model) {
                 qrmgmvc.Global.Unmask(_self._mask);
                 return;
             }
+            if (_cmd.callback) {
+                var ud = {};
+                ud[n] = true;
+                var d = {};
+                var Items = [];
+                $.each(ids, function (i, s) {
+                    Items.push({ Id: s });
+                });
+                d.Items = Items;
+                if (_cmd.callback(ud, d));
+            }
             var _url = (_cmd.uri ? _cmd.uri : null);
             if (!_url) {
                 _url = _self._model.uri + "/" + _cmd.name;
             }
             var _d = _self._getctx();
+            $.extend(_d, d);
             if (_cmd.single) {
                 _d[_self._keyc.name] = ids[0];
-            }
-            else {
-                var Items = [];
-                $.each(ids, function (i, s) {
-                    Items.push({ Id: s });
-                });
-                _d.Items = Items;
             }
             var _io = new qrmgio(_self._rcmd);
             if (_cmd.edit) {
