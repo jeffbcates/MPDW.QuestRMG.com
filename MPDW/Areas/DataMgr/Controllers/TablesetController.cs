@@ -106,8 +106,8 @@ namespace Quest.MasterPricing.DataMgr
             status = LogOperation();
             if (!questStatusDef.IsSuccess(status))
             {
-                // TODO
-                throw new Exception("LogOperation failed");
+                userMessageModeler = new UserMessageModeler(status);
+                return Json(userMessageModeler, JsonRequestBehavior.AllowGet);
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
@@ -116,8 +116,8 @@ namespace Quest.MasterPricing.DataMgr
             status = Authorize(baseUserSessionViewModel._ctx);
             if (!questStatusDef.IsSuccess(status))
             {
-                // TODO
-                throw new Exception("Authorize failed");
+                userMessageModeler = new UserMessageModeler(status);
+                return Json(userMessageModeler, JsonRequestBehavior.AllowGet);
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
@@ -170,6 +170,66 @@ namespace Quest.MasterPricing.DataMgr
              *---------------------------------------------------------------------------------------------------------------------------------*/
             return (RedirectToAction("Index", "DataMgr", PropagateQueryString(Request)));
         }
+
+        [HttpGet]
+        public ActionResult Entities(DataMgrTablesetViewModel viewModel)
+        {
+            questStatus status = null;
+            DataMgrTablesetViewModel dataMgrTablesetViewModel = null;
+            UserMessageModeler userMessageModeler = null;
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Log Operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = LogOperation();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                userMessageModeler = new UserMessageModeler(status);
+                return Json(userMessageModeler, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Authorize
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = Authorize(viewModel._ctx);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                userMessageModeler = new UserMessageModeler(status);
+                return Json(userMessageModeler, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Redirect to Tablesets if no tablesetId specified.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            if (viewModel.Id < BaseId.VALID_ID)
+            {
+                status = new questStatus(Severity.Error, "Invalid Id value.  Must be 1 or greater.");
+                userMessageModeler = new UserMessageModeler(status);
+                return Json(userMessageModeler, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Read tableset data management info.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            TablesetId tablesetId = new TablesetId(viewModel.Id);
+            TablesetDataModeler tablesetDataModeler = new TablesetDataModeler(this.Request, this.UserSession, viewModel);
+            status = tablesetDataModeler.Read(tablesetId, out dataMgrTablesetViewModel);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                dataMgrTablesetViewModel = new DataMgrTablesetViewModel(this.UserSession, viewModel);
+                dataMgrTablesetViewModel.questStatus = status;
+                return View(dataMgrTablesetViewModel);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Return view.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = new questStatus(Severity.Success);
+            dataMgrTablesetViewModel.questStatus = status;
+            return Json(dataMgrTablesetViewModel, JsonRequestBehavior.AllowGet);
+        }
+
+
         #region Options
         //----------------------------------------------------------------------------------------------------------------------------------
         // Options
