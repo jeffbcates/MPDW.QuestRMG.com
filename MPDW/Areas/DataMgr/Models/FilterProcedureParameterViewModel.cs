@@ -15,6 +15,7 @@ namespace Quest.MasterPricing.DataMgr.Models
     {
         public int Id { get; set; }
         public int FilterProcedureId { get; set; }
+        public bool bRequired { get; set; }
         public string ParameterName { get; set; }
         public int Offset { get; set; }
         public string DbType { get; set; }

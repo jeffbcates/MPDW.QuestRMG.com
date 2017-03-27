@@ -13,6 +13,7 @@ namespace Quest.Functional.MasterPricing
     {
         public int Id { get; set; }
         public int FilterProcedureId { get; set; }
+        public bool bRequired { get; set; }
 
         public string DbType { get; set; }
         public string Direction { get; set; }

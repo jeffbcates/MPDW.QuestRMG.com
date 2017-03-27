@@ -201,6 +201,27 @@ namespace Quest.MasterPricing.Services.Data.Database
             }
             return (new questStatus(Severity.Success));
         }
+        public questStatus Read(DatabaseId databaseId, string storedProcedureName, out Quest.Functional.MasterPricing.StoredProcedure storedProcedure)
+        {
+            // Initialize
+            questStatus status = null;
+            storedProcedure = null;
+
+
+            // Perform read
+            using (MasterPricingEntities dbContext = new MasterPricingEntities())
+            {
+                Quest.Services.Dbio.MasterPricing.StoredProcedures _storedProcedure = null;
+                status = read(dbContext, databaseId, storedProcedureName, out _storedProcedure);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+                storedProcedure = new StoredProcedure();
+                BufferMgr.TransferBuffer(_storedProcedure, storedProcedure);
+            }
+            return (new questStatus(Severity.Success));
+        }
         public questStatus Update(Quest.Functional.MasterPricing.StoredProcedure storedProcedure)
         {
             // Initialize
@@ -469,6 +490,30 @@ namespace Quest.MasterPricing.Services.Data.Database
             {
                 storedProcedureList = dbContext.StoredProcedures.Where(r => r.DatabaseId == databaseId.Id).ToList();
                 if (storedProcedureList == null)
+                {
+                    return (new questStatus(Severity.Error, String.Format("ERROR: {0}.{1}: {2}",
+                            this.GetType().Name, MethodBase.GetCurrentMethod().Name,
+                            String.Format("DatabaseId {0} not found", databaseId.Id))));
+                }
+            }
+            catch (System.Exception ex)
+            {
+                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                        this.GetType().Name, MethodBase.GetCurrentMethod().Name,
+                        ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+            }
+            return (new questStatus(Severity.Success));
+        }
+        private questStatus read(MasterPricingEntities dbContext, DatabaseId databaseId, string storedProcedureName, out Quest.Services.Dbio.MasterPricing.StoredProcedures storedProcedure)
+        {
+            // Initialize
+            storedProcedure = null;
+
+
+            try
+            {
+                storedProcedure = dbContext.StoredProcedures.Where(r => r.DatabaseId == databaseId.Id && r.Name == storedProcedureName).SingleOrDefault();
+                if (storedProcedure == null)
                 {
                     return (new questStatus(Severity.Error, String.Format("ERROR: {0}.{1}: {2}",
                             this.GetType().Name, MethodBase.GetCurrentMethod().Name,

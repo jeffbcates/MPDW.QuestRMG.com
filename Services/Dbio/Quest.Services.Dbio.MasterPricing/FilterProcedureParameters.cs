@@ -16,6 +16,7 @@ namespace Quest.Services.Dbio.MasterPricing
     {
         public int Id { get; set; }
         public int FilterProcedureId { get; set; }
+        public bool bRequired { get; set; }
         public int Offset { get; set; }
         public string ParameterName { get; set; }
         public string DbType { get; set; }

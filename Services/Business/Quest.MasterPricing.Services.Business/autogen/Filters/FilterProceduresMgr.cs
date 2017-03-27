@@ -13,6 +13,7 @@ using Quest.Functional.MasterPricing;
 using Quest.MPDW.Services.Data;
 using Quest.MPDW.Services.Business;
 using Quest.MasterPricing.Services.Data.Filters;
+using Quest.MasterPricing.Services.Business.Database;
 
 
 namespace Quest.MasterPricing.Services.Business.Filters
@@ -226,6 +227,43 @@ namespace Quest.MasterPricing.Services.Business.Filters
             if (!questStatusDef.IsSuccess(status))
             {
                 return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public new questStatus GetStoredProdecureParameters(Quest.Functional.MasterPricing.Database database, string filterProcedureName, out List<FilterProcedureParameter> filterProcedureParameterList)
+        {
+            // Initialize
+            questStatus status = null;
+            filterProcedureParameterList = null;
+
+
+            // Get stored procedure
+            DatabaseId databaseId = new DatabaseId(database.Id);
+            StoredProcedure storedProcedure = null;
+            StoredProceduresMgr storedProceduresMgr = new StoredProceduresMgr(this.UserSession);
+            status = storedProceduresMgr.Read(databaseId, filterProcedureName, out storedProcedure);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+            // Get stored procedure parameters
+            StoredProcedureId storedProcedureId = new StoredProcedureId(storedProcedure.Id);
+            List<StoredProcedureParameter> storedProcedureParameterList = null;
+            StoredProcedureParametersMgr storedProcedureParametersMgr = new StoredProcedureParametersMgr(this.UserSession);
+            storedProcedureParametersMgr.Read(storedProcedureId, out storedProcedureParameterList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+            // Transfer over to filter procedure.
+            filterProcedureParameterList = new List<FilterProcedureParameter>();
+            foreach (StoredProcedureParameter storedProcedureParameter in storedProcedureParameterList)
+            {
+                FilterProcedureParameter filterProcedureParameter = new FilterProcedureParameter();
+                BufferMgr.TransferBuffer(storedProcedureParameter, filterProcedureParameter);
+                filterProcedureParameterList.Add(filterProcedureParameter);
             }
             return (new questStatus(Severity.Success));
         }

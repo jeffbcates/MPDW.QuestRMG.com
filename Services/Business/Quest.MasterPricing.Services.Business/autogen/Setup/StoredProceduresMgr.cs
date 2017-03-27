@@ -160,6 +160,21 @@ namespace Quest.MasterPricing.Services.Business.Database
             }
             return (new questStatus(Severity.Success));
         }
+        public questStatus Read(DatabaseId databaseId, string storedProcedureName, out StoredProcedure storedProcedure)
+        {
+            // Initialize
+            questStatus status = null;
+            storedProcedure = null;
+
+
+            // Read storedProcedure
+            status = _dbStoredProceduresMgr.Read(databaseId, storedProcedureName, out storedProcedure);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
         public questStatus Update(StoredProcedure storedProcedure)
         {
             // Initialize

@@ -72,6 +72,7 @@
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="FilterProcedureId" Type="int" Nullable="false" />
+          <Property Name="bRequired" Type="bit" Nullable="false" />
           <Property Name="Offset" Type="int" Nullable="false" />
           <Property Name="ParameterName" Type="nvarchar(max)" Nullable="false" />
           <Property Name="DbType" Type="nvarchar" MaxLength="50" Nullable="false" />
@@ -552,6 +553,7 @@ warning 6002: The table/view 'MasterPricing.dbo.vwTypeListsList' does not have a
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="FilterProcedureId" Type="Int32" Nullable="false" />
+          <Property Name="bRequired" Type="Boolean" Nullable="false" />
           <Property Name="Offset" Type="Int32" Nullable="false" />
           <Property Name="ParameterName" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="DbType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
@@ -930,6 +932,7 @@ warning 6002: The table/view 'MasterPricing.dbo.vwTypeListsList' does not have a
                 <ScalarProperty Name="DbType" ColumnName="DbType" />
                 <ScalarProperty Name="ParameterName" ColumnName="ParameterName" />
                 <ScalarProperty Name="Offset" ColumnName="Offset" />
+                <ScalarProperty Name="bRequired" ColumnName="bRequired" />
                 <ScalarProperty Name="FilterProcedureId" ColumnName="FilterProcedureId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>

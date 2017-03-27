@@ -333,77 +333,72 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                                 {
                                     return (String.Equals(fi.ParameterName, filterParam.ParameterName, StringComparison.CurrentCultureIgnoreCase));
                                 });
-                                bool bOptionalParameter = false;
                                 if (bulkUpdateFilterItem == null)
                                 {
-                                    // ADO.NET NOT REPORTING PARAMETER AS OPTIONAL.  THEREFORE, PER PHIL, ASSUME IT IS OPTIONAL.
-                                    ////trans.Rollback();
-                                    ////return (new questStatus(Severity.Error, String.Format("ERROR: filter item not found for sproc parameter {0}",
-                                    ////        filterParam.ParameterName)));
-                                    bOptionalParameter = true;
+                                    trans.Rollback();
+                                    return (new questStatus(Severity.Error, String.Format("ERROR: filter item not found for sproc parameter {0}",
+                                            filterParam.ParameterName)));
                                 }
 
                                 // Get the bulk update value.
-                                string updateValue = null;
-                                if (bOptionalParameter)
+                                // NOTE: THIS COULD BE A TROUBLE SPOT.  ORIGINAL REQUIREMENT WAS SINGLE-ENTITY FILTERS ONLY HAD PROCEDURES.  THUS, THOSE FILTER ITEMS
+                                //       WOULD NEVER HAVE NAMES QUALIFIED BY THE ENTITY THEY'RE IN.  BUT, FILTERS WITH ENTITIES THAT HAVE NO COLUMNS IN THE FILTER ITEMS 
+                                //       TECHNICALLY QUALIFY AS 'SINGLE-ENTITY FILTER'.  THUS, IF THE NAME ALONE DOESN'T MATCH.  GO FOR THE ENTITY_NAME AS A MATCH.
+                                BulkUpdateColumnValue bulkUpdateColumnValue = bulkUpdateRequest.Columns.Find(delegate (BulkUpdateColumnValue cv)
                                 {
-                                    updateValue = null; // Assume, because that's always a safe thing to do, this is an optional parameter.
-                                }
-                                else { 
-                                    // NOTE: THIS COULD BE A TROUBLE SPOT.  ORIGINAL REQUIREMENT WAS SINGLE-ENTITY FILTERS ONLY HAD PROCEDURES.  THUS, THOSE FILTER ITEMS
-                                    //       WOULD NEVER HAVE NAMES QUALIFIED BY THE ENTITY THEY'RE IN.  BUT, FILTERS WITH ENTITIES THAT HAVE NO COLUMNS IN THE FILTER ITEMS 
-                                    //       TECHNICALLY QUALIFY AS 'SINGLE-ENTITY FILTER'.  THUS, IF THE NAME ALONE DOESN'T MATCH.  GO FOR THE ENTITY_NAME AS A MATCH.
-                                    BulkUpdateColumnValue bulkUpdateColumnValue = bulkUpdateRequest.Columns.Find(delegate (BulkUpdateColumnValue cv)
+                                    return (cv.Name == bulkUpdateFilterItem.FilterColumn.Name);
+                                });
+                                if (bulkUpdateColumnValue == null)
+                                {
+                                    bulkUpdateColumnValue = bulkUpdateRequest.Columns.Find(delegate (BulkUpdateColumnValue cv)
                                     {
-                                        return (cv.Name == bulkUpdateFilterItem.FilterColumn.Name);
+                                        string[] parts = cv.Name.Split('_');
+                                        if (parts.Length == 2)
+                                        {
+                                            return (parts[0] == bulkUpdateFilterItem.FilterColumn.ParentEntityType.Name && parts[1] == bulkUpdateFilterItem.FilterColumn.Name);
+                                        }
+                                        return (false);
                                     });
-                                    if (bulkUpdateColumnValue == null)
-                                    {
-                                        bulkUpdateColumnValue = bulkUpdateRequest.Columns.Find(delegate (BulkUpdateColumnValue cv)
-                                        {
-                                            string[] parts = cv.Name.Split('_');
-                                            if (parts.Length == 2)
-                                            {
-                                                return (parts[0] == bulkUpdateFilterItem.FilterColumn.ParentEntityType.Name && parts[1] == bulkUpdateFilterItem.FilterColumn.Name);
-                                            }
-                                            return (false);
-                                        });
 
-                                    }
-                                    if (bulkUpdateColumnValue == null)
-                                    {
-                                        return (new questStatus(Severity.Error, String.Format("ERROR: bulk update column value {0} not found in bulk update columns",
-                                                bulkUpdateFilterItem.FilterColumn.Name)));
-                                    }
+                                }
+                                if (bulkUpdateColumnValue == null)
+                                {
+                                    return (new questStatus(Severity.Error, String.Format("ERROR: bulk update column value {0} not found in bulk update columns",
+                                            bulkUpdateFilterItem.FilterColumn.Name)));
+                                }
 
-                                    //  If a value is specified, use it.  If no value, if NULL=true, null it.  Otherwise, use results value.
-                                    if (!string.IsNullOrEmpty(bulkUpdateColumnValue.Value))
+                                // Determine bulk update value to use.
+                                string updateValue = null;
+                                if (bulkUpdateColumnValue.bNull)
+                                {
+                                    updateValue = null;
+                                }
+                                else if (!string.IsNullOrEmpty(bulkUpdateColumnValue.Value))
+                                {
+                                    updateValue = bulkUpdateColumnValue.Value;
+                                }
+                                else if (!filterParam.bRequired)
+                                {
+                                    updateValue = null;
+                                }
+                                else  // Value is required, use results value since a value not specified in bulk updates.
+                                {
+                                    // Indexing not working, but should be ...
+                                    ////updateValue = _dynRow[bulkUpdateColumnValue.Name];
+                                    bool bFound = false;
+                                    foreach (KeyValuePair<string, object> kvp in _dynRow)
                                     {
-                                        updateValue = bulkUpdateColumnValue.Value;
-                                    }
-                                    else if (bulkUpdateColumnValue.bNull)
-                                    {
-                                        updateValue = null;
-                                    }
-                                    else
-                                    {
-                                        // Indexing not working, but should be ...
-                                        ////updateValue = _dynRow[bulkUpdateColumnValue.Name];
-                                        bool bFound = false;
-                                        foreach (KeyValuePair<string, object> kvp in _dynRow)
+                                        if (kvp.Key == bulkUpdateColumnValue.Name)
                                         {
-                                            if (kvp.Key == bulkUpdateColumnValue.Name)
-                                            {
-                                                updateValue = kvp.Value != null ? kvp.Value.ToString() : null;  // Not sure if we go w/ Null here. But, oh well ...
-                                                bFound = true;
-                                                break;
-                                            }
+                                            updateValue = kvp.Value != null ? kvp.Value.ToString() : null;  // Not sure if we go w/ Null here. But, oh well ...
+                                            bFound = true;
+                                            break;
                                         }
-                                        if (! bFound)
-                                        {
-                                            return (new questStatus(Severity.Error, String.Format("ERROR: filter results column {0} not found to use in bulk update operation",
-                                                    bulkUpdateColumnValue.Name)));
-                                        }
+                                    }
+                                    if (!bFound)
+                                    {
+                                        return (new questStatus(Severity.Error, String.Format("ERROR: filter results column {0} not found to use in bulk update operation",
+                                                bulkUpdateColumnValue.Name)));
                                     }
                                 }
 

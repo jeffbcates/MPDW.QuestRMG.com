@@ -1624,14 +1624,14 @@
 <script type="text/javascript">
     function isProcedure(n) {
         if (!_viewstate.Procedures) { return (false); }
-        var b = false;
+        var _p = null;
         $.each(_viewstate.Procedures, function (i, p) {
             if (n == p.Action) {
-                b = true;
+                _p = p;
                 return (false);
             }
         });
-        return (b);
+        return (_p);
     }
 </script>
 
@@ -1679,8 +1679,8 @@
     }
     function loadBulkUpdates(d) {
         clearBulkUpdatesGrid();
-        var bIsUpdateProcedure = isProcedure('Update');
-        if (((_fltFilterItems.NumEntities('table') > 1) || (_fltFilterItems.NumEntities('view') > 0)) && (!bIsUpdateProcedure)) {
+        var updateProcedure = isProcedure('Update');
+        if (((_fltFilterItems.NumEntities('table') > 1) || (_fltFilterItems.NumEntities('view') > 0)) && (!updateProcedure)) {
             _pnlBulkUpdates.Disable();
             $('#pnlBulkUpdateColumns').append('<p class="bulkDisabled">Bulk Updates supported for single entity filters only.  Use a filter procedure.</p>');
             return;
@@ -1694,22 +1694,51 @@
                 DisplayUserMessage('E|FilterItem ' + c.Name + ' not found in view state.  Cannot build Bulk Update grid');
                 return ('');
             }
-            if (bIsUpdateProcedure) {
+            var procedureParameter = null;
+            if (updateProcedure) {
                 if (!itm.ParameterName) {
                     return;
                 }
+                else {
+                    var _pname = itm.ParameterName;
+                    $.each(updateProcedure.Parameters, function (i, p) {
+                        if (_pname.toString().toLowerCase() == p.ParameterName.toString().toLowerCase()) {
+                            procedureParameter = p;
+                            return (false);
+                        }
+                    });
+                    if (!procedureParameter) {
+                        alert('Bulk Update procedure parameter name ' + itm.ParameterName + ' not found in filter procedure parameters');
+                        return;
+                    }
+                }
             }
             _h[_i++] = '<tr>';
-            _h[_i++] = '<td class="td-label">' + (bIsUpdateProcedure ? itm.ParameterName : c.Label) + ':&nbsp;</td>';
+            _h[_i++] = '<td class="td-label">' + (updateProcedure ? itm.ParameterName : c.Label) + ':&nbsp;</td>';
             _h[_i++] = '<td class="td-input">';
             if (c.bIsIdentity) {
-                _h[_i++] = '<input id="bulkUpdate_' + c.Name + '" class="form-control colval" readonly="readonly" placeholder="Identity column" data-item-id="' + itm.Id + '" data-name="' + c.Name + '" data-type="' + c.Type + '" />';
+                if (updateProcedure) {
+                    _h[_i++] = '<input id="bulkUpdate_' + c.Name + '" class="form-control colval"  placeholder="' + (procedureParameter.bRequired == true ? 'Required (Will use Results value if not specified here)' : '') + '" data-item-id="' + itm.Id + '" data-name="' + c.Name + '" data-type="' + c.Type + '" />';
+                }
+                else {
+                    _h[_i++] = '<input id="bulkUpdate_' + c.Name + '" class="form-control colval" readonly="readonly" placeholder="Identity column" data-item-id="' + itm.Id + '" data-name="' + c.Name + '" data-type="' + c.Type + '" />';
+                }
             }
             else if (c.bIsAutoIncrement) {
-                _h[_i++] = '<input id="bulkUpdate_' + c.Name + '" class="form-control colval" readonly="readonly" placeholder="Auto-increment column" data-item-id="' + itm.Id + '" data-name="' + c.Name + '" data-type="' + c.Type + '" />';
+                if (updateProcedure) {
+                    _h[_i++] = '<input id="bulkUpdate_' + c.Name + '" class="form-control colval" readonly="readonly" placeholder="' + (procedureParameter.bRequired == true ? 'Required (Will use Results value if not specified here)' : '') + '" data-item-id="' + itm.Id + '" data-name="' + c.Name + '" data-type="' + c.Type + '" />';
+                }
+                else {
+                    _h[_i++] = '<input id="bulkUpdate_' + c.Name + '" class="form-control colval" readonly="readonly" placeholder="Auto-increment column" data-item-id="' + itm.Id + '" data-name="' + c.Name + '" data-type="' + c.Type + '" />';
+                }
             }
             else if (c.bIsReadOnly) {
-                _h[_i++] = '<input id="bulkUpdate_' + c.Name + '" class="form-control colval" readonly="readonly" placeholder="Read-only column" data-item-id="' + itm.Id + '" data-name="' + c.Name + '" data-type="' + c.Type + '"/>';
+                if (updateProcedure) {
+                    _h[_i++] = '<input id="bulkUpdate_' + c.Name + '" class="form-control colval" readonly="readonly" placeholder="' + (procedureParameter.bRequired == true ? 'Required (Will use Results value if not specified here)' : '') + '" data-item-id="' + itm.Id + '" data-name="' + c.Name + '" data-type="' + c.Type + '"/>';
+                }
+                else {
+                    _h[_i++] = '<input id="bulkUpdate_' + c.Name + '" class="form-control colval" readonly="readonly" placeholder="Read-only column" data-item-id="' + itm.Id + '" data-name="' + c.Name + '" data-type="' + c.Type + '"/>';
+                }
             }
             else if (c.LookupId) {
                 _h[_i++] = '<select id="bulkUpdate_' + c.Name + '" class="form-control colval bulk-lookup" data-id="' + c.LookupId + '" data-item-id="' + itm.Id + '" data-name="' + c.Name + '" data-type="' + c.Type + '" ';
@@ -1719,9 +1748,12 @@
                 _h[_i++] = ' ></select>';
             }
             else if (c.TypeListId) {
-                _h[_i++] = '<input id="bulkUpdate_' + c.Name + '" class="form-control colval bulk-typeList" data-id="' + c.TypeListId + '" data-name="' + c.Name + '" maxlength="' + maxclen(c) + '" data-type="' + c.Type + '" list="bulkUpdateTypeList_' + c.TypeListId + '" placeholder="..." ';
+                _h[_i++] = '<input id="bulkUpdate_' + c.Name + '" class="form-control colval bulk-typeList" data-id="' + c.TypeListId + '" data-name="' + c.Name + '" maxlength="' + maxclen(c) + '" data-type="' + c.Type + '" list="bulkUpdateTypeList_' + c.TypeListId + '" placeholder="' + (updateProcedure && procedureParameter.bRequired == true ? 'Required' : '') + '..." ';
                 if (!c.bAllowDbNull) {
                     _h[_i++] = ' required ';
+                }
+                if (updateProcedure && procedureParameter.bRequired) {
+                    _h[_i++] = ' placeholder="Required (Will use Results value if not specified here)" ';
                 }
                 _h[_i++] = ' />';
             }
@@ -1729,6 +1761,9 @@
                 _h[_i++] = '<input id="bulkUpdate_' + c.Name + '" class="form-control colval" data-name="' + c.Name + '" data-type="' + c.Type + '" ';
                 if (!c.bAllowDbNull) {
                     _h[_i++] = ' required ';
+                }
+                if (updateProcedure && procedureParameter.bRequired) {
+                    _h[_i++] = ' placeholder="Required (Will use Results value if not specified here)" ';
                 }
                 _h[_i++] = ' />';
             }
@@ -1839,6 +1874,7 @@
         var _d = {};
         ColumnData = [];
         var ttrr = $('table.bulkUpdateTable tbody tr');
+        var updateProcedure = isProcedure('Update');
         $.each(ttrr, function (i, tr) {
             var _cv = $(tr).find('input.colval');
             if (!_cv.length) {
