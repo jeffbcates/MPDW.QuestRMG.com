@@ -517,7 +517,8 @@ function qrmgGrid(model) {
     }
     _self._settr = function (dd) {
         if (parseInt(dd.QueryResponse.TotalRecords) == 0) { return; }
-        $(_self._e).parent().find('span.questTableTotalRecordCount').text(dd.QueryResponse.TotalRecords);
+        var t = formatNumber(dd.QueryResponse.TotalRecords);
+        $(_self._e).closest('.questTableSubframe').find('span.questTableTotalRecordCount').text(t);
     }
     _self._setps = function (dd) {
         if (parseInt(dd.QueryResponse.TotalRecords) == 0) { return; }

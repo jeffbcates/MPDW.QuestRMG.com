@@ -58,6 +58,7 @@
                 { name: 'Test', label: 'Test', classes: 'btn-danger', method: 'POST', callback: cbTestFilter, title: 'Test unsaved changes to a filter', uri: '/DataMgr/Filter/Run' },
                 ////{ name: 'TestExport', label: 'Test & Export', classes: 'btn-danger', method: 'POST', callback: cbTestExportFilter, title: 'Test unsaved changes to a filter', uri: '/DataMgr/Filter/Run' },
                 ////{ name: 'ExportAsForm', label: 'Export as Form', classes: 'btn-danger', method: 'POST', callback: cbExportAsForm, title: 'Test unsaved changes to a filter', uri: '/DataMgr/Filter/Run' },
+                { name: 'TestExtendingFilter', label: 'Save as Extended Filter', method: 'POST', callback: cbSaveAsNewFilter, title: 'Save this filter with extended operations name-appended "New"', uri: '/DataMgr/Filters/Save' },
             ],
             actions: [
                 { name: 'RowLimit', label: 'Row Limit', type: 'text', value: '200', title: 'Set max # of rows to return' },
@@ -326,6 +327,48 @@
         }
     }
 
+    function cbSaveAsNewFilter(ud, d) {
+        if (d.questStatus) {
+            if (IsAppSuccess(d) || IsAppWarning(d)) {
+                var _d = _frmFilter.GetData();
+                cbChangeFilter({ Change: true }, _d.FilterId);
+            }
+            return;
+        }
+        $('#tvwSQLFrame').text('');
+
+        ClearUserMessage();
+        if (!_fltFilterItems.Validate()) {
+            DisplayUserMessage('E|Filter items have incorrect settings');
+            return;
+        }
+
+        var _d = {};
+        _d.TablesetId = _viewstate.TablesetId;
+        _d.CurrentTab = _pnlFilters.Tab();
+        _d.Editor = _frmFilter.GetData();
+        if (_d.Editor.FilterId < 1) {
+            DisplayUserMessage('E|Please select a filter');
+            return;
+        }
+        _d.Entities = _tvwFilterEntities.GetData();
+        _d.Items = _fltFilterItems.GetData();
+        _d.Procedures = [];
+        var procInsert = { Action: 'Insert', Name: $('#fltprocsInsert option:selected').text(), Id: $('#fltprocsInsert').val() };
+        _d.Procedures.push(procInsert);
+        var procUpdate = { Action: 'Update', Name: $('#fltprocsUpdate option:selected').text(), Id: $('#fltprocsUpdate').val() };
+        _d.Procedures.push(procUpdate);
+        var procDelete = { Action: 'Delete', Name: $('#fltprocsDelete option:selected').text(), Id: $('#fltprocsDelete').val() };
+        _d.Procedures.push(procDelete);
+
+        // TESTING ONLY.
+        _d.Editor.FilterId = -1;
+        _d.Editor.Id = -1;
+        _d.Editor.Name = _d.Editor.Name + " (New) ";
+
+        $.extend(d, _d);
+        return (true);
+    }
     function cbSaveFilterPanel(ud, d) {
         if (d.questStatus) {
             if (IsAppSuccess(d) || IsAppWarning(d)) {
@@ -369,7 +412,7 @@
                 $('#tvwSQLFrame').empty().text(d.SQL);
                 $('.questTableTotalRecordCount').text('');
                 _grdResults.Load(d);
-                $('.questTableTotalRecordCount').text(d.Results.Items.length);
+                ////$('.questTableTotalRecordCount').text(d.Results.Items.length);
                 prepBulkInserts(d);
                 loadBulkUpdates(d);
                 _viewstate.Results = d.Results;
@@ -468,7 +511,7 @@
                 $('#tvwSQLFrame').empty().text(d.SQL);
                 $('.questTableTotalRecordCount').text('');
                 _grdResults.Load(d);
-                $('.questTableTotalRecordCount').text(d.Results.Items.length);
+                ////$('.questTableTotalRecordCount').text(d.Results.Items.length);
                 loadBulkUpdates(d);
                 _viewstate.Results = d.Results;
             }

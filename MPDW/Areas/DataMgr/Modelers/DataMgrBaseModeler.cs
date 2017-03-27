@@ -510,6 +510,8 @@ namespace Quest.MasterPricing.DataMgr.Modelers
 
             // Transfer model
             filterRunViewModel = new FilterRunViewModel();
+            filterRunViewModel.NumRows = resultsSet.NumRows;
+            filterRunViewModel.QueryResponse.TotalRecords = resultsSet.NumRows;
             filterRunViewModel.Id = runFilterRequest != null ? runFilterRequest.FilterId.Id : BaseId.INVALID_ID;
             filterRunViewModel.FilterId = runFilterRequest != null ? runFilterRequest.FilterId.Id : BaseId.INVALID_ID;
             foreach (KeyValuePair<string, Column> kvp in resultsSet.ResultColumns)

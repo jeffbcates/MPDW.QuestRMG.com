@@ -373,6 +373,7 @@ namespace Quest.MasterPricing.Services.Data.Filters
             questStatus status = null;
             resultSet = null;
             FilterId filterId = new FilterId(filter.Id);
+            int numRows = -1;
 
 
             // Execute SQL
@@ -382,6 +383,19 @@ namespace Quest.MasterPricing.Services.Data.Filters
                 {
                     sqlConnection.Open();
                     string sql = filter.SQL;
+
+                    // klugie: get row count
+                    using (SqlCommand cmd = sqlConnection.CreateCommand())
+                    {
+                        cmd.CommandText = sql;
+                        cmd.CommandType = CommandType.Text;
+                        using (SqlDataReader rdr = cmd.ExecuteReader())
+                        {
+                            DataTable dt = new DataTable();
+                            dt.Load(rdr);
+                            numRows = dt.Rows.Count;
+                        }
+                    }
 
                     // Apply run requests
                     // TODO: TEMPORARY
@@ -401,6 +415,7 @@ namespace Quest.MasterPricing.Services.Data.Filters
                         using (SqlDataReader rdr = cmd.ExecuteReader())
                         {
                             resultSet = new ResultsSet(filterId);
+                            resultSet.NumRows = numRows;
                             Dictionary<string, Column> dynamicType = null;
                             status = BuildType(rdr, out dynamicType);
                             if (!questStatusDef.IsSuccess(status))

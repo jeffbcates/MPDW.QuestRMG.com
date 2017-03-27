@@ -16,6 +16,7 @@ namespace Quest.MasterPricing.DataMgr.Models
         public string Name { get; set; }
         public int FilterId { get; set; }
         public bool bExportToExcel { get; set; }
+        public int NumRows { get; set; }
         public FilterResultsViewModel Results = null;
 
         // Optional. Fill these out if you want to trim down the full filter results.
