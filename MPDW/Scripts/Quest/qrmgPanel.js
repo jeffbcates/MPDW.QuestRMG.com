@@ -189,7 +189,7 @@ function qrmgPanel(model) {
         });
     }
 
-    _self.DoOper = function (n) {
+    _self.DoOper = function (n, a) {
         var _o = _self._getop(n);
         if (!_o) { return; }
         var _d;
@@ -198,7 +198,7 @@ function qrmgPanel(model) {
         }
         if (_o.callback) {
             _d = _self.GetData();
-            var _dd = _o.callback(_o, _d);
+            var _dd = _o.callback(_o, _d, a);
             if (!_dd) { return; }
             if ($.isPlainObject(_dd)) {
                 _d = _dd;

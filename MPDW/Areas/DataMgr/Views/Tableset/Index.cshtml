@@ -58,7 +58,7 @@
                 { name: 'Test', label: 'Test', classes: 'btn-danger', method: 'POST', callback: cbTestFilter, title: 'Test unsaved changes to a filter', uri: '/DataMgr/Filter/Run' },
                 ////{ name: 'TestExport', label: 'Test & Export', classes: 'btn-danger', method: 'POST', callback: cbTestExportFilter, title: 'Test unsaved changes to a filter', uri: '/DataMgr/Filter/Run' },
                 ////{ name: 'ExportAsForm', label: 'Export as Form', classes: 'btn-danger', method: 'POST', callback: cbExportAsForm, title: 'Test unsaved changes to a filter', uri: '/DataMgr/Filter/Run' },
-                { name: 'TestExtendingFilter', label: 'Save as Extended Filter', method: 'POST', callback: cbSaveAsNewFilter, title: 'Save this filter with extended operations name-appended "New"', uri: '/DataMgr/Filters/Save' },
+                { name: 'Extend', label: 'Extend', method: 'POST', callback: cbExtendFilter, title: 'Save this filter with extended operations name-appended "New"', uri: '/DataMgr/Filters/Save' },
             ],
             actions: [
                 { name: 'RowLimit', label: 'Row Limit', type: 'text', value: '200', title: 'Set max # of rows to return' },
@@ -327,49 +327,26 @@
         }
     }
 
-    function cbSaveAsNewFilter(ud, d) {
+    function cbExtendFilter(ud, d, xname) {
+        if (xname) {
+            return (cbSaveFilterPanel(ud, d, true, xname));
+        }
         if (d.questStatus) {
             if (IsAppSuccess(d) || IsAppWarning(d)) {
-                var _d = _frmFilter.GetData();
-                cbChangeFilter({ Change: true }, _d.FilterId);
+                DisplayUserMessage('I|Filter successfully extended.  Select the tableset again in the navbar to load it.');
             }
             return;
         }
-        $('#tvwSQLFrame').text('');
-
-        ClearUserMessage();
-        if (!_fltFilterItems.Validate()) {
-            DisplayUserMessage('E|Filter items have incorrect settings');
-            return;
-        }
-
-        var _d = {};
-        _d.TablesetId = _viewstate.TablesetId;
-        _d.CurrentTab = _pnlFilters.Tab();
-        _d.Editor = _frmFilter.GetData();
-        if (_d.Editor.FilterId < 1) {
-            DisplayUserMessage('E|Please select a filter');
-            return;
-        }
-        _d.Entities = _tvwFilterEntities.GetData();
-        _d.Items = _fltFilterItems.GetData();
-        _d.Procedures = [];
-        var procInsert = { Action: 'Insert', Name: $('#fltprocsInsert option:selected').text(), Id: $('#fltprocsInsert').val() };
-        _d.Procedures.push(procInsert);
-        var procUpdate = { Action: 'Update', Name: $('#fltprocsUpdate option:selected').text(), Id: $('#fltprocsUpdate').val() };
-        _d.Procedures.push(procUpdate);
-        var procDelete = { Action: 'Delete', Name: $('#fltprocsDelete option:selected').text(), Id: $('#fltprocsDelete').val() };
-        _d.Procedures.push(procDelete);
-
-        // TESTING ONLY.
-        _d.Editor.FilterId = -1;
-        _d.Editor.Id = -1;
-        _d.Editor.Name = _d.Editor.Name + " (New) ";
-
-        $.extend(d, _d);
-        return (true);
+        $('#mdlExtendFilter').find('button').unbind('click').on('click', function (e) {
+            $('#mdlExtendFilter').modal('hide');
+            if ($(e.currentTarget).attr('id') == 'btnExtendSave') {
+                var xname = $('#txtExtendFiltername').val();
+                _pnlFilters.DoOper("Extend", xname);
+            }
+        });
+        $('#mdlExtendFilter').modal('show');
     }
-    function cbSaveFilterPanel(ud, d) {
+    function cbSaveFilterPanel(ud, d, bExtend, xname) {
         if (d.questStatus) {
             if (IsAppSuccess(d) || IsAppWarning(d)) {
                 var _d = _frmFilter.GetData();
@@ -389,9 +366,16 @@
         _d.TablesetId = _viewstate.TablesetId;
         _d.CurrentTab = _pnlFilters.Tab();
         _d.Editor = _frmFilter.GetData();
-        if (_d.Editor.FilterId < 1) {
-            DisplayUserMessage('E|Please select a filter');
-            return;
+        if (bExtend) {
+            _d.Editor.Id = -1;
+            _d.Editor.FilterId = -1;
+            _d.Editor.Name = xname ? xname : (_d.Editor.Name + " (Extended)");
+        }
+        else {
+            if (_d.Editor.FilterId < 1) {
+                DisplayUserMessage('E|Please select a filter');
+                return;
+            }
         }
         _d.Entities = _tvwFilterEntities.GetData();
         _d.Items = _fltFilterItems.GetData();
