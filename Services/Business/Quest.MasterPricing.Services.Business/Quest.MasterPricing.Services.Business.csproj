@@ -45,6 +45,7 @@
     <Compile Include="autogen\Filters\FilterOperationsMgr.cs" />
     <Compile Include="autogen\Filters\FilterProcedureParametersMgr.cs" />
     <Compile Include="autogen\Filters\FilterProceduresMgr.cs" />
+    <Compile Include="autogen\Filters\FilterFoldersMgr.cs" />
     <Compile Include="autogen\Filters\FilterViewsMgr.cs" />
     <Compile Include="autogen\Filters\FilterValuesMgr.cs" />
     <Compile Include="autogen\Filters\FilterItemsMgr.cs" />

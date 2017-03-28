@@ -22,6 +22,17 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="80" Nullable="false" />
         </EntityType>
+        <EntityType Name="FilterFolders">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FolderId" Type="int" />
+          <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="Created" Type="datetime2" Precision="7" Nullable="false" />
+          <Property Name="Modified" Type="datetime2" Precision="7" />
+        </EntityType>
         <EntityType Name="FilterItemJoins">
           <Key>
             <PropertyRef Name="Id" />
@@ -103,6 +114,7 @@
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FolderId" Type="int" />
           <Property Name="TablesetId" Type="int" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
           <Property Name="Summary" Type="nvarchar" MaxLength="256" />
@@ -373,6 +385,7 @@ warning 6002: The table/view 'MasterPricing.dbo.vwTypeListsList' does not have a
         <EntityContainer Name="QuestServicesDbioMasterPricingStoreContainer">
           <EntitySet Name="FilterColumns" EntityType="Self.FilterColumns" Schema="DATAMGR" store:Type="Tables" />
           <EntitySet Name="FilterEntityTypes" EntityType="Self.FilterEntityTypes" Schema="DATAMGR" store:Type="Tables" />
+          <EntitySet Name="FilterFolders" EntityType="Self.FilterFolders" Schema="DATAMGR" store:Type="Tables" />
           <EntitySet Name="FilterItemJoins" EntityType="Self.FilterItemJoins" Schema="DATAMGR" store:Type="Tables" />
           <EntitySet Name="FilterItems" EntityType="Self.FilterItems" Schema="DATAMGR" store:Type="Tables" />
           <EntitySet Name="FilterOperations" EntityType="Self.FilterOperations" Schema="DATAMGR" store:Type="Tables" />
@@ -457,6 +470,7 @@ warning 6002: The table/view 'MasterPricing.dbo.vwTypeListsList' does not have a
         <EntityContainer Name="MasterPricingEntities" annotation:LazyLoadingEnabled="true">
           <EntitySet Name="FilterColumns" EntityType="Quest.Services.Dbio.MasterPricing.FilterColumns" />
           <EntitySet Name="FilterEntityTypes" EntityType="Quest.Services.Dbio.MasterPricing.FilterEntityTypes" />
+          <EntitySet Name="FilterFolders" EntityType="Quest.Services.Dbio.MasterPricing.FilterFolders" />
           <EntitySet Name="FilterItemJoins" EntityType="Quest.Services.Dbio.MasterPricing.FilterItemJoins" />
           <EntitySet Name="FilterItems" EntityType="Quest.Services.Dbio.MasterPricing.FilterItems" />
           <EntitySet Name="FilterOperations" EntityType="Quest.Services.Dbio.MasterPricing.FilterOperations" />
@@ -502,6 +516,17 @@ warning 6002: The table/view 'MasterPricing.dbo.vwTypeListsList' does not have a
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="80" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="FilterFolders">
+          <Key>
+            <PropertyRef Name="Id" />
+          </Key>
+          <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FolderId" Type="Int32" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Created" Type="DateTime" Nullable="false" Precision="7" />
+          <Property Name="Modified" Type="DateTime" Precision="7" />
         </EntityType>
         <EntityType Name="FilterItemJoins">
           <Key>
@@ -584,6 +609,7 @@ warning 6002: The table/view 'MasterPricing.dbo.vwTypeListsList' does not have a
             <PropertyRef Name="Id" />
           </Key>
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FolderId" Type="Int32" />
           <Property Name="TablesetId" Type="Int32" Nullable="false" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
           <Property Name="Summary" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
@@ -866,6 +892,18 @@ warning 6002: The table/view 'MasterPricing.dbo.vwTypeListsList' does not have a
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="FilterFolders">
+            <EntityTypeMapping TypeName="Quest.Services.Dbio.MasterPricing.FilterFolders">
+              <MappingFragment StoreEntitySet="FilterFolders">
+                <ScalarProperty Name="Modified" ColumnName="Modified" />
+                <ScalarProperty Name="Created" ColumnName="Created" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="FolderId" ColumnName="FolderId" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="FilterItemJoins">
             <EntityTypeMapping TypeName="Quest.Services.Dbio.MasterPricing.FilterItemJoins">
               <MappingFragment StoreEntitySet="FilterItemJoins">
@@ -955,6 +993,7 @@ warning 6002: The table/view 'MasterPricing.dbo.vwTypeListsList' does not have a
                 <ScalarProperty Name="Summary" ColumnName="Summary" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
                 <ScalarProperty Name="TablesetId" ColumnName="TablesetId" />
+                <ScalarProperty Name="FolderId" ColumnName="FolderId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
               </MappingFragment>
             </EntityTypeMapping>

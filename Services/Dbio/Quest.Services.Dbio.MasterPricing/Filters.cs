@@ -15,6 +15,7 @@ namespace Quest.Services.Dbio.MasterPricing
     public partial class Filters
     {
         public int Id { get; set; }
+        public Nullable<int> FolderId { get; set; }
         public int TablesetId { get; set; }
         public string Name { get; set; }
         public string Summary { get; set; }

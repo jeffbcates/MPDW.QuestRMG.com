@@ -61,7 +61,10 @@
     <Compile Include="EventId.cs" />
     <Compile Include="EntityTypeId.cs" />
     <Compile Include="EntityType.cs" />
+    <Compile Include="FilterFolder.cs" />
     <Compile Include="FilterColumnTablesetColumnId.cs" />
+    <Compile Include="FolderId.cs" />
+    <Compile Include="FilterFolderId.cs" />
     <Compile Include="FilterProcedure.cs" />
     <Compile Include="FilterEntityTypeId.cs" />
     <Compile Include="FilterViewNameIdentifier.cs" />

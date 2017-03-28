@@ -27,6 +27,7 @@ namespace Quest.Services.Dbio.MasterPricing
     
         public virtual DbSet<FilterColumns> FilterColumns { get; set; }
         public virtual DbSet<FilterEntityTypes> FilterEntityTypes { get; set; }
+        public virtual DbSet<FilterFolders> FilterFolders { get; set; }
         public virtual DbSet<FilterItemJoins> FilterItemJoins { get; set; }
         public virtual DbSet<FilterItems> FilterItems { get; set; }
         public virtual DbSet<FilterOperations> FilterOperations { get; set; }

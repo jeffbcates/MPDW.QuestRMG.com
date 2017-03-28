@@ -51,6 +51,7 @@
     <Compile Include="autogen\Filters\DbFilterOperationsMgr.cs" />
     <Compile Include="autogen\Filters\DbFilterProcedureParametersMgr.cs" />
     <Compile Include="autogen\Filters\DbFilterProceduresMgr.cs" />
+    <Compile Include="autogen\Filters\DbFilterFoldersMgr.cs" />
     <Compile Include="autogen\Filters\DbFilterViewsMgr.cs" />
     <Compile Include="autogen\Filters\DbFilterValuesMgr.cs" />
     <Compile Include="autogen\Filters\DbFilterItemsMgr.cs" />
