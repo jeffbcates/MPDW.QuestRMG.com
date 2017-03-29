@@ -13,6 +13,7 @@ using Quest.Functional.MasterPricing;
 using Quest.MasterPricing.Services.Business.Database;
 using Quest.MPDW.Services.Business;
 using Quest.MPDW.Services.Data;
+using Quest.MasterPricing.Services.Business.Filters;
 
 
 namespace Quest.MasterPricing.Database.Modelers
@@ -203,11 +204,60 @@ namespace Quest.MasterPricing.Database.Modelers
             }
 
             // COMMIT TRANSACTION
+            // THIS HAS TO BE COMMITTED HERE TO AVOID DEADLOCKING ON UPDATING THE FILTERS, NEXT.
             status = mgr.CommitTransaction(trans);
             if (!questStatusDef.IsSuccess(status))
             {
                 return (status);
             }
+
+            ////// BEGIN TRANSACTION
+            ////status = mgr.BeginTransaction("MakeRequired_RefreshFilters" + Guid.NewGuid().ToString(), out trans);
+            ////if (!questStatusDef.IsSuccess(status))
+            ////{
+            ////    return (status);
+            ////}
+
+
+            ////// Refresh filters using this sproc.
+            ////List<Quest.Functional.MasterPricing.FilterId> updatedFilterIds = null;
+            ////StoredProceduresMgr storedProceduresMgr = new StoredProceduresMgr(this.UserSession);
+            ////status = storedProceduresMgr.RefreshFilters(storedProcedureId, out updatedFilterIds);
+            ////if (!questStatusDef.IsSuccess(status))
+            ////{
+            ////    mgr.RollbackTransaction(trans);
+            ////    return (status);
+            ////}
+
+
+            ////// COMMIT TRANSACTION
+            ////status = mgr.CommitTransaction(trans);
+            ////if (!questStatusDef.IsSuccess(status))
+            ////{
+            ////    return (status);
+            ////}
+
+
+            ////// TODO: REFACTOR TO GET ALL-IN-ONE TRANSACTION
+            ////foreach (FilterId filterId in updatedFilterIds)
+            ////{
+            ////    Quest.Functional.MasterPricing.Filter filterWithSQL = null;
+            ////    FilterMgr filterMgr = new FilterMgr(this.UserSession);
+            ////    status = filterMgr.GenerateFilterSQL(filterId, out filterWithSQL);
+            ////    if (!questStatusDef.IsSuccess(status))
+            ////    {
+            ////        return (status);
+            ////    }
+
+            ////    // Update filter
+            ////    FiltersMgr filtersMgr = new FiltersMgr(this.UserSession);
+            ////    status = filtersMgr.Update(filterWithSQL);
+            ////    if (!questStatusDef.IsSuccess(status))
+            ////    {
+            ////        return (status);
+            ////    }
+            ////}
+
             return (new questStatus(Severity.Success));
         }
         public questStatus List(ParameterListViewModel viewModel, out ParameterListViewModel parameterListViewModel)

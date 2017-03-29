@@ -1179,6 +1179,22 @@ namespace Quest.MasterPricing.Services.Data.Filters
             }
             return (new questStatus(Severity.Success));
         }
+        public questStatus Read(TablesetId tablesetId, out List<Filter> filterList)
+        {
+            // Initialize
+            questStatus status = null;
+            filterList = null;
+
+
+            // Get all filters for this tableset.
+            DbFiltersMgr dbFiltersMgr = new DbFiltersMgr(this.UserSession);
+            status = dbFiltersMgr.Read(tablesetId, out filterList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
 
         public questStatus Copy(FilterId filterId, out FilterId newFilterId)
         {

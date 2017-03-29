@@ -43,7 +43,7 @@ function qrmgFilter(model) {
     _self._rndritm = function (itm, id) {
         var _id = id || ('fltitm' + itm.name);
         var _h = [], _i = 0;
-        _h[_i++] = '<div id="' + _id + '" data-id="' + itm.Id + '" class="questFilterItem ' + (itm.bHidden ? 'questFilterItemHidden' : '') + '">';
+        _h[_i++] = '<div id="' + _id + '" data-id="' + itm.Id + '" class="questFilterItem ' + (itm.bHidden ? 'questFilterItemHidden' : '') + ' ' + (itm.bBulkUpdateValueRequired ? 'questFilterItemBulkUpdateRequired' : '') + '">';
         _h[_i++] = _self._rndrcol(itm);
         _h[_i++] = _self._rndritmop(itm);
         _h[_i++] = '</div>';
@@ -127,6 +127,12 @@ function qrmgFilter(model) {
         else {
             _h[_i++] = '        <li class="filterItemVisibility">Hidden</li>';
         }
+        if (itm.bBulkUpdateValueRequired) {
+            _h[_i++] = '        <li class="filterItemBulkUpdateRequired">Bulk Update value required</li>';
+        }
+        else {
+            _h[_i++] = '        <li class="filterItemBulkUpdateRequired">Bulk Update value NOT required</li>';
+        }
 
         _h[_i++] = '    </ul>';
         _h[_i++] = '</div>';
@@ -206,6 +212,7 @@ function qrmgFilter(model) {
         _self._bndlbl();
         _self._bndprmnm();
         _self._bnditmvis();
+        _self._bnditmbupd();
         _self._bnditmctrl();
         _self._bnditmvv();
     }
@@ -267,6 +274,19 @@ function qrmgFilter(model) {
             else {
                 $(this).text("Hidden");
                 $(this).closest('.questFilterItem').removeClass("questFilterItemHidden");
+            }
+            _self.Change(true);
+        });
+    }
+    _self._bnditmbupd = function () {
+        $('.filterItemBulkUpdateRequired', _self._e).unbind('click').on('click', function (e) {
+            if ($(this).text().indexOf("NOT") > -1) {
+                $(this).text("Bulk Update value required");
+                $(this).closest('.questFilterItem').addClass("questFilterItemBulkUpdateRequired");
+            }
+            else {
+                $(this).text("Bulk Update value NOT required");
+                $(this).closest('.questFilterItem').removeClass("questFilterItemBulkUpdateRequired");
             }
             _self.Change(true);
         });
@@ -379,7 +399,7 @@ function qrmgFilter(model) {
                 var lbl = _self._mklbl(n);
                 var _key = pn.text + '.' + lbl;
                 _key = _key.replace(/[\[\]']+/g, '').replace(/\./g, '_');
-                var itm = { Id: n.Id, key: _key, name: lbl, title: lbl, data: n, Parent: pn, Operations: n.Operations, Joins: n.Joins, Label: n.Label, ParameterName: n.ParameterName, bHidden: n.bHidden };
+                var itm = { Id: n.Id, key: _key, name: lbl, title: lbl, data: n, Parent: pn, Operations: n.Operations, Joins: n.Joins, Label: n.Label, ParameterName: n.ParameterName, bHidden: n.bHidden, bBulkUpdateValueRequired: n.bBulkUpdateValueRequired };
                 _self.Insert(itm);
             });
         }
@@ -516,6 +536,7 @@ function qrmgFilter(model) {
                 item.ParameterName = pn;
             }
             item.bHidden = $(fi).hasClass('questFilterItemHidden');
+            item.bBulkUpdateValueRequired = $(fi).hasClass('questFilterItemBulkUpdateRequired');
           
             var _data = _self._getdata(fi);
             item.Parent = {};

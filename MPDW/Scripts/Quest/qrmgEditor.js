@@ -224,7 +224,7 @@ function qrmgEditor(model) {
         else if (f.type == 'select') {
             _h[_i++] = '<select type="checkbox" id="' + f._id + '" name="' + f._id + '" ';
             _h[_i++] = _self._rdrfo(f);
-            _h[_i++] = ' class="' + _self._rndrfcc(f) + '"></select>';
+            _h[_i++] = ' class="' + _self._rndrfcc(f) + '"><option value="-1">Select one ...</option></select>';
         }
         else if (f.type == 'radio') {
             _h[_i++] = '<input type="radio" id="' + f._id + '" name="' + f._id + '" ';
@@ -258,6 +258,9 @@ function qrmgEditor(model) {
             _h[_i++] = '<input type="file" id="' + f._id + '" name="' + f._id + '" ';
             _h[_i++] = _self._rdrfo(f);
             _h[_i++] = ' />';
+        }
+        else if (f.type == 'treeview') {
+            _h[_i++] = '<p style="color:red;font-weight:bold;">[ TREEVIEW GOES HERE ]</p>';
         }
         return (_h.join(''));
     }

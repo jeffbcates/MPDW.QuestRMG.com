@@ -13,6 +13,7 @@ using Quest.Functional.MasterPricing;
 using Quest.MPDW.Services.Data;
 using Quest.MPDW.Services.Business;
 using Quest.MasterPricing.Services.Data.Database;
+using Quest.MasterPricing.Services.Business.Filters;
 
 
 namespace Quest.MasterPricing.Services.Business.Database
@@ -271,6 +272,73 @@ namespace Quest.MasterPricing.Services.Business.Database
             if (!questStatusDef.IsSuccess(status))
             {
                 return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+
+        public questStatus RefreshFilters(StoredProcedureId storedProcedureId, out List<FilterId> updatedFilterIds)
+        {
+            // Every filter that uses this stored procedure, refresh it to update the 'Make Required' changes.
+
+            // Initialize
+            questStatus status = null;
+            updatedFilterIds = null;
+
+
+            // Get the database Id of this stored procedure
+            StoredProcedure storedProcedure = null;
+            status = _dbStoredProceduresMgr.Read(storedProcedureId, out storedProcedure);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+            // Get the tablesets using this database
+            DatabaseId databaseId = new DatabaseId(storedProcedure.DatabaseId);
+            List<Tableset> tablesetList = null;
+            TablesetsMgr tablesetsMgr = new TablesetsMgr(this.UserSession);
+            status = tablesetsMgr.Read(databaseId, out tablesetList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+            // Get the filters using these tablesets.  Return the filters we updated.
+            // TODO: OPTIMIZE THIS FOR THE FILTERS RECORD ONLY.  THIS IS A QUICK-FIX IN NEED OF BEING PUBLISHED ASAP.
+            updatedFilterIds = new List<FilterId>();
+            FilterMgr filterMgr = new FilterMgr(this.UserSession);
+            foreach (Tableset tableset in tablesetList)
+            {
+                TablesetId tablesetId = new TablesetId(tableset.Id);
+                List<Filter> filterList = null;
+                status = filterMgr.Read(tablesetId, out filterList);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+
+                // Refresh these filters if not refreshed.
+                foreach (Filter filter in filterList)
+                {
+                    // See if previously refreshed.
+                    FilterId filterId = updatedFilterIds.Find(delegate (FilterId fid) { return (fid.Id == filter.Id); });
+                    if (filterId != null)
+                    {
+                        continue;
+                    }
+
+                    // Update the filter
+                    filterId = new FilterId(filter.Id);
+                    status = filterMgr.Refresh(filterId);
+                    if (!questStatusDef.IsSuccess(status))
+                    {
+                        return (status);
+                    }
+
+                    // Record the Id we updated
+                    filterId = new FilterId(filter.Id);
+                    updatedFilterIds.Add(filterId);
+                }
             }
             return (new questStatus(Severity.Success));
         }

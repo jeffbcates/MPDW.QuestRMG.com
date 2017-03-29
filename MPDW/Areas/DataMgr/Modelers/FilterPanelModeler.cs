@@ -216,6 +216,7 @@ namespace Quest.MasterPricing.DataMgr.Modelers
                 filterItem.Label = filterItemViewModel.Label;
                 filterItem.ParameterName = filterItemViewModel.ParameterName;
                 filterItem.bHidden = filterItemViewModel.bHidden;
+                filterItem.bBulkUpdateValueRequired = filterItemViewModel.bBulkUpdateValueRequired;
 
                 // Joins
                 foreach (FilterItemJoinViewModel filterItemJoinViewModel in filterItemViewModel.Joins)

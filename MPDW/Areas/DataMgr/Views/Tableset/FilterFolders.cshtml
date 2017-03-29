@@ -47,7 +47,8 @@
                 { name: 'TablesetId', hidden: true },
             ],
             operations: [
-                { name: 'List', label: 'List', type: 'tab', title: 'Create a new filter' },
+                { name: 'Explore', label: 'Explore', type: 'tab', title: 'Filter Folder Explorer' },
+                { name: 'New', label: 'New', type: 'tab', title: 'Create a new filter' },
                 { name: 'Entities', label: 'Entities', type: 'tab', title: 'Assign tableset entities to a filter' },
                 { name: 'Items', label: 'Items', type: 'tab', title: 'Designate entity columns and operations' },
                 { name: 'Procedures', label: 'Procedures', type: 'tab', title: 'Establish stored procedures to invoke' },
@@ -56,8 +57,6 @@
                 { name: 'Save', label: 'Save', classes: 'btn-success', method: 'POST', callback: cbSaveFilterPanel, title: 'Save filter entities, items and procedures.' },
                 { name: 'Run', label: 'Run', classes: 'btn-danger', method: 'POST', callback: cbRunFilter, title: 'Run the filter' },
                 { name: 'Test', label: 'Test', classes: 'btn-danger', method: 'POST', callback: cbTestFilter, title: 'Test unsaved changes to a filter', uri: '/DataMgr/Filter/Run' },
-                ////{ name: 'TestExport', label: 'Test & Export', classes: 'btn-danger', method: 'POST', callback: cbTestExportFilter, title: 'Test unsaved changes to a filter', uri: '/DataMgr/Filter/Run' },
-                ////{ name: 'ExportAsForm', label: 'Export as Form', classes: 'btn-danger', method: 'POST', callback: cbExportAsForm, title: 'Test unsaved changes to a filter', uri: '/DataMgr/Filter/Run' },
                 { name: 'Extend', label: 'Extend', method: 'POST', callback: cbExtendFilter, title: 'Save this filter with extended operations name-appended "New"', uri: '/DataMgr/Filters/Save' },
             ],
             actions: [
@@ -65,7 +64,8 @@
                 { name: 'ColLimit', label: 'Column Limit', type: 'text', value: '100', title: 'Set max # of columns to return' },
             ],
             tabs: [
-                { name: 'List', callback: cbTabList },
+                { name: 'Explore', callback: cbTabExplore },
+                { name: 'New', callback: cbTabNew },
                 { name: 'Entities', callback: cbTabEntities, classes: 'overflow-hidden' },
                 { name: 'Items', callback: cbTabItems },
                 { name: 'SQLTab', callback: cbTabSQL },
@@ -77,7 +77,7 @@
             minHeight: '1200px'
         }
         _pnlFilters = new qrmgPanel(pnlFilters);
-        _pnlFilters.Tab('List');
+        _pnlFilters.Tab('New');
         _pnlFilters.SetField('Id', _viewstate.Tableset.Id);
         _pnlFilters.SetField('TablesetId', _viewstate.Tableset.Id);
     }
@@ -108,7 +108,23 @@
         loadFilterProcedures(d.Procedures);
     }
 
-    function cbTabList(ud, d) {
+    function cbTabExplore(ud, d) {
+        if (ud.Init) {
+            var _h = [], _i = 0;
+            _h[_i++] = '<p style="color:red; font-weight:bold;">Filter Folder Explorer treeview goes below ...</p>';
+            _h[_i++] = '<div id="tvwFilterExplorer">';
+            _h[_i++] = '</div>';
+            return (_h.join(''));
+        }
+        else if (ud.Active) {
+            if (ud.Before) {
+                _pnlFilters.Operations(['Entities', 'Items', 'Procedures', 'Save', 'Run', 'Test', 'Extend', 'SQL'], _frmFilter._bROS, true);
+                $('#pnlflt_btnSQLTab').hide();
+                $('#btnCopySQL').hide();
+            }
+        }
+    }
+    function cbTabNew(ud, d) {
         if (ud.Init) {
             var _h = [], _i = 0;
             _h[_i++] = '<div id="frmFilter">';
@@ -118,8 +134,8 @@
         else if (ud.Active) {
             if (ud.Before) {
                 _pnlFilters.Operations(['Save'], null, false);
-                _pnlFilters.Operations(['Run'], _frmFilter._bROS);
-                _pnlFilters.Operations(['Test'], panelChanges());
+                _pnlFilters.Operations(['Entities', 'Items', 'Procedures', 'Save', 'Run'], _frmFilter._bROS);
+                _pnlFilters.Operations(['Test','Extend'], panelChanges());
                 enadisSQLTabButtons();
             }
         }
@@ -640,8 +656,7 @@
                 { name: 'Filler0', label: '', type: 'labelOnly' },
                 { name: 'Filler1', label: '', type: 'labelOnly' },
                 { name: 'Filler2', label: 'OR', type: 'labelOnly', classes: 'pnl-tab-instructions' },
-                { name: 'Filler3', label: '', type: 'labelOnly' },
-                { name: 'Filler4', label: 'Press CLEAR, enter Name and Summary to create a new filter ...', type: 'labelOnly', classes: 'pnl-tab-instructions' },
+                { name: 'Filler3', label: '', type: 'labelOnly' }, { name: 'Filler4', label: 'Enter name and optional summary then SAVE to create a new filter...', type: 'labelOnly', classes: 'pnl-tab-instructions' },
                 { name: 'Name', label: 'Name', required: true, maxlength: 256, size: 55 },
                 { name: 'Summary', label: 'Summary', maxlength: 256, size: 55 },
             ],
@@ -686,6 +701,7 @@
                 _viewstate.Procedures = d.Procedures;
                 setPanelContext(d.Id);
                 enadisPanels(true);
+                _pnlFilters.Operations(['Entities', 'Items', 'Procedures', 'Save', 'Run', 'Test', 'Extend', 'SQL'], true, true);
             }
             else {
                 _viewstate.Entities = [];
@@ -1744,25 +1760,9 @@
             _h[_i++] = '<tr>';
             _h[_i++] = '<td class="td-label">' + (updateProcedure ? itm.ParameterName : c.Label) + ':&nbsp;</td>';
             _h[_i++] = '<td class="td-input">';
-
-            var _placeholder = '';
-            if (updateProcedure) {
-                if (procedureParameter.bRequired) {
-                    _placeholder = 'Parameter is required.  ';
-                }
-                else {
-                    _placeholder = 'Parameter is optional.  ';
-                }
-                if (itm.bBulkUpdateValueRequired) {
-                    _placeholder += 'You MUST enter a value.';
-                }
-                else {
-                    _placeholder += 'If you do not enter a value, the results value will be used.';
-                }
-            }
             if (c.bIsIdentity) {
                 if (updateProcedure) {
-                    _h[_i++] = '<input id="bulkUpdate_' + c.Name + '" class="form-control colval"  placeholder="' + _placeholder + '" data-item-id="' + itm.Id + '" data-name="' + c.Name + '" data-type="' + c.Type + '" />';
+                    _h[_i++] = '<input id="bulkUpdate_' + c.Name + '" class="form-control colval"  placeholder="' + (procedureParameter.bRequired == true ? 'Required (Will use Results value if not specified here)' : '') + '" data-item-id="' + itm.Id + '" data-name="' + c.Name + '" data-type="' + c.Type + '" />';
                 }
                 else {
                     _h[_i++] = '<input id="bulkUpdate_' + c.Name + '" class="form-control colval" readonly="readonly" placeholder="Identity column" data-item-id="' + itm.Id + '" data-name="' + c.Name + '" data-type="' + c.Type + '" />';
@@ -1770,7 +1770,7 @@
             }
             else if (c.bIsAutoIncrement) {
                 if (updateProcedure) {
-                    _h[_i++] = '<input id="bulkUpdate_' + c.Name + '" class="form-control colval" readonly="readonly" placeholder="' + _placeholder + '" data-item-id="' + itm.Id + '" data-name="' + c.Name + '" data-type="' + c.Type + '" />';
+                    _h[_i++] = '<input id="bulkUpdate_' + c.Name + '" class="form-control colval" readonly="readonly" placeholder="' + (procedureParameter.bRequired == true ? 'Required (Will use Results value if not specified here)' : '') + '" data-item-id="' + itm.Id + '" data-name="' + c.Name + '" data-type="' + c.Type + '" />';
                 }
                 else {
                     _h[_i++] = '<input id="bulkUpdate_' + c.Name + '" class="form-control colval" readonly="readonly" placeholder="Auto-increment column" data-item-id="' + itm.Id + '" data-name="' + c.Name + '" data-type="' + c.Type + '" />';
@@ -1778,7 +1778,7 @@
             }
             else if (c.bIsReadOnly) {
                 if (updateProcedure) {
-                    _h[_i++] = '<input id="bulkUpdate_' + c.Name + '" class="form-control colval" readonly="readonly" placeholder="' + _placeholder + '" data-item-id="' + itm.Id + '" data-name="' + c.Name + '" data-type="' + c.Type + '"/>';
+                    _h[_i++] = '<input id="bulkUpdate_' + c.Name + '" class="form-control colval" readonly="readonly" placeholder="' + (procedureParameter.bRequired == true ? 'Required (Will use Results value if not specified here)' : '') + '" data-item-id="' + itm.Id + '" data-name="' + c.Name + '" data-type="' + c.Type + '"/>';
                 }
                 else {
                     _h[_i++] = '<input id="bulkUpdate_' + c.Name + '" class="form-control colval" readonly="readonly" placeholder="Read-only column" data-item-id="' + itm.Id + '" data-name="' + c.Name + '" data-type="' + c.Type + '"/>';
@@ -1796,7 +1796,9 @@
                 if (!c.bAllowDbNull) {
                     _h[_i++] = ' required ';
                 }
-                _h[_i++] = ' placeholder="' + _placeholder + '" ';
+                if (updateProcedure && procedureParameter.bRequired) {
+                    _h[_i++] = ' placeholder="Required (Will use Results value if not specified here)" ';
+                }
                 _h[_i++] = ' />';
             }
             else {
@@ -1804,7 +1806,9 @@
                 if (!c.bAllowDbNull) {
                     _h[_i++] = ' required ';
                 }
-                _h[_i++] = ' placeholder="' + _placeholder + '" ';
+                if (updateProcedure && procedureParameter.bRequired) {
+                    _h[_i++] = ' placeholder="Required (Will use Results value if not specified here)" ';
+                }
                 _h[_i++] = ' />';
             }
             _h[_i++] = '</td>';

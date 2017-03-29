@@ -442,6 +442,15 @@ namespace Quest.MasterPricing.DataMgr.Modelers
 
             return (new questStatus(Severity.Success));
         }
+
+        public questStatus FormatDynatreeNode(FilterFolder filterFolder, out DynatreeNode dynatreeNode)
+        {
+            // Initialize 
+            dynatreeNode = null;
+
+
+            return (new questStatus(Severity.Success));
+        }
         public string GetColumnDataType(Column column)
         {
             StringBuilder sbIcons = new StringBuilder("");

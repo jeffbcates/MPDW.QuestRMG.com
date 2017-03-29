@@ -97,11 +97,74 @@ namespace Quest.MasterPricing.Services.Business.Filters
                 }
 
 
+                // Save the filter
+                status = Save(trans, filterId, filter);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    mgr.RollbackTransaction(trans);
+                    return (status);
+                }
+
+
+                // COMMIT TRANSACTION
+                status = mgr.CommitTransaction(trans);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+
+                // TODO: REFACTOR TO GET ALL-IN-ONE TRANSACTION
+                // Generate filter SQL
+                Filter filterWithSQL = null;
+                DbFilterMgr dbFilterMgr = new DbFilterMgr(this.UserSession);
+                status = dbFilterMgr.GenerateFilterSQL(filterId, out filterWithSQL);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+
+                // Update filter
+                FiltersMgr filtersMgr = new FiltersMgr(this.UserSession);
+                status = filtersMgr.Update(filterWithSQL);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+            }
+            catch (System.Exception ex)
+            {
+                if (trans != null)
+                {
+                    mgr.RollbackTransaction(trans);
+                }
+                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                        this.GetType().Name, MethodBase.GetCurrentMethod().Name,
+                        ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus Save(DbMgrTransaction trans, FilterId filterId, Filter filter)
+        {
+            // Initialize 
+            questStatus status = null;
+            Mgr mgr = new Mgr(this.UserSession);
+            ColumnsMgr columnMgr = new ColumnsMgr(this.UserSession);
+
+
+            try
+            {
+                // Validate filter
+                status = Verify(filterId, filter);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+
+
                 // Remove filter entities, items and values.  Also, tables and columns.
                 status = _dbFilterMgr.Clear(trans, filterId);
                 if (!questStatusDef.IsSuccess(status))
                 {
-                    mgr.RollbackTransaction(trans);
                     return (status);
                 }
 
@@ -114,7 +177,6 @@ namespace Quest.MasterPricing.Services.Business.Filters
                     status = filterTablesMgr.Create(trans, filterTable, out filterTableId);
                     if (!questStatusDef.IsSuccess(status))
                     {
-                        mgr.RollbackTransaction(trans);
                         return (status);
                     }
                     filterTable.Id = filterTableId.Id;
@@ -129,7 +191,6 @@ namespace Quest.MasterPricing.Services.Business.Filters
                     status = filterViewsMgr.Create(trans, _filterView, out filterViewId);
                     if (!questStatusDef.IsSuccess(status))
                     {
-                        mgr.RollbackTransaction(trans);
                         return (status);
                     }
                     _filterView.Id = filterViewId.Id;
@@ -150,7 +211,6 @@ namespace Quest.MasterPricing.Services.Business.Filters
                             status = dbFilterMgr.GetTablesetTable(filterColumn, out tablesetTable);
                             if (!questStatusDef.IsSuccess(status))
                             {
-                                mgr.RollbackTransaction(trans);
                                 return (status);
                             }
                             FilterTable filterTable = filter.FilterTableList.Find(delegate (FilterTable t) { return (t.Schema == tablesetTable.Schema && t.Name == tablesetTable.Name); });
@@ -167,7 +227,6 @@ namespace Quest.MasterPricing.Services.Business.Filters
                             status = dbFilterMgr.GetTablesetView(filterColumn, out tablesetView);
                             if (!questStatusDef.IsSuccess(status))
                             {
-                                mgr.RollbackTransaction(trans);
                                 return (status);
                             }
                             FilterView filterView = filter.FilterViewList.Find(delegate (FilterView v) { return (v.Schema == tablesetView.Schema && v.Name == tablesetView.Name); });
@@ -190,7 +249,6 @@ namespace Quest.MasterPricing.Services.Business.Filters
                     status = filterColumnsMgr.Create(trans, filterColumn, out filterColumnId);
                     if (!questStatusDef.IsSuccess(status))
                     {
-                        mgr.RollbackTransaction(trans);
                         return (status);
                     }
                     filterColumn.Id = filterColumnId.Id;
@@ -212,7 +270,6 @@ namespace Quest.MasterPricing.Services.Business.Filters
                         status = dbFilterMgr.GetFilterColumn(filter, filterItem, out filterColumn);
                         if (!questStatusDef.IsSuccess(status))
                         {
-                            mgr.RollbackTransaction(trans);
                             return (status);
                         }
                         filterItem.FilterEntityId = filterColumn.Id;
@@ -224,7 +281,6 @@ namespace Quest.MasterPricing.Services.Business.Filters
                     status = filterItemsMgr.Create(trans, filterItem, out filterItemId);
                     if (!questStatusDef.IsSuccess(status))
                     {
-                        mgr.RollbackTransaction(trans);
                         return (status);
                     }
                     filterItem.Id = filterItemId.Id;
@@ -246,7 +302,6 @@ namespace Quest.MasterPricing.Services.Business.Filters
                             status = getJoinTarget(tablesetColumnId, out tablesetTable, out tablesetView);
                             if (!questStatusDef.IsSuccess(status))
                             {
-                                mgr.RollbackTransaction(trans);
                                 return (status);
                             }
                             filterItemJoin.TargetEntityTypeId = tablesetTable == null ? FilterEntityType.View : FilterEntityType.Table;
@@ -270,7 +325,6 @@ namespace Quest.MasterPricing.Services.Business.Filters
                                 FilterTable filterTable = filter.FilterTableList.Find(delegate (FilterTable t) { return (filterColumn.FilterEntityId == t.Id); });
                                 if (filterTable == null)
                                 {
-                                    mgr.RollbackTransaction(trans);
                                     return (new questStatus(Severity.Error, String.Format("ERROR: building Join on {0}, FilterTable {1} not found",
                                             filterItemJoin.Identifier, filterColumn.FilterEntityId)));
                                 }
@@ -282,7 +336,6 @@ namespace Quest.MasterPricing.Services.Business.Filters
                                 FilterView filterView = filter.FilterViewList.Find(delegate (FilterView v) { return (filterColumn.FilterEntityId == v.Id); });
                                 if (filterView == null)
                                 {
-                                    mgr.RollbackTransaction(trans);
                                     return (new questStatus(Severity.Error, String.Format("ERROR: building Join on {0}, FilterView {1} not found",
                                             filterItemJoin.Identifier, filterColumn.FilterEntityId)));
                                 }
@@ -300,7 +353,6 @@ namespace Quest.MasterPricing.Services.Business.Filters
                         status = filterItemJoinsMgr.Create(trans, filterItemJoin, out filterItemJoinId);
                         if (!questStatusDef.IsSuccess(status))
                         {
-                            mgr.RollbackTransaction(trans);
                             return (status);
                         }
                     }
@@ -314,7 +366,6 @@ namespace Quest.MasterPricing.Services.Business.Filters
                         status = filterOperationsMgr.Create(trans, filterOperation, out filterOperationId);
                         if (!questStatusDef.IsSuccess(status))
                         {
-                            mgr.RollbackTransaction(trans);
                             return (status);
                         }
 
@@ -326,7 +377,6 @@ namespace Quest.MasterPricing.Services.Business.Filters
                             status = filterValuesMgr.Create(trans, filterValue, out filterValueId);
                             if (!questStatusDef.IsSuccess(status))
                             {
-                                mgr.RollbackTransaction(trans);
                                 return (status);
                             }
                         }
@@ -339,14 +389,13 @@ namespace Quest.MasterPricing.Services.Business.Filters
                 status = GetFilterDatabase(filterId, out database);
                 if (!questStatusDef.IsSuccess(status))
                 {
-                    mgr.RollbackTransaction(trans);
                     return (status);
                 }
                 // NOTE: business rules reads in procedure parameters and writes them.
                 FilterProceduresMgr filterProceduresMgr = new FilterProceduresMgr(this.UserSession);
                 foreach (FilterProcedure filterProcedure in filter.FilterProcedureList)
                 {
-                    if(string.IsNullOrEmpty(filterProcedure.Name))
+                    if (string.IsNullOrEmpty(filterProcedure.Name))
                     {
                         continue;
                     }
@@ -355,41 +404,15 @@ namespace Quest.MasterPricing.Services.Business.Filters
                     status = filterProceduresMgr.Create(trans, database, filterProcedure, out filterProcedureId);
                     if (!questStatusDef.IsSuccess(status))
                     {
-                        mgr.RollbackTransaction(trans);
                         return (status);
                     }
                 }
 
-
-                // COMMIT TRANSACTION
-                status = mgr.CommitTransaction(trans);
-                if (!questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
-
-                // Generate filter SQL
-                Filter filterWithSQL = null;
-                status = dbFilterMgr.GenerateFilterSQL(filterId, out filterWithSQL);
-                if (!questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
-
-                // Update filter
-                FiltersMgr filtersMgr = new FiltersMgr(this.UserSession);
-                status = filtersMgr.Update(filterWithSQL);
-                if (!questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
+                // NOTE: YOU STILL HAVE TO UPDATE THE FILTER'S SQL.  BUT, CAN'T HERE, B/C YOU'RE IN A TRANSACTION.
+                // TODO: REFACTOR SO YOU CAN, BUT GOTTA GET A PARAMETERS MAKE-REQUIRED UPDATE OUT THERE FIRST.
             }
             catch (System.Exception ex)
             {
-                if (trans != null)
-                {
-                    mgr.RollbackTransaction(trans);
-                }
                 return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                         this.GetType().Name, MethodBase.GetCurrentMethod().Name,
                         ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
@@ -492,18 +515,25 @@ namespace Quest.MasterPricing.Services.Business.Filters
             }
             return (new questStatus(Severity.Success));
         }
+        public questStatus GetFilter(DbMgrTransaction trans, FilterId filterId, out Filter filter)
+        {
+            // Initialize 
+            questStatus status = null;
+            filter = null;
+
+
+            status = _dbFilterMgr.GetFilter(trans, filterId, out filter);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
         public questStatus Clear(FilterId filterId)
         {
             return (_dbFilterMgr.Clear(filterId));
         }
-        public questStatus GenerateFilterSQL(FilterId filterId, out Filter filter)
-        {
-            // TODO: business rules about what can/cannot be queried.
 
-
-            // Generate SQL.
-            return (_dbFilterMgr.GenerateFilterSQL(filterId, out filter));
-        }
         public questStatus GenerateFilterSQL(Filter filter, out Filter filterWithSQL)
         {
             // TODO: business rules about what can/cannot be queried.
@@ -640,6 +670,22 @@ namespace Quest.MasterPricing.Services.Business.Filters
             }
             return (new questStatus(Severity.Success));
         }
+        public questStatus Read(TablesetId tablesetId, out List<Filter> filterList)
+        {
+            // Initialize
+            questStatus status = null;
+            filterList = null;
+
+            // Get all filters for this tableset.
+            DbFilterMgr dbFilterMgr = new DbFilterMgr(this.UserSession);
+            status = dbFilterMgr.Read(tablesetId, out filterList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+
         public questStatus Delete(DbMgrTransaction trans, FilterId filterId)
         {
             // Initialize
@@ -668,6 +714,34 @@ namespace Quest.MasterPricing.Services.Business.Filters
             {
                 return (status);
             }
+            return (new questStatus(Severity.Success));
+        }
+        
+        public questStatus Refresh( FilterId filterId)
+        {
+            // TODO: OPTIMIZE
+
+            // Initialize
+            questStatus status = null;
+            Filter filter = null;
+
+
+            // Get the filter.
+            status = GetFilter(filterId, out filter);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+            // Save the filter
+            status = Save(filterId, filter);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+            // TODO: Update the filter SQL - WHEN all this can be done in one transaction.
+
             return (new questStatus(Severity.Success));
         }
         #endregion

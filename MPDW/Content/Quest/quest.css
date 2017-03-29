@@ -853,6 +853,7 @@ pnlbtn:active {
 .filterItemDropdownMenu {
   color: #002f63;
   padding: 5px;
+  min-width: 250px;
 }
 .filterItemDropdownMenu li {
     font-size: 16px;

@@ -15,7 +15,7 @@ using Quest.MPDW.Services.Business;
 using Quest.MasterPricing.Services.Data.FilterFolders;
 
 
-namespace Quest.MasterPricing.Services.Business.FilterFolders
+namespace Quest.MasterPricing.Services.Business.Filters
 {
     public class FilterFoldersMgr : MgrSessionBased
     {

@@ -94,6 +94,60 @@ namespace Quest.MasterPricing.DataMgr
             return View(dataMgrTablesetViewModel);
         }
         [HttpGet]
+        public ActionResult FilterFolders(DataMgrTablesetViewModel viewModel)
+        {
+            questStatus status = null;
+            DataMgrTablesetViewModel dataMgrTablesetViewModel = null;
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Log Operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = LogOperation();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                dataMgrTablesetViewModel = new DataMgrTablesetViewModel(this.UserSession, viewModel);
+                dataMgrTablesetViewModel.questStatus = status;
+                return View(dataMgrTablesetViewModel);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Authorize
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = Authorize(viewModel._ctx);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                dataMgrTablesetViewModel = new DataMgrTablesetViewModel(this.UserSession, viewModel);
+                dataMgrTablesetViewModel.questStatus = status;
+                return View(dataMgrTablesetViewModel);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Redirect to Tablesets if no tablesetId specified.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            if (viewModel.Id < BaseId.VALID_ID)
+            {
+                return (RedirectToAction("Index", "DataMgr", PropagateQueryString(Request)));
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Read tableset data management info.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            TablesetId tablesetId = new TablesetId(viewModel.Id);
+            TablesetDataModeler tablesetDataModeler = new TablesetDataModeler(this.Request, this.UserSession, viewModel);
+            status = tablesetDataModeler.Read(tablesetId, out dataMgrTablesetViewModel);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                dataMgrTablesetViewModel = new DataMgrTablesetViewModel(this.UserSession, viewModel);
+                dataMgrTablesetViewModel.questStatus = status;
+                return View(dataMgrTablesetViewModel);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Return view.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            return View(dataMgrTablesetViewModel);
+        }
+        [HttpGet]
         public ActionResult List(BaseUserSessionViewModel baseUserSessionViewModel)
         {
             // Initialize

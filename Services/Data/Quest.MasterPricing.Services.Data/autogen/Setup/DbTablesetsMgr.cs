@@ -158,6 +158,56 @@ namespace Quest.MasterPricing.Services.Data.Database
             }
             return (new questStatus(Severity.Success));
         }
+        public questStatus Read(DbMgrTransaction trans, DatabaseId databaseId, out List<Quest.Functional.MasterPricing.Tableset> tablesetList)
+        {
+            // Initialize
+            questStatus status = null;
+            tablesetList = null;
+
+
+            // Perform read
+            List<Quest.Services.Dbio.MasterPricing.Tablesets> _tablesetList = null;
+            status = read((MasterPricingEntities)trans.DbContext, databaseId, out _tablesetList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            tablesetList = new List<Quest.Functional.MasterPricing.Tableset>();
+            foreach (Quest.Services.Dbio.MasterPricing.Tablesets _tableSet in _tablesetList)
+            {
+                Quest.Functional.MasterPricing.Tableset tableset = new Tableset();
+                BufferMgr.TransferBuffer(_tableSet, tableset);
+                tablesetList.Add(tableset);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus Read(DatabaseId databaseId, out List<Quest.Functional.MasterPricing.Tableset> tablesetList)
+        {
+            // Initialize
+            questStatus status = null;
+            tablesetList = null;
+
+
+            // Perform read
+            using (MasterPricingEntities dbContext = new MasterPricingEntities())
+            {
+                List<Quest.Services.Dbio.MasterPricing.Tablesets> _tablesetList = null;
+                status = read(dbContext, databaseId, out _tablesetList);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+                tablesetList = new List<Tableset>();
+                foreach (Quest.Services.Dbio.MasterPricing.Tablesets _tableSet in _tablesetList)
+                {
+                    Quest.Functional.MasterPricing.Tableset tableSet = new Quest.Functional.MasterPricing.Tableset();
+                    BufferMgr.TransferBuffer(_tableSet, tableSet);
+                    tablesetList.Add(tableSet);
+                }
+            }
+            return (new questStatus(Severity.Success));
+        }
+
         public questStatus Update(Quest.Functional.MasterPricing.Tableset tableset)
         {
             // Initialize
@@ -531,6 +581,30 @@ namespace Quest.MasterPricing.Services.Data.Database
                     return (new questStatus(Severity.Error, String.Format("ERROR: {0}.{1}: {2}",
                             this.GetType().Name, MethodBase.GetCurrentMethod().Name,
                             String.Format("Name {0} not found", name))));
+                }
+            }
+            catch (System.Exception ex)
+            {
+                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                        this.GetType().Name, MethodBase.GetCurrentMethod().Name,
+                        ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+            }
+            return (new questStatus(Severity.Success));
+        }
+        private questStatus read(MasterPricingEntities dbContext, DatabaseId databaseId, out List<Quest.Services.Dbio.MasterPricing.Tablesets> tablesetList)
+        {
+            // Initialize
+            tablesetList = null;
+
+
+            try
+            {
+                tablesetList = dbContext.Tablesets.Where(r => r.DatabaseId == databaseId.Id).ToList();
+                if (tablesetList == null)
+                {
+                    return (new questStatus(Severity.Error, String.Format("ERROR: {0}.{1}: {2}",
+                            this.GetType().Name, MethodBase.GetCurrentMethod().Name,
+                            String.Format("DatabaseId {0} not found", databaseId.Id))));
                 }
             }
             catch (System.Exception ex)

@@ -6,6 +6,7 @@ using System.Web.Mvc;
 using Quest.MPDW.Controllers;
 using Quest.Util.Status;
 using Quest.Util.Buffer;
+using Quest.Util.Data;
 using Quest.Functional.ASM;
 using Quest.Functional.FMS;
 using Quest.MPDW.Services.Data;
@@ -13,11 +14,12 @@ using Quest.MPDW.Models;
 using Quest.MPDW.Modelers;
 using Quest.MasterPricing.DataMgr.Models;
 using Quest.MasterPricing.DataMgr.Modelers;
+using Quest.Functional.MasterPricing;
 
 
 namespace Quest.MasterPricing.DataMgr
 {
-    public class TablesetsController : DataMgrBaseController
+    public class FolderController : DataMgrBaseController
     {
         #region Declarations
         /*==================================================================================================================================
@@ -38,7 +40,7 @@ namespace Quest.MasterPricing.DataMgr
          * GET Methods
          *=================================================================================================================================*/
         [HttpGet]
-        public ActionResult List(BaseUserSessionViewModel baseUserSessionViewModel)
+        public ActionResult Read(FilterFolderViewModel viewModel)
         {
             // Initialize
             questStatus status = null;
@@ -57,7 +59,7 @@ namespace Quest.MasterPricing.DataMgr
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Authorize
              *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = Authorize(baseUserSessionViewModel._ctx);
+            status = Authorize(viewModel._ctx);
             if (!questStatusDef.IsSuccess(status))
             {
                 userMessageModeler = new UserMessageModeler(status);
@@ -65,12 +67,12 @@ namespace Quest.MasterPricing.DataMgr
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
-             * Get user's tablesets.
+             * Get filter folders
              *---------------------------------------------------------------------------------------------------------------------------------*/
-            UserId userId = new UserId(this.UserSession.UserId);
-            TablesetListViewModel tablesetListViewModel = null;
-            TablesetModeler tablesetModeler = new TablesetModeler(this.Request, this.UserSession);
-            status = tablesetModeler.List(userId, out tablesetListViewModel);
+            FolderId folderId = new FolderId(viewModel.Id);
+            FilterFolderViewModel filterFolderViewModel = null;
+            FilterFolderModeler filterFolderModeler = new FilterFolderModeler(this.Request, this.UserSession);
+            status = filterFolderModeler.Read(viewModel, out filterFolderViewModel);
             if (!questStatusDef.IsSuccess(status))
             {
                 userMessageModeler = new UserMessageModeler(status);
@@ -81,8 +83,8 @@ namespace Quest.MasterPricing.DataMgr
              * Return data.
              *---------------------------------------------------------------------------------------------------------------------------------*/
             status = new questStatus(Severity.Success);
-            tablesetListViewModel.questStatus = status;
-            return Json(tablesetListViewModel, JsonRequestBehavior.AllowGet);
+            filterFolderViewModel.questStatus = status;
+            return Json(filterFolderViewModel, JsonRequestBehavior.AllowGet);
         }
 
         #region Options
@@ -98,6 +100,51 @@ namespace Quest.MasterPricing.DataMgr
         /*==================================================================================================================================
          * POST Methods
          *=================================================================================================================================*/
+        [HttpPost]
+        public ActionResult Save(FilterFolderViewModel filterFolderViewModel)
+        {
+            questStatus status = null;
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Log Operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = LogOperation();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                filterFolderViewModel.questStatus = status;
+                return Json(filterFolderViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Authorize
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = Authorize(filterFolderViewModel._ctx);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                filterFolderViewModel.questStatus = status;
+                return Json(filterFolderViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Perform operation.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            bool bInitialCreation = filterFolderViewModel.Id < BaseId.VALID_ID ? true : false;
+            FilterFolderModeler filterFolderModeler = new FilterFolderModeler(this.Request, this.UserSession);
+            status = filterFolderModeler.Save(filterFolderViewModel);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                filterFolderViewModel.questStatus = status;
+                return Json(filterFolderViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Return result.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = new questStatus(Severity.Success, "Folder successfully" + (bInitialCreation ? " created" : " updated"));
+            filterFolderViewModel.questStatus = status;
+            return Json(filterFolderViewModel, JsonRequestBehavior.AllowGet);
+        }
         #endregion
 
 
