@@ -104,6 +104,8 @@ namespace Quest.MasterPricing.DataMgr
         public ActionResult Save(FilterPanelViewModel viewModel)
         {
             questStatus status = null;
+            JavaScriptSerializer javaScriptSerializer = null;
+
 
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Log Operation
@@ -128,14 +130,44 @@ namespace Quest.MasterPricing.DataMgr
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Perform operation.
              *---------------------------------------------------------------------------------------------------------------------------------*/
+            bool bHaveEditor = false;
+            if (viewModel.Entities.Count == 0)
+            {
+                if (Request.Form["Entities"] != null)
+                {
+                    string entities = Request.Form["Entities"].ToString();
+                    javaScriptSerializer = javaScriptSerializer != null ? javaScriptSerializer : new JavaScriptSerializer();
+                    List<BootstrapTreenodeViewModel> entitiesList = javaScriptSerializer.Deserialize<List<BootstrapTreenodeViewModel>>(entities);
+                    viewModel.Entities = entitiesList;
+                }
+                if (Request.Form["Editor"] != null)
+                {
+                    string editor = Request.Form["Editor"].ToString();
+                    javaScriptSerializer = javaScriptSerializer != null ? javaScriptSerializer : new JavaScriptSerializer();
+                    FilterEditorViewModel _editor = javaScriptSerializer.Deserialize<FilterEditorViewModel>(editor);
+                    viewModel.Editor = _editor;
+
+                    bHaveEditor = true;
+                }
+            }
             if (viewModel.Items.Count == 0)
             {
                 if (Request.Form["Items"] != null)
                 {
                     string items = Request.Form["Items"].ToString();
-                    JavaScriptSerializer javaScriptSerializer = new JavaScriptSerializer();
+                    javaScriptSerializer = javaScriptSerializer != null ? javaScriptSerializer : new JavaScriptSerializer();
                     List<FilterItemViewModel> itemsList = javaScriptSerializer.Deserialize<List<FilterItemViewModel>>(items);
                     viewModel.Items = itemsList;
+                }
+                if (Request.Form["Editor"] != null)
+                {
+                    if (! bHaveEditor)
+                    {
+                        string editor = Request.Form["Editor"].ToString();
+                        javaScriptSerializer = javaScriptSerializer != null ? javaScriptSerializer : new JavaScriptSerializer();
+                        FilterEditorViewModel _editor = javaScriptSerializer.Deserialize<FilterEditorViewModel>(editor);
+                        viewModel.Editor = _editor;
+                    }
                 }
             }
             FilterPanelModeler filterPanelModeler = new FilterPanelModeler(Request, this.UserSession, viewModel);
