@@ -178,6 +178,7 @@
   <ItemGroup>
     <Content Include="Database\MasterPricing_20170220001.txt" />
     <Content Include="Database\MasterPricing_20170328001.txt" />
+    <Content Include="Database\MasterPricing_20170329001.txt" />
     <Content Include="Database\QuestERD_20170223001.txt" />
     <Content Include="Quest.Services.Context.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
