@@ -11,6 +11,7 @@ using Quest.MPDW.Models;
 using Quest.MPDW.Modelers;
 using Quest.MasterPricing.DataMgr.Models;
 using Quest.MasterPricing.Services.Business.Filters;
+using Quest.MasterPricing.Services.Business.Tablesets;
 
 
 namespace Quest.MasterPricing.DataMgr.Modelers
@@ -274,48 +275,6 @@ namespace Quest.MasterPricing.DataMgr.Modelers
         {
             return (new questStatus(Severity.Success));
         }
-        ////private questStatus getJoinTableTarget(Quest.Functional.MasterPricing.Filter filter, FilterColumn joinFilterColumn, out TablesetTable tablesetTable, out TablesetColumn tablesetColumn)
-        ////{
-        ////    // Initialize
-        ////    tablesetTable = null;
-        ////    tablesetColumn = null;
-
-
-        ////    foreach (FilterTable filterTable in filter.FilterTableList)
-        ////    {
-        ////        foreach (TablesetColumn _tablesetColumn in filterTable.TablesetTable.TablesetColumnList)
-        ////        {
-        ////            if (joinFilterColumn.TablesetColumnId == _tablesetColumn.Id)
-        ////            {
-        ////                tablesetTable = filterTable.TablesetTable;
-        ////                tablesetColumn = _tablesetColumn;
-        ////                return (new questStatus(Severity.Success));
-        ////            }
-        ////        }
-        ////    }
-        ////    return (new questStatus(Severity.Error, "JOIN FilterColumn table target not found"));
-        ////}
-        ////private questStatus getJoinViewTarget(Quest.Functional.MasterPricing.Filter filter, FilterColumn joinFilterColumn, out TablesetView tablesetView, out TablesetColumn tablesetColumn)
-        ////{
-        ////    // Initialize
-        ////    tablesetView = null;
-        ////    tablesetColumn = null;
-
-
-        ////    foreach (FilterView filterView in filter.FilterViewList)
-        ////    {
-        ////        foreach (TablesetColumn _tablesetColumn in filterView.TablesetView.TablesetColumnList)
-        ////        {
-        ////            if (joinFilterColumn.TablesetColumnId == _tablesetColumn.Id)
-        ////            {
-        ////                tablesetView = filterView.TablesetView;
-        ////                tablesetColumn = _tablesetColumn;
-        ////                return (new questStatus(Severity.Success));
-        ////            }
-        ////        }
-        ////    }
-        ////    return (new questStatus(Severity.Error, "JOIN FilterColumn view target not found"));
-        ////}
         #endregion
     }
 }

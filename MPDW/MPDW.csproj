@@ -308,6 +308,7 @@
     <Compile Include="Areas\DataMgr\Models\DataMgrOverviewViewModel.cs" />
     <Compile Include="Areas\DataMgr\Models\DataMgrTablesetViewModel.cs" />
     <Compile Include="Areas\DataMgr\Models\FilterCopyViewModel.cs" />
+    <Compile Include="Areas\DataMgr\Models\FilterExtendViewModel.cs" />
     <Compile Include="Areas\DataMgr\Models\FilterFolderViewModel.cs" />
     <Compile Include="Areas\DataMgr\Models\FilterResultsExportViewModel.cs" />
     <Compile Include="Areas\DataMgr\Models\FilterEditorViewModel.cs" />

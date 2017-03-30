@@ -128,6 +128,16 @@ namespace Quest.MasterPricing.DataMgr
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Perform operation.
              *---------------------------------------------------------------------------------------------------------------------------------*/
+            if (viewModel.Items.Count == 0)
+            {
+                if (Request.Form["Items"] != null)
+                {
+                    string items = Request.Form["Items"].ToString();
+                    JavaScriptSerializer javaScriptSerializer = new JavaScriptSerializer();
+                    List<FilterItemViewModel> itemsList = javaScriptSerializer.Deserialize<List<FilterItemViewModel>>(items);
+                    viewModel.Items = itemsList;
+                }
+            }
             FilterPanelModeler filterPanelModeler = new FilterPanelModeler(Request, this.UserSession, viewModel);
             status = filterPanelModeler.Save(viewModel);
             if (!questStatusDef.IsSuccess(status))

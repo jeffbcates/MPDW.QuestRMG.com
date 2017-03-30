@@ -40,15 +40,33 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Command\Command.cs" />
+    <Compile Include="Command\CommandInvoker.cs" />
+    <Compile Include="Command\CommandBeta.cs" />
+    <Compile Include="Command\CommandAlpha.cs" />
+    <Compile Include="Command\ICommand.cs" />
+    <Compile Include="Factory\Factory.cs" />
+    <Compile Include="Factory\IFactoryInterface.cs" />
+    <Compile Include="Factory\OperatorGamma.cs" />
+    <Compile Include="Factory\OperatorBeta.cs" />
+    <Compile Include="Factory\OperatorAlpha.cs" />
+    <Compile Include="Observer\EventDispatcher.cs" />
+    <Compile Include="Observer\ListenerAlpha.cs" />
+    <Compile Include="Observer\Listener.cs" />
     <Compile Include="OptionValuePair.cs" />
     <Compile Include="ProfileType.cs" />
     <Compile Include="ProfileTypeId.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Singleton.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\Utilities\Quest.Util.Data\Quest.Util.Data.csproj">
       <Project>{dd1de1c3-c7fc-4f67-aef0-a443ba63d8c0}</Project>
       <Name>Quest.Util.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\Utilities\Quest.Util.Status\Quest.Util.Status.csproj">
+      <Project>{eb3bc5d2-eb3d-4f28-8184-6e1dcada534b}</Project>
+      <Name>Quest.Util.Status</Name>
     </ProjectReference>
     <ProjectReference Include="..\Quest.Functional.ASM\Quest.Functional.ASM.csproj">
       <Project>{2fabe5d5-3871-405c-a9c5-3e95e1f68bb1}</Project>
