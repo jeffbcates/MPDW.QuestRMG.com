@@ -377,11 +377,7 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                                 {
                                     updateValue = bulkUpdateColumnValue.Value;
                                 }
-                                else if (!filterParam.bRequired)
-                                {
-                                    updateValue = null;
-                                }
-                                else  // Value is required, use results value since a value not specified in bulk updates.
+                                else if (filterParam.bRequired)
                                 {
                                     // Indexing not working, but should be ...
                                     ////updateValue = _dynRow[bulkUpdateColumnValue.Name];
@@ -400,6 +396,10 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                                         return (new questStatus(Severity.Error, String.Format("ERROR: filter results column {0} not found to use in bulk update operation",
                                                 bulkUpdateColumnValue.Name)));
                                     }
+                                }
+                                else  // Value is required, use results value since a value not specified in bulk updates.
+                                {
+                                    updateValue = null;
                                 }
 
                                 // Bind the parameter
