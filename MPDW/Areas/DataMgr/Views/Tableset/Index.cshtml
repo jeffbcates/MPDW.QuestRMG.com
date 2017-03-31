@@ -1769,6 +1769,9 @@
             }
             else {
                 bRequired = !c.bAllowDbNull;
+                if (bRequired) {
+                    _placeholder = "Required";
+                }
             }
             if (c.bIsIdentity) {
                 if (updateProcedure) {
