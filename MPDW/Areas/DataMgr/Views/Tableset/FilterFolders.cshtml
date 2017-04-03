@@ -128,6 +128,9 @@
                 _pnlFilters.Operations(['Entities', 'Items', 'Procedures', 'Save', 'Run', 'Test', 'Extend', 'SQLTab'], _frmFilter._bROS, true);
                 enadisSQLTabButtons($('#fltFilterId').val() > -1);
             }
+            else if (ud.After) {
+                _tvwFilterFolders.AutoFocus();
+            }
         }
     }
     function cbTabNew(ud, d) {
@@ -140,8 +143,8 @@
         else if (ud.Active) {
             if (ud.Before) {
                 _pnlFilters.Operations(['Save'], null, false);
-                _pnlFilters.Operations(['Entities', 'Items', 'Procedures', 'Save', 'Run', 'SQLTab'], _frmFilter._bROS);
-                _pnlFilters.Operations(['Test','Extend'], panelChanges());
+                _pnlFilters.Operations(['Entities', 'Items', 'Procedures', 'Save', 'Run', 'SQLTab'], true);
+                _pnlFilters.Operations(['Test', 'Extend'], panelChanges());
                 enadisSQLTabButtons($('#fltFilterId').val() > -1);
             }
         }
@@ -173,6 +176,9 @@
                 _pnlFilters.Operations(['Save', 'Run'], _frmFilter._bROS);
                 _pnlFilters.Operations(['Test'], panelChanges());
                 enadisSQLTabButtons($('#fltFilterId').val() > -1);
+            }
+            else if (ud.After) {
+                _tvwFilterFolderEntities.AutoFocus();
             }
         }
     }
@@ -217,6 +223,9 @@
                 _pnlFilters.Operations(['Test'], panelChanges());
                 enadisSQLTabButtons($('#fltFilterId').val() > -1);
             }
+            else if (ud.After) {
+                _tvwFilterFolderItems.AutoFocus();
+            }
         }
     }
     function cbTabProcedures(ud, d) {
@@ -239,6 +248,9 @@
                 _pnlFilters.Operations(['Save', 'Run'], _frmFilter._bROS);
                 _pnlFilters.Operations(['Test'], panelChanges());
                 enadisSQLTabButtons($('#fltFilterId').val() > -1);
+            }
+            else if (ud.After) {
+                _tvwFilterFolderProcedures.AutoFocus();
             }
         }
     }
@@ -266,6 +278,9 @@
                 _pnlFilters.Operations(['Run'], _frmFilter._bROS);
                 _pnlFilters.Operations(['Test'], panelChanges());
                 enadisSQLTabButtons($('#fltFilterId').val() > -1);
+            }
+            else if (ud.After) {
+                _tvwFilterFolderSQL.AutoFocus();
             }
         }
     }
@@ -2483,11 +2498,76 @@
         });
     }
     function setPanelContext(id) {
-        $('.filter-select').val(id);
+        syncFilterFolderTreeviews();
     }
     function panelChanges() {
         var bC = (_frmFilter && _frmFilter._bChanges) || (_tvwTablesetEntities && _tvwTablesetEntities._bChanges) || (_tvwFilterEntities && _tvwFilterEntities._bChanges) || (_fltFilterItems && _fltFilterItems._bChanges) || (_frmFilterProcedures && _frmFilterProcedures._bChanges);
         return (bC);
+    }
+
+    function syncFilterFolderTreeviews() {    
+        var n = getSelectedFilter();
+        if (!n || !n.length) {
+            clearFilterFolders();
+            return;
+        }
+        setSelectedFilter(n[0].Id);
+    }
+    function getSelectedFilter() {
+        var t = _pnlFilters.Tab();
+        var n;
+        if (t == "Explore") {
+            n = _tvwFilterFolders.Selected();
+        }
+        else if (t == "Entities") {
+            n = _tvwFilterFolderEntities.Selected();
+        }
+        else if (t == "Items") {
+            n = _tvwFilterFolderItems.Selected();
+        }
+        else if (t == "Procedures") {
+            n = _tvwFilterFolderProcedures.Selected();
+        }
+        else if (t == "SQLTab") {
+            n = _tvwFilterFolderSQLTab.Selected();
+        }
+        if (!n || !n.length) {
+            clearFilterFolders();
+            return;
+        }
+        return (n);
+    }
+    function clearFilterFolders() {
+        _tvwFilterFolders.ClearSelected();
+        _tvwFilterFolderEntities.ClearSelected();
+        _tvwFilterFolderItems.ClearSelected();
+        _tvwFilterFolderProcedures.ClearSelected();
+        _tvwFilterFolderSQLTab.ClearSelected();
+    }
+    function setSelectedFilter(id) {
+        _tvwFilterFolders.Select(id, true);
+        _tvwFilterFolderEntities.Select(id, true);
+        _tvwFilterFolderItems.Select(id, true);
+        _tvwFilterFolderProcedures.Select(id, true);
+        _tvwFilterFolderSQL.Select(id, true);
+
+        expandSelectedToFilter(id);
+    }
+    function expandSelectedToFilter(id) {
+        _tvwFilterFolders.Expand(id);
+        _tvwFilterFolderEntities.Expand(id);
+        _tvwFilterFolderItems.Expand(id);
+        _tvwFilterFolderProcedures.Expand(id);
+        _tvwFilterFolderSQL.Expand(id);
+
+        autoFocusFolderTreeviews();
+    }
+    function autoFocusFolderTreeviews() {
+        _tvwFilterFolders.AutoFocus();
+        _tvwFilterFolderEntities.AutoFocus();
+        _tvwFilterFolderItems.AutoFocus();
+        _tvwFilterFolderProcedures.AutoFocus();
+        _tvwFilterFolderSQL.AutoFocus();
     }
 </script>
 <script type="text/javascript">

@@ -70,6 +70,7 @@ function qrmgTreeview(model) {
     _self._render = function (Data, bFill) {
         $(_self._e).treeview({
             data: Data || {},
+            levels: 99,
             multiSelect: _self._model.multiSelect,
             onTreeRender: _self._onrndr
             , onNodeSelected: _self._onNodeSelected
@@ -96,7 +97,14 @@ function qrmgTreeview(model) {
         var _tvwTop = $(_self._e).scrollTop();
         var _eTop = $(li).position().top;
         console.log('qrmgTreeview._autofocus: _tvwTop: ' + _tvwTop + ',  _eTop: ' + _eTop + ',  total: ', $(_self._e).scrollTop() + $(li).position().top - 10);
-        $(_self._e).scrollTop($(_self._e).scrollTop() + $(li).position().top - 10);
+        ////$(_self._e).scrollTop($(_self._e).scrollTop() + $(li).position().top - 10);
+        $(_self._e).scrollTop($(li).position().top);
+
+    }
+    _self.AutoFocus = function (li) {
+        var _li = li || $(_self._e).find('li.node-selected');
+        if (!_li || !_li.length) { return; }
+        $(_self._e).scrollTop($(_li).position().top);
     }
 
     _self.Draggable = function () {
@@ -476,6 +484,9 @@ function qrmgTreeview(model) {
     _self.Select = function (id, bExpand) {
         var n = _self.GetNode(id);
         if (!n) { return; }
+        if (!_self._model.multiSelect) {
+            _self.ClearSelected();
+        }
         n.state.selected = true;
         var e = $(_self._e).find('li[data-id="' + n.Id + '"]');
         $(e).addClass('node-selected').attr('style', 'color:#FFFFFF;background-color:#428bca;');
@@ -500,7 +511,15 @@ function qrmgTreeview(model) {
         }
         return (n);
     }
-
+    _self.Selected = function () {
+        var nn = [];
+        var ee = $(_self._e).find('li.node-selected');
+        $.each(ee, function (i, e) {
+            var n = _self.GetNode($(e).attr('data-id'));
+            nn.push(n);
+        });
+        return (nn);
+    }
     _self.ClearSelected = function () {
         var ee = $('.node-selected', _self._e);
         $.each(ee, function (i, e) {
@@ -540,7 +559,7 @@ function qrmgTreeview(model) {
     }
     _self.GetNode = function (id, p) {
         var _n;
-        var _p = 'Id' || p;
+        var _p = p || 'Id';
         $.each(_self._tvw.Nodes, function (i, n) {
             if (id == n[_p]) {
                 _n = n; 
@@ -687,6 +706,30 @@ function qrmgTreeview(model) {
     }
     _self.bChanges = function () {
         return (_self._bChanges);
+    }
+
+    _self.Expand = function (id) {
+        var n = _self.GetNode(id);
+        if (!n) { return (false); }
+        while (n) {
+            n.state.expanded = true;
+            n = _self.GetParent(n.Id);
+        }
+        _self.Refresh();
+    }
+    _self.GetTopLevelParent = function (id) {
+        var n = _self.GetNode(id);
+        if (!n) { return (false); }
+        while (n.parentId) {
+            n = _self._tvw.Nodes[n.parentId];
+        }
+        return (n);
+    }
+    _self.GetParent = function (id) {
+        var n = _self.GetNode(id);
+        if (!n) { return (false); }
+        n = _self.GetNode(n.parentId, 'nodeId');
+        return (n);
     }
 
     _self._init();
