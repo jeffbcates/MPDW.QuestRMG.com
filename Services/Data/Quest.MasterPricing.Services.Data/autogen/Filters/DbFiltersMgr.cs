@@ -241,6 +241,55 @@ namespace Quest.MasterPricing.Services.Data.Filters
             
             return (new questStatus(Severity.Success));
         }
+        public questStatus Read(FolderId folderId, out List<Quest.Functional.MasterPricing.Filter> filterList)
+        {
+            // Initialize
+            questStatus status = null;
+            filterList = null;
+
+
+            // Perform read
+            using (MasterPricingEntities dbContext = new MasterPricingEntities())
+            {
+                List<Quest.Services.Dbio.MasterPricing.Filters> _filtersList = null;
+                status = read(dbContext, folderId, out _filtersList);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+                filterList = new List<Filter>();
+                foreach (Quest.Services.Dbio.MasterPricing.Filters _filter in _filtersList)
+                {
+                    Quest.Functional.MasterPricing.Filter filter = new Quest.Functional.MasterPricing.Filter();
+                    BufferMgr.TransferBuffer(_filter, filter);
+                    filterList.Add(filter);
+                }
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus Read(DbMgrTransaction trans, FolderId folderId, out List<Quest.Functional.MasterPricing.Filter> filterList)
+        {
+            // Initialize
+            questStatus status = null;
+            filterList = null;
+
+
+            // Perform read
+            List<Quest.Services.Dbio.MasterPricing.Filters> _filtersList = null;
+            status = read((MasterPricingEntities)trans.DbContext, folderId, out _filtersList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            filterList = new List<Filter>();
+            foreach (Quest.Services.Dbio.MasterPricing.Filters _filter in _filtersList)
+            {
+                Quest.Functional.MasterPricing.Filter filter = new Quest.Functional.MasterPricing.Filter();
+                BufferMgr.TransferBuffer(_filter, filter);
+                filterList.Add(filter);
+            }
+            return (new questStatus(Severity.Success));
+        }
         public questStatus Update(Quest.Functional.MasterPricing.Filter filter)
         {
             // Initialize
@@ -537,6 +586,30 @@ namespace Quest.MasterPricing.Services.Data.Filters
                     return (new questStatus(Severity.Error, String.Format("ERROR: {0}.{1}: {2}",
                             this.GetType().Name, MethodBase.GetCurrentMethod().Name,
                             String.Format("TablesetId {0} not found", tablesetId.Id))));
+                }
+            }
+            catch (System.Exception ex)
+            {
+                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                        this.GetType().Name, MethodBase.GetCurrentMethod().Name,
+                        ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+            }
+            return (new questStatus(Severity.Success));
+        }
+        private questStatus read(MasterPricingEntities dbContext, FolderId folderId, out List<Quest.Services.Dbio.MasterPricing.Filters> filterList)
+        {
+            // Initialize
+            filterList = null;
+
+
+            try
+            {
+                filterList = dbContext.Filters.Where(r => r.FolderId == folderId.Id).ToList();
+                if (filterList == null)
+                {
+                    return (new questStatus(Severity.Error, String.Format("ERROR: {0}.{1}: {2}",
+                            this.GetType().Name, MethodBase.GetCurrentMethod().Name,
+                            String.Format("FolderId {0} not found", folderId.Id))));
                 }
             }
             catch (System.Exception ex)

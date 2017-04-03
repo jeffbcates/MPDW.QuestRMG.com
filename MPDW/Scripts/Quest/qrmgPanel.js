@@ -305,7 +305,7 @@ function qrmgPanel(model) {
         var _h = [], _i = 0;
         _h[_i++] = '<div class="portlet-body form" style="display: block; ' + (_self._model.minHeight ? (' min-height: ' + _self._model.minHeight + ';') : '' ) + '">';
         _h[_i++] = _self._rndrtbar();
-        _h[_i++] = '    <div class="form-body portlet-container' + (_self._sanshdr ? '-sans-actions' : '') + '">';
+        _h[_i++] = '    <div class="form-body portlet-container' + (_self._sanshdr ? '-sans-actions' : '') + ' ' + (_self._model.scrollable ? 'scrollable' : '') + '">';
         _h[_i++] = _self._rndrff();
         _h[_i++] = _self._rndrtt();
         _h[_i++] = '    </div>';

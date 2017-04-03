@@ -126,6 +126,96 @@ namespace Quest.MasterPricing.Services.Business.Filters
             }
             return (new questStatus(Severity.Success));
         }
+        public questStatus Read(TablesetId tablesetId, out List<Quest.Functional.MasterPricing.Filter> filterList)
+        {
+            // Initialize
+            questStatus status = null;
+            filterList = null;
+
+
+            // Read filter
+            status = _dbFiltersMgr.Read(tablesetId, out filterList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus Read(DbMgrTransaction trans, TablesetId tablesetId, out List<Quest.Functional.MasterPricing.Filter> filterList)
+        {
+            // Initialize
+            questStatus status = null;
+            filterList = null;
+
+
+            // Read filter
+            status = _dbFiltersMgr.Read(trans, tablesetId, out filterList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus Read(string name, out Quest.Functional.MasterPricing.Filter filter)
+        {
+            // Initialize
+            questStatus status = null;
+            filter = null;
+
+
+            // Read filter
+            status = _dbFiltersMgr.Read(name, out filter);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus Read(DbMgrTransaction trans, string name, out Quest.Functional.MasterPricing.Filter filter)
+        {
+            // Initialize
+            questStatus status = null;
+            filter = null;
+
+
+            // Read filter
+            status = _dbFiltersMgr.Read(trans, name, out filter);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus Read(FolderId folderId, out List<Quest.Functional.MasterPricing.Filter> filterList)
+        {
+            // Initialize
+            questStatus status = null;
+            filterList = null;
+
+
+            // Read filter
+            status = _dbFiltersMgr.Read(folderId, out filterList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus Read(DbMgrTransaction trans, FolderId folderId, out List<Quest.Functional.MasterPricing.Filter> filterList)
+        {
+            // Initialize
+            questStatus status = null;
+            filterList = null;
+
+
+            // Read filter
+            status = _dbFiltersMgr.Read(trans, folderId, out filterList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
         public questStatus Update(Filter filter)
         {
             // Initialize

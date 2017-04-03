@@ -42,6 +42,7 @@
             ctx: {
                 elements: ['_questctx', '_questmm', '_questnb']
             },
+            scrollable: true,
             fields: [
                 { name: 'Id', key: true, hidden: true },
                 { name: 'TablesetId', hidden: true },
@@ -83,10 +84,15 @@
     }
     function cbPanelFilters(ud, d) {
         initTablesetFiltersEditor();
+        initTreeviewFilterFolders();
+        initTreeviewFilterFolderEntities();
         initTreeviewTablesetEntities();
         initTreeviewFilterEntities();
+        initTreeviewFilterFolderItems();
         initTreeviewValueEntities();
+        initTreeviewFilterFolderProcedures();
         initFilterProcedures();
+        initTreeviewFilterFolderSQL();
 
         $('#pnlFilterItems').sortable();
         $('#chkJoinItemsOnly').on('click', function () {
@@ -111,16 +117,16 @@
     function cbTabExplore(ud, d) {
         if (ud.Init) {
             var _h = [], _i = 0;
-            _h[_i++] = '<p style="color:red; font-weight:bold;">Filter Folder Explorer treeview goes below ...</p>';
-            _h[_i++] = '<div id="tvwFilterExplorer">';
+            _h[_i++] = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
+            _h[_i++] = '<button title="Create a new folder for filters" type="button" class="btn pnlbtn" id="pnlfltfldr_btnNew">New</button>';
+            _h[_i++] = '<div id="tvwFilterFolders">';
             _h[_i++] = '</div>';
             return (_h.join(''));
         }
         else if (ud.Active) {
             if (ud.Before) {
-                _pnlFilters.Operations(['Entities', 'Items', 'Procedures', 'Save', 'Run', 'Test', 'Extend', 'SQL'], _frmFilter._bROS, true);
-                $('#pnlflt_btnSQLTab').hide();
-                $('#btnCopySQL').hide();
+                _pnlFilters.Operations(['Entities', 'Items', 'Procedures', 'Save', 'Run', 'Test', 'Extend', 'SQLTab'], _frmFilter._bROS, true);
+                enadisSQLTabButtons($('#fltFilterId').val() > -1);
             }
         }
     }
@@ -134,9 +140,9 @@
         else if (ud.Active) {
             if (ud.Before) {
                 _pnlFilters.Operations(['Save'], null, false);
-                _pnlFilters.Operations(['Entities', 'Items', 'Procedures', 'Save', 'Run'], _frmFilter._bROS);
+                _pnlFilters.Operations(['Entities', 'Items', 'Procedures', 'Save', 'Run', 'SQLTab'], _frmFilter._bROS);
                 _pnlFilters.Operations(['Test','Extend'], panelChanges());
-                enadisSQLTabButtons();
+                enadisSQLTabButtons($('#fltFilterId').val() > -1);
             }
         }
     }
@@ -145,7 +151,7 @@
             var _h = [], _i = 0;
             _h[_i++] = '<div id="hdrFilterEntities" class="panel-tab-banner">';
             _h[_i++] = '    <div class="panel-tab-banner-title">Filter:&nbsp;</div>';
-            _h[_i++] = '    <div class="panel-title-select">';
+            _h[_i++] = '    <div id="tvwFilterFolderEntities" class="panel-title-explore">';
             _h[_i++] = '       <select id="selCurrentEntitiesFilter" class="panel-control filter-select"></select>';
             _h[_i++] = '    </div>';
             _h[_i++] = '</div>';
@@ -166,7 +172,7 @@
                 _pnlFilters.Operations(['Save'], null, true);
                 _pnlFilters.Operations(['Save', 'Run'], _frmFilter._bROS);
                 _pnlFilters.Operations(['Test'], panelChanges());
-                enadisSQLTabButtons();
+                enadisSQLTabButtons($('#fltFilterId').val() > -1);
             }
         }
     }
@@ -175,7 +181,7 @@
             var _h = [], _i = 0;
             _h[_i++] = '<div id="hdrFilterItems" class="panel-tab-banner">';
             _h[_i++] = '    <div class="panel-tab-banner-title">Filter:&nbsp;</div>';
-            _h[_i++] = '    <div class="panel-title-select">';
+            _h[_i++] = '    <div id="tvwFilterFolderItems" class="panel-title-explore">';
             _h[_i++] = '       <select id="selCurrentValuesFilter" class="panel-control filter-select"></select>';
             _h[_i++] = '    </div>';
             _h[_i++] = '    <div class="panel-tab-banner-title">Show:&nbsp;</div>';
@@ -209,10 +215,61 @@
                 _pnlFilters.Operations(['Save'], null, true);
                 _pnlFilters.Operations(['Save', 'Run'], _frmFilter._bROS);
                 _pnlFilters.Operations(['Test'], panelChanges());
-                enadisSQLTabButtons();
+                enadisSQLTabButtons($('#fltFilterId').val() > -1);
             }
         }
     }
+    function cbTabProcedures(ud, d) {
+        if (ud.Init) {
+            var _h = [], _i = 0;
+            _h[_i++] = '<div id="hdrFilterProcedures" class="panel-tab-banner">';
+            _h[_i++] = '    <div class="panel-tab-banner-title">Filter:&nbsp;</div>';
+            _h[_i++] = '    <div id="tvwFilterFolderProcedures" class="panel-title-explore">';
+            _h[_i++] = '       <select id="selCurrentProceduresFilter" class="panel-control filter-select"></select>';
+            _h[_i++] = '    </div>';
+            _h[_i++] = '</div>';
+            _h[_i++] = '<div id="frmFilterProcedures" class="panel-tab-banner-space">';
+            _h[_i++] = 'Filter procedures go in here.';
+            _h[_i++] = '</div>';
+            return (_h.join(''));
+        }
+        else if (ud.Active) {
+            if (ud.Before) {
+                _pnlFilters.Operations(['Save'], null, true);
+                _pnlFilters.Operations(['Save', 'Run'], _frmFilter._bROS);
+                _pnlFilters.Operations(['Test'], panelChanges());
+                enadisSQLTabButtons($('#fltFilterId').val() > -1);
+            }
+        }
+    }
+    function cbTabSQL(ud, d) {
+        if (ud.Init) {
+            var _h = [], _i = 0;
+            _h[_i++] = '<div id="hdrFilterSQL" class="panel-tab-banner">';
+            _h[_i++] = '    <div class="panel-tab-banner-title">Filter:&nbsp;</div>';
+            _h[_i++] = '    <div id="tvwFilterFolderSQL" class="panel-title-explore">';
+            _h[_i++] = '       <select id="selCurrentSQLFilter" class="panel-control filter-select"></select>';
+            _h[_i++] = '    </div>';
+            _h[_i++] = '    <div class="panel-tab-operations">';
+            _h[_i++] = '        <button id="btnGetSQL" type="button" class="btn btn-primary" title="Get filter SQL" onclick="cbGetFilterSQL()">Get SQL</button>';
+            _h[_i++] = '        <button id="btnCopySQL" type="button" class="btn btn-primary" title="Copy filter formatted SQL to clipboard" onclick="cbCopySQLToClipboard()">Copy SQL</button>';
+            _h[_i++] = '    </div>';
+            _h[_i++] = '</div>';
+            _h[_i++] = '<div id="tvwSQLFrame" class="panel-full-tab panel-tab-banner-space">';
+            _h[_i++] = '';
+            _h[_i++] = '</div>';
+            return (_h.join(''));
+        }
+        else if (ud.Active) {
+            if (ud.Before) {
+                _pnlFilters.Operations(['Save'], null, false);
+                _pnlFilters.Operations(['Run'], _frmFilter._bROS);
+                _pnlFilters.Operations(['Test'], panelChanges());
+                enadisSQLTabButtons($('#fltFilterId').val() > -1);
+            }
+        }
+    }
+
     function loadShowEntitesSelect() {
         var dd = _fltFilterItems.GetData();
         var ee = [];
@@ -282,64 +339,14 @@
             _fltFilterItems.ShowJoinItemsOnly(true, true);
         }
     }
-    function cbTabSQL(ud, d) {
-        if (ud.Init) {
-            var _h = [], _i = 0;
-            _h[_i++] = '<div id="hdrFilterSQL" class="panel-tab-banner">';
-            _h[_i++] = '    <div class="panel-tab-banner-title">Filter:&nbsp;</div>';
-            _h[_i++] = '    <div class="panel-title-select">';
-            _h[_i++] = '       <select id="selCurrentSQLFilter" class="panel-control filter-select"></select>';
-            _h[_i++] = '    </div>';
-            _h[_i++] = '    <div class="panel-tab-operations">';
-            _h[_i++] = '        <button id="btnGetSQL" type="button" class="btn btn-primary" title="Get filter SQL" onclick="cbGetFilterSQL()">Get SQL</button>';
-            _h[_i++] = '        <button id="btnCopySQL" type="button" class="btn btn-primary" title="Copy filter formatted SQL to clipboard" onclick="cbCopySQLToClipboard()">Copy SQL</button>';
-            _h[_i++] = '    </div>';
-            _h[_i++] = '</div>';
-            _h[_i++] = '<div id="tvwSQLFrame" class="panel-full-tab panel-tab-banner-space">';
-            _h[_i++] = '';
-            _h[_i++] = '</div>';
-            return (_h.join(''));
-        }
-        else if (ud.Active) {
-            if (ud.Before) {
-                _pnlFilters.Operations(['Save'], null, false);
-                _pnlFilters.Operations(['Run'], _frmFilter._bROS);
-                _pnlFilters.Operations(['Test'], panelChanges());
-                enadisSQLTabButtons();
-            }
-        }
-    }
     function enadisSQLTabButtons(bE) {
-        if ($('#selCurrentSQLFilter').val() >= 0) {
+        if (bE) {
             $('#btnGetSQL').removeAttr("disabled");
             $('#btnCopySQL').removeAttr("disabled");
         }
         else {
             $('#btnGetSQL').attr("disabled", "disabled");
             $('#btnCopySQL').attr("disabled", "disabled");
-        }
-    }
-    function cbTabProcedures(ud, d) {
-        if (ud.Init) {
-            var _h = [], _i = 0;
-            _h[_i++] = '<div id="hdrFilterProcedures" class="panel-tab-banner">';
-            _h[_i++] = '    <div class="panel-tab-banner-title">Filter:&nbsp;</div>';
-            _h[_i++] = '    <div class="panel-title-select">';
-            _h[_i++] = '       <select id="selCurrentProceduresFilter" class="panel-control filter-select"></select>';
-            _h[_i++] = '    </div>';
-            _h[_i++] = '</div>';
-            _h[_i++] = '<div id="frmFilterProcedures" class="panel-tab-banner-space">';
-            _h[_i++] = 'Filter procedures go in here.';
-            _h[_i++] = '</div>';
-            return (_h.join(''));
-        }
-        else if (ud.Active) {
-            if (ud.Before) {
-                _pnlFilters.Operations(['Save'], null, true);
-                _pnlFilters.Operations(['Save', 'Run'], _frmFilter._bROS);
-                _pnlFilters.Operations(['Test'], panelChanges());
-                enadisSQLTabButtons();
-            }
         }
     }
 
@@ -625,13 +632,92 @@
             return (true);
         }
     }
-
     function cbCopySQLToClipboard() {
         ClipboardHelper.copyText($('#tvwSQLFrame').text());
         DisplayUserMessage('I|SQL copied to clipboard');
     }
-
 </script>
+
+
+
+
+
+<!-- EXPLORE -->
+<script type="text/javascript">
+    var _tvwFilterFolders = null;
+    function initTreeviewFilterFolders() {
+        var tvwFilterFolders = {
+            element: 'tvwFilterFolders',
+            pfx: 'fltfldr',
+            uri: '/DataMgr/Folder',
+            keyname: 'FolderId',
+            header: {
+                bInlineHeader: true,
+                count: false,
+                label: 'Filter Folders: ',
+                filter: true
+            },
+            sorted: false,
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb'],
+            },
+            viewstate: { element: '__frmDataMgrTablesetVIEW_STATE' },
+            callback: cbTvwFilterFolders,
+            bNoUserMessages: true,
+            events: [
+                { name: 'AfterLoaded', callback: cbTvwFilterFoldersAfterLoaded },
+                { name: 'OnTreeRender', callback: cbTvwFilterFoldersOnTreeRender },
+                { name: 'Refresh', callback: cbTvwFilterFoldersRefresh },
+                { name: 'OnChange', callback: cbTvwFilterFoldersOnChange },
+                { name: 'Click', callback: cbTvwFilterFoldersOnClick },
+            ],
+            operations: [
+                { name: 'Remove', label: 'Remove', classes: "btn btn-primary" },
+            ],
+        }
+        _tvwFilterFolders = new qrmgTreeview(tvwFilterFolders);
+        loadFilterFolders();
+    }
+    function loadFilterFolders() {
+        var _ee = _viewstate.Folders;
+        var _d = { questStatus: _viewstate.questStatus, Items: _ee };
+        _tvwFilterFolders.Fill(_d);
+        _tvwFilterFolders.Change(false);
+        //console.log('_tvwFilterFolders.Refresh()');
+        _tvwFilterFolders.Refresh();
+    }
+    function cbTvwFilterFolders(op, msg, n, d) {
+        var x = 4;
+        x = 44;
+    }
+    function cbTvwFilterFoldersAfterLoaded() {
+        alert('After loaded');
+    }
+    function cbTvwFilterFoldersOnTreeRender(e) {
+        if (!_tvwFilterFolders) { return; }
+        $(_tvwFilterFolders._e + ' ul li span.fa-table').closest('li').addClass('tvwTable');
+        $(_tvwFilterFolders._e + ' ul li span.fa-th').closest('li').addClass('tvwView');
+    }
+    function cbTvwFilterFoldersRefresh(e) {
+        $('#draggingContainer').remove();
+    }
+    function cbTvwFilterFoldersOnChange(ud, bChanges) {
+        if (_pnlFilters) {
+            _pnlFilters.Operations(['Run'], !bChanges);
+            _pnlFilters.Operations(['Test'], bChanges);
+        }
+    }
+    function cbTvwFilterFoldersOnClick(ud, d) {
+        if (ud.node.type == 'filter') {
+            cbChangeFilter({ Change: true }, ud.node.Id);
+        }
+    }
+</script>
+
+
+
+
+<!-- NEW -->
 <script type="text/javascript">
     var _frmFilter = null;
     function initTablesetFiltersEditor() {
@@ -701,13 +787,16 @@
                 _viewstate.Procedures = d.Procedures;
                 setPanelContext(d.Id);
                 enadisPanels(true);
-                _pnlFilters.Operations(['Entities', 'Items', 'Procedures', 'Save', 'Run', 'Test', 'Extend', 'SQL'], true, true);
+                _pnlFilters.Operations(['Entities', 'Items', 'Procedures', 'Run', 'Test', 'Extend', 'SQLTab'], true, true);
+                enadisSQLTabButtons($('#fltFilterId').val() > -1);
             }
             else {
+                _pnlFilters.Operations(['Entities', 'Items', 'Procedures', 'Run', 'Test', 'Extend', 'SQLTab'], false, true);
                 _viewstate.Entities = [];
                 _viewstate.Items = [];
                 _viewstate.Procedures = {};
                 qrmgmvc.Global.Unmask($('#pnlFilters'));
+                enadisSQLTabButtons(false);
                 return;
             }
             loadTablesetEntities();
@@ -717,7 +806,6 @@
             loadFilterProcedures(d.Procedures);
             _pnlFilters.Operations(['Save', 'Run'], true);
             _pnlFilters.Operations(['Test'], false);
-            enadisSQLTabButtons(true);
             qrmgmvc.Global.Unmask($('#pnlFilters'));
         }
         else if (ud.Delete) {
@@ -778,18 +866,16 @@
             _frmFilter.Read(d, true);
             _pnlFilters.Operations(['Save', 'Run'], false);
             _pnlFilters.Operations(['Test'], panelChanges());
-            enadisSQLTabButtons();
+            enadisSQLTabButtons(true);
             enadisPanels(false);
             return;
         }
         else if (ud.PostLoad) {
-            var _s = $('#fltFilterId');
-            var _ss = $('.filter-select');
-            $.each(_ss, function (i, s) {
-                if (s.id === _s[0].id) { return; }
-                var foo = $(_s).find('option').clone();
-                $(s).empty().append(foo);
-            });
+            ////var _ss = $('.panel-title-explore');
+            ////$.each(_ss, function (i, s) {
+            ////    var tvw = $('#tvwFilterFolders').clone().attr('id', 'tvwFilterSelect' + (i+1)).addClass('filter-explore');
+            ////    $(s).empty().append(tvw);
+            ////});
         }
         qrmgmvc.Global.Unmask($('#pnlFilters'));
     }
@@ -820,6 +906,75 @@
     }
 </script>
 
+
+
+
+<!-- ENTITIES -->
+<script type="text/javascript">
+    var _tvwFilterFolderEntities = null;
+    function initTreeviewFilterFolderEntities() {
+        var tvwFilterFolderEntities = {
+            element: 'tvwFilterFolderEntities',
+            pfx: 'fltfldree',
+            uri: '/DataMgr/Folder',
+            keyname: 'FolderId',
+            header: {
+                bInlineHeader: false,
+                count: false,
+                label: '',
+                filter: false
+            },
+            sorted: false,
+            autofocus: true,
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb'],
+            },
+            viewstate: { element: '__frmDataMgrTablesetVIEW_STATE' },
+            callback: cbTvwFilterFolderEntities,
+            bNoUserMessages: true,
+            events: [
+                { name: 'AfterLoaded', callback: cbTvwFilterFolderEntitiesAfterLoaded },
+                { name: 'OnTreeRender', callback: cbTvwFilterFolderEntitiesOnTreeRender },
+                { name: 'Refresh', callback: cbTvwFilterFolderEntitiesRefresh },
+                { name: 'OnChange', callback: cbTvwFilterFolderEntitiesOnChange },
+                { name: 'Click', callback: cbTvwFilterFolderEntitiesOnClick },
+            ],
+            operations: [
+                { name: 'Remove', label: 'Remove', classes: "btn btn-primary" },
+            ],
+        }
+        _tvwFilterFolderEntities = new qrmgTreeview(tvwFilterFolderEntities);
+        loadFilterFolderEntities();
+    }
+    function loadFilterFolderEntities() {
+        var _ee = _viewstate.Folders;
+        var _d = { questStatus: _viewstate.questStatus, Items: _ee };
+        _tvwFilterFolderEntities.Fill(_d);
+        _tvwFilterFolderEntities.Change(false);
+        //console.log('_tvwFilterFolders.Refresh()');
+        _tvwFilterFolderEntities.Refresh();
+    }
+    function cbTvwFilterFolderEntities(op, msg, n, d) {
+    }
+    function cbTvwFilterFolderEntitiesAfterLoaded() {
+        alert('After loaded');
+    }
+    function cbTvwFilterFolderEntitiesOnTreeRender(e) {
+    }
+    function cbTvwFilterFolderEntitiesRefresh(e) {
+    }
+    function cbTvwFilterFolderEntitiesOnChange(ud, bChanges) {
+        if (_pnlFilters) {
+            _pnlFilters.Operations(['Run'], !bChanges);
+            _pnlFilters.Operations(['Test'], bChanges);
+        }
+    }
+    function cbTvwFilterFolderEntitiesOnClick(ud, d) {
+        if (ud.node.type == 'filter') {
+            cbChangeFilter({ Change: true }, ud.node.Id);
+        }
+    }
+</script>
 <script type="text/javascript">
     var _tvwTablesetEntities = null;
     function initTreeviewTablesetEntities() {
@@ -957,6 +1112,75 @@
     }
 </script>
 
+
+
+
+<!-- ITEMS -->
+<script type="text/javascript">
+    var _tvwFilterFolderItems = null;
+    function initTreeviewFilterFolderItems() {
+        var tvwFilterFolderItems = {
+            element: 'tvwFilterFolderItems',
+            pfx: 'fltfldrii',
+            uri: '/DataMgr/Folder',
+            keyname: 'FolderId',
+            header: {
+                bInlineHeader: false,
+                count: false,
+                label: '',
+                filter: false
+            },
+            sorted: false,
+            autofocus: true,
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb'],
+            },
+            viewstate: { element: '__frmDataMgrTablesetVIEW_STATE' },
+            callback: cbTvwFilterFolderItems,
+            bNoUserMessages: true,
+            events: [
+                { name: 'AfterLoaded', callback: cbTvwFilterFolderItemsAfterLoaded },
+                { name: 'OnTreeRender', callback: cbTvwFilterFolderItemsOnTreeRender },
+                { name: 'Refresh', callback: cbTvwFilterFolderItemsRefresh },
+                { name: 'OnChange', callback: cbTvwFilterFolderItemsOnChange },
+                { name: 'Click', callback: cbTvwFilterFolderItemsOnClick },
+            ],
+            operations: [
+                { name: 'Remove', label: 'Remove', classes: "btn btn-primary" },
+            ],
+        }
+        _tvwFilterFolderItems = new qrmgTreeview(tvwFilterFolderItems);
+        loadFilterFolderItems();
+    }
+    function loadFilterFolderItems() {
+        var _ee = _viewstate.Folders;
+        var _d = { questStatus: _viewstate.questStatus, Items: _ee };
+        _tvwFilterFolderItems.Fill(_d);
+        _tvwFilterFolderItems.Change(false);
+        //console.log('_tvwFilterFolders.Refresh()');
+        _tvwFilterFolderItems.Refresh();
+    }
+    function cbTvwFilterFolderItems(op, msg, n, d) {
+    }
+    function cbTvwFilterFolderItemsAfterLoaded() {
+        alert('After loaded');
+    }
+    function cbTvwFilterFolderItemsOnTreeRender(e) {
+    }
+    function cbTvwFilterFolderItemsRefresh(e) {
+    }
+    function cbTvwFilterFolderItemsOnChange(ud, bChanges) {
+        if (_pnlFilters) {
+            _pnlFilters.Operations(['Run'], !bChanges);
+            _pnlFilters.Operations(['Test'], bChanges);
+        }
+    }
+    function cbTvwFilterFolderItemsOnClick(ud, d) {
+        if (ud.node.type == 'filter') {
+            cbChangeFilter({ Change: true }, ud.node.Id);
+        }
+    }
+</script>
 <script type="text/javascript">
     var _tvwValueEntities = null;
     function initTreeviewValueEntities() {
@@ -1196,6 +1420,151 @@
 </script>
 
 
+
+
+<!-- SQL -->
+<script type="text/javascript">
+    var _tvwFilterFolderSQL = null;
+    function initTreeviewFilterFolderSQL() {
+        var tvwFilterFolderSQL = {
+            element: 'tvwFilterFolderSQL',
+            pfx: 'fltfldrsql',
+            uri: '/DataMgr/Folder',
+            keyname: 'FolderId',
+            header: {
+                bInlineHeader: false,
+                count: false,
+                label: '',
+                filter: false
+            },
+            sorted: false,
+            autofocus: true,
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb'],
+            },
+            viewstate: { element: '__frmDataMgrTablesetVIEW_STATE' },
+            callback: cbTvwFilterFolderSQL,
+            bNoUserMessages: true,
+            events: [
+                { name: 'AfterLoaded', callback: cbTvwFilterFolderSQLAfterLoaded },
+                { name: 'OnTreeRender', callback: cbTvwFilterFolderSQLOnTreeRender },
+                { name: 'Refresh', callback: cbTvwFilterFolderSQLRefresh },
+                { name: 'OnChange', callback: cbTvwFilterFolderSQLOnChange },
+                { name: 'Click', callback: cbTvwFilterFolderSQLOnClick },
+            ],
+            operations: [
+                { name: 'Remove', label: 'Remove', classes: "btn btn-primary" },
+            ],
+        }
+        _tvwFilterFolderSQL = new qrmgTreeview(tvwFilterFolderSQL);
+        loadFilterFolderSQL();
+    }
+    function loadFilterFolderSQL() {
+        var _ee = _viewstate.Folders;
+        var _d = { questStatus: _viewstate.questStatus, Items: _ee };
+        _tvwFilterFolderSQL.Fill(_d);
+        _tvwFilterFolderSQL.Change(false);
+        //console.log('_tvwFilterFolders.Refresh()');
+        _tvwFilterFolderSQL.Refresh();
+    }
+    function cbTvwFilterFolderSQL(op, msg, n, d) {
+    }
+    function cbTvwFilterFolderSQLAfterLoaded() {
+        alert('After loaded');
+    }
+    function cbTvwFilterFolderSQLOnTreeRender(e) {
+    }
+    function cbTvwFilterFolderSQLRefresh(e) {
+    }
+    function cbTvwFilterFolderSQLOnChange(ud, bChanges) {
+        if (_pnlFilters) {
+            _pnlFilters.Operations(['Run'], !bChanges);
+            _pnlFilters.Operations(['Test'], bChanges);
+        }
+    }
+    function cbTvwFilterFolderSQLOnClick(ud, d) {
+        if (ud.node.type == 'filter') {
+            cbChangeFilter({ Change: true }, ud.node.Id);
+        }
+    }
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+<script type="text/javascript">
+    var _tvwFilterFolderProcedures = null;
+    function initTreeviewFilterFolderProcedures() {
+        var tvwFilterFolderProcedures = {
+            element: 'tvwFilterFolderProcedures',
+            pfx: 'fltfldrpp',
+            uri: '/DataMgr/Folder',
+            keyname: 'FolderId',
+            header: {
+                bInlineHeader: false,
+                count: false,
+                label: '',
+                filter: false
+            },
+            sorted: false,
+            autofocus: true,
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb'],
+            },
+            viewstate: { element: '__frmDataMgrTablesetVIEW_STATE' },
+            callback: cbTvwFilterFolderProcedures,
+            bNoUserMessages: true,
+            events: [
+                { name: 'AfterLoaded', callback: cbTvwFilterFolderProceduresAfterLoaded },
+                { name: 'OnTreeRender', callback: cbTvwFilterFolderProceduresOnTreeRender },
+                { name: 'Refresh', callback: cbTvwFilterFolderProceduresRefresh },
+                { name: 'OnChange', callback: cbTvwFilterFolderProceduresOnChange },
+                { name: 'Click', callback: cbTvwFilterFolderProceduresOnClick },
+            ],
+            operations: [
+                { name: 'Remove', label: 'Remove', classes: "btn btn-primary" },
+            ],
+        }
+        _tvwFilterFolderProcedures = new qrmgTreeview(tvwFilterFolderProcedures);
+        loadFilterFolderProcedures();
+    }
+    function loadFilterFolderProcedures() {
+        var _ee = _viewstate.Folders;
+        var _d = { questStatus: _viewstate.questStatus, Items: _ee };
+        _tvwFilterFolderProcedures.Fill(_d);
+        _tvwFilterFolderProcedures.Change(false);
+        //console.log('_tvwFilterFolderProcedures.Refresh()');
+        _tvwFilterFolderProcedures.Refresh();
+    }
+    function cbTvwFilterFolderProcedures(op, msg, n, d) {
+    }
+    function cbTvwFilterFolderProceduresAfterLoaded() {
+        alert('After loaded');
+    }
+    function cbTvwFilterFolderProceduresOnTreeRender(e) {
+    }
+    function cbTvwFilterFolderProceduresRefresh(e) {
+    }
+    function cbTvwFilterFolderProceduresOnChange(ud, bChanges) {
+        if (_pnlFilters) {
+            _pnlFilters.Operations(['Run'], !bChanges);
+            _pnlFilters.Operations(['Test'], bChanges);
+        }
+    }
+    function cbTvwFilterFolderProceduresOnClick(ud, d) {
+        if (ud.node.type == 'filter') {
+            cbChangeFilter({ Change: true }, ud.node.Id);
+        }
+    }
+</script>
 <script type="text/javascript">
     var _frmFilterProcedures = null;
     function initFilterProcedures() {
@@ -2016,7 +2385,6 @@
         ExportToExcel(d);
     }
 </script>
-
 <script type="text/javascript">
     var _grdResults;
     function initGrdResults() {

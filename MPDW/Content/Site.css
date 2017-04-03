@@ -477,6 +477,23 @@ input[type="file"] {
     width: auto;
     vertical-align: top;
 }
+.panel-title-explore {
+    position: relative;
+    display: inline-block;
+    width: 600px;
+    height: 48px;
+    overflow: hidden;
+    background: #FFFFFF;
+}
+.panel-title-explore:hover {
+    position: relative;
+    display: inline-block;
+    width: 600px;
+    height: 300px;
+    overflow: auto;
+    background: #FFFFFF;
+    z-index: 2;
+}
 .panel-title-select {
     position: relative;
     display: inline-block;

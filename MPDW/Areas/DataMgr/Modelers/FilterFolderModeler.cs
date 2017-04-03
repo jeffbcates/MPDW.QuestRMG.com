@@ -96,7 +96,7 @@ namespace Quest.MasterPricing.DataMgr.Modelers
             FolderId folderId = new FolderId(viewModel.Id);
             List<FilterFolder> filterFolderList = null;
             FilterFoldersMgr filterFoldersMgr = new FilterFoldersMgr(this.UserSession);
-            status = filterFoldersMgr.Read(folderId, out filterFolderList);
+            status = filterFoldersMgr.Load(folderId, out filterFolderList);
             if (!questStatusDef.IsSuccess(status))
             {
                 return (status);
@@ -107,13 +107,13 @@ namespace Quest.MasterPricing.DataMgr.Modelers
             BufferMgr.TransferBuffer(viewModel, filterFolderViewModel);
             foreach (FilterFolder filterFolder in filterFolderList)
             {
-                DynatreeNode dynatreeNode = null;
-                status = FormatDynatreeNode(filterFolder, out dynatreeNode);
+                BootstrapTreenodeViewModel bootstrapTreenodeViewModel = null;
+                status = FormatBootstrapTreeviewNode(filterFolder, out bootstrapTreenodeViewModel);
                 if (!questStatusDef.IsSuccess(status))
                 {
                     return (status);
                 }
-                filterFolderViewModel.Items.Add(dynatreeNode);
+                filterFolderViewModel.Items.Add(bootstrapTreenodeViewModel);
             }
             return (new questStatus(Severity.Success));
         }

@@ -19,6 +19,7 @@ namespace Quest.MasterPricing.DataMgr.Models
         public List<BootstrapTreenodeViewModel> ViewList { get; set; }
         public List<BootstrapTreenodeViewModel> Lookups { get; set; }
         public List<BootstrapTreenodeViewModel> TypeLists { get; set; }
+        public List<BootstrapTreenodeViewModel> Folders { get; set; }
 
 
         public DataMgrTablesetViewModel()
@@ -29,6 +30,7 @@ namespace Quest.MasterPricing.DataMgr.Models
             ViewList = new List<BootstrapTreenodeViewModel>();
             Lookups = new List<BootstrapTreenodeViewModel>();
             TypeLists = new List<BootstrapTreenodeViewModel>();
+            Folders = new List<BootstrapTreenodeViewModel>();
         }
         public DataMgrTablesetViewModel(UserSession userSession)
             : base(userSession)
@@ -38,6 +40,7 @@ namespace Quest.MasterPricing.DataMgr.Models
             ViewList = new List<BootstrapTreenodeViewModel>();
             Lookups = new List<BootstrapTreenodeViewModel>();
             TypeLists = new List<BootstrapTreenodeViewModel>();
+            Folders = new List<BootstrapTreenodeViewModel>();
         }
         public DataMgrTablesetViewModel(UserSession userSession, BaseUserSessionViewModel baseUserSessionViewModel)
             : base(userSession, baseUserSessionViewModel)
@@ -47,6 +50,7 @@ namespace Quest.MasterPricing.DataMgr.Models
             ViewList = new List<BootstrapTreenodeViewModel>();
             Lookups = new List<BootstrapTreenodeViewModel>();
             TypeLists = new List<BootstrapTreenodeViewModel>();
+            Folders = new List<BootstrapTreenodeViewModel>();
         }
     }
 }

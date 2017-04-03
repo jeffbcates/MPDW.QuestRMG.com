@@ -12,6 +12,7 @@ using Quest.MasterPricing.DataMgr.Models;
 using Quest.Functional.MasterPricing;
 using Quest.MasterPricing.Services.Business.Tablesets;
 using Quest.MasterPricing.Services.Business.Database;
+using Quest.MasterPricing.Services.Business.Filters;
 
 
 namespace Quest.MasterPricing.DataMgr.Modelers
@@ -77,6 +78,16 @@ namespace Quest.MasterPricing.DataMgr.Modelers
                 return (status);
             }
 
+            // Load all folders
+            FolderId folderId = null;
+            List<FilterFolder> filterFolderList = null;
+            FilterFoldersMgr filterFoldersMgr = new FilterFoldersMgr(this.UserSession);
+            status = filterFoldersMgr.Load(folderId, out filterFolderList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
 
             // Build model
             dataMgrTablesetViewModel = new DataMgrTablesetViewModel(this.UserSession, this._dataMgrBaseViewModel);
@@ -113,6 +124,17 @@ namespace Quest.MasterPricing.DataMgr.Modelers
             dataMgrTablesetViewModel.Lookups = lookupNodeList;
             dataMgrTablesetViewModel.TypeLists = typeListNodeList;
 
+
+            foreach (FilterFolder filterFolder in filterFolderList)
+            {
+                BootstrapTreenodeViewModel bootstrapTreenodeViewModel = null;
+                status = FormatBootstrapTreeviewNode(filterFolder, out bootstrapTreenodeViewModel);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+                dataMgrTablesetViewModel.Folders.Add(bootstrapTreenodeViewModel);
+            }
             return (new questStatus(Severity.Success));
         }
         public questStatus ListLookups(DatabaseId databaseId, out List<BootstrapTreenodeViewModel> lookupNodeList)

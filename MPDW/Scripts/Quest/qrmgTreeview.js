@@ -72,7 +72,7 @@ function qrmgTreeview(model) {
             data: Data || {},
             multiSelect: _self._model.multiSelect,
             onTreeRender: _self._onrndr
-            ////onNodeSelected: _self._onNodeSelected
+            , onNodeSelected: _self._onNodeSelected
         });
         _self._tvw = _self._gettvw();
         if (!bFill) {
@@ -86,7 +86,17 @@ function qrmgTreeview(model) {
     }
 
     _self._onNodeSelected = function (p1, p2) {
-        alert('onNodeSelected');
+        ////alert('onNodeSelected');
+        if (_self._model.autofocus) {
+            var li = $(_self._e).find('li[data-id="' + p2.Id + '"]');
+            _self._autofocus(li);
+        }
+    }
+    _self._autofocus = function (li) {
+        var _tvwTop = $(_self._e).scrollTop();
+        var _eTop = $(li).position().top;
+        console.log('qrmgTreeview._autofocus: _tvwTop: ' + _tvwTop + ',  _eTop: ' + _eTop + ',  total: ', $(_self._e).scrollTop() + $(li).position().top - 10);
+        $(_self._e).scrollTop($(_self._e).scrollTop() + $(li).position().top - 10);
     }
 
     _self.Draggable = function () {
@@ -286,6 +296,7 @@ function qrmgTreeview(model) {
             _evt = _self._getevt("Click");
             if (_evt != null) {
                 //console.log('    calling Click event');
+                var n = _self.GetNode($(e.currentTarget).attr('data-id'));
                 if (_evt.callback({ Click: true, node: n, event: e })) {
                     //console.log('    Click event true');
                     e.stopPropagation();

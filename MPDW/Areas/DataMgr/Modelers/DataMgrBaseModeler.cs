@@ -442,15 +442,64 @@ namespace Quest.MasterPricing.DataMgr.Modelers
 
             return (new questStatus(Severity.Success));
         }
-
-        public questStatus FormatDynatreeNode(FilterFolder filterFolder, out DynatreeNode dynatreeNode)
+        public questStatus FormatBootstrapTreeviewNode(FilterFolder filterFolder, out BootstrapTreenodeViewModel bootstrapTreenodeViewModel)
         {
-            // Initialize 
-            dynatreeNode = null;
+            // Initialize
+            questStatus status = null;
 
+            bootstrapTreenodeViewModel = new BootstrapTreenodeViewModel();
+            bootstrapTreenodeViewModel.Id = filterFolder.Id;
+            bootstrapTreenodeViewModel.type = "folder";
+            bootstrapTreenodeViewModel.icon = "fa fa-folder-o padding-right-20";
+            bootstrapTreenodeViewModel.text = filterFolder.Name;
+            bootstrapTreenodeViewModel.Name = filterFolder.Name;
+            bootstrapTreenodeViewModel.selectable = "true";
+
+            // Add folder subnodes
+            List<BootstrapTreenodeViewModel> subfolderList = new List<BootstrapTreenodeViewModel>();
+            foreach (FilterFolder folder in filterFolder.Folders)
+            {
+                BootstrapTreenodeViewModel subfolder = null;
+                status = FormatBootstrapTreeviewNode(folder, out subfolder);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+                subfolderList.Add(subfolder);
+            }
+            bootstrapTreenodeViewModel.nodes.AddRange(subfolderList);
+
+            // Add filter subnodes
+            List<BootstrapTreenodeViewModel> filterNodeList = new List<BootstrapTreenodeViewModel>();
+            foreach (Quest.Functional.MasterPricing.Filter filter in filterFolder.Filters)
+            {
+                BootstrapTreenodeViewModel filterNode = null;
+                status = FormatBootstrapTreeviewNode(filter, out filterNode);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+                filterNodeList.Add(filterNode);
+            }
+            bootstrapTreenodeViewModel.nodes.AddRange(filterNodeList);
 
             return (new questStatus(Severity.Success));
         }
+        public questStatus FormatBootstrapTreeviewNode(Quest.Functional.MasterPricing.Filter filter, out BootstrapTreenodeViewModel bootstrapTreenodeViewModel)
+        {
+            bootstrapTreenodeViewModel = new BootstrapTreenodeViewModel();
+            bootstrapTreenodeViewModel.Id = filter.Id;
+            bootstrapTreenodeViewModel.type = "filter";
+            bootstrapTreenodeViewModel.icon = "fa fa-filter padding-right-20";
+            bootstrapTreenodeViewModel.text = filter.Name;
+            bootstrapTreenodeViewModel.Name = filter.Name;
+            bootstrapTreenodeViewModel.selectable = "true";
+            return (new questStatus(Severity.Success));
+        }
+
+
+
+
         public string GetColumnDataType(Column column)
         {
             StringBuilder sbIcons = new StringBuilder("");

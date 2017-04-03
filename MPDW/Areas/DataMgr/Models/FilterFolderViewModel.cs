@@ -17,22 +17,22 @@ namespace Quest.MasterPricing.DataMgr.Models
         public string Description { get; set; }
         public string Created { get; set; }
         public string Modified { get; set; }
-        public List<DynatreeNode> Items { get; set; }
+        public List<BootstrapTreenodeViewModel> Items { get; set; }
 
         public FilterFolderViewModel()
             : base()
         {
-            Items = new List<DynatreeNode>();
+            Items = new List<BootstrapTreenodeViewModel>();
         }
         public FilterFolderViewModel(UserSession userSession)
             : base(userSession)
         {
-            Items = new List<DynatreeNode>();
+            Items = new List<BootstrapTreenodeViewModel>();
         }
         public FilterFolderViewModel(UserSession userSession, BaseUserSessionViewModel baseUserSessionViewModel)
             : base(userSession, baseUserSessionViewModel)
         {
-            Items = new List<DynatreeNode>();
+            Items = new List<BootstrapTreenodeViewModel>();
         }
     }
 }

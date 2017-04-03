@@ -467,7 +467,15 @@ namespace Quest.MasterPricing.Services.Data.FilterFolders
 
             try
             {
-                filterFolderList = dbContext.FilterFolders.Where(r => r.FolderId == folderId.Id).ToList();
+                if (folderId == null || folderId.Id < BaseId.VALID_ID)
+                {
+                    filterFolderList = dbContext.FilterFolders.Where(r => r.FolderId == null).ToList();
+                }
+                else
+                {
+                    filterFolderList = dbContext.FilterFolders.Where(r => r.FolderId == folderId.Id).ToList();
+                }
+
                 if (filterFolderList == null)
                 {
                     return (new questStatus(Severity.Error, String.Format("ERROR: {0}.{1}: {2}",
