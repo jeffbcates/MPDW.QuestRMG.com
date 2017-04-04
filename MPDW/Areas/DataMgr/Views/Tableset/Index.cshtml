@@ -61,6 +61,7 @@
                 ////{ name: 'TestExport', label: 'Test & Export', classes: 'btn-danger', method: 'POST', callback: cbTestExportFilter, title: 'Test unsaved changes to a filter', uri: '/DataMgr/Filter/Run' },
                 ////{ name: 'ExportAsForm', label: 'Export as Form', classes: 'btn-danger', method: 'POST', callback: cbExportAsForm, title: 'Test unsaved changes to a filter', uri: '/DataMgr/Filter/Run' },
                 { name: 'Extend', label: 'Extend', method: 'POST', callback: cbExtendFilter, title: 'Save this filter with extended operations name-appended "New"', uri: '/DataMgr/Filters/Save' },
+                { name: 'XSSSave', label: 'XSS Save', method: 'POST', callback: cbGetEntitiesAPIData, title: 'Save the filter as an external app would XSS', uri: '/DataMgr/Filters/Save' },
             ],
             actions: [
                 { name: 'RowLimit', label: 'Row Limit', type: 'text', value: '200', title: 'Set max # of rows to return' },
@@ -328,6 +329,84 @@
             }
         }
     }
+
+
+    /*==============================================*/
+    /* Jaret: follow this code to save a filter XSS */
+    /*==============================================*/
+    function cbGetEntitiesAPIData(ud, d) {
+        if (!_viewstate.XSS) {
+            qrmgmvc.Global.Mask($('#pnlFilters'));
+            var d = _frmFilter._getctx();
+            d.Id = _viewstate.TablesetId;
+            var _ioEntities = new qrmgio(cbGotEntitiesData);
+            _ioEntities.GetJSON('/DataMgr/Tableset/Entities', d);
+        }
+        else {
+            readUnmodifiedFilter();
+        }
+    }
+    function cbGotEntitiesData(ud, d) {
+        qrmgmvc.Global.Unmask($('#pnlFilters'));
+        if (!IsAppSuccess(d)) {
+            DisplayUserMessage(d);
+            return;
+        }
+        _viewstate.XSS = {};
+        _viewstate.XSS.ENTITIES_API_DATA = d;
+        readUnmodifiedFilter();
+    }
+    function readUnmodifiedFilter() {
+        qrmgmvc.Global.Mask($('#pnlFilters'));
+        var d = _frmFilter.GetData();
+        var _ioReadFilter = new qrmgio(cbReadUnmodifiedFilter);
+        _ioReadFilter.GetJSON('/DataMgr/Filter/Read', d);
+    }
+    function cbReadUnmodifiedFilter(ud, d) {
+        qrmgmvc.Global.Unmask($('#pnlFilters'));
+        _viewstate.XSS.UNMODIFIED_FILTER = d;
+        saveFilterXSS();
+    }
+    function saveFilterXSS(xname) {
+        var d = _frmFilter._getctx();
+        d.Id = -1;
+        d.FilterId = -1;
+        d.TablesetId = _viewstate.TablesetId;
+        d.CurrentTab = _pnlFilters.Tab();
+        d.Editor = _frmFilter.GetData();
+        d.Editor.Id = -1;
+        d.Editor.FilterId = -1;
+        d.Editor.Name = xname ? xname : (d.Editor.Name + " (XSS SAVE)");
+
+        d.Entities = flattenEntities(_viewstate.XSS.UNMODIFIED_FILTER.Entities);
+        d.Items = _fltFilterItems.GetData();
+        d.Procedures = _viewstate.XSS.UNMODIFIED_FILTER.Procedures;
+
+        var _ioReadFilter = new qrmgio(cbSaveModifiedFilter);
+        _ioReadFilter._postJSON('/DataMgr/Filters/Save', d);
+    }
+    function cbSaveModifiedFilter(ud, d) {
+        DisplayUserMessage(d);
+        qrmgmvc.Global.Unmask($('#pnlFilters'));
+    }
+    function flattenEntities(ee) {
+        var Entities = [];
+        $.each(ee, function (i, e) {
+            Entities.push({ Id: e.Id, ParentId: e.ParentId, state: e.state, tags: e.tags, text: e.text, type: e.type, parentType: e.parentType, Schema: e.Schema, Name: e.Name });
+            if (e.nodes.length) {
+                var _ee = flattenEntities(e.nodes);
+                Entities = Entities.concat(_ee);
+            }
+
+        });
+        return (Entities);
+    }
+    /*==============================================*/
+    /* End of filter XSS save example code          */
+    /*==============================================*/
+
+
+
     function cbExtendFilter(ud, d, xname) {
         if (xname) {
             return (cbSaveFilterPanel(ud, d, true, xname));
