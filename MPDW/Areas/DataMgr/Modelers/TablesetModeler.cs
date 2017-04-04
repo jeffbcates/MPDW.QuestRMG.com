@@ -87,7 +87,7 @@ namespace Quest.MasterPricing.DataMgr.Modelers
 
 
             // Build model
-            tablesetListViewModel = new TablesetListViewModel(new UserSession());
+            tablesetListViewModel = new TablesetListViewModel(this.UserSession);
             foreach (Tableset tableset in tablesetList)
             {
                 TablesetLineItemViewModel tablesetLineItemViewModel = new TablesetLineItemViewModel();

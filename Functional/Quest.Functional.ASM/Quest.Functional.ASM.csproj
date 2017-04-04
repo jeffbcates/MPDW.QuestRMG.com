@@ -52,6 +52,7 @@
     <Compile Include="Privilege.cs" />
     <Compile Include="PrivilegeId.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="PasswordPair.cs" />
     <Compile Include="User.cs" />
     <Compile Include="UserGroupList.cs" />
     <Compile Include="UserId.cs" />

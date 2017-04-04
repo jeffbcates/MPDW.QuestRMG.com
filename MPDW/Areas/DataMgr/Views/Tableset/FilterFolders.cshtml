@@ -5,6 +5,7 @@
 }
 
 <h3 id="pageTitle">Data Manager</h3>
+<div class="ucnote">TEMPORARY: Go back to non-folder way of managing filters:&nbsp;<button id="btnFilterFolders" class="btn btn-success">Filters</button></div>
 <div class="page-subtitle-frame">
     <div id="pTablesetSummary" class="page-subtitle pull-left"></div>
     <div id="pTablesetLastRefresh" class="page-subtitle pull-right"><b>Last Refresh:</b></div>
@@ -49,7 +50,7 @@
             ],
             operations: [
                 { name: 'Explore', label: 'Explore', type: 'tab', title: 'Filter Folder Explorer' },
-                { name: 'New', label: 'New', type: 'tab', title: 'Create a new filter' },
+                { name: 'New', label: 'Filter', type: 'tab', title: 'Create a new filter' },
                 { name: 'Entities', label: 'Entities', type: 'tab', title: 'Assign tableset entities to a filter' },
                 { name: 'Items', label: 'Items', type: 'tab', title: 'Designate entity columns and operations' },
                 { name: 'Procedures', label: 'Procedures', type: 'tab', title: 'Establish stored procedures to invoke' },
@@ -83,8 +84,8 @@
         _pnlFilters.SetField('TablesetId', _viewstate.Tableset.Id);
     }
     function cbPanelFilters(ud, d) {
+        initTreeviewFilterExplorer();
         initTablesetFiltersEditor();
-        initTreeviewFilterFolders();
         initTreeviewFilterFolderEntities();
         initTreeviewTablesetEntities();
         initTreeviewFilterEntities();
@@ -119,7 +120,7 @@
             var _h = [], _i = 0;
             _h[_i++] = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
             _h[_i++] = '<button title="Create a new folder for filters" type="button" class="btn pnlbtn" id="pnlfltfldr_btnNew">New</button>';
-            _h[_i++] = '<div id="tvwFilterFolders">';
+            _h[_i++] = '<div id="tvwFilterExplorer">';
             _h[_i++] = '</div>';
             return (_h.join(''));
         }
@@ -129,7 +130,7 @@
                 enadisSQLTabButtons($('#fltFilterId').val() > -1);
             }
             else if (ud.After) {
-                _tvwFilterFolders.AutoFocus();
+                _tvwFilterExplorer.AutoFocus();
             }
         }
     }
@@ -158,7 +159,7 @@
             _h[_i++] = '       <select id="selCurrentEntitiesFilter" class="panel-control filter-select"></select>';
             _h[_i++] = '    </div>';
             _h[_i++] = '</div>';
-            _h[_i++] = '<div class="panel-tab-frame">';
+            _h[_i++] = '<div class="panel-tab-xframe">';
             _h[_i++] = '    <div id="tvwTablesetTablesFrame" class="panel-half-tab pull-left disabled">';
             _h[_i++] = '        <div id="tvwTablesetEntities" class="panel-full-frame-40header">';
             _h[_i++] = '        </div>';
@@ -204,7 +205,7 @@
             _h[_i++] = '    </div>';
 
             _h[_i++] = '</div>';
-            _h[_i++] = '<div class="panel-tab-frame">';
+            _h[_i++] = '<div class="panel-tab-xframe">';
             _h[_i++] = '    <div id="tvwConfigureTablesFrame" class="panel-quarter-tab pull-left disabled">';
             _h[_i++] = '        <div id="tvwValueEntities" class="panel-full-frame-40header">';
             _h[_i++] = '        </div>';
@@ -659,11 +660,11 @@
 
 <!-- EXPLORE -->
 <script type="text/javascript">
-    var _tvwFilterFolders = null;
-    function initTreeviewFilterFolders() {
-        var tvwFilterFolders = {
-            element: 'tvwFilterFolders',
-            pfx: 'fltfldr',
+    var _tvwFilterExplorer = null;
+    function initTreeviewFilterExplorer() {
+        var tvwFilterExplorer = {
+            element: 'tvwFilterExplorer',
+            pfx: 'fltexplr',
             uri: '/DataMgr/Folder',
             keyname: 'FolderId',
             header: {
@@ -680,51 +681,54 @@
             callback: cbTvwFilterFolders,
             bNoUserMessages: true,
             events: [
-                { name: 'AfterLoaded', callback: cbTvwFilterFoldersAfterLoaded },
-                { name: 'OnTreeRender', callback: cbTvwFilterFoldersOnTreeRender },
-                { name: 'Refresh', callback: cbTvwFilterFoldersRefresh },
-                { name: 'OnChange', callback: cbTvwFilterFoldersOnChange },
-                { name: 'Click', callback: cbTvwFilterFoldersOnClick },
+                { name: 'AfterLoaded', callback: cbTvwFilterExplorerAfterLoaded },
+                { name: 'OnTreeRender', callback: cbTvwFilterExplorerOnTreeRender },
+                { name: 'Refresh', callback: cbTvwFilterExplorerRefresh },
+                { name: 'OnChange', callback: cbTvwFilterExplorerOnChange },
+                { name: 'Click', callback: cbTvwFilterExplorerOnClick },
             ],
             operations: [
                 { name: 'Remove', label: 'Remove', classes: "btn btn-primary" },
             ],
+            contextMenu: {
+                element: 'ctxmFilterExplorer'
+            }
         }
-        _tvwFilterFolders = new qrmgTreeview(tvwFilterFolders);
-        loadFilterFolders();
+        _tvwFilterExplorer = new qrmgTreeview(tvwFilterExplorer);
+        loadFilterExplorer();
     }
-    function loadFilterFolders() {
+    function loadFilterExplorer() {
         var _ee = _viewstate.Folders;
         var _d = { questStatus: _viewstate.questStatus, Items: _ee };
-        _tvwFilterFolders.Fill(_d);
-        _tvwFilterFolders.Change(false);
-        //console.log('_tvwFilterFolders.Refresh()');
-        _tvwFilterFolders.Refresh();
+        _tvwFilterExplorer.Fill(_d);
+        _tvwFilterExplorer.Change(false);
+        //console.log('_tvwFilterExplorer.Refresh()');
+        _tvwFilterExplorer.Refresh();
     }
     function cbTvwFilterFolders(op, msg, n, d) {
-        var x = 4;
-        x = 44;
     }
-    function cbTvwFilterFoldersAfterLoaded() {
-        alert('After loaded');
+    function cbTvwFilterExplorerAfterLoaded() {
     }
-    function cbTvwFilterFoldersOnTreeRender(e) {
-        if (!_tvwFilterFolders) { return; }
-        $(_tvwFilterFolders._e + ' ul li span.fa-table').closest('li').addClass('tvwTable');
-        $(_tvwFilterFolders._e + ' ul li span.fa-th').closest('li').addClass('tvwView');
+    function cbTvwFilterExplorerOnTreeRender(e) {
+        if (!_tvwFilterExplorer) { return; }
+        $(_tvwFilterExplorer._e + ' ul li span.fa-table').closest('li').addClass('tvwTable');
+        $(_tvwFilterExplorer._e + ' ul li span.fa-th').closest('li').addClass('tvwView');
     }
-    function cbTvwFilterFoldersRefresh(e) {
+    function cbTvwFilterExplorerRefresh(e) {
         $('#draggingContainer').remove();
     }
-    function cbTvwFilterFoldersOnChange(ud, bChanges) {
+    function cbTvwFilterExplorerOnChange(ud, bChanges) {
         if (_pnlFilters) {
             _pnlFilters.Operations(['Run'], !bChanges);
             _pnlFilters.Operations(['Test'], bChanges);
         }
     }
-    function cbTvwFilterFoldersOnClick(ud, d) {
+    function cbTvwFilterExplorerOnClick(ud, d) {
         if (ud.node.type == 'filter') {
             cbChangeFilter({ Change: true }, ud.node.Id);
+        }
+        else if (ud.node.type == 'folder') {
+
         }
     }
 </script>
@@ -751,13 +755,8 @@
             fields: [
                 { name: 'Id', type: 'hidden', key: true },
                 { name: 'TablesetId', type: 'hidden' },
-                { name: 'FillerA', label: '', type: 'labelOnly' },
-                { name: 'FillerB', label: 'Select a filter ...', type: 'labelOnly', classes: 'pnl-tab-instructions' },
-                { name: 'FilterId', label: 'Filters', type: 'select', args: [{ TablesetId: _viewstate.TablesetId, type: 'value' }], callback: cbChangeFilter, classes: 'panel-control filter-select' },
-                { name: 'Filler0', label: '', type: 'labelOnly' },
-                { name: 'Filler1', label: '', type: 'labelOnly' },
-                { name: 'Filler2', label: 'OR', type: 'labelOnly', classes: 'pnl-tab-instructions' },
-                { name: 'Filler3', label: '', type: 'labelOnly' }, { name: 'Filler4', label: 'Enter name and optional summary then SAVE to create a new filter...', type: 'labelOnly', classes: 'pnl-tab-instructions' },
+                { name: 'Filler4', label: '', type: 'labelOnly' }, { name: 'Filler4', label: 'To create a new filter, select a folder in Explorer, come back here and press CLEAR then enter a name and summary.', type: 'labelOnly', classes: 'pnl-tab-instructions' },
+                { name: 'Filler5', label: '', type: 'labelOnly' }, { name: 'Filler5', label: 'To change name or summary, select a filter then come back here, change name/summary and click SAVE.', type: 'labelOnly', classes: 'pnl-tab-instructions' },
                 { name: 'Name', label: 'Name', required: true, maxlength: 256, size: 55 },
                 { name: 'Summary', label: 'Summary', maxlength: 256, size: 55 },
             ],
@@ -888,7 +887,7 @@
         else if (ud.PostLoad) {
             ////var _ss = $('.panel-title-explore');
             ////$.each(_ss, function (i, s) {
-            ////    var tvw = $('#tvwFilterFolders').clone().attr('id', 'tvwFilterSelect' + (i+1)).addClass('filter-explore');
+            ////    var tvw = $('#tvwFilterExplorer').clone().attr('id', 'tvwFilterSelect' + (i+1)).addClass('filter-explore');
             ////    $(s).empty().append(tvw);
             ////});
         }
@@ -966,7 +965,7 @@
         var _d = { questStatus: _viewstate.questStatus, Items: _ee };
         _tvwFilterFolderEntities.Fill(_d);
         _tvwFilterFolderEntities.Change(false);
-        //console.log('_tvwFilterFolders.Refresh()');
+        //console.log('_tvwFilterExplorer.Refresh()');
         _tvwFilterFolderEntities.Refresh();
     }
     function cbTvwFilterFolderEntities(op, msg, n, d) {
@@ -1172,7 +1171,7 @@
         var _d = { questStatus: _viewstate.questStatus, Items: _ee };
         _tvwFilterFolderItems.Fill(_d);
         _tvwFilterFolderItems.Change(false);
-        //console.log('_tvwFilterFolders.Refresh()');
+        //console.log('_tvwFilterExplorer.Refresh()');
         _tvwFilterFolderItems.Refresh();
     }
     function cbTvwFilterFolderItems(op, msg, n, d) {
@@ -1479,7 +1478,7 @@
         var _d = { questStatus: _viewstate.questStatus, Items: _ee };
         _tvwFilterFolderSQL.Fill(_d);
         _tvwFilterFolderSQL.Change(false);
-        //console.log('_tvwFilterFolders.Refresh()');
+        //console.log('_tvwFilterExplorer.Refresh()');
         _tvwFilterFolderSQL.Refresh();
     }
     function cbTvwFilterFolderSQL(op, msg, n, d) {
@@ -2517,7 +2516,7 @@
         var t = _pnlFilters.Tab();
         var n;
         if (t == "Explore") {
-            n = _tvwFilterFolders.Selected();
+            n = _tvwFilterExplorer.Selected();
         }
         else if (t == "Entities") {
             n = _tvwFilterFolderEntities.Selected();
@@ -2538,14 +2537,14 @@
         return (n);
     }
     function clearFilterFolders() {
-        _tvwFilterFolders.ClearSelected();
+        _tvwFilterExplorer.ClearSelected();
         _tvwFilterFolderEntities.ClearSelected();
         _tvwFilterFolderItems.ClearSelected();
         _tvwFilterFolderProcedures.ClearSelected();
-        _tvwFilterFolderSQLTab.ClearSelected();
+        _tvwFilterFolderSQL.ClearSelected();
     }
     function setSelectedFilter(id) {
-        _tvwFilterFolders.Select(id, true);
+        _tvwFilterExplorer.Select(id, true);
         _tvwFilterFolderEntities.Select(id, true);
         _tvwFilterFolderItems.Select(id, true);
         _tvwFilterFolderProcedures.Select(id, true);
@@ -2554,7 +2553,7 @@
         expandSelectedToFilter(id);
     }
     function expandSelectedToFilter(id) {
-        _tvwFilterFolders.Expand(id);
+        _tvwFilterExplorer.Expand(id);
         _tvwFilterFolderEntities.Expand(id);
         _tvwFilterFolderItems.Expand(id);
         _tvwFilterFolderProcedures.Expand(id);
@@ -2563,7 +2562,7 @@
         autoFocusFolderTreeviews();
     }
     function autoFocusFolderTreeviews() {
-        _tvwFilterFolders.AutoFocus();
+        _tvwFilterExplorer.AutoFocus();
         _tvwFilterFolderEntities.AutoFocus();
         _tvwFilterFolderItems.AutoFocus();
         _tvwFilterFolderProcedures.AutoFocus();
@@ -2596,3 +2595,50 @@
     }
 </script>
 
+<script type="text/javascript">
+    $(function () {
+        $('#btnFilterFolders').click(function (e) {
+            qrmgmvc.Global.Mask($('#pnlFilters'));
+            var pp = window.location.href.split('?');
+            var url = pp[0];
+            url = url.substr(0, url.indexOf('/FilterFolders'));
+            window.location.href = url + '?' + pp[1];
+        });
+    });
+</script>
+
+
+<ul id="ctxmFilterExplorer" class="tvwContextMenu dropdown-menu" role="menu" style="display:none">
+    <li><a tabindex="-1" href="#Expand">Expand</a></li>
+    <li><a tabindex="-1" href="#Collapse">Collapse</a></li>
+    <li class="divider"></li>
+    <li><a tabindex="-1" href="#NewSubfolder">New Subfolder</a></li>
+    <li class="divider"></li>
+    <li><a tabindex="-1" href="#Delete">Delete</a></li>
+</ul>
+<script type="text/javascript">
+    function bindFilterExplorerContextMenu() {
+        var $contextMenu = $("#ctxmFilterExplorer");
+
+        $("body").on("contextmenu", "li.list-group-item", function (e) {
+            ClearUserMessage();
+            $contextMenu.css({
+                display: "block",
+                left: e.pageX,
+                top: e.pageY
+            });
+            return false;
+        });
+        $('#ctxmFilterExplorer li a').click(function (e) {
+            var cmd = $(e.currentTarget).attr('href').substr(1);
+            DisplayUserMessage('W|' + cmd + ' selected folder!');
+            $contextMenu.hide();
+        });
+        $('body').click(function (e) {
+            if ($('#ctxmFilterExplorer:visible').length) {
+                ClearUserMessage();
+                $contextMenu.hide();
+            }
+        });
+    }
+</script>

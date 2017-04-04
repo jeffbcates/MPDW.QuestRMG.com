@@ -938,9 +938,9 @@ function qrmgEditor(model) {
         if (_pcf) {
             var _pf = _self._getfbt('password');
             if (_pf) {
-                if ($('#' + _pf.id, _self._e).val() != $('#' + _pcf.id, _self._e).val()) {
-                    $('#' + _pf.id, _self._e).addClass('validationError');
-                    $('#' + _pcf.id, _self._e).addClass('validationError');
+                if ($('#' + _pf._id, _self._e).val() != $('#' + _pcf._id, _self._e).val()) {
+                    $('#' + _pf._id, _self._e).addClass('validationError');
+                    $('#' + _pcf._id, _self._e).addClass('validationError');
                 }
             }
         }
@@ -1159,8 +1159,8 @@ function qrmgEditor(model) {
         Unmask(e || _self._mask, null, bCM);
         _self.Buttons(true);
     }
-    _self.Buttons = function (bDisable) {
-        bDisable ? $('#frmTableset .avopsacts button').removeAttr('disabled') : $('#frmTableset .avopsacts button').attr('disabled', 'disabled');
+    _self.Buttons = function (bEnable) {
+        bEnable ? $('.avopsacts button', _self._e).removeAttr('disabled') : $('.avopsacts button', _self._e).attr('disabled', 'disabled');
     }
 
     _self._init();

@@ -143,6 +143,35 @@ namespace Quest.MPDW.Services.Business.Accounts
             }
             return (new questStatus(Severity.Success));
         }
+
+        public questStatus SetPassword(PasswordPair passwordPair)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            // Set password
+            status = _dbUsersMgr.SetPassword(passwordPair);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus SetPassword(DbMgrTransaction trans, PasswordPair passwordPair)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            // Set password
+            status = _dbUsersMgr.SetPassword(trans, passwordPair);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
         #endregion
 
 

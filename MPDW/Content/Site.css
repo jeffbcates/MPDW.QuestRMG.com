@@ -288,6 +288,7 @@ input[type="file"] {
 
 
 .editorFrame {
+    margin-top: 30px !important;
 }
 
 
@@ -530,6 +531,14 @@ input[type="file"] {
   right: 0;
   top: 48px;
 }
+.panel-tab-xframe {
+  bottom: 0;
+  display: block;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 54px;
+}
 .scrollable {
   overflow: auto;
 }
@@ -568,4 +577,18 @@ button.active {
     color: #f40f0f !important;
     padding: 10px;
     font-size: 1.2em;
+}
+.ucnote {
+  position: relative;
+  display: inline-block;
+  float: right;
+  margin-bottom: 20px;
+  margin-top: -20px;
+  color: red;
+  font-weight: bold;
+}
+
+.tvwContextMenu {
+    position: absolute;
+    display: none;
 }

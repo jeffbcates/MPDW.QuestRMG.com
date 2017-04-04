@@ -6,6 +6,7 @@
 }
 
 <h3 id="pageTitle">Data Manager</h3>
+<div class="ucnote">TEMPORARY: Managing filters with folders can be done here:&nbsp;<button id="btnFilterFolders" class="btn btn-success">Filter Folders</button></div>
 <div class="page-subtitle-frame">
     <div id="pTablesetSummary" class="page-subtitle pull-left"></div>
     <div id="pTablesetLastRefresh" class="page-subtitle pull-right"><b>Last Refresh:</b></div>
@@ -2167,4 +2168,12 @@
         _frmExport.submit();
     }
 </script>
-
+<script type="text/javascript">
+    $(function () {
+        $('#btnFilterFolders').click(function (e) {
+            qrmgmvc.Global.Mask($('#pnlFilters'));
+            var pp = window.location.href.split('?');
+            window.location.href = pp[0] + '/FilterFolders?' + pp[1];
+        });
+    });
+</script>

@@ -21,7 +21,7 @@ using Quest.MPDW.Admin.Modelers;
 
 namespace Quest.MPDW.Admin
 {
-    public class UserController : AdminBaseController
+    public class PasswordController : AdminBaseController
     {
         #region Declarations
         /*==================================================================================================================================
@@ -255,7 +255,7 @@ namespace Quest.MPDW.Admin
         // CRUD Operations
         //----------------------------------------------------------------------------------------------------------------------------------
         [HttpPost]
-        public ActionResult Save(UserEditorViewModel userEditorViewModel)
+        public ActionResult Save(PasswordEditorViewModel viewModel)
         {
             questStatus status = null;
 
@@ -265,38 +265,37 @@ namespace Quest.MPDW.Admin
             status = LogOperation();
             if (!questStatusDef.IsSuccess(status))
             {
-                userEditorViewModel.questStatus = status;
-                return Json(userEditorViewModel, JsonRequestBehavior.AllowGet);
+                viewModel.questStatus = status;
+                return Json(viewModel, JsonRequestBehavior.AllowGet);
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Authorize
              *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = Authorize(userEditorViewModel._ctx);
+            status = Authorize(viewModel._ctx);
             if (!questStatusDef.IsSuccess(status))
             {
-                userEditorViewModel.questStatus = status;
-                return Json(userEditorViewModel, JsonRequestBehavior.AllowGet);
+                viewModel.questStatus = status;
+                return Json(viewModel, JsonRequestBehavior.AllowGet);
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Perform operation.
              *---------------------------------------------------------------------------------------------------------------------------------*/
-            bool bInitialCreation = userEditorViewModel.Id < BaseId.VALID_ID ? true : false;
-            UserEditorModeler userEditorModeler = new UserEditorModeler(this.Request, this.UserSession);
-            status = userEditorModeler.Save(userEditorViewModel);
+            PasswordEditorModeler passwordEditorModeler = new PasswordEditorModeler(this.Request, this.UserSession);
+            status = passwordEditorModeler.Save(viewModel);
             if (!questStatusDef.IsSuccess(status))
             {
-                userEditorViewModel.questStatus = status;
-                return Json(userEditorViewModel, JsonRequestBehavior.AllowGet);
+                viewModel.questStatus = status;
+                return Json(viewModel, JsonRequestBehavior.AllowGet);
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Return result.
              *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = new questStatus(Severity.Success, "User successfully" + (bInitialCreation ? " created" : " updated"));
-            userEditorViewModel.questStatus = status;
-            return Json(userEditorViewModel, JsonRequestBehavior.AllowGet);
+            status = new questStatus(Severity.Success, "Password set successfully");
+            viewModel.questStatus = status;
+            return Json(viewModel, JsonRequestBehavior.AllowGet);
         }
         [HttpPost]
         public ActionResult Delete(UserEditorViewModel userEditorViewModel)

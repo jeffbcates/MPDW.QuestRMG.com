@@ -313,6 +313,48 @@ namespace Quest.MPDW.Services.Data.Accounts
             }
             return (new questStatus(Severity.Success));
         }
+
+        public questStatus SetPassword(PasswordPair passwordPair)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            // Data rules.
+            passwordPair.Modified = DateTime.Now;
+            passwordPair.Password = _aesEncryption.Encrypt(passwordPair.Password);
+
+
+            // Set password
+            using (FMSEntities dbContext = new FMSEntities())
+            {
+                status = setPassword(dbContext, passwordPair);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus SetPassword(DbMgrTransaction trans, PasswordPair passwordPair)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            // Data rules.
+            passwordPair.Modified = DateTime.Now;
+            passwordPair.Password = _aesEncryption.Encrypt(passwordPair.Password);
+
+
+            // Set the password in this transaction.
+            status = setPassword((FMSEntities)trans.DbContext, passwordPair);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
         #endregion
 
 
@@ -469,6 +511,46 @@ namespace Quest.MPDW.Services.Data.Accounts
 
                 // Update the record.
                 BufferMgr.TransferBuffer(user, _user);
+                dbContext.SaveChanges();
+            }
+            catch (DbEntityValidationException ex)
+            {
+                // Retrieve the error messages as a list of strings.
+                var errorMessages = ex.EntityValidationErrors.SelectMany(x => x.ValidationErrors).Select(x => x.ErrorMessage);
+
+                String fullErrorMessage = string.Join("; ", errorMessages);
+                String exceptionMessage = string.Concat(ex.Message, " The DbEntityValidationException errors are: ", fullErrorMessage);
+                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                                        this.GetType().Name, MethodBase.GetCurrentMethod().Name,
+                                        exceptionMessage)));
+            }
+            catch (System.Exception ex)
+            {
+                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                        this.GetType().Name, MethodBase.GetCurrentMethod().Name,
+                        ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+            }
+            return (new questStatus(Severity.Success));
+        }
+        private questStatus setPassword(FMSEntities dbContext, PasswordPair passwordPair)
+        {
+            // Initialize 
+            questStatus status = null;
+
+
+            try
+            {
+                // Read the user.
+                UserId userId = new UserId(passwordPair.Id);
+                Quest.Services.Dbio.FMS.Users _user = null;
+                status = read(dbContext, userId, out _user);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+
+                // Update the password.
+                _user.Password = passwordPair.Password;
                 dbContext.SaveChanges();
             }
             catch (DbEntityValidationException ex)

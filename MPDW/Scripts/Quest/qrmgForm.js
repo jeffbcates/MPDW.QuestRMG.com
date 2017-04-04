@@ -50,24 +50,7 @@ function qrmgForm(model) {
             }
         });
     }
-    _self._bindopts = function () {
-        $.each(_self._model.options, function (i, o) {
-            _self._bindopt(o);
-        });
-    }
-    _self._bindopt = function (o) {
-        var _e = $('#' + o.id, _self._e);
-        $(_e).on('change', null, o, function (e) {
-            _self._bChanges = true;
-            var coo = _self._getmoo(o);
-            var _v = $(this).find(':selected').val();
-            $.each(coo, function (i, _o) {
-                var d = {};
-                d[o.name] = _v;
-                _self.GetOption(_o, d);
-            });
-        });
-    }
+
     _self._render = function () {
         var _h = [], _i = 0;
         _h[_i++] = '<form role="form" method="post" action="' + _self._action + '" class="form-horizontal">';
@@ -246,6 +229,24 @@ function qrmgForm(model) {
         _self._bindbtns();
         _self._bindff();
     }
+    _self._bindopts = function () {
+        $.each(_self._model.options, function (i, o) {
+            _self._bindopt(o);
+        });
+    }
+    _self._bindopt = function (o) {
+        var _e = $('#' + o.id, _self._e);
+        $(_e).on('change', null, o, function (e) {
+            _self._bChanges = true;
+            var coo = _self._getmoo(o);
+            var _v = $(this).find(':selected').val();
+            $.each(coo, function (i, _o) {
+                var d = {};
+                d[o.name] = _v;
+                _self.GetOption(_o, d);
+            });
+        });
+    }
     _self._bindbtns = function () {
         $.each(_self._model.operations, function (i, o) {
             $(('#' + o.id), _self._e).on('click', null, o, function (e) {
@@ -360,9 +361,6 @@ function qrmgForm(model) {
     _self._ropt = function (ud, Data) {
         if (IsUserMessage(Data)) {
             return (_self._docallback(ud, Data));
-            ////var _o = _self._getopt(ud.name);
-            ////$('#' + _o.id).removeProp('disabled');
-            ////$(_self._e).hasClass('editable') ? $('#' + _o.id).removeProp('disabled') : $('#' + _o.id).prop('disabled', 'disabled');
         }
         _self._loadOptions(ud, Data);
         _self._optcnt -= 1;

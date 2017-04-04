@@ -222,6 +222,19 @@ a.currentNavbarItem:hover {
     color: #F05F40 !important;
     opacity: 0.6;
 }
+
+.usermarquis {
+  position: fixed;
+  width: auto;
+  right: 10px;
+  color: #53a653;
+  font-weight: bold;
+  padding-top: 5px;
+  padding-left: 10px;
+  background: #ffffff none repeat scroll 0 0;
+  z-index: 2;
+}
+
 .page-title {
 
 }

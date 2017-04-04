@@ -100,6 +100,7 @@
             <div id="navbarMainMenu"></div>
             <div id="pageContentFrame">
                 <div class="umsg" id="__umsg">&nbsp;</div><div class="umsgX fa fa-window-close-o fa-2x" title="Clear user message"></div>
+                <div class="usermarquis" id="usermarquis">@Model.UserSession.User.LastName, @Model.UserSession.User.FirstName</div>
                 @RenderBody()
             </div>
         </div>
@@ -110,7 +111,7 @@
     <footer>
         <div class="content-wrapper">
             <div class="text-center">
-                <div class="copyright">&copy; 2017  Quest Resource Management Group.   All rights reserved.    v.20170403001</div>
+                <div class="copyright">&copy; 2017  Quest Resource Management Group.   All rights reserved.    v.20170404001</div>
             </div>
         </div>
     </footer>
@@ -175,7 +176,7 @@
                     name: 'Filters', label: 'Filters',
                     autoscroll: {
                         element: '#pnlFilters',
-                        offset: 100,
+                        offset: 118,
                         delay: 750
                     }
                 },
@@ -183,7 +184,7 @@
                     name: 'Results', label: 'Results',
                     autoscroll: {
                         element: '#pnlResults',
-                        offset: 100,
+                        offset: 118,
                         delay: 750
                     }
                 },
@@ -191,7 +192,7 @@
                     name: 'BulkInserts', label: 'Bulk Inserts',
                     autoscroll: {
                         element: '#pnlBulkInserts',
-                        offset: 100,
+                        offset: 118,
                         delay: 750
                     }
                 },
@@ -199,7 +200,7 @@
                     name: 'BulkUpdates', label: 'Bulk Updates',
                     autoscroll: {
                         element: '#pnlBulkUpdates',
-                        offset: 100,
+                        offset: 118,
                         delay: 750
                     }
                 },
