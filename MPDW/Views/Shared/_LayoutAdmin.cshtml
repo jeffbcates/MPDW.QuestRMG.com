@@ -284,10 +284,15 @@
         </div>
     </div>
 </div>
+
 <script type="text/javascript">
     $(function () {
         $('.umsgX').on('click', function (e) {
             ClearUserMessage();
+        });
+        $('#usermarquis').on('click', function (e) {
+            ClearUserMessage();
+            $('#mdlgUserMarquis').modal('show');
         });
     });
 </script>

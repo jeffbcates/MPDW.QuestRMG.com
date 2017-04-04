@@ -234,6 +234,10 @@ a.currentNavbarItem:hover {
   background: #ffffff none repeat scroll 0 0;
   z-index: 2;
 }
+.usermarquis:hover {
+  color: #f05f40 !important;
+  cursor: pointer;
+}
 
 .page-title {
 

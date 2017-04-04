@@ -459,9 +459,6 @@
         _items.setAttribute("value", JSON.stringify(items));
         _frmExport.appendChild(_items);
 
-
-
-
         var _rd = _pnlResults.GetData();
         var ro = {};
         ro.RowLimit = _rd.RowLimit;
@@ -471,11 +468,6 @@
         _resultOptions.setAttribute("name", "_ResultsOptions");
         _resultOptions.setAttribute("value", JSON.stringify(ro));
         _frmExport.appendChild(_resultOptions);
-
-
-
-
-
 
         var _bExportToExcel = document.createElement("input");
         _bExportToExcel.setAttribute("type", "hidden");

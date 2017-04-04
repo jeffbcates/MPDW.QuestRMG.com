@@ -19,6 +19,9 @@ namespace Quest.MPDW.Models
         public int Id { get; set; }
         public UserViewModel User { get; set; }
         public ProfileTypeId ProfileTypeId { get; set; }
+        public string IPAddress { get; set; }
+        public string UserAgent { get; set; }
+        public DateTime Created { get; set; }
 
 
         public UserSessionViewModel()
