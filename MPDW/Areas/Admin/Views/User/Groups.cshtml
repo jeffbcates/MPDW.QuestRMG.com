@@ -43,7 +43,10 @@
                 { name: 'FirstName', label: 'First Name', readonly: true },
                 { name: 'Username', label: 'Username', readonly: true },
             ],
+            bNoDefaultOptions: true,
             operations: [
+                { name: 'Save', label: 'Save', classes: "btn btn-success", uri: '/Admin/UserGroups', view: true },
+                { name: 'Back', label: 'Back', classes: "btn btn-warning", uri: '/Admin/User/Cancel', view: true },
                 { name: 'Privileges', label: 'Privileges', classes: "btn btn-primary", uri: '/Admin/User', view: true },
                 { name: 'Sessions', label: 'Sessions', classes: "btn btn-primary", uri: '/Admin/Sessions/Index', view: true },
             ],
@@ -56,8 +59,6 @@
         _frmUser.SetField("Username", _viewstate.User.Username);
     }
     function cbUserEditor(ud, d) {
-        var x = 4;
-        x = 44;
     }
     function cbUserOptions(ud, d) {
         if (ud.PostLoad) {
@@ -103,6 +104,7 @@
                 { name: 'OnTreeRender', callback: cbOnTvwUserGroupsRender },
                 { name: 'Refresh', callback: cbTvwUserGroupsRefresh },
                 { name: 'OnChange', callback: cbTvwUserGroupsOnChange },
+                { name: 'OnDrop', callback: cbTvwUserGroupsOnDrop },
             ],
             operations: [
                 { name: 'Remove', label: 'Remove', classes: "btn btn-primary" },
@@ -130,6 +132,9 @@
         $('#draggingContainer').remove();
     }
     function cbTvwUserGroupsOnChange(ud, bChanges) {
+    }
+    function cbTvwUserGroupsOnDrop() {
+        _tvwUserGroups.ClearSelected();
     }
 </script>
 <script type="text/javascript">
@@ -162,6 +167,7 @@
                 { name: 'OnTreeRender', callback: cbOnTvwGroupsRender },
                 { name: 'Refresh', callback: cbTvwGroupsRefresh },
                 { name: 'OnChange', callback: cbTvwGroupsOnChange },
+                { name: 'OnDrop', callback: cbTvwGroupsOnDrop },
             ],
             operations: [
                 { name: 'Remove', label: 'Remove', classes: "btn btn-primary" },
@@ -189,6 +195,9 @@
         $('#draggingContainer').remove();
     }
     function cbTvwGroupsOnChange(ud, bChanges) {
+    }
+    function cbTvwGroupsOnDrop(ud, d) {
+        _tvwGroups.ClearSelected();
     }
 </script>
 

@@ -98,7 +98,6 @@ namespace Quest.MPDW.Services.Data.Accounts
             }
             return (new questStatus(Severity.Success));
         }
-
         public questStatus Read(GroupUserId groupUserId, out GroupUser groupUser)
         {
             // Initialize
@@ -297,7 +296,6 @@ namespace Quest.MPDW.Services.Data.Accounts
             }
             return (new questStatus(Severity.Success));
         }
-
         public questStatus Update(GroupUser groupUser)
         {
             // Initialize
@@ -331,7 +329,6 @@ namespace Quest.MPDW.Services.Data.Accounts
             }
             return (new questStatus(Severity.Success));
         }
-
         public questStatus Delete(GroupUserId groupUserId)
         {
             // Initialize
@@ -364,7 +361,70 @@ namespace Quest.MPDW.Services.Data.Accounts
             }
             return (new questStatus(Severity.Success));
         }
+        public questStatus Delete(GroupId groupId)
+        {
+            // Initialize
+            questStatus status = null;
 
+
+            // Perform delete.
+            using (FMSEntities dbContext = new FMSEntities())
+            {
+                status = delete(dbContext, groupId);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus Delete(DbMgrTransaction trans, GroupId groupId)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            // Perform delete in this transaction.
+            status = delete((FMSEntities)trans.DbContext, groupId);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                RollbackTransaction(trans);
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus Delete(UserId userId)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            // Perform delete.
+            using (FMSEntities dbContext = new FMSEntities())
+            {
+                status = delete(dbContext, userId);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus Delete(DbMgrTransaction trans, UserId userId)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            // Perform delete in this transaction.
+            status = delete((FMSEntities)trans.DbContext, userId);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                RollbackTransaction(trans);
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
         public questStatus List(QueryOptions queryOptions, out List<GroupUser> groupUserList, out QueryResponse queryResponse)
         {
             // Initialize
@@ -470,7 +530,6 @@ namespace Quest.MPDW.Services.Data.Accounts
             }
             return (new questStatus(Severity.Success));
         }
-
         private questStatus read(FMSEntities dbContext, GroupUserId groupUserId, out Quest.Services.Dbio.FMS.GroupUsers groupUser)
         {
             // Initialize
@@ -543,7 +602,6 @@ namespace Quest.MPDW.Services.Data.Accounts
             }
             return (new questStatus(Severity.Success));
         }
-
         private questStatus update(FMSEntities dbContext, GroupUser groupUser)
         {
             // Initialize 
@@ -573,7 +631,6 @@ namespace Quest.MPDW.Services.Data.Accounts
             }
             return (new questStatus(Severity.Success));
         }
-
         private questStatus delete(FMSEntities dbContext, GroupUserId groupUserId)
         {
             // Initialize 

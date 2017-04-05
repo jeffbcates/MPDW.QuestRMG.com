@@ -379,7 +379,9 @@
         d.Editor.Name = xname ? xname : (d.Editor.Name + " (XSS SAVE)");
 
         d.Entities = flattenEntities(_viewstate.XSS.UNMODIFIED_FILTER.Entities);
-        d.Items = _fltFilterItems.GetData();
+
+        // USE YOUR ITEMS, I AM USING THE ITEMS FROM THE READ
+        d.Items = buildSaveItems(_viewstate.XSS.UNMODIFIED_FILTER.Entities, _viewstate.XSS.UNMODIFIED_FILTER.Items);
         d.Procedures = _viewstate.XSS.UNMODIFIED_FILTER.Procedures;
 
         var _ioReadFilter = new qrmgio(cbSaveModifiedFilter);
@@ -400,6 +402,64 @@
 
         });
         return (Entities);
+    }
+    function buildSaveItems(Entities, Items) {
+        var saveItems = [];
+        $.each(Items, function (i, _itm) {
+            var entity = getItemEntity(Entities, _itm);
+            if (! entity) {
+                alert('Item ' + _itm.Name +' entity [' + _itm.Parent.Schema + '].[' + _itm.ParentEntity.Name + '] :' + _itm.ParentEntity.type + ' not found!');
+                return(false);
+            }
+            var entityNode = getEntityNode(entity, _itm);
+            if (! entityNode) {
+                alert('Item ' + _itm.Name +' entity Node [' + _itm.Parent.Schema + '].[' + _itm.ParentEntity.Name + '] :' + _itm.ParentEntity.type + ' not found!');
+                return(false);
+            }
+            var itm = {};
+            itm.Entity = {};
+            itm.Entity.Id = entityNode.Id;
+            itm.Entity.type = "column";
+            itm.Joins = _itm.Joins;
+            itm.Name = _itm.Name;
+            itm.Operations = _itm.Operations;
+            itm.Parent = {};
+            itm.Parent.Id = entity.Id;
+            itm.Parent.type = entity.type;
+            itm.Table = entity.text;
+            saveItems.push(itm);
+        });
+        return (saveItems);
+    }
+    function getItemEntity(Entities, Item) {
+        var entity;
+        $.each(Entities, function(i, _entity) {
+            if (Item.ParentEntity.Name == _entity.Name) {
+                if (Item.ParentEntity.Schema == _entity.Schema) {
+                    if (Item.ParentEntity.type == _entity.type) {
+                        entity = _entity;
+                        return(false);
+                    }
+                }
+            }
+        });
+        return(entity);
+    }
+    function getEntityNode(Entity, Item) {
+        var node;
+        $.each(Entity.nodes, function(i,n) {
+            if (Item.Name == n.Name) {
+                if (Item.ParentEntity.Name == Entity.Name) {
+                    if (Item.ParentEntity.Schema == Entity.Schema) {
+                        if (Item.ParentEntity.type == Entity.type) {
+                            node = n;
+                            return(false);
+                        }
+                    }
+                }
+            }
+        });
+        return(node);
     }
     /*==============================================*/
     /* End of filter XSS save example code          */
