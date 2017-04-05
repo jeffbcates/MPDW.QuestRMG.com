@@ -1158,8 +1158,14 @@ td.td-input {
   width: 550px;
 }
 .admin-treeview {
-    min-height: 300px;
-    color: #1a4473;
+  bottom: 4px;
+  color: #1a4473;
+  left: 4px;
+  min-height: 300px;
+  overflow: auto;
+  position: absolute;
+  right: 4px;
+  top: 46px;
 }
 .admin-treeview .node-icon {
   color: #65a1c1;

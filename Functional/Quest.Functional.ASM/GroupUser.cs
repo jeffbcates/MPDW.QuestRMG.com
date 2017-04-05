@@ -14,5 +14,12 @@ namespace Quest.Functional.ASM
         public Group Group { get; set; }
         public User User { get; set; }
         public DateTime Created { get; set; }
+
+
+        public GroupUser()
+        {
+            Group = new Group();
+            User = new User();
+        }
     }
 }

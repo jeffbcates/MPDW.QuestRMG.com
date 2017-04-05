@@ -78,6 +78,11 @@ namespace Quest.MPDW.Services.Data
             trans = new DbMgrTransaction(transactionName);
             return (trans.BeginTransaction());
         }
+        public questStatus BeginTransaction(string database, string transactionName, out DbMgrTransaction trans)
+        {
+            trans = new DbMgrTransaction(database, transactionName);
+            return (trans.BeginTransaction());
+        }
         public questStatus RollbackTransaction(DbMgrTransaction trans)
         {
             return (trans.RollbackTransaction());

@@ -359,7 +359,9 @@ function qrmgEditor(model) {
         $(_e).on('change', null, o, function (e) {
             var _v = $(this).find(':selected').val();
             if (o.callback) {
-                o.callback({ Change: true, event: e }, _v);
+                if (o.callback({ Change: true, event: e }, _v)) {
+                    return;
+                }
             }
             _self._bChanges = true;
             var coo = _self._getmoo(o);

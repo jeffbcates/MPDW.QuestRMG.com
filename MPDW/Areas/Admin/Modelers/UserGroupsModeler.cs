@@ -51,7 +51,7 @@ namespace Quest.MPDW.Admin.Modelers
         public questStatus Read(UserEditorViewModel viewModel, out UserGroupsViewModel userGroupsViewModel)
         {
             UserGroupsViewModel _userGroupsViewModel = new UserGroupsViewModel(this.UserSession, viewModel);
-            _userGroupsViewModel.User.Id = viewModel.Id;
+            _userGroupsViewModel.Id = viewModel.Id;
             return (Read(_userGroupsViewModel, out userGroupsViewModel));
         }
         public questStatus Read(UserGroupsViewModel viewModel, out UserGroupsViewModel userGroupsViewModel)
@@ -59,7 +59,7 @@ namespace Quest.MPDW.Admin.Modelers
             // Initialize
             questStatus status = null;
             userGroupsViewModel = null;
-            UserId userId = new UserId(viewModel.User.Id);
+            UserId userId = new UserId(viewModel.Id);
 
 
             // Get the user
@@ -146,7 +146,7 @@ namespace Quest.MPDW.Admin.Modelers
             try
             {
                 // BEGIN TRANSACTION
-                status = mgr.BeginTransaction("SaveUserGroups_" + userGroupsViewModel.Id.ToString() + "_" + Guid.NewGuid().ToString(), out trans);
+                status = mgr.BeginTransaction("FMS", "SaveUserGroups_" + userGroupsViewModel.Id.ToString() + "_" + Guid.NewGuid().ToString(), out trans);
                 if (!questStatusDef.IsSuccess(status))
                 {
                     return (status);
@@ -154,7 +154,7 @@ namespace Quest.MPDW.Admin.Modelers
 
 
                 // Remove all the user's groups.
-                UserId userId = new UserId(userGroupsViewModel.User.Id);
+                UserId userId = new UserId(userGroupsViewModel.Id);
                 GroupUsersMgr groupUsersMgr = new GroupUsersMgr(this.UserSession);
                 status = groupUsersMgr.Delete(trans, userId);
                 if (!questStatusDef.IsSuccess(status))

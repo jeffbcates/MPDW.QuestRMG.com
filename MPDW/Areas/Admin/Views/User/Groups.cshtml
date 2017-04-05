@@ -45,7 +45,7 @@
             ],
             bNoDefaultOptions: true,
             operations: [
-                { name: 'Save', label: 'Save', classes: "btn btn-success", uri: '/Admin/UserGroups', view: true },
+                { name: 'Save', label: 'Save', classes: "btn btn-success", uri: '/Admin/UserGroups', view: true, callback: cbSaveUserGroups },
                 { name: 'Back', label: 'Back', classes: "btn btn-warning", uri: '/Admin/User/Cancel', view: true },
                 { name: 'Privileges', label: 'Privileges', classes: "btn btn-primary", uri: '/Admin/User', view: true },
                 { name: 'Sessions', label: 'Sessions', classes: "btn btn-primary", uri: '/Admin/Sessions/Index', view: true },
@@ -65,7 +65,47 @@
             $('#usrUser').val(_viewstate.User.Id);
         }
         else if (ud.Change) {
-            _frmUser.Read($('#usrUser').val());
+            qrmgmvc.Global.Mask($('#pageContentFrame'));
+            if (d == -1) {
+                _frmUser.Clear();
+                _tvwUserGroups.Clear();
+                _tvwGroups.Clear();
+                qrmgmvc.Global.Unmask($('#pageContentFrame'));
+                return (true);
+            }
+            var _d = _frmUser._getctx();
+            _d.Id = d;
+            var ioRead = new qrmgio(cbPostRead);
+            ioRead.GetJSON('/Admin/UserGroups/Read', _d);
+            return (true);
+        }
+    }
+    function cbPostRead(ud, d) {
+        if (!IsAppSuccess(d)) {
+            return;
+        }
+        _frmUser.Load(d.User);
+        $('#usrUser').val(d.User.Id);
+        loadGroups(d.Groups);
+        loadUserGroups(d.UserGroups);
+        qrmgmvc.Global.Unmask($('#pageContentFrame'));
+    }
+    function cbSaveUserGroups(ud, d) {
+        if (d.questStatus) {
+            DisplayUserMessage(d);
+            qrmgmvc.Global.Unmask($('#pageContentFrame'));
+            return;
+        }
+        else {
+            qrmgmvc.Global.Mask($('#pageContentFrame'));
+            ClearUserMessage();
+            var _d = _frmUser._getctx();
+            _d.User = _frmUser.GetData();
+            _d.Id = _d.User.Id;
+            _d.UserGroups = _tvwUserGroups.GetData();
+            var ioRead = new qrmgio(cbSaveUserGroups);
+            ioRead._postJSON('/Admin/UserGroups/Save', _d);
+            return (true);
         }
     }
 </script>
@@ -113,9 +153,8 @@
         _tvwUserGroups = new qrmgTreeview(tvwUserGroups);
         loadUserGroups();
     }
-    function loadUserGroups() {
-        var _ee = _viewstate.UserGroups;
-        var _d = { questStatus: _viewstate.questStatus, Items: _ee };
+    function loadUserGroups(gg) {
+        var _d = { questStatus: _viewstate.questStatus, Items: gg ? gg : _viewstate.UserGroups };
         _tvwUserGroups.Fill(_d);
         _tvwUserGroups.Change(false);
     }
@@ -176,9 +215,8 @@
         _tvwGroups = new qrmgTreeview(tvwGroups);
         loadGroups();
     }
-    function loadGroups() {
-        var _ee = _viewstate.Groups;
-        var _d = { questStatus: _viewstate.questStatus, Items: _ee };
+    function loadGroups(gg) {
+        var _d = { questStatus: _viewstate.questStatus, Items: gg ? gg : _viewstate.Groups };
         _tvwGroups.Fill(_d);
         _tvwGroups.Change(false);
     }

@@ -8,6 +8,7 @@ using System.Threading.Tasks;
 using Quest.Util.Status;
 using Quest.Util.Buffer;
 using Quest.Services.Dbio.MasterPricing;
+using Quest.Services.Dbio.FMS;
 
 
 namespace Quest.MPDW.Services.Data
@@ -18,8 +19,9 @@ namespace Quest.MPDW.Services.Data
         /*==================================================================================================================================
          * Declarations
          *=================================================================================================================================*/
-        private MasterPricingEntities _dbContext = null;
+        private DbContext _dbContext = null;
         private DbContextTransaction _transaction = null;
+        private string _database = null;
         private string _name = null;
 
         #endregion
@@ -34,6 +36,12 @@ namespace Quest.MPDW.Services.Data
             _name = name;
             initialize();
         }
+        public DbMgrTransaction(string database, string name)
+        {
+            this._database = database;
+            _name = name;
+            initialize();
+        }
         #endregion
 
 
@@ -41,6 +49,13 @@ namespace Quest.MPDW.Services.Data
         /*==================================================================================================================================
          * Properties
          *=================================================================================================================================*/
+        public string Database
+        {
+            get
+            {
+                return (this._database);
+            }
+        }
         public DbContext DbContext
         {
             get
@@ -111,7 +126,18 @@ namespace Quest.MPDW.Services.Data
             questStatus status = null;
             try
             {
-                _dbContext = new MasterPricingEntities();
+                if (this._database == null || this._database == "MasterPricing")
+                {
+                    _dbContext = new MasterPricingEntities();
+                }
+                if (this._database == "FMS")
+                {
+                    _dbContext = new FMSEntities();
+                }
+                if (_dbContext == null)
+                {
+                    return (new questStatus(Severity.Error, String.Format("ERROR: DbMgrTransaction: Invalid database specified: {0}", this._database)));
+                }
             }
             catch (System.Exception ex)
             {

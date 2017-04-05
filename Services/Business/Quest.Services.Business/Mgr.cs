@@ -69,6 +69,19 @@ namespace Quest.MPDW.Services.Business
             }
             return (new questStatus(Severity.Success));
         }
+        public new questStatus BeginTransaction(string database, string transactionName, out DbMgrTransaction trans)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            status = base.BeginTransaction(database, transactionName, out trans);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
         public new questStatus RollbackTransaction(DbMgrTransaction trans)
         {
             // Initialize

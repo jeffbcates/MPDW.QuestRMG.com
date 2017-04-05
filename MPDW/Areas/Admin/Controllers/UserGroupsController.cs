@@ -71,6 +71,7 @@ namespace Quest.MPDW.Admin
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Return view
              *---------------------------------------------------------------------------------------------------------------------------------*/
+            userGroupsViewModel.questStatus = new questStatus(Severity.Success);
             return Json(userGroupsViewModel, JsonRequestBehavior.AllowGet);
         }
         #endregion
