@@ -109,6 +109,11 @@ namespace Quest.MPDW.Admin.Modelers
                 }
             }
 
+            // Sort group lists
+            unassignedGroupList.Sort(delegate (Group i1, Group i2) { return i1.Name.CompareTo(i2.Name); });
+            userGroupList.Sort(delegate (Group i1, Group i2) { return i1.Name.CompareTo(i2.Name); });
+
+
             // Transfer model
             userGroupsViewModel = new UserGroupsViewModel(this.UserSession, viewModel);
             UserEditorViewModel userEditorViewModel = new UserEditorViewModel();

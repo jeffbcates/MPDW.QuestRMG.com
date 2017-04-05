@@ -29,7 +29,7 @@ function qrmgTreeview(model) {
         drag: function (event, ui) {
             //////console.log("draggableOptions drag ");
             if (_self._model.ASMDragging) {
-                DisplayUserMessage('W|top: (' + $(this).position().top + ')   left: (' + $(this).position().left) + ')';
+                ////DisplayUserMessage('W|top: (' + $(this).position().top + ')   left: (' + $(this).position().left) + ')';
             }
             else {
                 var currentLoc = $(this).position();
