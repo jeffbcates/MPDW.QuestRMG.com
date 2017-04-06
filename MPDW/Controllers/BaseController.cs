@@ -186,7 +186,12 @@ namespace Quest.MPDW.Controllers
             {
                 foreach (KeyValuePair<string, object> kvp in _dynRow)
                 {
-                    string value = kvp.Value == null ? "(null)" : kvp.Value.ToString();
+                    if (kvp.Value != null && kvp.Value.ToString().IndexOf("This location does not want follow up calls effective") > -1)
+                    {
+                        int x = 4;
+                        x = 44;
+                    }
+                    string value = kvp.Value == null ? "(null)" : kvp.Value.ToString().Replace("\t", " ").Replace("\r", " ").Replace("\n"," ");
                     output.Write(value);
                     output.Write("\t");
 

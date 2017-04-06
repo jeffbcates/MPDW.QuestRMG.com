@@ -59,6 +59,7 @@
     <Compile Include="autogen\Filters\DbFilterColumnsMgr.cs" />
     <Compile Include="autogen\Filters\DbFilterTablesMgr.cs" />
     <Compile Include="autogen\Filters\DbFiltersMgr.cs" />
+    <Compile Include="autogen\Logging\DbHTTPRequestLogs.cs" />
     <Compile Include="autogen\Setup\DbColumnsMgr.cs" />
     <Compile Include="autogen\Setup\DbDatabasesMgr.cs" />
     <Compile Include="autogen\Setup\DbTablesetColumnsMgr.cs" />
@@ -97,6 +98,10 @@
     <ProjectReference Include="..\..\..\Functional\Quest.Functional.ASM\Quest.Functional.ASM.csproj">
       <Project>{2fabe5d5-3871-405c-a9c5-3e95e1f68bb1}</Project>
       <Name>Quest.Functional.ASM</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\..\Functional\Quest.Functional.Logging\Quest.Functional.Logging.csproj">
+      <Project>{83358b20-3c00-4d74-ac4b-bde8549418cd}</Project>
+      <Name>Quest.Functional.Logging</Name>
     </ProjectReference>
     <ProjectReference Include="..\..\..\Functional\Quest.Functional.MasterPricing\Quest.Functional.MasterPricing.csproj">
       <Project>{81321b6d-3b5a-41b7-b587-b9b844da0678}</Project>
