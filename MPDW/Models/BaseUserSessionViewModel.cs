@@ -112,8 +112,11 @@ namespace Quest.MPDW.Models
                 MainMenuOption mmoAdmin = new MainMenuOption("Admin", "Admin", "Administrative panel", "/Admin");
                 mmoAdmin.MenuOptionType = MainMenuOptionType.MenuOption;
                 MainMenu.Options.Add(mmoAdmin);
-            }
 
+                MainMenuOption mmoSupport = new MainMenuOption("Support", "Support", "Support panel", "/Support");
+                mmoSupport.MenuOptionType = MainMenuOptionType.MenuOption;
+                MainMenu.Options.Add(mmoSupport);
+            }
         }
         #endregion
     }

@@ -179,6 +179,10 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Areas\Support\Controllers\SupportBaseController.cs" />
+    <Compile Include="Areas\Support\SupportAreaRegistration.cs" />
+    <Compile Include="Areas\Support\Controllers\HomeController.cs" />
+    <Compile Include="Areas\Support\Models\SupportHomeViewModel.cs" />
     <Compile Include="Areas\Account\AccountAreaRegistration.cs" />
     <Compile Include="Areas\Account\Controllers\AccountBaseController.cs" />
     <Compile Include="Areas\Account\Controllers\HomeController.cs" />
@@ -679,7 +683,6 @@
     <Content Include="Scripts\creative.js" />
     <Content Include="Scripts\jquery-1.11.3.js" />
     <Content Include="Scripts\jquery-1.11.3.min.js" />
-    <Content Include="Areas\Account\Views\Billing\Index.cshtml" />
     <Content Include="Areas\Account\Views\Home\Index.cshtml" />
     <Content Include="Areas\Account\Views\Personalization\Index.cshtml" />
     <Content Include="Areas\Account\Views\Profile\Index.cshtml" />
@@ -813,6 +816,8 @@
     <Content Include="Areas\Database\Views\Parameters\Index.cshtml" />
     <Content Include="Areas\DataMgr\Views\Tableset\FilterFolders.cshtml" />
     <Content Include="Areas\Admin\Views\Password\Index.cshtml" />
+    <Content Include="Areas\Support\Views\Home\Index.cshtml" />
+    <Content Include="Areas\Support\Views\Web.config" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.8.2.js" />
     <Content Include="Scripts\jquery-1.8.2.min.js" />
@@ -893,6 +898,8 @@
     </Content>
     <Content Include="Views\Shared\_LayoutDatabase.cshtml" />
     <Content Include="Views\Shared\_LayoutManageData.cshtml" />
+    <Content Include="Views\Shared\_LayoutSupport.cshtml" />
+    <Content Include="Views\Support\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -910,6 +917,8 @@
     <Folder Include="Areas\Search\Views\Shared\" />
     <Folder Include="Areas\Service\Views\Shared\" />
     <Folder Include="Areas\Setup\Views\Shared\" />
+    <Folder Include="Areas\Support\Modelers\" />
+    <Folder Include="Areas\Support\Views\Shared\" />
     <Folder Include="Areas\Vendor\Views\Shared\" />
     <Folder Include="Filters\" />
   </ItemGroup>

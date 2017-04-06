@@ -325,6 +325,12 @@
             ClearUserMessage();
             $('#mdlgUserMarquis').modal('show');
         });
+        $('#mainMenu li a').on('click', function (e) {
+            qrmgmvc.Global.Mask($('#pageContentFrame'));
+        });
+        $('a.navbar-brand').on('click', function (e) {
+            qrmgmvc.Global.Mask($('#pageContentFrame'));
+        });
     });
 </script>
 
