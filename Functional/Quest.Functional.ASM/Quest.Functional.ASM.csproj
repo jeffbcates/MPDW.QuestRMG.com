@@ -45,6 +45,11 @@
     <Compile Include="GroupId.cs" />
     <Compile Include="GroupPrivilege.cs" />
     <Compile Include="GroupPrivilegeId.cs" />
+    <Compile Include="UserPrivilegeList.cs" />
+    <Compile Include="GroupPrivilegeList.cs" />
+    <Compile Include="PrivilegeUserList.cs" />
+    <Compile Include="PrivilegeUserId.cs" />
+    <Compile Include="PrivilegeUser.cs" />
     <Compile Include="GroupUser.cs" />
     <Compile Include="GroupUserId.cs" />
     <Compile Include="GroupUserList.cs" />
@@ -54,6 +59,7 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="PasswordPair.cs" />
     <Compile Include="User.cs" />
+    <Compile Include="PrivilegeGroupList.cs" />
     <Compile Include="UserGroupList.cs" />
     <Compile Include="UserId.cs" />
     <Compile Include="UserPrivilege.cs" />

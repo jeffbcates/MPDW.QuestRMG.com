@@ -59,26 +59,41 @@
         _frmUser.SetField("Username", _viewstate.User.Username);
     }
     function cbUserEditor(ud, d) {
+        if (ud.Save) {
+            if (d.questStatus) {
+                alert('Post Save!');
+            }
+            else {
+                alert('Pre Save!');
+            }
+        }
     }
     function cbUserOptions(ud, d) {
         if (ud.PostLoad) {
-            $('#usrUser').val(_viewstate.User.Id);
+            qrmgmvc.Global.Mask($('#pageContentFrame'));
+            read(_viewstate.Id);
         }
         else if (ud.Change) {
             qrmgmvc.Global.Mask($('#pageContentFrame'));
             if (d == -1) {
-                _frmUser.Clear();
-                _tvwUserGroups.Clear();
-                _tvwGroups.Clear();
+                clearScreen();
                 qrmgmvc.Global.Unmask($('#pageContentFrame'));
                 return (true);
             }
-            var _d = _frmUser._getctx();
-            _d.Id = d;
-            var ioRead = new qrmgio(cbPostRead);
-            ioRead.GetJSON('/Admin/UserGroups/Read', _d);
+            read(d);
             return (true);
         }
+    }
+    function clearScreen() {
+        _frmUser.Clear();
+        _tvwUserGroups.Clear();
+        _tvwGroups.Clear();
+    }
+    function read(id) {
+        var _d = _frmUser._getctx();
+        _d.Id = id;
+        var ioRead = new qrmgio(cbPostRead);
+        ioRead.GetJSON('/Admin/UserGroups/Read', _d);
     }
     function cbPostRead(ud, d) {
         if (!IsAppSuccess(d)) {

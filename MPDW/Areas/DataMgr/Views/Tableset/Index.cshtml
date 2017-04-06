@@ -427,6 +427,9 @@
             itm.Parent.Id = entity.Id;
             itm.Parent.type = entity.type;
             itm.Table = entity.text;
+            itm.Looup = {};
+            itm.Lookup = _itm.Lookup;
+            itm.TypeList = _itm.TypeList;
             saveItems.push(itm);
         });
         return (saveItems);

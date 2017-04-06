@@ -269,7 +269,9 @@ footer {
     font-size: 0.7em;
     padding-top: 10px;
 }
-
+.admin-copyright {
+    margin-top: 0;
+}
 
 
 @-moz-document url-prefix() {

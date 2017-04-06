@@ -137,6 +137,20 @@ namespace Quest.MPDW.Services.Business.Accounts
             }
             return (new questStatus(Severity.Success));
         }
+        public questStatus GetUserPrivileges(UserId userId, out List<Privilege> privilegeList)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            // Get user privileges
+            status = _dbAccountsMgr.GetUserPrivileges(userId, out privilegeList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
         #endregion
 
 

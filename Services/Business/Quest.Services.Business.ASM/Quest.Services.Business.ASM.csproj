@@ -42,6 +42,8 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="autogen\AccountMgr.cs" />
+    <Compile Include="autogen\UserPrivilegesMgr.cs" />
+    <Compile Include="autogen\GroupPrivilegesMgr.cs" />
     <Compile Include="autogen\PrivilegesMgr.cs" />
     <Compile Include="autogen\GroupsMgr.cs" />
     <Compile Include="autogen\GroupUsersMgr.cs" />

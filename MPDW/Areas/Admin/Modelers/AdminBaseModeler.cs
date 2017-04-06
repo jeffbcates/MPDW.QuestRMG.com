@@ -79,7 +79,7 @@ namespace Quest.MPDW.Admin.Modelers
             bootstrapTreenodeViewModel = new BootstrapTreenodeViewModel();
             bootstrapTreenodeViewModel.Id = privilege.Id;
             bootstrapTreenodeViewModel.type = "privilege";
-            bootstrapTreenodeViewModel.icon = "fa fa-privilege padding-right-20";
+            bootstrapTreenodeViewModel.icon = "fa fa-unlock padding-right-20";
             bootstrapTreenodeViewModel.text = privilege.Name;
             bootstrapTreenodeViewModel.selectable = "true";
 

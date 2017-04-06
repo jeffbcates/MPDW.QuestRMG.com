@@ -145,56 +145,18 @@ namespace Quest.MPDW.Services.Data.Accounts
             // Initialize
             questStatus status = null;
             privilegeList = null;
-            List<Privilege> userPrivilegeList = null;
 
 
-            // Get all user groups.
-            UserGroupList userGroupList = null;
-            status = _dbGroupUsersMgr.Read(userId, out userGroupList);
+            // Get all user privileges.
+            UserPrivilegeList userPrivilegeList = null;
+            status = _dbUserPrivilegesMgr.Read(userId, out userPrivilegeList);
             if (!questStatusDef.IsSuccess(status))
             {
                 return (status);
             }
 
-            // Get normalized list of all privileges from all groups.
-            userPrivilegeList = new List<Privilege>();
-            List<Privilege> _privilegeList = null;
-            foreach (Group group in userGroupList.GroupList)
-            {
-                GroupId groupId = new GroupId(group.Id);
-
-                status = _dbGroupPrivilegesMgr.Read(groupId, out _privilegeList);
-                if (!questStatusDef.IsSuccessOrWarning(status))
-                {
-                    return (status);
-                }
-                foreach (Privilege privilege in _privilegeList)
-                {
-                    Privilege p = userPrivilegeList.Find(delegate(Privilege _p) { return (_p.Id == privilege.Id); });
-                    if (p == null)
-                    {
-                        userPrivilegeList.Add(privilege);
-                    }
-                }
-            }
-
-            // Get all user privileges and add to session list if not there now.
-            status = _dbUserPrivilegesMgr.Read(userId, out _privilegeList);
-            if (!questStatusDef.IsSuccessOrWarning(status))
-            {
-                return (status);
-            }
-            foreach (Privilege privilege in _privilegeList)
-            {
-                Privilege p = userPrivilegeList.Find(delegate(Privilege _p) { return (_p.Id == privilege.Id); });
-                if (p == null)
-                {
-                    userPrivilegeList.Add(privilege);
-                }
-            }
-
             // Return privileges
-            privilegeList = userPrivilegeList;
+            privilegeList = userPrivilegeList.PrivilegeList;
 
             return (new questStatus(Severity.Success));
         }

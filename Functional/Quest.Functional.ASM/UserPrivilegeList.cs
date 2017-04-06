@@ -8,18 +8,18 @@ using Quest.Util.Data;
 
 namespace Quest.Functional.ASM
 {
-    public class UserPrivilege
+    public class UserPrivilegeList
     {
         public int Id { get; set; }
         public User User { get; set; }
-        public Privilege Privilege { get; set; }
+        public List<Privilege> PrivilegeList { get; set; }
         public DateTime Created { get; set; }
 
 
-        public UserPrivilege()
+        public UserPrivilegeList()
         {
             User = new User();
-            Privilege = new Privilege();
+            PrivilegeList = new List<Privilege>();
         }
     }
 }

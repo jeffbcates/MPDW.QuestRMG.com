@@ -187,14 +187,8 @@ namespace Quest.MPDW.Admin
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Perform operation
              *---------------------------------------------------------------------------------------------------------------------------------*/
-            UserGroupsViewModel userGroupsViewModel = null;
-            UserGroupsModeler userGroupsModeler = new UserGroupsModeler(this.Request, this.UserSession);
-            status = userGroupsModeler.Read(editorViewModel, out userGroupsViewModel);
-            if (!questStatusDef.IsSuccess(status))
-            {
-                // TODO
-                throw new Exception("Authorize failed");
-            }
+            UserGroupsViewModel userGroupsViewModel = new UserGroupsViewModel(this.UserSession, editorViewModel);
+            userGroupsViewModel.Id = editorViewModel.Id;
 
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Return view.
@@ -228,11 +222,16 @@ namespace Quest.MPDW.Admin
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
+             * Perform operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            UserPrivilegesViewModel userPrivilegesViewModel = new UserPrivilegesViewModel(this.UserSession, editorViewModel);
+            userPrivilegesViewModel.Id = editorViewModel.Id;
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
              * Return view.
              *---------------------------------------------------------------------------------------------------------------------------------*/
             // TEMPORARY
-            UserEditorViewModel userEditorViewModel = new UserEditorViewModel(this.UserSession, editorViewModel);
-            return View(userEditorViewModel);
+            return View(userPrivilegesViewModel);
         }
 
 

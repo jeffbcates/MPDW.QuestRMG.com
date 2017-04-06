@@ -190,6 +190,7 @@
     <Compile Include="Areas\Admin\AdminAreaRegistration.cs" />
     <Compile Include="Areas\Admin\Controllers\AdminBaseController.cs" />
     <Compile Include="Areas\Admin\Controllers\PasswordController.cs" />
+    <Compile Include="Areas\Admin\Controllers\UserPrivilegesController.cs" />
     <Compile Include="Areas\Admin\Controllers\UserGroupsController.cs" />
     <Compile Include="Areas\Admin\Controllers\PrivilegeController.cs" />
     <Compile Include="Areas\Admin\Controllers\GroupController.cs" />
@@ -203,6 +204,7 @@
     <Compile Include="Areas\Admin\Modelers\PrivilegeEditorModeler.cs" />
     <Compile Include="Areas\Admin\Modelers\GroupEditorModeler.cs" />
     <Compile Include="Areas\Admin\Modelers\PasswordEditorModeler.cs" />
+    <Compile Include="Areas\Admin\Modelers\UserPrivilegesModeler.cs" />
     <Compile Include="Areas\Admin\Modelers\UserGroupsModeler.cs" />
     <Compile Include="Areas\Admin\Modelers\UserEditorModeler.cs" />
     <Compile Include="Areas\Admin\Modelers\PrivilegesListModeler.cs" />
@@ -216,6 +218,7 @@
     <Compile Include="Areas\Admin\Models\PrivilegeEditorViewModel.cs" />
     <Compile Include="Areas\Admin\Models\GroupEditorViewModel.cs" />
     <Compile Include="Areas\Admin\Models\PasswordEditorViewModel.cs" />
+    <Compile Include="Areas\Admin\Models\UserPrivilegesViewModel.cs" />
     <Compile Include="Areas\Admin\Models\UserGroupsViewModel.cs" />
     <Compile Include="Areas\Admin\Models\UserEditorViewModel.cs" />
     <Compile Include="Areas\Admin\Models\PrivilegesListViewModel.cs" />

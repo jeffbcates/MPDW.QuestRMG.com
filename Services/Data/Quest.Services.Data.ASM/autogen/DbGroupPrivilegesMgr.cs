@@ -29,6 +29,7 @@ namespace Quest.MPDW.Services.Data.Accounts
          * Declarations
          *=================================================================================================================================*/
         private DbPrivilegesMgr _dbPrivilegesMgr = null;
+        private DbGroupsMgr _dbGroupsMgr = null;
 
         #endregion
 
@@ -97,7 +98,6 @@ namespace Quest.MPDW.Services.Data.Accounts
             }
             return (new questStatus(Severity.Success));
         }
-
         public questStatus Read(GroupPrivilegeId groupPrivilegeId, out GroupPrivilege groupPrivilege)
         {
             // Initialize
@@ -108,76 +108,14 @@ namespace Quest.MPDW.Services.Data.Accounts
             // Perform read
             using (FMSEntities dbContext = new FMSEntities())
             {
-                Quest.Services.Dbio.FMS.GroupPrivileges _groupPrivilege = null;
-                status = read(dbContext, groupPrivilegeId, out _groupPrivilege);
+                Quest.Services.Dbio.FMS.GroupPrivileges _groupPrivileges = null;
+                status = read(dbContext, groupPrivilegeId, out _groupPrivileges);
                 if (!questStatusDef.IsSuccess(status))
                 {
                     return (status);
                 }
                 groupPrivilege = new GroupPrivilege();
-                BufferMgr.TransferBuffer(_groupPrivilege, groupPrivilege);
-            }
-            return (new questStatus(Severity.Success));
-        }
-        public questStatus Read(GroupId groupId, out List<Privilege> privilegeList)
-        {
-            // Initialize
-            questStatus status = null;
-            privilegeList = null;
-
-
-            // Perform read
-            using (FMSEntities dbContext = new FMSEntities())
-            {
-                List<Quest.Services.Dbio.FMS.GroupPrivileges> _groupPrivilegeList = null;
-                status = read(dbContext, groupId, out _groupPrivilegeList);
-                if (!questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
-                privilegeList = new List<Privilege>();
-                foreach (Quest.Services.Dbio.FMS.GroupPrivileges _groupPrivilege in _groupPrivilegeList)
-                {
-                    PrivilegeId privilegeId = new PrivilegeId(_groupPrivilege.PrivilegeId);
-                    Privilege privilege = null;
-                    status = _dbPrivilegesMgr.Read(privilegeId, out privilege);
-                    if (!questStatusDef.IsSuccess(status))
-                    {
-                        return (status);
-                    }
-                    privilegeList.Add(privilege);
-                }
-            }
-            return (new questStatus(Severity.Success));
-        }
-        public questStatus Read(PrivilegeId privilegeId, out List<Privilege> privilegeList)
-        {
-            // Initialize
-            questStatus status = null;
-            privilegeList = null;
-
-
-            // Perform read
-            using (FMSEntities dbContext = new FMSEntities())
-            {
-                List<Quest.Services.Dbio.FMS.GroupPrivileges> _groupPrivilegeList = null;
-                status = read(dbContext, privilegeId, out _groupPrivilegeList);
-                if (!questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
-                privilegeList = new List<Privilege>();
-                foreach (Quest.Services.Dbio.FMS.GroupPrivileges _groupPrivilege in _groupPrivilegeList)
-                {
-                    PrivilegeId _privilegeId = new PrivilegeId(_groupPrivilege.PrivilegeId);
-                    Privilege privilege = null;
-                    status = _dbPrivilegesMgr.Read(_privilegeId, out privilege);
-                    if (!questStatusDef.IsSuccess(status))
-                    {
-                        return (status);
-                    }
-                    privilegeList.Add(privilege);
-                }
+                BufferMgr.TransferBuffer(_groupPrivileges, groupPrivilege);
             }
             return (new questStatus(Severity.Success));
         }
@@ -189,38 +127,46 @@ namespace Quest.MPDW.Services.Data.Accounts
 
 
             // Perform read
-            using (FMSEntities dbContext = new FMSEntities())
+            Quest.Services.Dbio.FMS.GroupPrivileges _groupPrivileges = null;
+            status = read((FMSEntities)trans.DbContext, groupPrivilegeId, out _groupPrivileges);
+            if (!questStatusDef.IsSuccess(status))
             {
-                Quest.Services.Dbio.FMS.GroupPrivileges _groupPrivilege = null;
-                status = read((FMSEntities)trans.DbContext, groupPrivilegeId, out _groupPrivilege);
-                if (!questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
-                groupPrivilege = new GroupPrivilege();
-                BufferMgr.TransferBuffer(_groupPrivilege, groupPrivilege);
+                return (status);
             }
+            groupPrivilege = new GroupPrivilege();
+            BufferMgr.TransferBuffer(_groupPrivileges, groupPrivilege);
+
             return (new questStatus(Severity.Success));
         }
-        public questStatus Read(DbMgrTransaction trans, GroupId groupId, out List<Privilege> privilegeList)
+        public questStatus Read(GroupId groupId, out GroupPrivilegeList groupPrivilegeList)
         {
             // Initialize
             questStatus status = null;
-            privilegeList = null;
+            groupPrivilegeList = null;
 
 
-            // Perform read
+            // Get group
+            Group group = null;
+            status = _dbGroupsMgr.Read(groupId, out group);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+            // Get group privileges
             using (FMSEntities dbContext = new FMSEntities())
             {
                 List<Quest.Services.Dbio.FMS.GroupPrivileges> _groupPrivilegeList = null;
-                status = read((FMSEntities)trans.DbContext, groupId, out _groupPrivilegeList);
+                status = read(dbContext, groupId, out _groupPrivilegeList);
                 if (!questStatusDef.IsSuccess(status))
                 {
                     return (status);
                 }
-                privilegeList = new List<Privilege>();
+                groupPrivilegeList = new GroupPrivilegeList();
+                groupPrivilegeList.Group = group;
                 foreach (Quest.Services.Dbio.FMS.GroupPrivileges _groupPrivilege in _groupPrivilegeList)
                 {
+                    // Get privilege
                     PrivilegeId privilegeId = new PrivilegeId(_groupPrivilege.PrivilegeId);
                     Privilege privilege = null;
                     status = _dbPrivilegesMgr.Read(privilegeId, out privilege);
@@ -228,43 +174,128 @@ namespace Quest.MPDW.Services.Data.Accounts
                     {
                         return (status);
                     }
-                    privilegeList.Add(privilege);
+                    groupPrivilegeList.PrivilegeList.Add(privilege);
                 }
             }
             return (new questStatus(Severity.Success));
         }
-        public questStatus Read(DbMgrTransaction trans, PrivilegeId privilegeId, out List<Privilege> privilegeList)
+        public questStatus Read(DbMgrTransaction trans, GroupId groupId, out GroupPrivilegeList groupPrivilegeList)
         {
             // Initialize
             questStatus status = null;
-            privilegeList = null;
+            groupPrivilegeList = null;
 
 
-            // Perform read
-            using (FMSEntities dbContext = new FMSEntities())
+            // Get group
+            Group group = null;
+            status = _dbGroupsMgr.Read(groupId, out group);
+            if (!questStatusDef.IsSuccess(status))
             {
-                List<Quest.Services.Dbio.FMS.GroupPrivileges> _groupPrivilegeList = null;
-                status = read((FMSEntities)trans.DbContext, privilegeId, out _groupPrivilegeList);
+                return (status);
+            }
+
+            // Get group privileges
+            List<Quest.Services.Dbio.FMS.GroupPrivileges> _groupPrivilegeList = null;
+            status = read((FMSEntities)trans.DbContext, groupId, out _groupPrivilegeList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            groupPrivilegeList = new GroupPrivilegeList();
+            groupPrivilegeList.Group = group;
+            foreach (Quest.Services.Dbio.FMS.GroupPrivileges _groupPrivilege in _groupPrivilegeList)
+            {
+                // Get privilege
+                PrivilegeId privilegeId = new PrivilegeId(_groupPrivilege.PrivilegeId);
+                Privilege privilege = null;
+                status = _dbPrivilegesMgr.Read(privilegeId, out privilege);
                 if (!questStatusDef.IsSuccess(status))
                 {
                     return (status);
                 }
-                privilegeList = new List<Privilege>();
-                foreach (Quest.Services.Dbio.FMS.GroupPrivileges _groupPrivilege in _groupPrivilegeList)
+                groupPrivilegeList.PrivilegeList.Add(privilege);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus Read(PrivilegeId privilegeId, out PrivilegeGroupList privilegeGroupList)
+        {
+            // Initialize
+            questStatus status = null;
+            privilegeGroupList = null;
+
+
+            // Get privilege
+            Privilege privilege = null;
+            status = _dbPrivilegesMgr.Read(privilegeId, out privilege);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+            // Get privilege groups
+            using (FMSEntities dbContext = new FMSEntities())
+            {
+                List<Quest.Services.Dbio.FMS.GroupPrivileges> _groupPrivilegesList = null;
+                status = read(dbContext, privilegeId, out _groupPrivilegesList);
+                if (!questStatusDef.IsSuccess(status))
                 {
-                    PrivilegeId _privilegeId = new PrivilegeId(_groupPrivilege.PrivilegeId);
-                    Privilege privilege = null;
-                    status = _dbPrivilegesMgr.Read(_privilegeId, out privilege);
+                    return (status);
+                }
+                privilegeGroupList = new PrivilegeGroupList();
+                privilegeGroupList.Privilege = privilege;
+                foreach (Quest.Services.Dbio.FMS.GroupPrivileges _groupPrivileges in _groupPrivilegesList)
+                {
+                    // Get group
+                    GroupId groupId = new GroupId(_groupPrivileges.PrivilegeId);
+                    Group group = null;
+                    status = _dbGroupsMgr.Read(groupId, out group);
                     if (!questStatusDef.IsSuccess(status))
                     {
                         return (status);
                     }
-                    privilegeList.Add(privilege);
+                    privilegeGroupList.GroupList.Add(group);
                 }
             }
             return (new questStatus(Severity.Success));
         }
+        public questStatus Read(DbMgrTransaction trans, PrivilegeId privilegeId, out PrivilegeGroupList privilegeGroupList)
+        {
+            // Initialize
+            questStatus status = null;
+            privilegeGroupList = null;
 
+
+            // Get privilege
+            Privilege privilege = null;
+            status = _dbPrivilegesMgr.Read(privilegeId, out privilege);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+            // Get privilege groups
+            List<Quest.Services.Dbio.FMS.GroupPrivileges> _groupPrivilegesList = null;
+            status = read((FMSEntities)trans.DbContext, privilegeId, out _groupPrivilegesList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            privilegeGroupList = new PrivilegeGroupList();
+            privilegeGroupList.Privilege = privilege;
+            foreach (Quest.Services.Dbio.FMS.GroupPrivileges _groupPrivileges in _groupPrivilegesList)
+            {
+                // Get group
+                GroupId groupId = new GroupId(_groupPrivileges.PrivilegeId);
+                Group group = null;
+                status = _dbGroupsMgr.Read(groupId, out group);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+                privilegeGroupList.GroupList.Add(group);
+            }
+            return (new questStatus(Severity.Success));
+        }
         public questStatus Update(GroupPrivilege groupPrivilege)
         {
             // Initialize
@@ -298,7 +329,6 @@ namespace Quest.MPDW.Services.Data.Accounts
             }
             return (new questStatus(Severity.Success));
         }
-
         public questStatus Delete(GroupPrivilegeId groupPrivilegeId)
         {
             // Initialize
@@ -331,7 +361,70 @@ namespace Quest.MPDW.Services.Data.Accounts
             }
             return (new questStatus(Severity.Success));
         }
+        public questStatus Delete(PrivilegeId privilegeId)
+        {
+            // Initialize
+            questStatus status = null;
 
+
+            // Perform delete.
+            using (FMSEntities dbContext = new FMSEntities())
+            {
+                status = delete(dbContext, privilegeId);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus Delete(DbMgrTransaction trans, PrivilegeId privilegeId)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            // Perform delete in this transaction.
+            status = delete((FMSEntities)trans.DbContext, privilegeId);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                RollbackTransaction(trans);
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus Delete(GroupId groupId)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            // Perform delete.
+            using (FMSEntities dbContext = new FMSEntities())
+            {
+                status = delete(dbContext, groupId);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus Delete(DbMgrTransaction trans, GroupId groupId)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            // Perform delete in this transaction.
+            status = delete((FMSEntities)trans.DbContext, groupId);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                RollbackTransaction(trans);
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
         public questStatus List(QueryOptions queryOptions, out List<GroupPrivilege> groupPrivilegeList, out QueryResponse queryResponse)
         {
             // Initialize
@@ -356,10 +449,10 @@ namespace Quest.MPDW.Services.Data.Accounts
                             return (new questStatus(Severity.Warning));
                         }
                         groupPrivilegeList = new List<GroupPrivilege>();
-                        foreach (Quest.Services.Dbio.FMS.GroupPrivileges _groupPrivilege in _groupPrivilegesList)
+                        foreach (Quest.Services.Dbio.FMS.GroupPrivileges _groupPrivileges in _groupPrivilegesList)
                         {
                             GroupPrivilege groupPrivilege = new GroupPrivilege();
-                            BufferMgr.TransferBuffer(_groupPrivilege, groupPrivilege);
+                            BufferMgr.TransferBuffer(_groupPrivileges, groupPrivilege);
                             groupPrivilegeList.Add(groupPrivilege);
                         }
                         status = BuildQueryResponse(_groupPrivilegesList.Count, queryOptions, out queryResponse);
@@ -392,6 +485,7 @@ namespace Quest.MPDW.Services.Data.Accounts
             try
             {
                 _dbPrivilegesMgr = new DbPrivilegesMgr(this.UserSession);
+                _dbGroupsMgr = new DbGroupsMgr(this.UserSession);
             }
             catch (System.Exception ex)
             {
@@ -403,9 +497,9 @@ namespace Quest.MPDW.Services.Data.Accounts
         }
 
 
-        #region GroupPrivileges
+        #region UserPrivileges
         /*----------------------------------------------------------------------------------------------------------------------------------
-         * GroupPrivileges
+         * UserPrivileges
          *---------------------------------------------------------------------------------------------------------------------------------*/
         private questStatus create(FMSEntities dbContext, GroupPrivilege groupPrivilege, out GroupPrivilegeId groupPrivilegeId)
         {
@@ -416,15 +510,17 @@ namespace Quest.MPDW.Services.Data.Accounts
             // Perform create
             try
             {
-                Quest.Services.Dbio.FMS.GroupPrivileges _groupPrivilege = new Quest.Services.Dbio.FMS.GroupPrivileges();
-                BufferMgr.TransferBuffer(groupPrivilege, _groupPrivilege);
-                dbContext.GroupPrivileges.Add(_groupPrivilege);
+                Quest.Services.Dbio.FMS.GroupPrivileges _groupPrivileges = new Quest.Services.Dbio.FMS.GroupPrivileges();
+                _groupPrivileges.PrivilegeId = groupPrivilege.Privilege.Id;
+                _groupPrivileges.GroupId = groupPrivilege.Group.Id;
+                _groupPrivileges.Created = DateTime.Now;
+                dbContext.GroupPrivileges.Add(_groupPrivileges);
                 dbContext.SaveChanges();
-                if (_groupPrivilege.Id == 0)
+                if (_groupPrivileges.Id == 0)
                 {
                     return (new questStatus(Severity.Error, "GroupPrivilege not created"));
                 }
-                groupPrivilegeId = new GroupPrivilegeId(_groupPrivilege.Id);
+                groupPrivilegeId = new GroupPrivilegeId(_groupPrivileges.Id);
             }
             catch (System.Exception ex)
             {
@@ -516,15 +612,15 @@ namespace Quest.MPDW.Services.Data.Accounts
             {
                 // Read the record.
                 GroupPrivilegeId groupPrivilegeId = new GroupPrivilegeId(groupPrivilege.Id);
-                Quest.Services.Dbio.FMS.GroupPrivileges _groupPrivilege = null;
-                status = read(dbContext, groupPrivilegeId, out _groupPrivilege);
+                Quest.Services.Dbio.FMS.GroupPrivileges _groupPrivileges = null;
+                status = read(dbContext, groupPrivilegeId, out _groupPrivileges);
                 if (!questStatusDef.IsSuccess(status))
                 {
                     return (status);
                 }
 
                 // Update the record.
-                BufferMgr.TransferBuffer(groupPrivilege, _groupPrivilege);
+                BufferMgr.TransferBuffer(groupPrivilege, _groupPrivileges);
                 dbContext.SaveChanges();
             }
             catch (System.Exception ex)
@@ -544,15 +640,77 @@ namespace Quest.MPDW.Services.Data.Accounts
             try
             {
                 // Read the record.
-                Quest.Services.Dbio.FMS.GroupPrivileges _groupPrivilege = null;
-                status = read(dbContext, groupPrivilegeId, out _groupPrivilege);
+                Quest.Services.Dbio.FMS.GroupPrivileges _groupPrivileges = null;
+                status = read(dbContext, groupPrivilegeId, out _groupPrivileges);
                 if (!questStatusDef.IsSuccess(status))
                 {
                     return (status);
                 }
 
                 // Delete the record.
-                dbContext.GroupPrivileges.Remove(_groupPrivilege);
+                dbContext.GroupPrivileges.Remove(_groupPrivileges);
+                dbContext.SaveChanges();
+            }
+            catch (System.Exception ex)
+            {
+                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                        this.GetType().Name, MethodBase.GetCurrentMethod().Name,
+                        ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+            }
+            return (new questStatus(Severity.Success));
+        }
+        private questStatus delete(FMSEntities dbContext, GroupId groupId)
+        {
+            // Initialize 
+            questStatus status = null;
+
+
+            try
+            {
+                // Read the record.
+                List<Quest.Services.Dbio.FMS.GroupPrivileges> groupPrivilegeList = null;
+                status = read(dbContext, groupId, out groupPrivilegeList);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+
+                // Delete the records.
+                foreach (Quest.Services.Dbio.FMS.GroupPrivileges groupPrivilege in groupPrivilegeList)
+                {
+                    dbContext.GroupPrivileges.Remove(groupPrivilege);
+                }
+                dbContext.SaveChanges();
+            }
+            catch (System.Exception ex)
+            {
+                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                        this.GetType().Name, MethodBase.GetCurrentMethod().Name,
+                        ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+            }
+            return (new questStatus(Severity.Success));
+        }
+        private questStatus delete(FMSEntities dbContext, PrivilegeId privilegeId)
+        {
+            // Initialize 
+            questStatus status = null;
+
+
+            try
+            {
+                // Read the record.
+                List<Quest.Services.Dbio.FMS.GroupPrivileges> groupPrivilegeList = null;
+                status = read(dbContext, privilegeId, out groupPrivilegeList);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+
+                // Delete the records.
+                foreach (Quest.Services.Dbio.FMS.GroupPrivileges groupPrivilege in groupPrivilegeList)
+                {
+                    dbContext.GroupPrivileges.Remove(groupPrivilege);
+                }
                 dbContext.SaveChanges();
             }
             catch (System.Exception ex)

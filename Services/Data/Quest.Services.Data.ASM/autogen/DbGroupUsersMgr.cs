@@ -104,7 +104,7 @@ namespace Quest.MPDW.Services.Data.Accounts
             questStatus status = null;
             groupUser = null;
 
-
+           
             // Perform read
             using (FMSEntities dbContext = new FMSEntities())
             {
