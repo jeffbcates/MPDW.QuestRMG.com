@@ -38,6 +38,15 @@ namespace Quest.Services.Dbio.MasterPricing
         public virtual DbSet<FilterTables> FilterTables { get; set; }
         public virtual DbSet<FilterValues> FilterValues { get; set; }
         public virtual DbSet<FilterViews> FilterViews { get; set; }
+        public virtual DbSet<BulkInsertLogs> BulkInsertLogs { get; set; }
+        public virtual DbSet<BulkUpdateLogs> BulkUpdateLogs { get; set; }
+        public virtual DbSet<DatabaseLogs> DatabaseLogs { get; set; }
+        public virtual DbSet<ExceptionLogs> ExceptionLogs { get; set; }
+        public virtual DbSet<FilterLogs> FilterLogs { get; set; }
+        public virtual DbSet<HTTPRequestLogs> HTTPRequestLogs { get; set; }
+        public virtual DbSet<PortalRequestLogs> PortalRequestLogs { get; set; }
+        public virtual DbSet<StoredProcedureLogs> StoredProcedureLogs { get; set; }
+        public virtual DbSet<TablesetLogs> TablesetLogs { get; set; }
         public virtual DbSet<Columns> Columns { get; set; }
         public virtual DbSet<Databases> Databases { get; set; }
         public virtual DbSet<EntityTypes> EntityTypes { get; set; }

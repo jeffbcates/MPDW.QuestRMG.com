@@ -41,6 +41,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="BulkUpdateLog.cs" />
+    <Compile Include="BulkInsertLog.cs" />
+    <Compile Include="FilterLog.cs" />
+    <Compile Include="TablesetLog.cs" />
+    <Compile Include="DatabaseLog.cs" />
+    <Compile Include="StoredProcedureLog.cs" />
+    <Compile Include="ExceptionLog.cs" />
+    <Compile Include="HTTPRequestLog.cs" />
     <Compile Include="Log.cs" />
     <Compile Include="LogId.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
