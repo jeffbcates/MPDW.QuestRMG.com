@@ -11,8 +11,9 @@ namespace Quest.Functional.Logging
     public class HTTPRequestLog
     {
         public int Id { get; set; }
-        public int UserSessionId { get; set; }
+        public int? UserSessionId { get; set; }
         public string Username { get; set; }
+        public string Method { get; set; }
         public string IPAddress { get; set; }
         public string UserAgent { get; set; }
         public string URL { get; set; }

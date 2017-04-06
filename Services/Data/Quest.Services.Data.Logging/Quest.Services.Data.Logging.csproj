@@ -81,6 +81,10 @@
       <Project>{eb3bc5d2-eb3d-4f28-8184-6e1dcada534b}</Project>
       <Name>Quest.Util.Status</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Dbio\Quest.Services.Dbio.MasterPricing\Quest.Services.Dbio.MasterPricing.csproj">
+      <Project>{397c929d-8f62-4317-a9cf-0b3be1305ee8}</Project>
+      <Name>Quest.Services.Dbio.MasterPricing</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Dbio\Quest.Services.Dbio.PWTrackerLogging\Quest.Services.Dbio.PWTrackerLogging.csproj">
       <Project>{5168002b-4c7c-4145-bd35-8d10a74c445b}</Project>
       <Name>Quest.Services.Dbio.PWTrackerLogging</Name>

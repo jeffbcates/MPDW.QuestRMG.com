@@ -17,6 +17,8 @@ using Quest.MPDW.Services.Data;
 using Quest.MPDW.Services.Business.Accounts;
 using Quest.MPDW.Models;
 using Quest.MPDW.Modelers;
+using Quest.Functional.Logging;
+using Quest.Services.Business.Logging;
 
 
 namespace Quest.MPDW.Controllers
@@ -28,6 +30,8 @@ namespace Quest.MPDW.Controllers
          * Declarations
          *=================================================================================================================================*/
         private UserSession _userSession = null;
+        private bool _bLoggingHTTPRequests = true;
+        private HTTPRequestLogsMgr _httpRequestLogsMgr = null;
 
         #endregion
 
@@ -36,6 +40,14 @@ namespace Quest.MPDW.Controllers
         /*==================================================================================================================================
          * Constructors
          *=================================================================================================================================*/
+        public BaseController()
+        {
+            initialize();
+        }
+        public BaseController(UserSession userSession)
+        {
+            this._userSession = userSession;
+        }
         #endregion
 
 
@@ -109,6 +121,27 @@ namespace Quest.MPDW.Controllers
          *=================================================================================================================================*/
         public questStatus LogOperation()
         {
+            questStatus status = null;
+
+            if (this._bLoggingHTTPRequests)
+            {
+                HTTPRequestLog httpRequestLog = new HTTPRequestLog();
+                if (this.UserSession != null)
+                {
+                    httpRequestLog.UserSessionId = this.UserSession == null ? -1 : this.UserSession.Id;
+                    httpRequestLog.Username = this.UserSession.User.Username;
+                }
+                httpRequestLog.Method = Request.HttpMethod;
+                httpRequestLog.IPAddress = Request.UserHostAddress;
+                httpRequestLog.UserAgent = Request.UserAgent;
+                httpRequestLog.URL = Request.Url.ToString();
+                HTTPRequestLogId httpRequestLogId = null;
+                status = _httpRequestLogsMgr.Create(httpRequestLog, out httpRequestLogId);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+            }
             return (new questStatus(Severity.Success));
         }
         #endregion
@@ -186,11 +219,6 @@ namespace Quest.MPDW.Controllers
             {
                 foreach (KeyValuePair<string, object> kvp in _dynRow)
                 {
-                    if (kvp.Value != null && kvp.Value.ToString().IndexOf("This location does not want follow up calls effective") > -1)
-                    {
-                        int x = 4;
-                        x = 44;
-                    }
                     string value = kvp.Value == null ? "(null)" : kvp.Value.ToString().Replace("\t", " ").Replace("\r", " ").Replace("\n"," ");
                     output.Write(value);
                     output.Write("\t");
@@ -209,6 +237,15 @@ namespace Quest.MPDW.Controllers
         /*==================================================================================================================================
          * Private Methods
          *=================================================================================================================================*/
+        private void initialize()
+        {
+            _httpRequestLogsMgr = new HTTPRequestLogsMgr(this.UserSession);
+        }
+        private questStatus logHTTPRequest()
+        {
+
+            return (new questStatus(Severity.Success));
+        }
         #endregion
     }
 }
