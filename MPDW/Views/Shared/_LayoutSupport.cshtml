@@ -3,40 +3,50 @@
 <html lang="en">
 <head>
     <meta charset="utf-8" />
-    <title>Quest Resource Management Group - MPDW Account Management</title>
-    <link href="~/favicon.ico?v=1" rel="shortcut icon" type="image/x-icon" />
+    <title>Quest Resource Management Group - MPDW</title>
+    <link href="~/favicon.png?v=1" rel="shortcut icon" type="image/x-icon" />
     <meta name="viewport" content="width=device-width" />
-    <link href="~/Content/bootstrap-3.3.5-dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="~/Content/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href="~/Content/animate.min.css" rel="stylesheet">
-    <link href="~/Content/creative.css" rel="stylesheet">
-    <link href="~/Content/Site.css" rel="stylesheet">
-    <link href="~/Content/Quest/quest.css" rel="stylesheet">
-    <link href="~/Content/responsive.css" rel="stylesheet">
-    <link rel="stylesheet" href="~/Content/themes/jquery-ui/jquery-ui-1.9.2.css">
+    <link href="~/Content/bootstrap-3.3.5-dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link href="~/Content/font-awesome-4.7.0/css/font-awesome.min.css" rel="stylesheet" />
+    <link href="~/Content/animate.min.css" rel="stylesheet" />
+    <link href="~/Content/creative.css" rel="stylesheet" />
+    <link href="~/Content/responsive.css" rel="stylesheet" />
+    <link href="~/Content/themes/jquery-ui/jquery-ui-1.9.2.css" rel="stylesheet" />
+    <link href="~/Content/bootstrap-treeview/bootstrap-treeview.css" rel="stylesheet" />
+    <link href="~/Content/themes/metronic/layout.min.css" rel="stylesheet" />
+    <link href="~/Content/themes/metronic/components.min.css" rel="stylesheet" />
+    <link href="~/Content/scrollToTop.css" rel="stylesheet" />
+    <link href="~/Content/Quest/quest.css" rel="stylesheet" />
+    <link href="~/Content/Site.css" rel="stylesheet" />
 
-    <script src="~/Scripts/socket.io-1.4.5.BEAUTIFY.js"></script>
-    <script src="~/Scripts/jquery-1.11.3.min.js"></script>
-    <script src="~/Content/bootstrap-3.3.5-dist/js/bootstrap.min.js"></script>
-    <script type="text/javascript" src="~/Scripts/bootstrap-datepicker/js/bootstrap-datepicker.js"></script>
-    <script src="~/Scripts/jquery.easing.min.js"></script>
-    <script src="~/Scripts/jquery.fittext.js"></script>
-    <script src="~/Scripts/wow.min.js"></script>
-    <script src="~/Scripts/creative.js"></script>
-    <script src="~/Scripts/Quest/qrmg.js"></script>
-    <script src="~/Scripts/Quest/qrmgmvc.js"></script>
-    <script src="~/Scripts/Quest/qrmgctx.js"></script>
-    <script src="~/Scripts/Quest/qrmgTreeview.js"></script>
-    <script src="~/Scripts/Quest/qrmgMainMenu.js"></script>
-    <script src="~/Scripts/Quest/qrmgNavbar.js"></script>
-    <script src="~/Scripts/Quest/qrmgTable.js"></script>
-    <script src="~/Scripts/Quest/qrmgumsg.js"></script>
-    <script src="~/Scripts/Quest/qrmgEditor.js"></script>
-    <script src="~/Scripts/Quest/qrmgForm.js"></script>
-    <script src="~/Scripts/Quest/qrmgio.js"></script>
-    <script src="~/Scripts/Quest/qrmgobj.js"></script>
-    <script src="~/Scripts/tsorter-2.0.0.js"></script>
-    <script type="text/javascript" src="~/Scripts/jquery.ui/jquery-ui-1.9.2.js"></script>
+    <script src="~/Scripts/socket.io-1.4.5.BEAUTIFY.js" type="text/javascript"></script>
+    <script src="~/Scripts/jquery-1.11.3.js" type="text/javascript"></script>
+    <script src="~/Content/bootstrap-3.3.5-dist/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src="~/Scripts/bootstrap-datepicker/js/bootstrap-datepicker.js" type="text/javascript"></script>
+    <script src="~/Scripts/jquery.easing.min.js" type="text/javascript"></script>
+    <script src="~/Scripts/jquery.fittext.js" type="text/javascript"></script>
+    <script src="~/Scripts/wow.min.js" type="text/javascript"></script>
+    <script src="~/Scripts/creative.js" type="text/javascript"></script>
+    <script src="~/Scripts/Quest/qrmg.js" type="text/javascript"></script>
+    <script src="~/Scripts/Quest/qrmgmvc.js" type="text/javascript"></script>
+    <script src="~/Scripts/Quest/qrmgctx.js" type="text/javascript"></script>
+    <script src="~/Scripts/Quest/qrmgTreeview.js" type="text/javascript"></script>
+    <script src="~/Scripts/Quest/qrmgMainMenu.js" type="text/javascript"></script>
+    <script src="~/Scripts/Quest/qrmgNavbar.js" type="text/javascript"></script>
+    <script src="~/Scripts/Quest/qrmgTable.js" type="text/javascript"></script>
+    <script src="~/Scripts/Quest/qrmgGrid.js" type="text/javascript"></script>
+    <script src="~/Scripts/Quest/qrmgumsg.js" type="text/javascript"></script>
+    <script src="~/Scripts/Quest/qrmgEditor.js" type="text/javascript"></script>
+    <script src="~/Scripts/Quest/qrmgPortlet.js" type="text/javascript"></script>
+    <script src="~/Scripts/Quest/qrmgPanel.js" type="text/javascript"></script>
+    <script src="~/Scripts/Quest/qrmgForm.js" type="text/javascript"></script>
+    <script src="~/Scripts/Quest/qrmgFilter.js" type="text/javascript"></script>
+    <script src="~/Scripts/Quest/qrmgio.js" type="text/javascript"></script>
+    <script src="~/Scripts/Quest/qrmgobj.js" type="text/javascript"></script>
+    <script src="~/Scripts/tsorter-2.0.0.js" type="text/javascript"></script>
+    <script src="~/Scripts/jquery.ui/jquery-ui-1.9.2.js" type="text/javascript"></script>
+    <script src="~/Scripts/bootstrap-treeview/bootstrap-treeview.js" type="text/javascript"></script>
+    <script src="~/Scripts/jQueryMaskedInput/jquery.maskedinput.js" type="text/javascript"></script>
 </head>
 <body>
     <nav class="navbar navbar-default navbar-fixed-top affix-top" id="mainNav">
@@ -94,6 +104,9 @@
                 @RenderBody()
             </div>
         </div>
+        <a href="#top" id="toTop" style="display: inline;">
+            <span class="glyphicon glyphicon-circle-arrow-up"></span>
+        </a>
     </div>
     <footer>
         <div class="content-wrapper">
@@ -115,8 +128,8 @@
                 $('.scrollToTop').fadeOut();
             }
         });
-        $('.scrollToTop').click(function () {
-            $('html, body').animate({ scrollTop: 0 }, 250);
+        $("#toTop").click(function () {
+            $('html, body').animate({ scrollTop: 0 }, 500);
             return false;
         });
     });

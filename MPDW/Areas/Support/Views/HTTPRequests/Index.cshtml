@@ -4,7 +4,51 @@
     Layout = "~/Views/Shared/_LayoutSupport.cshtml";
 }
 
-<h1>MPDW HTTP Requests Log</h1>
+<div class="questTableTitle">HTTP Request Log</div>
 
-<p>TODO: Logs for HTTP Requests to MPDW.</p>
+<div id="tblHTTPRequestLogs" class="qrmgTable"></div>
 
+<script type="text/javascript">
+    var _tblHTTPRequestLogs;
+    $(function () {
+        var tblHTTPRequestLogs = {
+            name: 'tblHTTPRequestLogs',
+            element: 'tblHTTPRequestLogs',
+            prefix: 'http',
+            uri: '/Support/HTTPRequests',
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb']
+            },
+            autoLoad: true,
+            callback: cbTblHTTPRequestLogs,
+            columns: [
+                { name: 'Id', hidden: true, key: true },
+                { name: 'UserSessionId', label: 'User Session' },
+                { name: 'Username', label: 'Last Name' },
+                { name: 'Method', label: 'Method' },
+                { name: 'IPAddress', label: 'IPAddress' },
+                { name: 'UserAgent', label: 'UserAgent' },
+                { name: 'URL', label: 'URL' },
+                { name: 'Created', label: 'Created' },
+            ],
+            paging: {
+                Top: true,
+                Bottom: true,
+                PageSize: 100,
+                PageSizeOptions: [100, 200, 500, 1000],
+            },
+            operations: [
+            ],
+            commands: [
+            ],
+            events: [
+            ],
+            contextMenu: [
+            ]
+        }
+        _tblHTTPRequestLogs = new qrmgTable(tblHTTPRequestLogs);
+    });
+    function cbTblHTTPRequestLogs(ud, d) {
+
+    }
+</script>

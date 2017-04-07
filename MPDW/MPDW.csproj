@@ -192,6 +192,9 @@
     <Compile Include="Areas\Support\Controllers\SupportBaseController.cs" />
     <Compile Include="Areas\Support\Modelers\SupportBaseModeler.cs" />
     <Compile Include="Areas\Support\Modelers\LogSettingsEditorModeler.cs" />
+    <Compile Include="Areas\Support\Modelers\HTTPRequestsListModeler.cs" />
+    <Compile Include="Areas\Support\Models\SupportBaseViewModel.cs" />
+    <Compile Include="Areas\Support\Models\SupportBaseListViewModel.cs" />
     <Compile Include="Areas\Support\Models\LogSettingsViewModel.cs" />
     <Compile Include="Areas\Support\Models\PortalViewModel.cs" />
     <Compile Include="Areas\Support\Models\BulkUpdateViewModel.cs" />
@@ -202,6 +205,8 @@
     <Compile Include="Areas\Support\Models\StoredProceduresViewModel.cs" />
     <Compile Include="Areas\Support\Models\ExceptionsViewModel.cs" />
     <Compile Include="Areas\Support\Models\HTTPRequestsViewModel.cs" />
+    <Compile Include="Areas\Support\Models\HTTPRequestLineItemViewModel.cs" />
+    <Compile Include="Areas\Support\Models\HTTPRequestsListViewModel.cs" />
     <Compile Include="Areas\Support\SupportAreaRegistration.cs" />
     <Compile Include="Areas\Support\Controllers\HomeController.cs" />
     <Compile Include="Areas\Support\Models\SupportHomeViewModel.cs" />
