@@ -59,7 +59,6 @@
     <Compile Include="autogen\Filters\DbFilterColumnsMgr.cs" />
     <Compile Include="autogen\Filters\DbFilterTablesMgr.cs" />
     <Compile Include="autogen\Filters\DbFiltersMgr.cs" />
-    <Compile Include="autogen\Logging\DbHTTPRequestLogs.cs" />
     <Compile Include="autogen\Setup\DbColumnsMgr.cs" />
     <Compile Include="autogen\Setup\DbDatabasesMgr.cs" />
     <Compile Include="autogen\Setup\DbTablesetColumnsMgr.cs" />
@@ -122,6 +121,10 @@
     <ProjectReference Include="..\..\Dbio\Quest.Services.Dbio.MasterPricing\Quest.Services.Dbio.MasterPricing.csproj">
       <Project>{397c929d-8f62-4317-a9cf-0b3be1305ee8}</Project>
       <Name>Quest.Services.Dbio.MasterPricing</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Quest.Services.Data.Logging\Quest.Services.Data.Logging.csproj">
+      <Project>{eef58ee7-d4ae-4f42-b2db-33484a984b6f}</Project>
+      <Name>Quest.Services.Data.Logging</Name>
     </ProjectReference>
     <ProjectReference Include="..\Quest.Services.Data\Quest.Services.Data.csproj">
       <Project>{483b1cd9-22b5-4361-89e5-5a0492acad43}</Project>

@@ -96,7 +96,7 @@ namespace Quest.MPDW.Support.Modelers
             }
 
             // Sort 
-            exceptionLogList.Sort(delegate (Quest.Functional.Logging.ExceptionLog i1, Quest.Functional.Logging.ExceptionLog i2) { return i1.Created.CompareTo(i2.Created); });
+            exceptionLogList.Sort(delegate (Quest.Functional.Logging.ExceptionLog i1, Quest.Functional.Logging.ExceptionLog i2) { return i2.Created.CompareTo(i1.Created); });
 
 
             // Transfer model.
@@ -109,10 +109,10 @@ namespace Quest.MPDW.Support.Modelers
                 return (status);
             }
             exceptionsListViewModel.QueryResponse = queryResponseViewModel;
-            foreach (Quest.Functional.Logging.ExceptionLog user in exceptionLogList)
+            foreach (Quest.Functional.Logging.ExceptionLog exceptionLog in exceptionLogList)
             {
                 ExceptionLineItemViewModel exceptionLineItemViewModel = new ExceptionLineItemViewModel();
-                BufferMgr.TransferBuffer(user, exceptionLineItemViewModel);
+                BufferMgr.TransferBuffer(exceptionLog, exceptionLineItemViewModel);
                 exceptionsListViewModel.Items.Add(exceptionLineItemViewModel);
             }
             return (new questStatus(Severity.Success));
@@ -147,10 +147,10 @@ namespace Quest.MPDW.Support.Modelers
 
             // Transfer model.
             exceptionsListViewModel = new ExceptionsListViewModel(this.UserSession);
-            foreach (Quest.Functional.Logging.ExceptionLog user in exceptionLogList)
+            foreach (Quest.Functional.Logging.ExceptionLog exceptionLog in exceptionLogList)
             {
                 ExceptionLineItemViewModel exceptionLineItemViewModel = new ExceptionLineItemViewModel();
-                BufferMgr.TransferBuffer(user, exceptionLineItemViewModel);
+                BufferMgr.TransferBuffer(exceptionLog, exceptionLineItemViewModel);
                 exceptionsListViewModel.Items.Add(exceptionLineItemViewModel);
             }
             return (new questStatus(Severity.Success));

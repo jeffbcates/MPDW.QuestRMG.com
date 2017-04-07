@@ -23,7 +23,7 @@ using Quest.Services.Dbio.MasterPricing;
 
 namespace Quest.Services.Data.Logging
 {
-    public class DbBulkInsertLogsMgr : DbMgrSessionBased
+    public class DbBulkInsertLogsMgr : DbLogsMgr
     {
         #region Declarations
         /*==================================================================================================================================
@@ -63,6 +63,7 @@ namespace Quest.Services.Data.Logging
 
 
             // Data rules.
+            bulkInsertLog.Created = DateTime.Now;
 
 
             // Create the bulkInsertLog
@@ -269,6 +270,14 @@ namespace Quest.Services.Data.Logging
             }
             return (new questStatus(Severity.Success));
         }
+
+
+        #region Logging
+        /*----------------------------------------------------------------------------------------------------------------------------------
+         * Logging
+         *---------------------------------------------------------------------------------------------------------------------------------*/
+        #endregion
+
         #endregion
 
 

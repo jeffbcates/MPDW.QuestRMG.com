@@ -96,7 +96,7 @@ namespace Quest.MPDW.Support.Modelers
             }
 
             // Sort 
-            tablesetLogList.Sort(delegate (Quest.Functional.Logging.TablesetLog i1, Quest.Functional.Logging.TablesetLog i2) { return i1.Created.CompareTo(i2.Created); });
+            tablesetLogList.Sort(delegate (Quest.Functional.Logging.TablesetLog i1, Quest.Functional.Logging.TablesetLog i2) { return i2.Created.CompareTo(i1.Created); });
 
 
             // Transfer model.
@@ -109,10 +109,10 @@ namespace Quest.MPDW.Support.Modelers
                 return (status);
             }
             tablesetsListViewModel.QueryResponse = queryResponseViewModel;
-            foreach (Quest.Functional.Logging.TablesetLog user in tablesetLogList)
+            foreach (Quest.Functional.Logging.TablesetLog tablesetLog in tablesetLogList)
             {
                 TablesetLineItemViewModel tablesetLineItemViewModel = new TablesetLineItemViewModel();
-                BufferMgr.TransferBuffer(user, tablesetLineItemViewModel);
+                BufferMgr.TransferBuffer(tablesetLog, tablesetLineItemViewModel);
                 tablesetsListViewModel.Items.Add(tablesetLineItemViewModel);
             }
             return (new questStatus(Severity.Success));
@@ -147,10 +147,10 @@ namespace Quest.MPDW.Support.Modelers
 
             // Transfer model.
             tablesetsListViewModel = new TablesetsListViewModel(this.UserSession);
-            foreach (Quest.Functional.Logging.TablesetLog user in tablesetLogList)
+            foreach (Quest.Functional.Logging.TablesetLog tablesetLog in tablesetLogList)
             {
                 TablesetLineItemViewModel tablesetLineItemViewModel = new TablesetLineItemViewModel();
-                BufferMgr.TransferBuffer(user, tablesetLineItemViewModel);
+                BufferMgr.TransferBuffer(tablesetLog, tablesetLineItemViewModel);
                 tablesetsListViewModel.Items.Add(tablesetLineItemViewModel);
             }
             return (new questStatus(Severity.Success));

@@ -96,7 +96,7 @@ namespace Quest.MPDW.Support.Modelers
             }
 
             // Sort 
-            bulkInsertLogList.Sort(delegate (Quest.Functional.Logging.BulkInsertLog i1, Quest.Functional.Logging.BulkInsertLog i2) { return i1.Created.CompareTo(i2.Created); });
+            bulkInsertLogList.Sort(delegate (Quest.Functional.Logging.BulkInsertLog i1, Quest.Functional.Logging.BulkInsertLog i2) { return i2.Created.CompareTo(i1.Created); });
 
 
             // Transfer model.
@@ -109,10 +109,10 @@ namespace Quest.MPDW.Support.Modelers
                 return (status);
             }
             bulkInsertsListViewModel.QueryResponse = queryResponseViewModel;
-            foreach (Quest.Functional.Logging.BulkInsertLog user in bulkInsertLogList)
+            foreach (Quest.Functional.Logging.BulkInsertLog bulkInsertLog in bulkInsertLogList)
             {
                 BulkInsertLineItemViewModel bulkInsertLineItemViewModel = new BulkInsertLineItemViewModel();
-                BufferMgr.TransferBuffer(user, bulkInsertLineItemViewModel);
+                BufferMgr.TransferBuffer(bulkInsertLog, bulkInsertLineItemViewModel);
                 bulkInsertsListViewModel.Items.Add(bulkInsertLineItemViewModel);
             }
             return (new questStatus(Severity.Success));
@@ -147,10 +147,10 @@ namespace Quest.MPDW.Support.Modelers
 
             // Transfer model.
             bulkInsertsListViewModel = new BulkInsertsListViewModel(this.UserSession);
-            foreach (Quest.Functional.Logging.BulkInsertLog user in bulkInsertLogList)
+            foreach (Quest.Functional.Logging.BulkInsertLog bulkInsertLog in bulkInsertLogList)
             {
                 BulkInsertLineItemViewModel bulkInsertLineItemViewModel = new BulkInsertLineItemViewModel();
-                BufferMgr.TransferBuffer(user, bulkInsertLineItemViewModel);
+                BufferMgr.TransferBuffer(bulkInsertLog, bulkInsertLineItemViewModel);
                 bulkInsertsListViewModel.Items.Add(bulkInsertLineItemViewModel);
             }
             return (new questStatus(Severity.Success));

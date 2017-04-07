@@ -21,6 +21,8 @@ using Quest.MPDW.Services.Data;
 using Quest.Services.Dbio.MasterPricing;
 using Quest.MasterPricing.Services.Data.Filters;
 using Quest.MasterPricing.Services.Data.Database;
+using Quest.Functional.Logging;
+using Quest.Services.Data.Logging;
 
 
 namespace Quest.MasterPricing.Services.Data.Bulk
@@ -32,6 +34,8 @@ namespace Quest.MasterPricing.Services.Data.Bulk
          * Declarations
          *=================================================================================================================================*/
         private UserSession _userSession = null;
+        private LogSetting _logSetting = null;
+        DbBulkInsertLogsMgr _dbBulkInsertLogsMgr = null;
 
         #endregion
 
@@ -40,11 +44,6 @@ namespace Quest.MasterPricing.Services.Data.Bulk
         /*==================================================================================================================================
          * Constructors
          *=================================================================================================================================*/
-        public DbBulkInsertMgr()
-            : base()
-        {
-            initialize();
-        }
         public DbBulkInsertMgr(UserSession userSession)
             : base(userSession)
         {
@@ -58,6 +57,13 @@ namespace Quest.MasterPricing.Services.Data.Bulk
         /*==================================================================================================================================
          * Properties
          *=================================================================================================================================*/
+        public bool bLogging
+        {
+            get
+            {
+                return (this._logSetting.bLogBulkInserts);
+            }
+        }
         #endregion
 
 
@@ -66,17 +72,10 @@ namespace Quest.MasterPricing.Services.Data.Bulk
          * Public Methods
          *=================================================================================================================================*/
 
-        #region Filter Procedure-Based
-        //
-        // Filter Procedure-Based
-        //
-        #endregion
-
-
         #region Filter Procedure Utility Routines
-        //
-        // Filter Procedure Utility Routines
-        //
+        /*----------------------------------------------------------------------------------------------------------------------------------
+         * Filter Procedure Utility Routines
+         *---------------------------------------------------------------------------------------------------------------------------------*/
         public questStatus GetFilterProcedure(BulkInsertRequest bulkInsertRequest, string Action, out FilterProcedure filterProcedure)
         {
             // Initialize
@@ -121,10 +120,32 @@ namespace Quest.MasterPricing.Services.Data.Bulk
         {
             // Initialize
             questStatus status = null;
+            BulkInsertLog bulkInsertLog = bLogging ? new BulkInsertLog() : null;
+            BulkInsertLogId bulkInsertLogId = null;
+            int numRows = 0;
+            string logMessage = null;
+            List<string> logParameterList = null;
+            string logParameter = null;
+            string logBulkInsertColumn = null;
 
-            
+
             try
             {
+                // Initialize log
+                if (bLogging)
+                {
+                    bulkInsertLog.Event = "Initialize";
+                    bulkInsertLog.UserSessionId = this.UserSession.Id;
+                    bulkInsertLog.Username = this.UserSession.User.Username;
+                    string Filter = null;
+                    status = _dbBulkInsertLogsMgr.SetFilter(bulkInsertRequest.Filter, out Filter);
+                    if (!questStatusDef.IsSuccess(status))
+                    {
+                        return (status);
+                    }
+                    bulkInsertLog.Filter = Filter;
+                }
+
                 // Get database connection string
                 TablesetId tablesetId = new TablesetId(bulkInsertRequest.TablesetId);
                 Tableset tableset = null;
@@ -134,6 +155,17 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                 {
                     return (status);
                 }
+                if (bLogging)
+                {
+                    string Tableset = null;
+                    status = _dbBulkInsertLogsMgr.SetTableset(tableset, out Tableset);
+                    if (!questStatusDef.IsSuccess(status))
+                    {
+                        return (status);
+                    }
+                    bulkInsertLog.Tableset = Tableset;
+                }
+
                 DatabaseId databaseId = new DatabaseId(tableset.DatabaseId);
                 Quest.Functional.MasterPricing.Database database = null;
                 DbDatabasesMgr dbDatabasesMgr = new DbDatabasesMgr(this.UserSession);
@@ -142,34 +174,86 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                 {
                     return (status);
                 }
+                if (bLogging)
+                {
+                    string Database = null;
+                    status = _dbBulkInsertLogsMgr.SetDatabase(database, out Database);
+                    if (!questStatusDef.IsSuccess(status))
+                    {
+                        return (status);
+                    }
+                    bulkInsertLog.Database = Database;
+                }
+
+
                 bool bTransaction = false;
+                bulkInsertLog.Event = "Open";
                 using (SqlConnection conn = new SqlConnection(database.ConnectionString))
                 {
+                    bulkInsertLog.Event = "Connect";
                     conn.Open();
                     SqlTransaction trans = null;
                     if (bTransaction)
                     {
                         trans = conn.BeginTransaction();
+                        if (bLogging)
+                        {
+                            bulkInsertLog.Event = "BeginTransaction";
+                        }
                     }
+                    numRows = 0;
                     foreach (BulkInsertRow bulkInsertRow in bulkInsertRequest.Rows)
                     {
                         using (SqlCommand cmd = new SqlCommand(null, conn, trans))
                         {
                             cmd.CommandType = CommandType.StoredProcedure;
                             cmd.CommandText = filterProcedure.Name;
+
+
+                            // Initialize logging info
+                            if (bLogging)
+                            {
+                                logParameterList = new List<string>();
+                                logParameter = null;
+                                logBulkInsertColumn = null;
+                            }
+
+                            // Build each parameter
                             foreach (FilterProcedureParameter filterParam in filterProcedure.ParameterList)
                             {
                                 if (filterParam.Direction != "Input")
                                 {
                                     continue;
                                 }
+                                if (bLogging)
+                                {
+                                    logParameter = String.Format("{ Id: {0}, ParameterName: {1}, SqlDbType: {2} }", filterParam.Id, filterParam.ParameterName, filterParam.SqlDbType.ToString());
+                                }
+
+
                                 BulkInsertColumnValue bulkInsertColumnValue = bulkInsertRow.Columns.Find(delegate (BulkInsertColumnValue cv) {
                                         return (cv.Name == filterParam.ParameterName); });
                                 if (bulkInsertColumnValue == null)
                                 {
-                                    return (new questStatus(Severity.Error, String.Format("ERROR: sproc parameter {0} not found in bulk insert columns",
-                                            filterParam.ParameterName)));
+                                    if (bTransaction)
+                                    {
+                                        trans.Rollback();
+                                    }
+
+                                    logMessage = String.Format("ERROR: sproc parameter {0} not found in bulk insert columns",
+                                            filterParam.ParameterName);
+                                    if (bLogging)
+                                    {
+                                        bulkInsertLog.Message = logMessage;
+                                        _dbBulkInsertLogsMgr.Create(bulkInsertLog, out bulkInsertLogId);
+                                    }
+                                    return (new questStatus(Severity.Error, logMessage));
                                 }
+                                if (bLogging)
+                                {
+                                    logBulkInsertColumn = String.Format("{ Name: {0}, Value: {1} }", bulkInsertColumnValue.Name, bulkInsertColumnValue.Value);
+                                }
+
 
                                 // TODO:REFACTOR
                                 SqlDbType sqlDbType = (SqlDbType)Enum.Parse(typeof(SqlDbType), filterParam.SqlDbType, true);
@@ -267,27 +351,58 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                             }
                             try
                             {
-                                int numRows = cmd.ExecuteNonQuery();
-                                if (numRows != bulkInsertRequest.Rows.Count)
+                                if (bLogging)
+                                {
+                                    bulkInsertLog.Event = "ExecuteNonQuery";
+                                }
+                                int _numRows = cmd.ExecuteNonQuery();
+                                if (_numRows != bulkInsertRequest.Rows.Count)
                                 {
                                     if (bTransaction)
                                     {
                                         trans.Rollback();
                                     }
-                                    return (new questStatus(Severity.Error, String.Format("ERROR: Bulk insert stored procedure failed: Rows: {0}", numRows)));
+                                    logMessage = String.Format("ERROR: Bulk insert stored procedure failed: Rows: {0}", _numRows);
+                                    if (bLogging)
+                                    {
+                                        bulkInsertLog.Message = logMessage;
+                                        _dbBulkInsertLogsMgr.Create(bulkInsertLog, out bulkInsertLogId);
+                                    }
+                                    return (new questStatus(Severity.Error, logMessage));
                                 }
                             }
                             catch (SqlException ex)
                             {
-                                return (new questStatus(Severity.Error, String.Format("SQL EXCEPTION: Bulk insert stored procedure {0}: {1}",
-                                        filterProcedure.Name, ex.Message)));
+                                if (bTransaction)
+                                {
+                                    trans.Rollback();
+                                }
+                                logMessage = String.Format("After {0} rows, SQL EXCEPTION: Bulk insert stored procedure {0}: {1}",
+                                        numRows, filterProcedure.Name, ex.Message);
+                                if (bLogging)
+                                {
+                                    bulkInsertLog.Message = logMessage;
+                                    _dbBulkInsertLogsMgr.Create(bulkInsertLog, out bulkInsertLogId);
+                                }
+                                return (new questStatus(Severity.Error, logMessage));
                             }
                             catch (System.Exception ex)
                             {
-                                return (new questStatus(Severity.Error, String.Format("EXCEPTION: Bulk insert stored procedure {0}: {1}",
-                                        filterProcedure.Name, ex.Message)));
+                                if (bTransaction)
+                                {
+                                    trans.Rollback();
+                                }
+                                logMessage = String.Format("After {0} rows, EXCEPTION: Bulk insert stored procedure {0}: {1}",
+                                        numRows, filterProcedure.Name, ex.Message);
+                                if (bLogging)
+                                {
+                                    bulkInsertLog.Message = logMessage;
+                                    _dbBulkInsertLogsMgr.Create(bulkInsertLog, out bulkInsertLogId);
+                                }
+                                return (new questStatus(Severity.Error, logMessage));
                             }
                         }
+                        numRows += 1;
                     }
                     if (bTransaction)
                     {
@@ -297,9 +412,26 @@ namespace Quest.MasterPricing.Services.Data.Bulk
             }
             catch (System.Exception ex)
             {
-                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: Bulk Insert Operation: {0}.{1}: {2}",
+                logMessage = String.Format("EXCEPTION: Bulk Insert Operation: {0}.{1}: {2}",
                         this.GetType().Name, MethodBase.GetCurrentMethod().Name,
-                        ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+                        ex.InnerException != null ? ex.InnerException.Message : ex.Message);
+                if (bLogging)
+                {
+                    bulkInsertLog.Event = bulkInsertLog.Event == null ? "EXCEPTION" : bulkInsertLog.Event;
+                    bulkInsertLog.Message = logMessage;
+                    bulkInsertLog.NumRows = numRows;
+
+                    string parameterArray = null;
+                    _dbBulkInsertLogsMgr.SetArray(logParameterList, out parameterArray);
+                    bulkInsertLog.Parameters = parameterArray;
+
+                    string Exception = null;
+                    _dbBulkInsertLogsMgr.SetException(ex, out Exception);
+                    bulkInsertLog.Data = Exception;
+
+                    _dbBulkInsertLogsMgr.Create(bulkInsertLog, out bulkInsertLogId);
+                }
+                return (new questStatus(Severity.Fatal, logMessage));
             }
             return (new questStatus(Severity.Success));
         }
@@ -307,9 +439,9 @@ namespace Quest.MasterPricing.Services.Data.Bulk
 
 
         #region SQL-based
-        //
-        // SQL-based
-        //
+        /*----------------------------------------------------------------------------------------------------------------------------------
+         * SQL-based
+         *---------------------------------------------------------------------------------------------------------------------------------*/
         public questStatus GenerateBulkInsertSQL(BulkInsertRequest bulkInsertRequest)
         {
             // Initialize
@@ -533,6 +665,38 @@ namespace Quest.MasterPricing.Services.Data.Bulk
         }
         #endregion
 
+
+        #region Logging
+        /*----------------------------------------------------------------------------------------------------------------------------------
+         * Logging
+         *---------------------------------------------------------------------------------------------------------------------------------*/
+        public questStatus LogBulkInsertEvent(BulkInsertLog bulkInsertLog)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            // Check if logging on.
+            if (!this._logSetting.bLogBulkInserts)
+            {
+                return (new questStatus(Severity.Warning, "Bulk Insert Logging OFF"));
+            }
+
+
+            // Log event
+            BulkInsertLogId bulkInsertLogId = null;
+            status = _dbBulkInsertLogsMgr.Create(bulkInsertLog, out bulkInsertLogId);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            bulkInsertLog.Id = bulkInsertLogId.Id;
+
+
+            return (new questStatus(Severity.Success));
+        }
+        #endregion
+
         #endregion
 
 
@@ -546,6 +710,16 @@ namespace Quest.MasterPricing.Services.Data.Bulk
             questStatus status = null;
             try
             {
+                status = loadLogSettings();
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+                status = initLogger();
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
             }
             catch (System.Exception ex)
             {
@@ -555,6 +729,48 @@ namespace Quest.MasterPricing.Services.Data.Bulk
             }
             return (new questStatus(Severity.Success));
         }
+        private questStatus loadLogSettings()
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            // Get log settings.
+            LogSetting logSetting = null;
+            DbLogSettingsMgr dbLogSettingsMgr = new DbLogSettingsMgr(this.UserSession);
+            status = dbLogSettingsMgr.Read(out logSetting);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                this._logSetting = new LogSetting();
+                return (status);
+            }
+            this._logSetting = logSetting;
+
+
+            return (new questStatus(Severity.Success));
+        }
+        private questStatus initLogger()
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            if (this._logSetting.bLogBulkInserts)
+            {
+                try
+                {
+                    _dbBulkInsertLogsMgr = new DbBulkInsertLogsMgr(this.UserSession);
+                }
+                catch (System.Exception ex)
+                {
+                    status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                            this.GetType().ToString(), MethodInfo.GetCurrentMethod().Name, ex.Message));
+                    return (status);
+                }
+            }
+            return (new questStatus(Severity.Success));
+        }
+
         private questStatus getNumEntities(BulkInsertRequest bulkInsertRequest, out int numEntities)
         {
             // Initialize

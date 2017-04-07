@@ -257,6 +257,7 @@ namespace Quest.MPDW.Controllers
             questStatus status = null;
 
 
+            // Get log settings.
             LogSetting logSetting = null;
             LogSettingsMgr logSettingsMgr = new LogSettingsMgr(this.UserSession);
             status = logSettingsMgr.Read(out logSetting);

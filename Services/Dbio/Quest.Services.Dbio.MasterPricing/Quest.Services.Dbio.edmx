@@ -154,9 +154,14 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="UserSessionId" Type="int" Nullable="false" />
           <Property Name="Username" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Tableset" Type="nvarchar" MaxLength="256" Nullable="false" />
-          <Property Name="Filter" Type="nvarchar" MaxLength="256" Nullable="false" />
-          <Property Name="Event" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Database" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Tableset" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Filter" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Event" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="NumRows" Type="int" Nullable="false" />
+          <Property Name="Parameters" Type="nvarchar(max)" />
+          <Property Name="BulkInsertColumn" Type="nvarchar(max)" />
+          <Property Name="Message" Type="nvarchar(max)" />
           <Property Name="Data" Type="nvarchar(max)" />
           <Property Name="Created" Type="datetime2" Precision="7" Nullable="false" />
         </EntityType>
@@ -167,9 +172,11 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="UserSessionId" Type="int" Nullable="false" />
           <Property Name="Username" Type="nvarchar" MaxLength="50" Nullable="false" />
-          <Property Name="Tableset" Type="nvarchar" MaxLength="256" Nullable="false" />
-          <Property Name="Filter" Type="nvarchar" MaxLength="256" Nullable="false" />
-          <Property Name="Event" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Database" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Tableset" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Filter" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Event" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Message" Type="nvarchar(max)" />
           <Property Name="Data" Type="nvarchar(max)" />
           <Property Name="Created" Type="datetime2" Precision="7" Nullable="false" />
         </EntityType>
@@ -800,9 +807,14 @@ warning 6002: The table/view 'MasterPricing.dbo.vwTypeListsList' does not have a
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UserSessionId" Type="Int32" Nullable="false" />
           <Property Name="Username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Tableset" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
-          <Property Name="Filter" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
-          <Property Name="Event" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Database" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Tableset" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Filter" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Event" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="NumRows" Type="Int32" Nullable="false" />
+          <Property Name="Parameters" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="BulkInsertColumn" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Message" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Data" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Created" Type="DateTime" Nullable="false" Precision="7" />
         </EntityType>
@@ -813,9 +825,11 @@ warning 6002: The table/view 'MasterPricing.dbo.vwTypeListsList' does not have a
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="UserSessionId" Type="Int32" Nullable="false" />
           <Property Name="Username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
-          <Property Name="Tableset" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
-          <Property Name="Filter" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
-          <Property Name="Event" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Database" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Tableset" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Filter" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Event" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Message" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Data" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Created" Type="DateTime" Nullable="false" Precision="7" />
         </EntityType>
@@ -1315,9 +1329,14 @@ warning 6002: The table/view 'MasterPricing.dbo.vwTypeListsList' does not have a
               <MappingFragment StoreEntitySet="BulkInsertLogs">
                 <ScalarProperty Name="Created" ColumnName="Created" />
                 <ScalarProperty Name="Data" ColumnName="Data" />
+                <ScalarProperty Name="Message" ColumnName="Message" />
+                <ScalarProperty Name="BulkInsertColumn" ColumnName="BulkInsertColumn" />
+                <ScalarProperty Name="Parameters" ColumnName="Parameters" />
+                <ScalarProperty Name="NumRows" ColumnName="NumRows" />
                 <ScalarProperty Name="Event" ColumnName="Event" />
                 <ScalarProperty Name="Filter" ColumnName="Filter" />
                 <ScalarProperty Name="Tableset" ColumnName="Tableset" />
+                <ScalarProperty Name="Database" ColumnName="Database" />
                 <ScalarProperty Name="Username" ColumnName="Username" />
                 <ScalarProperty Name="UserSessionId" ColumnName="UserSessionId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
@@ -1329,9 +1348,11 @@ warning 6002: The table/view 'MasterPricing.dbo.vwTypeListsList' does not have a
               <MappingFragment StoreEntitySet="BulkUpdateLogs">
                 <ScalarProperty Name="Created" ColumnName="Created" />
                 <ScalarProperty Name="Data" ColumnName="Data" />
+                <ScalarProperty Name="Message" ColumnName="Message" />
                 <ScalarProperty Name="Event" ColumnName="Event" />
                 <ScalarProperty Name="Filter" ColumnName="Filter" />
                 <ScalarProperty Name="Tableset" ColumnName="Tableset" />
+                <ScalarProperty Name="Database" ColumnName="Database" />
                 <ScalarProperty Name="Username" ColumnName="Username" />
                 <ScalarProperty Name="UserSessionId" ColumnName="UserSessionId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />

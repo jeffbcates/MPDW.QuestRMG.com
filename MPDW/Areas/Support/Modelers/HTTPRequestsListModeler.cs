@@ -96,7 +96,7 @@ namespace Quest.MPDW.Support.Modelers
             }
 
             // Sort 
-            httpRequestLogList.Sort(delegate (Quest.Functional.Logging.HTTPRequestLog i1, Quest.Functional.Logging.HTTPRequestLog i2) { return i1.Created.CompareTo(i2.Created); });
+            httpRequestLogList.Sort(delegate (Quest.Functional.Logging.HTTPRequestLog i1, Quest.Functional.Logging.HTTPRequestLog i2) { return i2.Created.CompareTo(i1.Created); });
 
 
             // Transfer model.
@@ -109,10 +109,10 @@ namespace Quest.MPDW.Support.Modelers
                 return (status);
             }
             httpRequestsListViewModel.QueryResponse = queryResponseViewModel;
-            foreach (Quest.Functional.Logging.HTTPRequestLog user in httpRequestLogList)
+            foreach (Quest.Functional.Logging.HTTPRequestLog httpRequestLog in httpRequestLogList)
             {
                 HTTPRequestLineItemViewModel httpRequestLineItemViewModel = new HTTPRequestLineItemViewModel();
-                BufferMgr.TransferBuffer(user, httpRequestLineItemViewModel);
+                BufferMgr.TransferBuffer(httpRequestLog, httpRequestLineItemViewModel);
                 httpRequestsListViewModel.Items.Add(httpRequestLineItemViewModel);
             }
             return (new questStatus(Severity.Success));
@@ -147,10 +147,10 @@ namespace Quest.MPDW.Support.Modelers
 
             // Transfer model.
             httpRequestsListViewModel = new HTTPRequestsListViewModel(this.UserSession);
-            foreach (Quest.Functional.Logging.HTTPRequestLog user in httpRequestLogList)
+            foreach (Quest.Functional.Logging.HTTPRequestLog httpRequestLog in httpRequestLogList)
             {
                 HTTPRequestLineItemViewModel httpRequestLineItemViewModel = new HTTPRequestLineItemViewModel();
-                BufferMgr.TransferBuffer(user, httpRequestLineItemViewModel);
+                BufferMgr.TransferBuffer(httpRequestLog, httpRequestLineItemViewModel);
                 httpRequestsListViewModel.Items.Add(httpRequestLineItemViewModel);
             }
             return (new questStatus(Severity.Success));

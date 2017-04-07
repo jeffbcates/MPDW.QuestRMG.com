@@ -15,6 +15,7 @@ using Quest.Functional.FMS;
 using Quest.Functional.MasterPricing;
 using Quest.MPDW.Services.Data;
 using Quest.MPDW.Services.Business;
+using Quest.MasterPricing.Services.Business.Filters;
 using Quest.MasterPricing.Services.Data.Filters;
 using Quest.MasterPricing.Services.Data.Bulk;
 
@@ -37,11 +38,6 @@ namespace Quest.MasterPricing.Services.Business.Bulk
         /*==================================================================================================================================
          * Constructors
          *=================================================================================================================================*/
-        public BulkInsertMgr()
-            : base()
-        {
-            initialize();
-        }
         public BulkInsertMgr(UserSession userSession)
             : base(userSession)
         {
@@ -73,6 +69,18 @@ namespace Quest.MasterPricing.Services.Business.Bulk
         {
             // Initialize
             questStatus status = null;
+
+
+            // Read Filter
+            FilterId filterId = new FilterId(bulkInsertRequest.FilterId);
+            Filter filter = null;
+            FiltersMgr filtersMgr = new FiltersMgr(this.UserSession);
+            status = filtersMgr.Read(filterId, out filter);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            bulkInsertRequest.Filter = filter;
 
 
             // Determine if bulk insert filter procedure exists.
@@ -272,7 +280,7 @@ namespace Quest.MasterPricing.Services.Business.Bulk
             questStatus status = null;
             try
             {
-                _dbBulkInsertMgr = new DbBulkInsertMgr();
+                _dbBulkInsertMgr = new DbBulkInsertMgr(this.UserSession);
             }
             catch (System.Exception ex)
             {

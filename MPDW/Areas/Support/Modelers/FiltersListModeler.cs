@@ -96,7 +96,7 @@ namespace Quest.MPDW.Support.Modelers
             }
 
             // Sort 
-            filterLogList.Sort(delegate (Quest.Functional.Logging.FilterLog i1, Quest.Functional.Logging.FilterLog i2) { return i1.Created.CompareTo(i2.Created); });
+            filterLogList.Sort(delegate (Quest.Functional.Logging.FilterLog i1, Quest.Functional.Logging.FilterLog i2) { return i2.Created.CompareTo(i1.Created); });
 
 
             // Transfer model.
@@ -109,10 +109,10 @@ namespace Quest.MPDW.Support.Modelers
                 return (status);
             }
             filtersListViewModel.QueryResponse = queryResponseViewModel;
-            foreach (Quest.Functional.Logging.FilterLog user in filterLogList)
+            foreach (Quest.Functional.Logging.FilterLog filterLog in filterLogList)
             {
                 FilterLineItemViewModel filterLineItemViewModel = new FilterLineItemViewModel();
-                BufferMgr.TransferBuffer(user, filterLineItemViewModel);
+                BufferMgr.TransferBuffer(filterLog, filterLineItemViewModel);
                 filtersListViewModel.Items.Add(filterLineItemViewModel);
             }
             return (new questStatus(Severity.Success));
@@ -147,10 +147,10 @@ namespace Quest.MPDW.Support.Modelers
 
             // Transfer model.
             filtersListViewModel = new FiltersListViewModel(this.UserSession);
-            foreach (Quest.Functional.Logging.FilterLog user in filterLogList)
+            foreach (Quest.Functional.Logging.FilterLog filterLog in filterLogList)
             {
                 FilterLineItemViewModel filterLineItemViewModel = new FilterLineItemViewModel();
-                BufferMgr.TransferBuffer(user, filterLineItemViewModel);
+                BufferMgr.TransferBuffer(filterLog, filterLineItemViewModel);
                 filtersListViewModel.Items.Add(filterLineItemViewModel);
             }
             return (new questStatus(Severity.Success));

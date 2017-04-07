@@ -349,6 +349,9 @@ pnlbtn:active {
   background-color: #d5e8fc;
   border: 1px solid #add4f4;
 }
+.qrmgTable thead th {
+    white-space: nowrap;
+}
 .qrmgTable tbody {
 
 }

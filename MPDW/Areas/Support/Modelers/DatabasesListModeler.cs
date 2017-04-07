@@ -96,7 +96,7 @@ namespace Quest.MPDW.Support.Modelers
             }
 
             // Sort 
-            databaseLogList.Sort(delegate (Quest.Functional.Logging.DatabaseLog i1, Quest.Functional.Logging.DatabaseLog i2) { return i1.Created.CompareTo(i2.Created); });
+            databaseLogList.Sort(delegate (Quest.Functional.Logging.DatabaseLog i1, Quest.Functional.Logging.DatabaseLog i2) { return i2.Created.CompareTo(i1.Created); });
 
 
             // Transfer model.
@@ -109,10 +109,10 @@ namespace Quest.MPDW.Support.Modelers
                 return (status);
             }
             databasesListViewModel.QueryResponse = queryResponseViewModel;
-            foreach (Quest.Functional.Logging.DatabaseLog user in databaseLogList)
+            foreach (Quest.Functional.Logging.DatabaseLog databaseLog in databaseLogList)
             {
                 DatabaseLineItemViewModel databaseLineItemViewModel = new DatabaseLineItemViewModel();
-                BufferMgr.TransferBuffer(user, databaseLineItemViewModel);
+                BufferMgr.TransferBuffer(databaseLog, databaseLineItemViewModel);
                 databasesListViewModel.Items.Add(databaseLineItemViewModel);
             }
             return (new questStatus(Severity.Success));
@@ -147,10 +147,10 @@ namespace Quest.MPDW.Support.Modelers
 
             // Transfer model.
             databasesListViewModel = new DatabasesListViewModel(this.UserSession);
-            foreach (Quest.Functional.Logging.DatabaseLog user in databaseLogList)
+            foreach (Quest.Functional.Logging.DatabaseLog databaseLog in databaseLogList)
             {
                 DatabaseLineItemViewModel databaseLineItemViewModel = new DatabaseLineItemViewModel();
-                BufferMgr.TransferBuffer(user, databaseLineItemViewModel);
+                BufferMgr.TransferBuffer(databaseLog, databaseLineItemViewModel);
                 databasesListViewModel.Items.Add(databaseLineItemViewModel);
             }
             return (new questStatus(Severity.Success));

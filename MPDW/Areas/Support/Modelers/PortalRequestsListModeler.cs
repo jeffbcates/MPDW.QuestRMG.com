@@ -96,7 +96,7 @@ namespace Quest.MPDW.Support.Modelers
             }
 
             // Sort 
-            portalRequestLogList.Sort(delegate (Quest.Functional.Logging.PortalRequestLog i1, Quest.Functional.Logging.PortalRequestLog i2) { return i1.Created.CompareTo(i2.Created); });
+            portalRequestLogList.Sort(delegate (Quest.Functional.Logging.PortalRequestLog i1, Quest.Functional.Logging.PortalRequestLog i2) { return i2.Created.CompareTo(i1.Created); });
 
 
             // Transfer model.
@@ -109,10 +109,10 @@ namespace Quest.MPDW.Support.Modelers
                 return (status);
             }
             portalRequestsListViewModel.QueryResponse = queryResponseViewModel;
-            foreach (Quest.Functional.Logging.PortalRequestLog user in portalRequestLogList)
+            foreach (Quest.Functional.Logging.PortalRequestLog portalRequestLog in portalRequestLogList)
             {
                 PortalRequestLineItemViewModel portalRequestLineItemViewModel = new PortalRequestLineItemViewModel();
-                BufferMgr.TransferBuffer(user, portalRequestLineItemViewModel);
+                BufferMgr.TransferBuffer(portalRequestLog, portalRequestLineItemViewModel);
                 portalRequestsListViewModel.Items.Add(portalRequestLineItemViewModel);
             }
             return (new questStatus(Severity.Success));
@@ -147,10 +147,10 @@ namespace Quest.MPDW.Support.Modelers
 
             // Transfer model.
             portalRequestsListViewModel = new PortalRequestsListViewModel(this.UserSession);
-            foreach (Quest.Functional.Logging.PortalRequestLog user in portalRequestLogList)
+            foreach (Quest.Functional.Logging.PortalRequestLog portalRequestLog in portalRequestLogList)
             {
                 PortalRequestLineItemViewModel portalRequestLineItemViewModel = new PortalRequestLineItemViewModel();
-                BufferMgr.TransferBuffer(user, portalRequestLineItemViewModel);
+                BufferMgr.TransferBuffer(portalRequestLog, portalRequestLineItemViewModel);
                 portalRequestsListViewModel.Items.Add(portalRequestLineItemViewModel);
             }
             return (new questStatus(Severity.Success));

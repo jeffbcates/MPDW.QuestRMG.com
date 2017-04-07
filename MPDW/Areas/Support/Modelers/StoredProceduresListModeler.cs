@@ -96,7 +96,7 @@ namespace Quest.MPDW.Support.Modelers
             }
 
             // Sort 
-            storedProcedureLogList.Sort(delegate (Quest.Functional.Logging.StoredProcedureLog i1, Quest.Functional.Logging.StoredProcedureLog i2) { return i1.Created.CompareTo(i2.Created); });
+            storedProcedureLogList.Sort(delegate (Quest.Functional.Logging.StoredProcedureLog i1, Quest.Functional.Logging.StoredProcedureLog i2) { return i2.Created.CompareTo(i1.Created); });
 
 
             // Transfer model.
@@ -109,10 +109,10 @@ namespace Quest.MPDW.Support.Modelers
                 return (status);
             }
             storedProceduresListViewModel.QueryResponse = queryResponseViewModel;
-            foreach (Quest.Functional.Logging.StoredProcedureLog user in storedProcedureLogList)
+            foreach (Quest.Functional.Logging.StoredProcedureLog storedProcedureLog in storedProcedureLogList)
             {
                 StoredProcedureLineItemViewModel storedProcedureLineItemViewModel = new StoredProcedureLineItemViewModel();
-                BufferMgr.TransferBuffer(user, storedProcedureLineItemViewModel);
+                BufferMgr.TransferBuffer(storedProcedureLog, storedProcedureLineItemViewModel);
                 storedProceduresListViewModel.Items.Add(storedProcedureLineItemViewModel);
             }
             return (new questStatus(Severity.Success));
@@ -147,10 +147,10 @@ namespace Quest.MPDW.Support.Modelers
 
             // Transfer model.
             storedProceduresListViewModel = new StoredProceduresListViewModel(this.UserSession);
-            foreach (Quest.Functional.Logging.StoredProcedureLog user in storedProcedureLogList)
+            foreach (Quest.Functional.Logging.StoredProcedureLog storedProcedureLog in storedProcedureLogList)
             {
                 StoredProcedureLineItemViewModel storedProcedureLineItemViewModel = new StoredProcedureLineItemViewModel();
-                BufferMgr.TransferBuffer(user, storedProcedureLineItemViewModel);
+                BufferMgr.TransferBuffer(storedProcedureLog, storedProcedureLineItemViewModel);
                 storedProceduresListViewModel.Items.Add(storedProcedureLineItemViewModel);
             }
             return (new questStatus(Severity.Success));

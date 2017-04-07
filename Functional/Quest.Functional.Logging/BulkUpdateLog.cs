@@ -13,6 +13,7 @@ namespace Quest.Functional.Logging
         public int Id { get; set; }
         public int UserSessionId { get; set; }
         public string Username { get; set; }
+        public string Database { get; set; }
         public string Tableset { get; set; }
         public string Filter { get; set; }
         public string Event { get; set; }
