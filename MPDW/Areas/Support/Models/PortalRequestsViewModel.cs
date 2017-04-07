@@ -9,13 +9,13 @@ using Quest.Functional.FMS;
 
 namespace Quest.MPDW.Support.Models
 {
-    public class TablesetViewModel : BaseUserSessionViewModel
+    public class PortalRequestsViewModel : BaseUserSessionViewModel
     {
-        public TablesetViewModel(UserSession userSession)
+        public PortalRequestsViewModel(UserSession userSession)
             : base(userSession)
         {
         }
-        public TablesetViewModel(UserSession userSession, BaseUserSessionViewModel baseUserSessionViewModel)
+        public PortalRequestsViewModel(UserSession userSession, BaseUserSessionViewModel baseUserSessionViewModel)
             : base(userSession, baseUserSessionViewModel)
         {
         }

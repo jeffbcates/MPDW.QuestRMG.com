@@ -9,13 +9,13 @@ using Quest.Functional.FMS;
 
 namespace Quest.MPDW.Support.Models
 {
-    public class BulkInsertViewModel : BaseUserSessionViewModel
+    public class BulkInsertsViewModel : BaseUserSessionViewModel
     {
-        public BulkInsertViewModel(UserSession userSession)
+        public BulkInsertsViewModel(UserSession userSession)
             : base(userSession)
         {
         }
-        public BulkInsertViewModel(UserSession userSession, BaseUserSessionViewModel baseUserSessionViewModel)
+        public BulkInsertsViewModel(UserSession userSession, BaseUserSessionViewModel baseUserSessionViewModel)
             : base(userSession, baseUserSessionViewModel)
         {
         }

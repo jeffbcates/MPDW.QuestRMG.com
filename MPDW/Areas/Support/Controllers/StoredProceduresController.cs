@@ -10,7 +10,7 @@ using Quest.MPDW.Services.Data;
 using Quest.MPDW.Models;
 using Quest.MPDW.Modelers;
 using Quest.MPDW.Support.Models;
-////using Quest.MPDW.Support.Modelers;
+using Quest.MPDW.Support.Modelers;
 
 
 namespace Quest.MPDW.Support
@@ -67,6 +67,298 @@ namespace Quest.MPDW.Support
             StoredProceduresViewModel storedProceduresViewModel = new StoredProceduresViewModel(this.UserSession, baseUserSessionViewModel);
             return View(storedProceduresViewModel);
         }
+        [HttpGet]
+        public ActionResult List(StoredProceduresListViewModel storedProceduresListViewModel)
+        {
+            questStatus status = null;
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Log Operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = LogOperation();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                storedProceduresListViewModel.questStatus = status;
+                return Json(storedProceduresListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Authorize
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = Authorize(storedProceduresListViewModel._ctx);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                storedProceduresListViewModel.questStatus = status;
+                return Json(storedProceduresListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Get list of items.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            StoredProceduresListViewModel tablesetsListViewModelNEW = null;
+            StoredProceduresListModeler storedProceduresListModeler = new StoredProceduresListModeler(this.Request, this.UserSession);
+            status = storedProceduresListModeler.List(out tablesetsListViewModelNEW);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                storedProceduresListViewModel.questStatus = status;
+                return Json(storedProceduresListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Return view
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = new questStatus(Severity.Success);
+            tablesetsListViewModelNEW.questStatus = status;
+            return Json(tablesetsListViewModelNEW, JsonRequestBehavior.AllowGet);
+        }
+
+        #region Paging
+        //----------------------------------------------------------------------------------------------------------------------------------
+        // Paging
+        //----------------------------------------------------------------------------------------------------------------------------------
+        [HttpGet]
+        public ActionResult First(StoredProceduresListViewModel storedProceduresListViewModel)
+        {
+            questStatus status = null;
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Log Operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = LogOperation();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                storedProceduresListViewModel.questStatus = status;
+                return Json(storedProceduresListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Authorize
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = Authorize(storedProceduresListViewModel._ctx);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                storedProceduresListViewModel.questStatus = status;
+                return Json(storedProceduresListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Get list of items.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            // TODO.
+            StoredProceduresListViewModel tablesetsListViewModelNEW = null;
+            StoredProceduresListModeler usersListModeler = new StoredProceduresListModeler(this.Request, this.UserSession);
+            status = usersListModeler.List(out tablesetsListViewModelNEW);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                storedProceduresListViewModel.questStatus = status;
+                return Json(storedProceduresListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Return view
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = new questStatus(Severity.Success);
+            tablesetsListViewModelNEW.questStatus = status;
+            return Json(tablesetsListViewModelNEW, JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        public ActionResult Prev(StoredProceduresListViewModel storedProceduresListViewModel)
+        {
+            questStatus status = null;
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Log Operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = LogOperation();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                storedProceduresListViewModel.questStatus = status;
+                return Json(storedProceduresListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Authorize
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = Authorize(storedProceduresListViewModel._ctx);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                storedProceduresListViewModel.questStatus = status;
+                return Json(storedProceduresListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Get list of items.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            // TODO.
+            StoredProceduresListViewModel tablesetsListViewModelNEW = null;
+            StoredProceduresListModeler usersListModeler = new StoredProceduresListModeler(this.Request, this.UserSession);
+            status = usersListModeler.List(out tablesetsListViewModelNEW);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                storedProceduresListViewModel.questStatus = status;
+                return Json(storedProceduresListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Return view
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = new questStatus(Severity.Success);
+            tablesetsListViewModelNEW.questStatus = status;
+            return Json(tablesetsListViewModelNEW, JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        public ActionResult PageNum(StoredProceduresListViewModel storedProceduresListViewModel)
+        {
+            questStatus status = null;
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Log Operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = LogOperation();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                storedProceduresListViewModel.questStatus = status;
+                return Json(storedProceduresListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Authorize
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = Authorize(storedProceduresListViewModel._ctx);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                storedProceduresListViewModel.questStatus = status;
+                return Json(storedProceduresListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Get list of items.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            // TODO.
+            StoredProceduresListViewModel tablesetsListViewModelNEW = null;
+            StoredProceduresListModeler usersListModeler = new StoredProceduresListModeler(this.Request, this.UserSession);
+            status = usersListModeler.List(out tablesetsListViewModelNEW);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                storedProceduresListViewModel.questStatus = status;
+                return Json(storedProceduresListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Return view
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = new questStatus(Severity.Success);
+            tablesetsListViewModelNEW.questStatus = status;
+            return Json(tablesetsListViewModelNEW, JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        public ActionResult Next(StoredProceduresListViewModel storedProceduresListViewModel)
+        {
+            questStatus status = null;
+
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Log Operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = LogOperation();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                storedProceduresListViewModel.questStatus = status;
+                return Json(storedProceduresListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Authorize
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = Authorize(storedProceduresListViewModel._ctx);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                storedProceduresListViewModel.questStatus = status;
+                return Json(storedProceduresListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Get list of items.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            // TODO.
+            StoredProceduresListViewModel tablesetsListViewModelNEW = null;
+            StoredProceduresListModeler usersListModeler = new StoredProceduresListModeler(this.Request, this.UserSession);
+            status = usersListModeler.List(out tablesetsListViewModelNEW);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                storedProceduresListViewModel.questStatus = status;
+                return Json(storedProceduresListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Return view
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = new questStatus(Severity.Success);
+            tablesetsListViewModelNEW.questStatus = status;
+            return Json(tablesetsListViewModelNEW, JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        public ActionResult Last(StoredProceduresListViewModel storedProceduresListViewModel)
+        {
+            questStatus status = null;
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Log Operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = LogOperation();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                storedProceduresListViewModel.questStatus = status;
+                return Json(storedProceduresListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Authorize
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = Authorize(storedProceduresListViewModel._ctx);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                storedProceduresListViewModel.questStatus = status;
+                return Json(storedProceduresListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Get list of items.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            // TODO.
+            StoredProceduresListViewModel tablesetsListViewModelNEW = null;
+            StoredProceduresListModeler usersListModeler = new StoredProceduresListModeler(this.Request, this.UserSession);
+            status = usersListModeler.List(out tablesetsListViewModelNEW);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                storedProceduresListViewModel.questStatus = status;
+                return Json(storedProceduresListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Return view
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = new questStatus(Severity.Success);
+            tablesetsListViewModelNEW.questStatus = status;
+            return Json(tablesetsListViewModelNEW, JsonRequestBehavior.AllowGet);
+        }
+        #endregion
+
 
         #region Options
         //----------------------------------------------------------------------------------------------------------------------------------

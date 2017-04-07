@@ -15,7 +15,7 @@ using Quest.MPDW.Support.Modelers;
 
 namespace Quest.MPDW.Support
 {
-    public class ExceptionsController : SupportBaseController
+    public class DatabasesController : SupportBaseController
     {
         #region Declarations
         /*==================================================================================================================================
@@ -64,11 +64,11 @@ namespace Quest.MPDW.Support
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Return view.
              *---------------------------------------------------------------------------------------------------------------------------------*/
-            ExceptionsViewModel exceptionsViewModel = new ExceptionsViewModel(this.UserSession, baseUserSessionViewModel);
-            return View(exceptionsViewModel);
+            DatabasesViewModel databasesViewModel = new DatabasesViewModel(this.UserSession, baseUserSessionViewModel);
+            return View(databasesViewModel);
         }
         [HttpGet]
-        public ActionResult List(ExceptionsListViewModel exceptionsListViewModel)
+        public ActionResult List(DatabasesListViewModel databasesListViewModel)
         {
             questStatus status = null;
 
@@ -78,30 +78,30 @@ namespace Quest.MPDW.Support
             status = LogOperation();
             if (!questStatusDef.IsSuccess(status))
             {
-                exceptionsListViewModel.questStatus = status;
-                return Json(exceptionsListViewModel, JsonRequestBehavior.AllowGet);
+                databasesListViewModel.questStatus = status;
+                return Json(databasesListViewModel, JsonRequestBehavior.AllowGet);
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Authorize
              *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = Authorize(exceptionsListViewModel._ctx);
+            status = Authorize(databasesListViewModel._ctx);
             if (!questStatusDef.IsSuccess(status))
             {
-                exceptionsListViewModel.questStatus = status;
-                return Json(exceptionsListViewModel, JsonRequestBehavior.AllowGet);
+                databasesListViewModel.questStatus = status;
+                return Json(databasesListViewModel, JsonRequestBehavior.AllowGet);
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Get list of items.
              *---------------------------------------------------------------------------------------------------------------------------------*/
-            ExceptionsListViewModel tablesetsListViewModelNEW = null;
-            ExceptionsListModeler exceptionsListModeler = new ExceptionsListModeler(this.Request, this.UserSession);
-            status = exceptionsListModeler.List(out tablesetsListViewModelNEW);
+            DatabasesListViewModel tablesetsListViewModelNEW = null;
+            DatabasesListModeler databasesListModeler = new DatabasesListModeler(this.Request, this.UserSession);
+            status = databasesListModeler.List(out tablesetsListViewModelNEW);
             if (!questStatusDef.IsSuccess(status))
             {
-                exceptionsListViewModel.questStatus = status;
-                return Json(exceptionsListViewModel, JsonRequestBehavior.AllowGet);
+                databasesListViewModel.questStatus = status;
+                return Json(databasesListViewModel, JsonRequestBehavior.AllowGet);
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
@@ -117,7 +117,7 @@ namespace Quest.MPDW.Support
         // Paging
         //----------------------------------------------------------------------------------------------------------------------------------
         [HttpGet]
-        public ActionResult First(ExceptionsListViewModel exceptionsListViewModel)
+        public ActionResult First(DatabasesListViewModel databasesListViewModel)
         {
             questStatus status = null;
 
@@ -128,33 +128,33 @@ namespace Quest.MPDW.Support
             if (!questStatusDef.IsSuccess(status))
             {
                 status = new questStatus(Severity.Success);
-                exceptionsListViewModel.questStatus = status;
-                return Json(exceptionsListViewModel, JsonRequestBehavior.AllowGet);
+                databasesListViewModel.questStatus = status;
+                return Json(databasesListViewModel, JsonRequestBehavior.AllowGet);
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Authorize
              *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = Authorize(exceptionsListViewModel._ctx);
+            status = Authorize(databasesListViewModel._ctx);
             if (!questStatusDef.IsSuccess(status))
             {
                 status = new questStatus(Severity.Success);
-                exceptionsListViewModel.questStatus = status;
-                return Json(exceptionsListViewModel, JsonRequestBehavior.AllowGet);
+                databasesListViewModel.questStatus = status;
+                return Json(databasesListViewModel, JsonRequestBehavior.AllowGet);
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Get list of items.
              *---------------------------------------------------------------------------------------------------------------------------------*/
             // TODO.
-            ExceptionsListViewModel tablesetsListViewModelNEW = null;
-            ExceptionsListModeler usersListModeler = new ExceptionsListModeler(this.Request, this.UserSession);
+            DatabasesListViewModel tablesetsListViewModelNEW = null;
+            DatabasesListModeler usersListModeler = new DatabasesListModeler(this.Request, this.UserSession);
             status = usersListModeler.List(out tablesetsListViewModelNEW);
             if (!questStatusDef.IsSuccess(status))
             {
                 status = new questStatus(Severity.Success);
-                exceptionsListViewModel.questStatus = status;
-                return Json(exceptionsListViewModel, JsonRequestBehavior.AllowGet);
+                databasesListViewModel.questStatus = status;
+                return Json(databasesListViewModel, JsonRequestBehavior.AllowGet);
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
@@ -165,7 +165,7 @@ namespace Quest.MPDW.Support
             return Json(tablesetsListViewModelNEW, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
-        public ActionResult Prev(ExceptionsListViewModel exceptionsListViewModel)
+        public ActionResult Prev(DatabasesListViewModel databasesListViewModel)
         {
             questStatus status = null;
 
@@ -176,33 +176,33 @@ namespace Quest.MPDW.Support
             if (!questStatusDef.IsSuccess(status))
             {
                 status = new questStatus(Severity.Success);
-                exceptionsListViewModel.questStatus = status;
-                return Json(exceptionsListViewModel, JsonRequestBehavior.AllowGet);
+                databasesListViewModel.questStatus = status;
+                return Json(databasesListViewModel, JsonRequestBehavior.AllowGet);
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Authorize
              *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = Authorize(exceptionsListViewModel._ctx);
+            status = Authorize(databasesListViewModel._ctx);
             if (!questStatusDef.IsSuccess(status))
             {
                 status = new questStatus(Severity.Success);
-                exceptionsListViewModel.questStatus = status;
-                return Json(exceptionsListViewModel, JsonRequestBehavior.AllowGet);
+                databasesListViewModel.questStatus = status;
+                return Json(databasesListViewModel, JsonRequestBehavior.AllowGet);
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Get list of items.
              *---------------------------------------------------------------------------------------------------------------------------------*/
             // TODO.
-            ExceptionsListViewModel tablesetsListViewModelNEW = null;
-            ExceptionsListModeler usersListModeler = new ExceptionsListModeler(this.Request, this.UserSession);
+            DatabasesListViewModel tablesetsListViewModelNEW = null;
+            DatabasesListModeler usersListModeler = new DatabasesListModeler(this.Request, this.UserSession);
             status = usersListModeler.List(out tablesetsListViewModelNEW);
             if (!questStatusDef.IsSuccess(status))
             {
                 status = new questStatus(Severity.Success);
-                exceptionsListViewModel.questStatus = status;
-                return Json(exceptionsListViewModel, JsonRequestBehavior.AllowGet);
+                databasesListViewModel.questStatus = status;
+                return Json(databasesListViewModel, JsonRequestBehavior.AllowGet);
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
@@ -213,7 +213,7 @@ namespace Quest.MPDW.Support
             return Json(tablesetsListViewModelNEW, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
-        public ActionResult PageNum(ExceptionsListViewModel exceptionsListViewModel)
+        public ActionResult PageNum(DatabasesListViewModel databasesListViewModel)
         {
             questStatus status = null;
 
@@ -224,33 +224,33 @@ namespace Quest.MPDW.Support
             if (!questStatusDef.IsSuccess(status))
             {
                 status = new questStatus(Severity.Success);
-                exceptionsListViewModel.questStatus = status;
-                return Json(exceptionsListViewModel, JsonRequestBehavior.AllowGet);
+                databasesListViewModel.questStatus = status;
+                return Json(databasesListViewModel, JsonRequestBehavior.AllowGet);
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Authorize
              *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = Authorize(exceptionsListViewModel._ctx);
+            status = Authorize(databasesListViewModel._ctx);
             if (!questStatusDef.IsSuccess(status))
             {
                 status = new questStatus(Severity.Success);
-                exceptionsListViewModel.questStatus = status;
-                return Json(exceptionsListViewModel, JsonRequestBehavior.AllowGet);
+                databasesListViewModel.questStatus = status;
+                return Json(databasesListViewModel, JsonRequestBehavior.AllowGet);
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Get list of items.
              *---------------------------------------------------------------------------------------------------------------------------------*/
             // TODO.
-            ExceptionsListViewModel tablesetsListViewModelNEW = null;
-            ExceptionsListModeler usersListModeler = new ExceptionsListModeler(this.Request, this.UserSession);
+            DatabasesListViewModel tablesetsListViewModelNEW = null;
+            DatabasesListModeler usersListModeler = new DatabasesListModeler(this.Request, this.UserSession);
             status = usersListModeler.List(out tablesetsListViewModelNEW);
             if (!questStatusDef.IsSuccess(status))
             {
                 status = new questStatus(Severity.Success);
-                exceptionsListViewModel.questStatus = status;
-                return Json(exceptionsListViewModel, JsonRequestBehavior.AllowGet);
+                databasesListViewModel.questStatus = status;
+                return Json(databasesListViewModel, JsonRequestBehavior.AllowGet);
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
@@ -261,7 +261,7 @@ namespace Quest.MPDW.Support
             return Json(tablesetsListViewModelNEW, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
-        public ActionResult Next(ExceptionsListViewModel exceptionsListViewModel)
+        public ActionResult Next(DatabasesListViewModel databasesListViewModel)
         {
             questStatus status = null;
 
@@ -273,33 +273,33 @@ namespace Quest.MPDW.Support
             if (!questStatusDef.IsSuccess(status))
             {
                 status = new questStatus(Severity.Success);
-                exceptionsListViewModel.questStatus = status;
-                return Json(exceptionsListViewModel, JsonRequestBehavior.AllowGet);
+                databasesListViewModel.questStatus = status;
+                return Json(databasesListViewModel, JsonRequestBehavior.AllowGet);
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Authorize
              *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = Authorize(exceptionsListViewModel._ctx);
+            status = Authorize(databasesListViewModel._ctx);
             if (!questStatusDef.IsSuccess(status))
             {
                 status = new questStatus(Severity.Success);
-                exceptionsListViewModel.questStatus = status;
-                return Json(exceptionsListViewModel, JsonRequestBehavior.AllowGet);
+                databasesListViewModel.questStatus = status;
+                return Json(databasesListViewModel, JsonRequestBehavior.AllowGet);
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Get list of items.
              *---------------------------------------------------------------------------------------------------------------------------------*/
             // TODO.
-            ExceptionsListViewModel tablesetsListViewModelNEW = null;
-            ExceptionsListModeler usersListModeler = new ExceptionsListModeler(this.Request, this.UserSession);
+            DatabasesListViewModel tablesetsListViewModelNEW = null;
+            DatabasesListModeler usersListModeler = new DatabasesListModeler(this.Request, this.UserSession);
             status = usersListModeler.List(out tablesetsListViewModelNEW);
             if (!questStatusDef.IsSuccess(status))
             {
                 status = new questStatus(Severity.Success);
-                exceptionsListViewModel.questStatus = status;
-                return Json(exceptionsListViewModel, JsonRequestBehavior.AllowGet);
+                databasesListViewModel.questStatus = status;
+                return Json(databasesListViewModel, JsonRequestBehavior.AllowGet);
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
@@ -310,7 +310,7 @@ namespace Quest.MPDW.Support
             return Json(tablesetsListViewModelNEW, JsonRequestBehavior.AllowGet);
         }
         [HttpGet]
-        public ActionResult Last(ExceptionsListViewModel exceptionsListViewModel)
+        public ActionResult Last(DatabasesListViewModel databasesListViewModel)
         {
             questStatus status = null;
 
@@ -321,33 +321,33 @@ namespace Quest.MPDW.Support
             if (!questStatusDef.IsSuccess(status))
             {
                 status = new questStatus(Severity.Success);
-                exceptionsListViewModel.questStatus = status;
-                return Json(exceptionsListViewModel, JsonRequestBehavior.AllowGet);
+                databasesListViewModel.questStatus = status;
+                return Json(databasesListViewModel, JsonRequestBehavior.AllowGet);
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Authorize
              *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = Authorize(exceptionsListViewModel._ctx);
+            status = Authorize(databasesListViewModel._ctx);
             if (!questStatusDef.IsSuccess(status))
             {
                 status = new questStatus(Severity.Success);
-                exceptionsListViewModel.questStatus = status;
-                return Json(exceptionsListViewModel, JsonRequestBehavior.AllowGet);
+                databasesListViewModel.questStatus = status;
+                return Json(databasesListViewModel, JsonRequestBehavior.AllowGet);
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Get list of items.
              *---------------------------------------------------------------------------------------------------------------------------------*/
             // TODO.
-            ExceptionsListViewModel tablesetsListViewModelNEW = null;
-            ExceptionsListModeler usersListModeler = new ExceptionsListModeler(this.Request, this.UserSession);
+            DatabasesListViewModel tablesetsListViewModelNEW = null;
+            DatabasesListModeler usersListModeler = new DatabasesListModeler(this.Request, this.UserSession);
             status = usersListModeler.List(out tablesetsListViewModelNEW);
             if (!questStatusDef.IsSuccess(status))
             {
                 status = new questStatus(Severity.Success);
-                exceptionsListViewModel.questStatus = status;
-                return Json(exceptionsListViewModel, JsonRequestBehavior.AllowGet);
+                databasesListViewModel.questStatus = status;
+                return Json(databasesListViewModel, JsonRequestBehavior.AllowGet);
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------

@@ -1,10 +1,10 @@
 ﻿@model Quest.MPDW.Support.Models.HTTPRequestsViewModel
 @{
-    ViewBag.Title = "MPDW HTTP Requests Log";
+    ViewBag.Title = "HTTP Requests Log";
     Layout = "~/Views/Shared/_LayoutSupport.cshtml";
 }
 
-<div class="questTableTitle">HTTP Request Log</div>
+<div class="questTableTitle">HTTP Requests Log</div>
 
 <div id="tblHTTPRequestLogs" class="qrmgTable"></div>
 
@@ -24,7 +24,7 @@
             columns: [
                 { name: 'Id', hidden: true, key: true },
                 { name: 'UserSessionId', label: 'User Session' },
-                { name: 'Username', label: 'Last Name' },
+                { name: 'Username', label: 'Username' },
                 { name: 'Method', label: 'Method' },
                 { name: 'IPAddress', label: 'IPAddress' },
                 { name: 'UserAgent', label: 'UserAgent' },

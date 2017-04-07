@@ -1,10 +1,52 @@
 ﻿@model Quest.MPDW.Support.Models.ExceptionsViewModel
 @{
-    ViewBag.Title = "MPDW Exceptions Log";
+    ViewBag.Title = "Exceptions Log";
     Layout = "~/Views/Shared/_LayoutSupport.cshtml";
 }
 
-<h1>MPDW Exceptions Log</h1>
+<div class="questTableTitle">Exceptions Log</div>
 
-<p>TODO: Logs for MPDW exceptions.</p>
+<div id="tblExceptionLogs" class="qrmgTable"></div>
 
+<script type="text/javascript">
+    var _tblExceptionLogs;
+    $(function () {
+        var tblExceptionLogs = {
+            name: 'tblExceptionLogs',
+            element: 'tblExceptionLogs',
+            prefix: 'exc',
+            uri: '/Support/Exceptions',
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb']
+            },
+            autoLoad: true,
+            callback: cbTblExceptionLogs,
+            columns: [
+                { name: 'Id', hidden: true, key: true },
+                { name: 'UserSessionId', label: 'User Session' },
+                { name: 'Username', label: 'Username' },
+                { name: 'Module', label: 'Module' },
+                { name: 'Message', label: 'Message' },
+                { name: 'Created', label: 'Created' },
+            ],
+            paging: {
+                Top: true,
+                Bottom: true,
+                PageSize: 100,
+                PageSizeOptions: [100, 200, 500, 1000],
+            },
+            operations: [
+            ],
+            commands: [
+            ],
+            events: [
+            ],
+            contextMenu: [
+            ]
+        }
+        _tblExceptionLogs = new qrmgTable(tblExceptionLogs);
+    });
+    function cbTblExceptionLogs(ud, d) {
+
+    }
+</script>

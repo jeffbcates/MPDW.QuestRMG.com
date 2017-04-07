@@ -10,12 +10,12 @@ using Quest.MPDW.Services.Data;
 using Quest.MPDW.Models;
 using Quest.MPDW.Modelers;
 using Quest.MPDW.Support.Models;
-////using Quest.MPDW.Support.Modelers;
+using Quest.MPDW.Support.Modelers;
 
 
 namespace Quest.MPDW.Support
 {
-    public class BulkInsertController : SupportBaseController
+    public class BulkInsertsController : SupportBaseController
     {
         #region Declarations
         /*==================================================================================================================================
@@ -64,9 +64,301 @@ namespace Quest.MPDW.Support
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Return view.
              *---------------------------------------------------------------------------------------------------------------------------------*/
-            BulkInsertViewModel bulkInsertViewModel = new BulkInsertViewModel(this.UserSession, baseUserSessionViewModel);
-            return View(bulkInsertViewModel);
+            BulkInsertsViewModel bulkInsertsViewModel = new BulkInsertsViewModel(this.UserSession, baseUserSessionViewModel);
+            return View(bulkInsertsViewModel);
         }
+        [HttpGet]
+        public ActionResult List(BulkInsertsListViewModel bulkInsertsListViewModel)
+        {
+            questStatus status = null;
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Log Operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = LogOperation();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                bulkInsertsListViewModel.questStatus = status;
+                return Json(bulkInsertsListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Authorize
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = Authorize(bulkInsertsListViewModel._ctx);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                bulkInsertsListViewModel.questStatus = status;
+                return Json(bulkInsertsListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Get list of items.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            BulkInsertsListViewModel bulkInsertsListViewModelNEW = null;
+            BulkInsertsListModeler bulkInsertsListModeler = new BulkInsertsListModeler(this.Request, this.UserSession);
+            status = bulkInsertsListModeler.List(out bulkInsertsListViewModelNEW);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                bulkInsertsListViewModel.questStatus = status;
+                return Json(bulkInsertsListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Return view
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = new questStatus(Severity.Success);
+            bulkInsertsListViewModelNEW.questStatus = status;
+            return Json(bulkInsertsListViewModelNEW, JsonRequestBehavior.AllowGet);
+        }
+
+        #region Paging
+        //----------------------------------------------------------------------------------------------------------------------------------
+        // Paging
+        //----------------------------------------------------------------------------------------------------------------------------------
+        [HttpGet]
+        public ActionResult First(BulkInsertsListViewModel bulkInsertsListViewModel)
+        {
+            questStatus status = null;
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Log Operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = LogOperation();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                bulkInsertsListViewModel.questStatus = status;
+                return Json(bulkInsertsListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Authorize
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = Authorize(bulkInsertsListViewModel._ctx);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                bulkInsertsListViewModel.questStatus = status;
+                return Json(bulkInsertsListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Get list of items.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            // TODO.
+            BulkInsertsListViewModel bulkInsertsListViewModelNEW = null;
+            BulkInsertsListModeler usersListModeler = new BulkInsertsListModeler(this.Request, this.UserSession);
+            status = usersListModeler.List(out bulkInsertsListViewModelNEW);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                bulkInsertsListViewModel.questStatus = status;
+                return Json(bulkInsertsListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Return view
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = new questStatus(Severity.Success);
+            bulkInsertsListViewModelNEW.questStatus = status;
+            return Json(bulkInsertsListViewModelNEW, JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        public ActionResult Prev(BulkInsertsListViewModel bulkInsertsListViewModel)
+        {
+            questStatus status = null;
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Log Operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = LogOperation();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                bulkInsertsListViewModel.questStatus = status;
+                return Json(bulkInsertsListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Authorize
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = Authorize(bulkInsertsListViewModel._ctx);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                bulkInsertsListViewModel.questStatus = status;
+                return Json(bulkInsertsListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Get list of items.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            // TODO.
+            BulkInsertsListViewModel bulkInsertsListViewModelNEW = null;
+            BulkInsertsListModeler usersListModeler = new BulkInsertsListModeler(this.Request, this.UserSession);
+            status = usersListModeler.List(out bulkInsertsListViewModelNEW);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                bulkInsertsListViewModel.questStatus = status;
+                return Json(bulkInsertsListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Return view
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = new questStatus(Severity.Success);
+            bulkInsertsListViewModelNEW.questStatus = status;
+            return Json(bulkInsertsListViewModelNEW, JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        public ActionResult PageNum(BulkInsertsListViewModel bulkInsertsListViewModel)
+        {
+            questStatus status = null;
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Log Operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = LogOperation();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                bulkInsertsListViewModel.questStatus = status;
+                return Json(bulkInsertsListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Authorize
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = Authorize(bulkInsertsListViewModel._ctx);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                bulkInsertsListViewModel.questStatus = status;
+                return Json(bulkInsertsListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Get list of items.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            // TODO.
+            BulkInsertsListViewModel bulkInsertsListViewModelNEW = null;
+            BulkInsertsListModeler usersListModeler = new BulkInsertsListModeler(this.Request, this.UserSession);
+            status = usersListModeler.List(out bulkInsertsListViewModelNEW);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                bulkInsertsListViewModel.questStatus = status;
+                return Json(bulkInsertsListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Return view
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = new questStatus(Severity.Success);
+            bulkInsertsListViewModelNEW.questStatus = status;
+            return Json(bulkInsertsListViewModelNEW, JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        public ActionResult Next(BulkInsertsListViewModel bulkInsertsListViewModel)
+        {
+            questStatus status = null;
+
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Log Operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = LogOperation();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                bulkInsertsListViewModel.questStatus = status;
+                return Json(bulkInsertsListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Authorize
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = Authorize(bulkInsertsListViewModel._ctx);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                bulkInsertsListViewModel.questStatus = status;
+                return Json(bulkInsertsListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Get list of items.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            // TODO.
+            BulkInsertsListViewModel bulkInsertsListViewModelNEW = null;
+            BulkInsertsListModeler usersListModeler = new BulkInsertsListModeler(this.Request, this.UserSession);
+            status = usersListModeler.List(out bulkInsertsListViewModelNEW);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                bulkInsertsListViewModel.questStatus = status;
+                return Json(bulkInsertsListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Return view
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = new questStatus(Severity.Success);
+            bulkInsertsListViewModelNEW.questStatus = status;
+            return Json(bulkInsertsListViewModelNEW, JsonRequestBehavior.AllowGet);
+        }
+        [HttpGet]
+        public ActionResult Last(BulkInsertsListViewModel bulkInsertsListViewModel)
+        {
+            questStatus status = null;
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Log Operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = LogOperation();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                bulkInsertsListViewModel.questStatus = status;
+                return Json(bulkInsertsListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Authorize
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = Authorize(bulkInsertsListViewModel._ctx);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                bulkInsertsListViewModel.questStatus = status;
+                return Json(bulkInsertsListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Get list of items.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            // TODO.
+            BulkInsertsListViewModel bulkInsertsListViewModelNEW = null;
+            BulkInsertsListModeler usersListModeler = new BulkInsertsListModeler(this.Request, this.UserSession);
+            status = usersListModeler.List(out bulkInsertsListViewModelNEW);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                status = new questStatus(Severity.Success);
+                bulkInsertsListViewModel.questStatus = status;
+                return Json(bulkInsertsListViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Return view
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = new questStatus(Severity.Success);
+            bulkInsertsListViewModelNEW.questStatus = status;
+            return Json(bulkInsertsListViewModelNEW, JsonRequestBehavior.AllowGet);
+        }
+        #endregion
+
 
         #region Options
         //----------------------------------------------------------------------------------------------------------------------------------

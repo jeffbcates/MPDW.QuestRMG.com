@@ -1,33 +1,33 @@
-﻿@model Quest.MPDW.Support.Models.StoredProceduresViewModel
+﻿@model Quest.MPDW.Support.Models.DatabasesViewModel
 @{
-    ViewBag.Title = "Stored Procedures Log";
+    ViewBag.Title = "Databases Log";
     Layout = "~/Views/Shared/_LayoutSupport.cshtml";
 }
 
-<div class="questTableTitle">Stored Procedures Log</div>
+<div class="questTableTitle">Databases Log</div>
 
-<div id="tblStoredProcedureLogs" class="qrmgTable"></div>
+<div id="tblDatabaseLogs" class="qrmgTable"></div>
 
 <script type="text/javascript">
-    var _tblStoredProcedureLogs;
+    var _tblDatabaseLogs;
     $(function () {
-        var tblStoredProcedureLogs = {
-            name: 'tblStoredProcedureLogs',
-            element: 'tblStoredProcedureLogs',
-            prefix: 'sproc',
-            uri: '/Support/StoredProcedures',
+        var tblDatabaseLogs = {
+            name: 'tblDatabaseLogs',
+            element: 'tblDatabaseLogs',
+            prefix: 'db',
+            uri: '/Support/Databases',
             ctx: {
                 elements: ['_questctx', '_questmm', '_questnb']
             },
             autoLoad: true,
-            callback: cbTblStoredProcedureLogs,
+            callback: cbTblDatabaseLogs,
             columns: [
                 { name: 'Id', hidden: true, key: true },
                 { name: 'UserSessionId', label: 'User Session' },
                 { name: 'Username', label: 'Username' },
                 { name: 'Name', label: 'Name' },
-                { name: 'Arguments', label: 'Arguments' },
-                { name: 'Response', label: 'Response' },
+                { name: 'Event', label: 'Event' },
+                { name: 'Data', label: 'Data' },
                 { name: 'Created', label: 'Created' },
             ],
             paging: {
@@ -45,9 +45,9 @@
             contextMenu: [
             ]
         }
-        _tblStoredProcedureLogs = new qrmgTable(tblStoredProcedureLogs);
+        _tblDatabaseLogs = new qrmgTable(tblDatabaseLogs);
     });
-    function cbTblStoredProcedureLogs(ud, d) {
+    function cbTblDatabaseLogs(ud, d) {
 
     }
 </script>
