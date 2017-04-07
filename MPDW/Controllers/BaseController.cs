@@ -30,7 +30,7 @@ namespace Quest.MPDW.Controllers
          * Declarations
          *=================================================================================================================================*/
         private UserSession _userSession = null;
-        private bool _bLoggingHTTPRequests = true;
+        private LogSetting _logSetting = null;
         private HTTPRequestLogsMgr _httpRequestLogsMgr = null;
 
         #endregion
@@ -128,24 +128,10 @@ namespace Quest.MPDW.Controllers
             {
                 return (status);
             }
-            if (this._bLoggingHTTPRequests)
+            status = logHTTPRequest();
+            if (!questStatusDef.IsSuccess(status))
             {
-                HTTPRequestLog httpRequestLog = new HTTPRequestLog();
-                if (this.UserSession != null)
-                {
-                    httpRequestLog.UserSessionId = this.UserSession == null ? -1 : this.UserSession.Id;
-                    httpRequestLog.Username = this.UserSession.User.Username;
-                }
-                httpRequestLog.Method = Request.HttpMethod;
-                httpRequestLog.IPAddress = Request.UserHostAddress;
-                httpRequestLog.UserAgent = Request.UserAgent;
-                httpRequestLog.URL = Request.Url.ToString();
-                HTTPRequestLogId httpRequestLogId = null;
-                status = _httpRequestLogsMgr.Create(httpRequestLog, out httpRequestLogId);
-                if (!questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
+                return (status);
             }
             return (new questStatus(Severity.Success));
         }
@@ -263,10 +249,51 @@ namespace Quest.MPDW.Controllers
         private void initialize()
         {
             _httpRequestLogsMgr = new HTTPRequestLogsMgr(this.UserSession);
+            loadLogSettings();
+        }
+        private questStatus loadLogSettings()
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            LogSetting logSetting = null;
+            LogSettingsMgr logSettingsMgr = new LogSettingsMgr(this.UserSession);
+            status = logSettingsMgr.Read(out logSetting);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                this._logSetting = new LogSetting();
+                return (status);
+            }
+            this._logSetting = logSetting;
+
+            return (new questStatus(Severity.Success));
         }
         private questStatus logHTTPRequest()
         {
+            // Initialize
+            questStatus status = null;
 
+
+            if (this._logSetting.bLogHTTPRequests)
+            {
+                HTTPRequestLog httpRequestLog = new HTTPRequestLog();
+                if (this.UserSession != null)
+                {
+                    httpRequestLog.UserSessionId = this.UserSession == null ? -1 : this.UserSession.Id;
+                    httpRequestLog.Username = this.UserSession.User.Username;
+                }
+                httpRequestLog.Method = Request.HttpMethod;
+                httpRequestLog.IPAddress = Request.UserHostAddress;
+                httpRequestLog.UserAgent = Request.UserAgent;
+                httpRequestLog.URL = Request.Url.ToString();
+                HTTPRequestLogId httpRequestLogId = null;
+                status = _httpRequestLogsMgr.Create(httpRequestLog, out httpRequestLogId);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+            }
             return (new questStatus(Severity.Success));
         }
         #endregion
