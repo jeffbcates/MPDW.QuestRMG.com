@@ -193,6 +193,8 @@
     <Compile Include="Areas\Support\Modelers\SupportBaseModeler.cs" />
     <Compile Include="Areas\Support\Modelers\LogSettingsEditorModeler.cs" />
     <Compile Include="Areas\Support\Modelers\HTTPRequestsListModeler.cs" />
+    <Compile Include="Areas\Support\Models\StoredProceduresListViewModel.cs" />
+    <Compile Include="Areas\Support\Models\StoredProcedureLineItemViewModel.cs" />
     <Compile Include="Areas\Support\Models\SupportBaseViewModel.cs" />
     <Compile Include="Areas\Support\Models\SupportBaseListViewModel.cs" />
     <Compile Include="Areas\Support\Models\LogSettingsViewModel.cs" />

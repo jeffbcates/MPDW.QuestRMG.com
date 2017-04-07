@@ -48,6 +48,8 @@
     <Compile Include="FilterLogId.cs" />
     <Compile Include="LogSettingId.cs" />
     <Compile Include="LogSetting.cs" />
+    <Compile Include="PortalRequestLogId.cs" />
+    <Compile Include="PortalRequestLog.cs" />
     <Compile Include="StoredProcedureLogId.cs" />
     <Compile Include="TablesetLogId.cs" />
     <Compile Include="DatabaseLogId.cs" />

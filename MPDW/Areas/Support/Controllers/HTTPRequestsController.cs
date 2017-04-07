@@ -47,8 +47,8 @@ namespace Quest.MPDW.Support
             status = LogOperation();
             if (!questStatusDef.IsSuccess(status))
             {
-                // TODO
-                throw new Exception("LogOperation failed");
+                baseUserSessionViewModel.questStatus = status;
+                return (View("Index", baseUserSessionViewModel));
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
@@ -57,8 +57,8 @@ namespace Quest.MPDW.Support
             status = Authorize(baseUserSessionViewModel._ctx);
             if (!questStatusDef.IsSuccess(status))
             {
-                // TODO
-                throw new Exception("Authorize failed");
+                baseUserSessionViewModel.questStatus = status;
+                return (View("Index", baseUserSessionViewModel));
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
@@ -67,7 +67,6 @@ namespace Quest.MPDW.Support
             HTTPRequestsViewModel httpRequestsViewModel = new HTTPRequestsViewModel(this.UserSession, baseUserSessionViewModel);
             return View(httpRequestsViewModel);
         }
-
         [HttpGet]
         public ActionResult List(HTTPRequestsListViewModel httpRequestsListViewModel)
         {
@@ -359,6 +358,7 @@ namespace Quest.MPDW.Support
             return Json(tablesetsListViewModelNEW, JsonRequestBehavior.AllowGet);
         }
         #endregion
+
 
         #region Options
         //----------------------------------------------------------------------------------------------------------------------------------

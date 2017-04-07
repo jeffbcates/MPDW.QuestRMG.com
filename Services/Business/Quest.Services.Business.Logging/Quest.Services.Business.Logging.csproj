@@ -41,6 +41,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="autogen\ExceptionLogsMgr.cs" />
+    <Compile Include="autogen\DatabaseLogsMgr.cs" />
+    <Compile Include="autogen\FilterLogsMgr.cs" />
+    <Compile Include="autogen\BulkInsertLogsMgr.cs" />
+    <Compile Include="autogen\BulkUpdateLogsMgr.cs" />
+    <Compile Include="autogen\PortalRequestLogsMgr.cs" />
+    <Compile Include="autogen\TablesetLogsMgr.cs" />
+    <Compile Include="autogen\StoredProcedureLogsMgr.cs" />
     <Compile Include="autogen\LogSettingsMgr.cs" />
     <Compile Include="autogen\HTTPRequestLogsMgr.cs" />
     <Compile Include="LogMgr.cs" />

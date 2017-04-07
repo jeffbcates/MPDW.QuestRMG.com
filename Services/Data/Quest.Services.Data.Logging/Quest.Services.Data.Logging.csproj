@@ -48,8 +48,16 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="autogen\DbExceptionLogsMgr.cs" />
+    <Compile Include="autogen\DbDatabaseLogsMgr.cs" />
+    <Compile Include="autogen\DbFilterLogsMgr.cs" />
+    <Compile Include="autogen\DbBulkInsertLogsMgr.cs" />
+    <Compile Include="autogen\DbBulkUpdateLogsMgr.cs" />
+    <Compile Include="autogen\DbPortalLogsMgr.cs" />
+    <Compile Include="autogen\DbTablesetLogsMgr.cs" />
+    <Compile Include="autogen\DbStoredProcedureLogsMgr.cs" />
     <Compile Include="autogen\DbLogSettingsMgr.cs" />
-    <Compile Include="autogen\DbHTTPRequestLogs.cs" />
+    <Compile Include="autogen\DbHTTPRequestLogsMgr.cs" />
     <Compile Include="DbLogMgr.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
