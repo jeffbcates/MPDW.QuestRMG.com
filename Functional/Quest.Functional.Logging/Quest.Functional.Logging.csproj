@@ -46,6 +46,8 @@
     <Compile Include="BulkInsertLog.cs" />
     <Compile Include="BulkInsertLogId.cs" />
     <Compile Include="FilterLogId.cs" />
+    <Compile Include="LogSettingId.cs" />
+    <Compile Include="LogSetting.cs" />
     <Compile Include="StoredProcedureLogId.cs" />
     <Compile Include="TablesetLogId.cs" />
     <Compile Include="DatabaseLogId.cs" />

@@ -24,27 +24,28 @@
         <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.ExceptionLogs" Width="1.5" PointX="10.75" PointY="0.75" />
         <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.FilterLogs" Width="1.5" PointX="0.75" PointY="10.75" />
         <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.HTTPRequestLogs" Width="1.5" PointX="10.75" PointY="3.75" />
-        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.PortalRequestLogs" Width="1.5" PointX="10.75" PointY="7.75" />
-        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.StoredProcedureLogs" Width="1.5" PointX="10.75" PointY="11.75" />
-        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.TablesetLogs" Width="1.5" PointX="12.75" PointY="0.75" />
-        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.Columns" Width="1.5" PointX="12.75" PointY="4.75" />
-        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.Databases" Width="1.5" PointX="12.75" PointY="10.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.LogSettings" Width="1.5" PointX="10.75" PointY="7.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.PortalRequestLogs" Width="1.5" PointX="12.75" PointY="0.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.StoredProcedureLogs" Width="1.5" PointX="12.75" PointY="4.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.TablesetLogs" Width="1.5" PointX="12.75" PointY="8.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.Columns" Width="1.5" PointX="10.75" PointY="12.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.Databases" Width="1.5" PointX="12.75" PointY="12.75" />
         <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.EntityTypes" Width="1.5" PointX="2.75" PointY="13.75" />
         <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.Lookups" Width="1.5" PointX="4.75" PointY="13.75" />
         <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.StoredProcedureParameters" Width="1.5" PointX="6.75" PointY="13.75" />
-        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.StoredProcedures" Width="1.5" PointX="12.75" PointY="13.75" />
-        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.Tables" Width="1.5" PointX="14.75" PointY="0.75" />
-        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.TypeLists" Width="1.5" PointX="14.75" PointY="3.75" />
-        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.Views" Width="1.5" PointX="14.75" PointY="6.75" />
-        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.TablesetColumns" Width="1.5" PointX="14.75" PointY="9.75" />
-        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.Tablesets" Width="1.5" PointX="14.75" PointY="12.75" />
-        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.TablesetTables" Width="1.5" PointX="8.75" PointY="15.75" />
-        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.TablesetViews" Width="1.5" PointX="14.75" PointY="15.75" />
-        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.vwLookupsList4" Width="1.5" PointX="16.75" PointY="0.75" />
-        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.vwTablesetsList4" Width="1.5" PointX="0.75" PointY="16.75" />
-        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.vwTablesetTablesList2" Width="1.5" PointX="16.75" PointY="4.75" />
-        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.vwTablesetViewsList2" Width="1.5" PointX="16.75" PointY="7.75" />
-        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.vwTypeListsList" Width="1.5" PointX="16.75" PointY="10.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.StoredProcedures" Width="1.5" PointX="14.75" PointY="0.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.Tables" Width="1.5" PointX="14.75" PointY="3.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.TypeLists" Width="1.5" PointX="14.75" PointY="6.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.Views" Width="1.5" PointX="14.75" PointY="9.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.TablesetColumns" Width="1.5" PointX="14.75" PointY="12.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.Tablesets" Width="1.5" PointX="12.75" PointY="15.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.TablesetTables" Width="1.5" PointX="14.75" PointY="15.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.TablesetViews" Width="1.5" PointX="16.75" PointY="0.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.vwLookupsList4" Width="1.5" PointX="0.75" PointY="16.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.vwTablesetsList4" Width="1.5" PointX="16.75" PointY="3.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.vwTablesetTablesList2" Width="1.5" PointX="16.75" PointY="7.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.vwTablesetViewsList2" Width="1.5" PointX="16.75" PointY="10.75" />
+        <EntityTypeShape EntityType="Quest.Services.Dbio.MasterPricing.vwTypeListsList" Width="1.5" PointX="16.75" PointY="13.75" />
       </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

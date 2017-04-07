@@ -18,6 +18,7 @@ namespace Quest.MPDW.Admin.Models
         public string Username { get; set; }
         public bool bEnabled { get; set; }
         public bool bActive { get; set; }
+        public bool bLogSession { get; set; }
 
 
         public UserEditorViewModel()

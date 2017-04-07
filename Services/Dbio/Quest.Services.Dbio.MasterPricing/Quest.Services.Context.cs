@@ -44,6 +44,7 @@ namespace Quest.Services.Dbio.MasterPricing
         public virtual DbSet<ExceptionLogs> ExceptionLogs { get; set; }
         public virtual DbSet<FilterLogs> FilterLogs { get; set; }
         public virtual DbSet<HTTPRequestLogs> HTTPRequestLogs { get; set; }
+        public virtual DbSet<LogSettings> LogSettings { get; set; }
         public virtual DbSet<PortalRequestLogs> PortalRequestLogs { get; set; }
         public virtual DbSet<StoredProcedureLogs> StoredProcedureLogs { get; set; }
         public virtual DbSet<TablesetLogs> TablesetLogs { get; set; }

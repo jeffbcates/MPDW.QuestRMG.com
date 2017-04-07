@@ -21,6 +21,7 @@ namespace Quest.Services.Dbio.FMS
         public string Password { get; set; }
         public bool bEnabled { get; set; }
         public bool bActive { get; set; }
+        public bool bLogSession { get; set; }
         public System.DateTime Created { get; set; }
     }
 }

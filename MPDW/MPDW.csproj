@@ -179,6 +179,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Areas\Support\Controllers\SettingsController.cs" />
     <Compile Include="Areas\Support\Controllers\PortalController.cs" />
     <Compile Include="Areas\Support\Controllers\BulkUpdateController.cs" />
     <Compile Include="Areas\Support\Controllers\BulkInsertController.cs" />
@@ -189,6 +190,9 @@
     <Compile Include="Areas\Support\Controllers\ExceptionsController.cs" />
     <Compile Include="Areas\Support\Controllers\HTTPRequestsController.cs" />
     <Compile Include="Areas\Support\Controllers\SupportBaseController.cs" />
+    <Compile Include="Areas\Support\Modelers\SupportBaseModeler.cs" />
+    <Compile Include="Areas\Support\Modelers\LogSettingsEditorModeler.cs" />
+    <Compile Include="Areas\Support\Models\LogSettingsViewModel.cs" />
     <Compile Include="Areas\Support\Models\PortalViewModel.cs" />
     <Compile Include="Areas\Support\Models\BulkUpdateViewModel.cs" />
     <Compile Include="Areas\Support\Models\BulkInsertViewModel.cs" />
@@ -845,6 +849,7 @@
     <Content Include="Areas\Support\Views\BulkInsert\Index.cshtml" />
     <Content Include="Areas\Support\Views\BulkUpdate\Index.cshtml" />
     <Content Include="Areas\Support\Views\Portal\Index.cshtml" />
+    <Content Include="Areas\Support\Views\Settings\Index.cshtml" />
     <None Include="Scripts\jquery-1.8.2.intellisense.js" />
     <Content Include="Scripts\jquery-1.8.2.js" />
     <Content Include="Scripts\jquery-1.8.2.min.js" />
@@ -944,7 +949,6 @@
     <Folder Include="Areas\Search\Views\Shared\" />
     <Folder Include="Areas\Service\Views\Shared\" />
     <Folder Include="Areas\Setup\Views\Shared\" />
-    <Folder Include="Areas\Support\Modelers\" />
     <Folder Include="Areas\Support\Views\Shared\" />
     <Folder Include="Areas\Vendor\Views\Shared\" />
     <Folder Include="Filters\" />

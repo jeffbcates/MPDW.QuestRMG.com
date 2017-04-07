@@ -185,6 +185,9 @@ function qrmgEditor(model) {
         if (f.labelOnly) {
             _h[_i++] = ' ' + f.classes + ' ';
         }
+        else if (_self._model.fieldClasses) {
+            _h[_i++] = ' ' + _self._model.fieldClasses + ' ';
+        }
         _h[_i++] = '">';
 
         if (f.labelOnly) {
@@ -201,7 +204,8 @@ function qrmgEditor(model) {
         else {
             _h[_i++] = '&nbsp;';
         }
-        _h[_i++] = '</label >';
+        _h[_i++] = '</label>';
+        _h[_i++] = '&nbsp;';
         return (_h.join(''));
     }
     _self._rdrf = function (f) {
@@ -265,7 +269,22 @@ function qrmgEditor(model) {
         return (_h.join(''));
     }
     _self._rndrfcc = function (f) {
-        return((_self._model.ShortFields ? 'short-control' : 'form-control ') + (f.classes ? f.classes : ''));
+        ////return ((_self._model.ShortFields ? ' short-control ' : ' form-control ') + (f.classes ? f.classes : ''));
+
+        var cc = '';
+        if (_self._model.ShortFields) {
+            cc = ' short-control ';
+        }
+        else if (_self._model.fieldClasses) {
+            cc = ' ' + _self._model.fieldClasses + ' ';
+        }
+        else {
+            cc = ' form-control ';
+        }
+        if (f.classes) {
+            cc = cc + ' ' + f.classes;
+        }
+        return (cc);
     }
     _self._rdrfo = function (f) {
         var _h = [], _i = 0;

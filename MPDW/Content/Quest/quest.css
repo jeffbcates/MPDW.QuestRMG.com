@@ -1172,3 +1172,6 @@ td.td-input {
 .admin-treeview .node-icon {
   color: #65a1c1;
 }
+.qrmg-min-width250 {
+    min-width: 250px;
+}

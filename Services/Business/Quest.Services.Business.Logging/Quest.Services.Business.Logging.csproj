@@ -41,6 +41,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="autogen\LogSettingsMgr.cs" />
     <Compile Include="autogen\HTTPRequestLogsMgr.cs" />
     <Compile Include="LogMgr.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

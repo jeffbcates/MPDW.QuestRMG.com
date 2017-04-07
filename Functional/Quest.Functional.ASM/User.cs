@@ -17,6 +17,7 @@ namespace Quest.Functional.ASM
         public string Password {get; set; }
         public bool bEnabled { get; set; }
         public bool bActive { get; set; }
+        public bool bLogSession { get; set; }
         public DateTime Created { get; set; }
     }
 }

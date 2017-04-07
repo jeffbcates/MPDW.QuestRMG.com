@@ -123,6 +123,11 @@ namespace Quest.MPDW.Controllers
         {
             questStatus status = null;
 
+            status = Authorize();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
             if (this._bLoggingHTTPRequests)
             {
                 HTTPRequestLog httpRequestLog = new HTTPRequestLog();
@@ -153,7 +158,25 @@ namespace Quest.MPDW.Controllers
          *=================================================================================================================================*/
         public questStatus Authorize()
         {
-            // NOTE: THIS WOULD BE A NON-USER SESSION-BASED AUTHORIZATION, E.G. IP ADDRESS, USER-AGENT, OTHER.
+            // If we have a user session context submitted, use it.  Otherwise, this is a non-user session authorization which could be anything, e.g.
+            // user agent, IP address, etc.
+            string _ctx = Request.QueryString["_ctx"];
+            if (_ctx != null)
+            {
+                try
+                {
+                    int ictx = BaseId.INVALID_ID;
+                    if (! int.TryParse(_ctx, out ictx))
+                    {
+                        return (new questStatus(Severity.Error, String.Format("Invalid user session")));
+                    }
+                    return (Authorize(ictx));
+                }
+                catch (System.Exception ex)
+                {
+                    return (new questStatus(Severity.Fatal, String.Format("Invalid user session")));
+                }
+            }
 
             return (new questStatus(Severity.Success));
         }

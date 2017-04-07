@@ -48,6 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="autogen\DbLogSettingsMgr.cs" />
     <Compile Include="autogen\DbHTTPRequestLogs.cs" />
     <Compile Include="DbLogMgr.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

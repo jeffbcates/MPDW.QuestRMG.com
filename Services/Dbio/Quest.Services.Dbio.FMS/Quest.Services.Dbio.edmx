@@ -61,6 +61,7 @@
           <Property Name="Password" Type="nvarchar" MaxLength="1024" Nullable="false" />
           <Property Name="bEnabled" Type="bit" Nullable="false" />
           <Property Name="bActive" Type="bit" Nullable="false" />
+          <Property Name="bLogSession" Type="bit" Nullable="false" />
           <Property Name="Created" Type="datetime2" Precision="7" Nullable="false" />
         </EntityType>
         <EntityType Name="UserSessionPrivileges">
@@ -569,6 +570,7 @@ warning 6002: The table/view 'FMS.dbo.vwTimezoneList' does not have a primary ke
           <Property Name="Password" Type="String" Nullable="false" MaxLength="1024" FixedLength="false" Unicode="true" />
           <Property Name="bEnabled" Type="Boolean" Nullable="false" />
           <Property Name="bActive" Type="Boolean" Nullable="false" />
+          <Property Name="bLogSession" Type="Boolean" Nullable="false" />
           <Property Name="Created" Type="DateTime" Nullable="false" Precision="7" />
         </EntityType>
         <EntityType Name="UserSessionPrivileges">
@@ -895,7 +897,7 @@ warning 6002: The table/view 'FMS.dbo.vwTimezoneList' does not have a primary ke
           <Property Name="UTC" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
           <Property Name="order" Type="Int32" Nullable="false" />
         </EntityType>
-      </Schema>
+        </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
     <edmx:Mappings>
@@ -955,6 +957,7 @@ warning 6002: The table/view 'FMS.dbo.vwTimezoneList' does not have a primary ke
             <EntityTypeMapping TypeName="Quest.Services.Dbio.FMS.Users">
               <MappingFragment StoreEntitySet="Users">
                 <ScalarProperty Name="Created" ColumnName="Created" />
+                <ScalarProperty Name="bLogSession" ColumnName="bLogSession" />
                 <ScalarProperty Name="bActive" ColumnName="bActive" />
                 <ScalarProperty Name="bEnabled" ColumnName="bEnabled" />
                 <ScalarProperty Name="Password" ColumnName="Password" />

@@ -118,6 +118,9 @@
     <Compile Include="HTTPRequestLogs.cs">
       <DependentUpon>Quest.Services.tt</DependentUpon>
     </Compile>
+    <Compile Include="LogSettings.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
     <Compile Include="Lookups.cs">
       <DependentUpon>Quest.Services.tt</DependentUpon>
     </Compile>
