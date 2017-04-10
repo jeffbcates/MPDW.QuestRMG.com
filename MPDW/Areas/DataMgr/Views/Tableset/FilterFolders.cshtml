@@ -1818,6 +1818,7 @@
         _h[_i++] = '<th class="_tblsel no-sort text-center" id="_selSelect"><span class="no-sort fa fa-bars"></span></th>';
         var itm;
         $.each(proc.Parameters, function (i, p) {
+            if (p.ParameterName.substr(1, 1) == "_") { return; }
             if (p.Direction == 'Input') {
                 _h[_i++] = '<th>' + p.ParameterName + '</th>';
             }
@@ -1840,20 +1841,30 @@
                         p.TypeList = itm.TypeList;
                     }
                 }
+                if (p.ParameterName.substr(1, 1) == "_") { return; }
                 _h[_i++] = '<td class="">';
                 if (p.Lookup) {
                     _h[_i++] = '<select id="' + p.ParameterName + (i + 1) + '" class="form-control bulk-lookup" data-name="' + p.ParameterName + '" data-item-id="' + itm.Id + '" data-id="' + p.Lookup.Id + '" data-type="' + p.SqlDbType.toString().toLowerCase() + '" ';
+                    if (p.bRequired) {
+                        _h[_i++] = ' required="required" ';
+                    }
                     _h[_i++] = '></select>';
                 }
                 else if (p.TypeList) {
                     _h[_i++] = '<input id="' + p.ParameterName + (i + 1) + '" type="text" class="form-control bulk-typeList" data-item-id="' + itm.Id + '" data-id="' + p.TypeList.Id + '" data-name="' + p.ParameterName + '" maxlength="' + maxlength(p.SqlDbType) + '" data-type="' + p.SqlDbType.toString().toLowerCase() + '" list="bulkInsertTypeList_' + p.TypeList.Id + '"  placeholder="..." ';
+                    if (p.bRequired) {
+                        _h[_i++] = ' required="required" ';
+                    }
                     _h[_i++] = ' />';
                 }
                 else {
                     _h[_i++] = '<input id="' + p.ParameterName + (i + 1) + '" class="form-control" maxlength="' + maxlength(p.SqlDbType) + '" data-name="' + p.ParameterName + '" data-type="' + p.SqlDbType.toString().toLowerCase() + '" placeholder="' + makeParamPlaceholder(p) + '" ';
+                    if (p.bRequired) {
+                        _h[_i++] = ' required="required" ';
+                    }
                     _h[_i++] = ' />';
                 }
-                _h[_i++] = '</td>';              
+                _h[_i++] = '</td>';
             });
             _h[_i++] = '</tr>';
         }
@@ -2143,6 +2154,30 @@
             _h[_i++] = '<tr>';
             _h[_i++] = '<td class="td-label">' + (updateProcedure ? itm.ParameterName : c.Label) + ':&nbsp;</td>';
             _h[_i++] = '<td class="td-input">';
+
+            var _placeholder = '';
+            if (updateProcedure) {
+                if (procedureParameter.bRequired) {
+                    if (itm.bBulkUpdateValueRequired) {
+                        bRequired = true;
+                        _placeholder = 'Parameter is required.  You MUST enter a value.';
+                    }
+                    else {
+                        _placeholder = 'Parameter is required.  If you do not enter a value, the results value will be used.';
+                    }
+                }
+                else {
+                    if (itm.bBulkUpdateValueRequired) {
+                        bRequired = true;
+                        _placeholder = 'Parameter is optional.  You MUST enter a value.';
+                    }
+                    else {
+                        _placeholder = 'Parameter is optional.  If you do not enter a value, the results value will be used.';
+                    }
+                }
+            }
+            else {
+            }
             if (c.bIsIdentity) {
                 if (updateProcedure) {
                     _h[_i++] = '<input id="bulkUpdate_' + c.Name + '" class="form-control colval"  placeholder="' + (procedureParameter.bRequired == true ? 'Required (Will use Results value if not specified here)' : '') + '" data-item-id="' + itm.Id + '" data-name="' + c.Name + '" data-type="' + c.Type + '" />';

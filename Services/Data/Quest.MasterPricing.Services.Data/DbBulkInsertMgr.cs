@@ -125,8 +125,6 @@ namespace Quest.MasterPricing.Services.Data.Bulk
             int numRows = 0;
             string logMessage = null;
             List<string> logParameterList = null;
-            string logParameter = null;
-            string logBulkInsertColumn = null;
 
 
             try
@@ -185,7 +183,7 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                     bulkInsertLog.Database = Database;
                 }
 
-
+                // Connect and execute
                 bool bTransaction = false;
                 bulkInsertLog.Event = "Open";
                 using (SqlConnection conn = new SqlConnection(database.ConnectionString))
@@ -214,23 +212,67 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                             if (bLogging)
                             {
                                 logParameterList = new List<string>();
-                                logParameter = null;
-                                logBulkInsertColumn = null;
+                                bulkInsertLog.Event = null;
+                                bulkInsertLog.NumRows = numRows;
+                                bulkInsertLog.Parameters = null;
+                                bulkInsertLog.Message = null;
+                                bulkInsertLog.Data = null;
                             }
 
                             // Build each parameter
                             foreach (FilterProcedureParameter filterParam in filterProcedure.ParameterList)
                             {
+                                if (bLogging)
+                                {
+                                    bulkInsertLog.Event = "Next Parameter: " + filterParam.ParameterName;
+                                }
+
                                 if (filterParam.Direction != "Input")
                                 {
                                     continue;
                                 }
                                 if (bLogging)
                                 {
-                                    logParameter = String.Format("{ Id: {0}, ParameterName: {1}, SqlDbType: {2} }", filterParam.Id, filterParam.ParameterName, filterParam.SqlDbType.ToString());
+                                    logParameterList.Add(String.Format(" Id: {0}, ParameterName: {1}, SqlDbType: {2} ", filterParam.Id, filterParam.ParameterName, filterParam.SqlDbType.ToString()));
+                                    string parameterArray = null;
+                                    _dbBulkInsertLogsMgr.SetArray(logParameterList, out parameterArray);
+                                    bulkInsertLog.Parameters = parameterArray;
                                 }
 
 
+                                // If a meta-parameter, fill in its value and continue.
+                                bool bIsMetaParameter = false;
+                                SqlParameter sqlMetaParameter = null;
+                                if (filterParam.ParameterName.Equals("@_Username", StringComparison.InvariantCultureIgnoreCase))
+                                {
+                                    bIsMetaParameter = true;
+                                    sqlMetaParameter = new SqlParameter(filterParam.ParameterName, SqlDbType.NVarChar);
+                                    sqlMetaParameter.Value = this.UserSession.User.Username;
+                                }
+                                else if (filterParam.ParameterName.Equals("@_UserSessionId", StringComparison.InvariantCultureIgnoreCase))
+                                {
+                                    bIsMetaParameter = true;
+                                    sqlMetaParameter = new SqlParameter(filterParam.ParameterName, SqlDbType.Int);
+                                    sqlMetaParameter.Value = this.UserSession.Id;
+                                }
+                                else if (filterParam.ParameterName.StartsWith("@_", StringComparison.InvariantCultureIgnoreCase))
+                                {
+                                    logMessage = String.Format("ERROR: unknown meta-parameter: {0}", filterParam.ParameterName);
+                                    if (bLogging)
+                                    {
+                                        bulkInsertLog.Message = logMessage;
+                                        _dbBulkInsertLogsMgr.Create(bulkInsertLog, out bulkInsertLogId);
+                                    }
+                                    return (new questStatus(Severity.Error, logMessage));
+                                }
+                                if (bIsMetaParameter)
+                                {
+                                    cmd.Parameters.Add(sqlMetaParameter);
+                                    continue;
+                                }
+
+
+                                // Not a meta-parameter, so the bulk insert value should be provided.
                                 BulkInsertColumnValue bulkInsertColumnValue = bulkInsertRow.Columns.Find(delegate (BulkInsertColumnValue cv) {
                                         return (cv.Name == filterParam.ParameterName); });
                                 if (bulkInsertColumnValue == null)
@@ -251,14 +293,20 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                                 }
                                 if (bLogging)
                                 {
-                                    logBulkInsertColumn = String.Format("{ Name: {0}, Value: {1} }", bulkInsertColumnValue.Name, bulkInsertColumnValue.Value);
+                                    bulkInsertLog.BulkInsertColumn = String.Format(" Name: {0}, Value: {1} ", bulkInsertColumnValue.Name, bulkInsertColumnValue.Value);
                                 }
+                                 
 
 
                                 // TODO:REFACTOR
                                 SqlDbType sqlDbType = (SqlDbType)Enum.Parse(typeof(SqlDbType), filterParam.SqlDbType, true);
                                 SqlParameter sqlParameter = new SqlParameter(filterParam.ParameterName, sqlDbType);
 
+
+                                if (bLogging)
+                                {
+                                    bulkInsertLog.Event = "Set Parameter Value";
+                                }
 
                                 if (sqlDbType == SqlDbType.Bit)
                                 {
@@ -377,7 +425,7 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                                 {
                                     trans.Rollback();
                                 }
-                                logMessage = String.Format("After {0} rows, SQL EXCEPTION: Bulk insert stored procedure {0}: {1}",
+                                logMessage = String.Format("SQL EXCEPTION: Bulk insert stored procedure {1}: {2}",
                                         numRows, filterProcedure.Name, ex.Message);
                                 if (bLogging)
                                 {

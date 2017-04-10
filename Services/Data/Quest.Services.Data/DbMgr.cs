@@ -825,6 +825,28 @@ namespace Quest.MPDW.Services.Data
             return (new questStatus(Severity.Success));
         }
 
+        public questStatus GetMetaParameters(Quest.Functional.MasterPricing.Database database, string storedProcedureName, out List<Quest.Functional.MasterPricing.FilterProcedureParameter> filterProcedureParameterList)
+        {
+            // Initialize 
+            questStatus status = null;
+            filterProcedureParameterList = null;
+
+            List<Quest.Functional.MasterPricing.FilterProcedureParameter> allParameterList = null;
+            status = GetStoredProdecureParameters(database, storedProcedureName, out allParameterList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            filterProcedureParameterList = new List<FilterProcedureParameter>();
+            foreach (Quest.Functional.MasterPricing.FilterProcedureParameter filterProcedureParameter in allParameterList)
+            {
+                if (filterProcedureParameter.ParameterName.StartsWith("@_"))
+                {
+                    filterProcedureParameterList.Add(filterProcedureParameter);
+                }
+            }
+            return (new questStatus(Severity.Success));
+        }
         public questStatus GetStoredProdecureParameters(Quest.Functional.MasterPricing.Database database, string storedProcedureName, out List<Quest.Functional.MasterPricing.FilterProcedureParameter> filterProcedureParameterList)
         {
             // Initialize 

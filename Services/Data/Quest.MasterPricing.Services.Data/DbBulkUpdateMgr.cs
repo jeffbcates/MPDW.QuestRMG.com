@@ -121,6 +121,10 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                     setClauseList.Add(setClause);
                 }
             }
+            if (setClauseList.Count == 0)
+            {
+                return (new questStatus(Severity.Error, "There are no columns with data specified to bulk update.  At least one column value is required."));
+            }
             for (int idx=0; idx < setClauseList.Count; idx += 1)
             {
                 string setClause = setClauseList[idx];

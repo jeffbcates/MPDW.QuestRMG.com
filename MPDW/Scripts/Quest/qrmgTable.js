@@ -583,7 +583,7 @@ function qrmgTable(model) {
                 if (c.key) {
                     _self._keyc = c;
                 }
-                var _d = String(d[c.name] ? d[c.name] : '') || '';
+                var _d = String(d[c.name] != undefined ? d[c.name] : '') || '';
                 if (j == 0 && !_self._model.noops) {' + _d + '
                     _h[_i++] = '<td class="_tblrsel ' + _cc + ' text-center"><input id="' + _self._name + '_' + c.name + '_sel_' + _d + '" data-id="' + _d + '" type="checkbox" /></td>';
                 }
