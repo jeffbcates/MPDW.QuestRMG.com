@@ -181,8 +181,8 @@
     <Compile Include="App_Start\WebApiConfig.cs" />
     <Compile Include="Areas\Support\Controllers\SettingsController.cs" />
     <Compile Include="Areas\Support\Controllers\PortalRequestsController.cs" />
-    <Compile Include="Areas\Support\Controllers\BulkUpdateController.cs" />
-    <Compile Include="Areas\Support\Controllers\BulkInsertController.cs" />
+    <Compile Include="Areas\Support\Controllers\BulkUpdatesController.cs" />
+    <Compile Include="Areas\Support\Controllers\BulkInsertsController.cs" />
     <Compile Include="Areas\Support\Controllers\FiltersController.cs" />
     <Compile Include="Areas\Support\Controllers\TablesetsController.cs" />
     <Compile Include="Areas\Support\Controllers\DatabasesController.cs" />
@@ -201,6 +201,7 @@
     <Compile Include="Areas\Support\Modelers\SupportBaseModeler.cs" />
     <Compile Include="Areas\Support\Modelers\LogSettingsEditorModeler.cs" />
     <Compile Include="Areas\Support\Modelers\HTTPRequestsListModeler.cs" />
+    <Compile Include="Areas\Support\Models\DeleteLogItemsViewModel.cs" />
     <Compile Include="Areas\Support\Models\PortalRequestsListViewModel.cs" />
     <Compile Include="Areas\Support\Models\PortalRequestLineItemViewModel.cs" />
     <Compile Include="Areas\Support\Models\BulkUpdatesListViewModel.cs" />

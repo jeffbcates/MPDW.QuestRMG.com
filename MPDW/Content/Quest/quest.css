@@ -511,7 +511,7 @@ pnlbtn:active {
   margin-left: 30px;
 }
 .questTableFilter input {
-    width: 200px;
+    width: 300px;
     height: 20px;
     font-weight: normal;
     border: 1px solid #8298B3;

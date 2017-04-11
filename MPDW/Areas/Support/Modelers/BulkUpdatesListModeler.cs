@@ -8,6 +8,7 @@ using Quest.Util.Buffer;
 using Quest.Util.Data;
 using Quest.Functional.ASM;
 using Quest.Functional.FMS;
+using Quest.Functional.Logging;
 using Quest.MPDW.Models.List;
 using Quest.MPDW.Modelers;
 using Quest.MPDW.Support.Models;
@@ -171,6 +172,43 @@ namespace Quest.MPDW.Support.Modelers
         //----------------------------------------------------------------------------------------------------------------------------------
         #endregion
 
+        public questStatus Clear(BulkUpdatesListViewModel bulkUpdatesListViewModel)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            BulkUpdateLogsMgr bulkUpdateLogsMgr = new BulkUpdateLogsMgr(this.UserSession);
+            status = bulkUpdateLogsMgr.Clear();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus Delete(DeleteLogItemsViewModel deleteLogItemsViewModel)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            // Build id list
+            List<BulkUpdateLogId> bulkUpdateLogIdList = new List<BulkUpdateLogId>();
+            foreach (BaseId baseId in deleteLogItemsViewModel.Items)
+            {
+                BulkUpdateLogId bulkUpdateLogId = new BulkUpdateLogId(baseId.Id);
+                bulkUpdateLogIdList.Add(bulkUpdateLogId);
+            }
+
+            // Delete items
+            BulkUpdateLogsMgr bulkUpdateLogsMgr = new BulkUpdateLogsMgr(this.UserSession);
+            status = bulkUpdateLogsMgr.Delete(bulkUpdateLogIdList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
         #endregion
 
 

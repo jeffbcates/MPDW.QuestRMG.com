@@ -64,6 +64,13 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                 return (this._logSetting.bLogBulkInserts);
             }
         }
+        public bool bLoggingPerRow
+        {
+            get
+            {
+                return (this._logSetting.bLogBulkInsertsPerRow);
+            }
+        }
         #endregion
 
 
@@ -135,6 +142,7 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                     bulkInsertLog.Event = "Initialize";
                     bulkInsertLog.UserSessionId = this.UserSession.Id;
                     bulkInsertLog.Username = this.UserSession.User.Username;
+                    bulkInsertLog.Batch = Guid.NewGuid().ToString();
                     string Filter = null;
                     status = _dbBulkInsertLogsMgr.SetFilter(bulkInsertRequest.Filter, out Filter);
                     if (!questStatusDef.IsSuccess(status))
@@ -220,6 +228,7 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                             }
 
                             // Build each parameter
+                            List<string> dataValueList = new List<string>();
                             foreach (FilterProcedureParameter filterParam in filterProcedure.ParameterList)
                             {
                                 if (bLogging)
@@ -395,7 +404,12 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                                         sqlParameter.Value = bulkInsertColumnValue.Value;
                                     }
                                 }
-                                cmd.Parameters.Add(sqlParameter);                                    
+                                cmd.Parameters.Add(sqlParameter);        
+                                if (bLogging)
+                                {
+                                    dataValueList.Add(String.Format(" Name: {0}, Value: {1} ", sqlParameter.ParameterName,
+                                            sqlParameter.Value == DBNull.Value ? "null" : sqlParameter.Value.ToString()));
+                                }
                             }
                             try
                             {
@@ -404,7 +418,7 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                                     bulkInsertLog.Event = "ExecuteNonQuery";
                                 }
                                 int _numRows = cmd.ExecuteNonQuery();
-                                if (_numRows != bulkInsertRequest.Rows.Count)
+                                if (_numRows != 1)
                                 {
                                     if (bTransaction)
                                     {
@@ -417,6 +431,18 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                                         _dbBulkInsertLogsMgr.Create(bulkInsertLog, out bulkInsertLogId);
                                     }
                                     return (new questStatus(Severity.Error, logMessage));
+                                }
+                                else if (bLoggingPerRow)
+                                {
+                                    bulkInsertLog.Message = "Successful bulk update";
+                                    bulkInsertLog.NumRows = _numRows;
+                                    bulkInsertLog.BulkInsertColumn = null;
+
+                                    string valueArray = null;
+                                    _dbBulkInsertLogsMgr.SetArray(dataValueList, out valueArray);
+                                    bulkInsertLog.Data = valueArray;
+
+                                    _dbBulkInsertLogsMgr.Create(bulkInsertLog, out bulkInsertLogId);
                                 }
                             }
                             catch (SqlException ex)
@@ -455,6 +481,16 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                     if (bTransaction)
                     {
                         trans.Commit();
+                    }
+                    if (bLogging)
+                    {
+                        bulkInsertLog.Event = "COMMIT";
+                        bulkInsertLog.NumRows = numRows;
+                        bulkInsertLog.BulkInsertColumn = null;
+                        bulkInsertLog.Message = "Bulk operation successful";
+                        bulkInsertLog.Data = null;
+
+                        _dbBulkInsertLogsMgr.Create(bulkInsertLog, out bulkInsertLogId);
                     }
                 }
             }

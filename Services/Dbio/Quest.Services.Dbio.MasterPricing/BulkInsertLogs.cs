@@ -26,6 +26,7 @@ namespace Quest.Services.Dbio.MasterPricing
         public string BulkInsertColumn { get; set; }
         public string Message { get; set; }
         public string Data { get; set; }
+        public string Batch { get; set; }
         public System.DateTime Created { get; set; }
     }
 }

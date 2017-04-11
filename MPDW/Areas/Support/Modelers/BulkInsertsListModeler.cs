@@ -8,6 +8,7 @@ using Quest.Util.Buffer;
 using Quest.Util.Data;
 using Quest.Functional.ASM;
 using Quest.Functional.FMS;
+using Quest.Functional.Logging;
 using Quest.MPDW.Models.List;
 using Quest.MPDW.Modelers;
 using Quest.MPDW.Support.Models;
@@ -64,10 +65,10 @@ namespace Quest.MPDW.Support.Modelers
 
             // Set up query options.
             // TEMPORARY: OPTIMIZE THIS
-            List<SearchField> searchFieldList = new List<SearchField>();
-            SearchOptions searchOptions = new SearchOptions();
-            searchOptions.SearchFieldList = searchFieldList;
-            queryOptions.SearchOptions = searchOptions;
+            ////List<SearchField> searchFieldList = new List<SearchField>();
+            ////SearchOptions searchOptions = new SearchOptions();
+            ////searchOptions.SearchFieldList = searchFieldList;
+            ////queryOptions.SearchOptions = searchOptions;
 
 
             // List
@@ -171,6 +172,43 @@ namespace Quest.MPDW.Support.Modelers
         //----------------------------------------------------------------------------------------------------------------------------------
         #endregion
 
+        public questStatus Clear(BulkInsertsListViewModel bulkInsertsListViewModel)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            BulkInsertLogsMgr bulkInsertLogsMgr = new BulkInsertLogsMgr(this.UserSession);
+            status = bulkInsertLogsMgr.Clear();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus Delete(DeleteLogItemsViewModel deleteLogItemsViewModel)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            // Build id list
+            List<BulkInsertLogId> bulkInsertLogIdList = new List<BulkInsertLogId>();
+            foreach (BaseId baseId in deleteLogItemsViewModel.Items)
+            {
+                BulkInsertLogId bulkInsertLogId = new BulkInsertLogId(baseId.Id);
+                bulkInsertLogIdList.Add(bulkInsertLogId);
+            }
+
+            // Delete items
+            BulkInsertLogsMgr bulkInsertLogsMgr = new BulkInsertLogsMgr(this.UserSession);
+            status = bulkInsertLogsMgr.Delete(bulkInsertLogIdList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
         #endregion
 
 

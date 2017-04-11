@@ -14,6 +14,7 @@ namespace Quest.MasterPricing.DataMgr.Models
         public int Id { get; set; }
         public int TablesetId { get; set; }
         public int FilterId { get; set; }
+        public bool bSaveBeforeImage { get; set; }
         public string Name { get; set; }
         public string Summary { get; set; }
         public List<BootstrapTreenodeViewModel> Entities { get; set; }

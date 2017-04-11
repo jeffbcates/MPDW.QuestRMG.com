@@ -20,6 +20,7 @@ namespace Quest.MPDW.Support.Models
         public string BulkInsertColumn { get; set; }
         public string Message { get; set; }
         public string Data { get; set; }
+        public string Batch { get; set; }
         public string Created { get; set; }
     }
 }

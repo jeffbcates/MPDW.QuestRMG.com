@@ -271,13 +271,22 @@ namespace Quest.Services.Data.Logging
             return (new questStatus(Severity.Success));
         }
 
-
-        #region Logging
-        /*----------------------------------------------------------------------------------------------------------------------------------
-         * Logging
-         *---------------------------------------------------------------------------------------------------------------------------------*/
-        #endregion
-
+        public questStatus Clear()
+        {
+            try
+            {
+                using (MasterPricingEntities dbContext = new MasterPricingEntities())
+                {
+                    dbContext.BulkInsertLogs.RemoveRange(dbContext.BulkInsertLogs.Where(r => r.Id > 0));
+                    dbContext.SaveChanges();
+                }
+            }
+            catch (System.Exception ex)
+            {
+                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: clearing Bulk Inserts Log {0}", ex.Message)));
+            }
+            return (new questStatus(Severity.Success));
+        }
         #endregion
 
 

@@ -24,6 +24,8 @@ namespace Quest.MPDW.Modelers
         /*==================================================================================================================================
         * Declarations
         *=================================================================================================================================*/
+        private string _searchString = null;
+
         #endregion
 
 
@@ -40,6 +42,22 @@ namespace Quest.MPDW.Modelers
             : base(httpRequestBase, userSession)
         {
             initialize();
+        }
+        #endregion
+
+
+        #region Properties
+        /*==================================================================================================================================
+        * Properties
+        *=================================================================================================================================*/
+        public string SearchString
+        {
+            get
+            {
+                this._searchString = this.HttpRequestBase.Params["QueryOptions[SearchOptions][SearchString]"] != null ?
+                        this.HttpRequestBase.Params["QueryOptions[SearchOptions][SearchString]"].ToString() : null;
+                return (this._searchString);
+            }
         }
         #endregion
 
@@ -78,6 +96,7 @@ namespace Quest.MPDW.Modelers
             try
             {
                 QueryOptions _queryOptions = new QueryOptions();
+                SearchField _searchField = null;
                 for (int index = 0; index < httpRequestBase.QueryString.AllKeys.Length; index++)
                 {
                     string key = httpRequestBase.QueryString.AllKeys[index];
@@ -131,7 +150,44 @@ namespace Quest.MPDW.Modelers
                             _queryOptions.SearchOptions.SearchString = httpRequestBase.QueryString[index];
                         }
                     }
+                    else if (parts[0] == "QueryOptions")
+                    {
+                        if (parts[1] == "SearchOptions")
+                        {
+                            if (parts[2] == "SearchFieldList")
+                            {
+                                int searchFieldIndex = -1;
+                                if (! int.TryParse(parts[3], out searchFieldIndex))
+                                {
+                                    return (new questStatus(Severity.Error, String.Format("Invalid Search Field index value: {0}", parts[3] == null ? "(null)" : parts[3])));
+                                }
+                                if (_searchField == null)
+                                {
+                                    _searchField = new SearchField();
+                                }
+                                if (parts[4] == "Name")
+                                {
+                                    _searchField.Name = httpRequestBase.QueryString[index];
+                                }
+                                else if (parts[4] == "SearchOperation")
+                                {
+                                    _searchField.SearchOperation = (SearchOperation)Enum.Parse(typeof(SearchOperation), httpRequestBase.QueryString[index], true);
+                                }
+                                else if (parts[4] == "Type")
+                                {
+                                    _searchField.Type = Type.GetType(httpRequestBase.QueryString[index]);
+                                }
+                                else if (parts[4] == "Value")
+                                {
+                                    _searchField.Value = httpRequestBase.QueryString[index];
+                                    _queryOptions.SearchOptions.SearchFieldList.Add(_searchField);
+                                    _searchField = null;
+                                }
+                            }
+                        }
+                    }
                 }
+                _queryOptions.SearchOptions.SearchString = this._searchString;
                 queryOptions = _queryOptions;
             }
             catch (System.Exception ex)

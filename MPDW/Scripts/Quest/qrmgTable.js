@@ -469,6 +469,18 @@ function qrmgTable(model) {
         var rows = $('tr', _self._e).not('thead tr');
         rows.hide();
         rows.filter(":contains('" + f + "')").show();
+        _self._pgr.SearchOptions.SearchString = f;
+    }
+    _self.FilterColumn = function (c, op, v, bC) {
+        if (bC) {
+            _self.ClearFilterColumn();
+        }
+        if (c) {
+            _self._pgr.SearchOptions.SearchFieldList.push({ Name: c, SearchOperation: op, Value: v });
+        }
+    }
+    _self.ClearFilterColumn = function () {
+        _self._pgr.SearchOptions.SearchFieldList = [];
     }
 
     _self._cbRowClick = function (e) {
@@ -743,8 +755,10 @@ function qrmgTable(model) {
         var _tdk = $(_self._e).find('td[Id="' + _self._name + '_' + _kn + '_' + Id + '"]');
         var _tr = $(_tdk).closest('tr');
         var _d = {};
-        $.each($(_tr).find('td'), function (i, td) {
+        var _ttdd = $(_tr).find('td');
+        $.each(_ttdd, function (i, td) {
             if ($(td).hasClass('_tblrops')) { return; }
+            if ($(td).hasClass('_tblrsel')) { return; }
             if (!_self._model.noops) {
                 _d[_self._model.columns[i - 1].name] = $(td).text();
             }
@@ -886,7 +900,10 @@ function qrmgTable(model) {
                     Items.push({ Id: s });
                 });
                 d.Items = Items;
-                if (_cmd.callback(ud, d));
+                if (_cmd.callback(ud, d)) {
+                    qrmgmvc.Global.Unmask(_self._mask);
+                    return;
+                }
             }
             var _url = (_cmd.uri ? _cmd.uri : null);
             if (!_url) {
@@ -1115,6 +1132,8 @@ function qrmgTable(model) {
     }
     _self._getctx = function () {
         var _ctx = _self._ctx.Context();
+        _ctx.QueryOptions = {};
+        _ctx.QueryOptions.SearchOptions = _self._pgr.SearchOptions;
         return (_ctx);
     }
     _self._getViewState = function () {
@@ -1167,6 +1186,7 @@ function qrmgTable(model) {
             this.querySelector("thead").style.transform = translate;
         });
     }
+
     _self._init();
 }
 

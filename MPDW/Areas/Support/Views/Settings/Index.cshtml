@@ -1,10 +1,10 @@
 ﻿@model Quest.MPDW.Support.Models.LogSettingsViewModel
 @{
-    ViewBag.Title = "MPDW Log Settings";
+    ViewBag.Title = "Log Settings";
     Layout = "~/Views/Shared/_LayoutSupport.cshtml";
 }
 
-<h1>MPDW Log Settings</h1>
+<h1>Log Settings</h1>
 
 <div id="frmSettings" class="form-frame"></div>
 
@@ -31,7 +31,9 @@
                 { name: 'bLogTablesets', label: 'Log Tablesets', type: 'checkbox' },
                 { name: 'bLogFilters', label: 'Log Filters', type: 'checkbox' },
                 { name: 'bLogBulkInserts', label: 'Log Bulk Inserts', type: 'checkbox' },
+                { name: 'bLogBulkInsertsPerRow', label: 'Log each row in a Bulk Insert', type: 'checkbox' },
                 { name: 'bLogBulkUpdates', label: 'Log Bulk Updates', type: 'checkbox' },
+                { name: 'bLogBulkUpdatesPerRow', label: 'Log each row in a Bulk Update', type: 'checkbox' },
                 { name: 'bLogPortal', label: 'Log QuestRMG Portal Requests', type: 'checkbox' },
                 { name: 'bAllowLogUsers', label: 'Allow User Session Logging', type: 'checkbox' },
             ],

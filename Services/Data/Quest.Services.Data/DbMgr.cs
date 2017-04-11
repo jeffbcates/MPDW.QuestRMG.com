@@ -176,12 +176,73 @@ namespace Quest.MPDW.Services.Data
 
             return (queryResponse);
         }
+        public string BuildSearchStringWhere(QueryOptions queryOptions, PropertyInfo[] dbProperties)
+        {
+            // NOTE: THIS ROUTINE IS NOT DONE, IT'S PASSING BACK AN EMPTY WHERE CLAUSE FOR NOW.
+            // NOTE: THIS IS EVOLVING.  THE SEARCH STRING NEEDS TO WORK WITH ANY COLUMN DATATYPE TO WHICH ITS VALUE IS APPLICABLE/DOABLE/FEASIBLE.
+            string _whereClause = "";
+            string searchString = queryOptions.SearchOptions.SearchString;
+
+            // Determine what column datatypes the search string can be applied to.
+            // NOTE: STRING IS ALWAYS COMPATIBLE WITH ANY SEARCH STRING VALUE.
+            int _integerSearchString = -1;
+            bool bIntegerCompatible = int.TryParse(searchString, out _integerSearchString);
+
+            decimal _decimalSearchString = -1.0m;
+            bool bDecimalCompatible = decimal.TryParse(searchString, out _decimalSearchString);
+
+            DateTime _dateTimeSearchString = new DateTime();
+            bool bDateTimeCompatible = DateTime.TryParse(searchString, out _dateTimeSearchString);
+
+
+            // Build WHERE clause for each column that can have the search string value applied to it.
+            for (int idx = 0; idx < dbProperties.Length; idx++)
+            {
+                PropertyInfo propertyInfo = dbProperties[idx];
+                if (propertyInfo.PropertyType == typeof(System.String))
+                {
+
+                }
+                else if (propertyInfo.PropertyType == typeof(System.Int32))
+                {
+
+                }
+                else if (propertyInfo.PropertyType == typeof(System.Int16))
+                {
+
+                }
+                else if (propertyInfo.PropertyType == typeof(System.Int64))
+                {
+
+                }
+                else if (propertyInfo.PropertyType == typeof(System.Decimal))
+                {
+
+                }
+                else if (propertyInfo.PropertyType == typeof(System.Double))
+                {
+
+                }
+                else if (propertyInfo.PropertyType == typeof(System.DateTime))
+                {
+
+                }
+            }
+            return (_whereClause);
+        }
         public string BuildWhereClause(QueryOptions queryOptions, PropertyInfo[] dbProperties)
         {
             // NOTE: THIS IS A TEMPORARY, LIMITED SUPPORT UNTIL FULL-BLOWN DYNAMIC LINQ IS BUILT.
             if (queryOptions.SearchOptions.SearchFieldList.Count == 0)
             {
-                return ("1=1");
+                if (string.IsNullOrEmpty(queryOptions.SearchOptions.SearchString))
+                {
+                    return ("1=1");
+                }
+                else
+                {
+                    return (BuildSearchStringWhere(queryOptions, dbProperties));
+                }
             }
 
             StringBuilder sbWhere = new StringBuilder();

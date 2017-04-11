@@ -117,6 +117,7 @@
           <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="FolderId" Type="int" />
           <Property Name="TablesetId" Type="int" Nullable="false" />
+          <Property Name="bSaveBeforeImage" Type="bit" Nullable="false" />
           <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
           <Property Name="Summary" Type="nvarchar" MaxLength="256" />
           <Property Name="SQL" Type="nvarchar(max)" />
@@ -163,6 +164,7 @@
           <Property Name="BulkInsertColumn" Type="nvarchar(max)" />
           <Property Name="Message" Type="nvarchar(max)" />
           <Property Name="Data" Type="nvarchar(max)" />
+          <Property Name="Batch" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Created" Type="datetime2" Precision="7" Nullable="false" />
         </EntityType>
         <EntityType Name="BulkUpdateLogs">
@@ -242,7 +244,9 @@
           <Property Name="bLogTablesets" Type="bit" Nullable="false" />
           <Property Name="bLogFilters" Type="bit" Nullable="false" />
           <Property Name="bLogBulkInserts" Type="bit" Nullable="false" />
+          <Property Name="bLogBulkInsertsPerRow" Type="bit" Nullable="false" />
           <Property Name="bLogBulkUpdates" Type="bit" Nullable="false" />
+          <Property Name="bLogBulkUpdatesPerRow" Type="bit" Nullable="false" />
           <Property Name="bLogPortal" Type="bit" Nullable="false" />
           <Property Name="bAllowLogUsers" Type="bit" Nullable="false" />
           <Property Name="LastModified" Type="datetime2" Precision="7" Nullable="false" />
@@ -770,6 +774,7 @@ warning 6002: The table/view 'MasterPricing.dbo.vwTypeListsList' does not have a
           <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Name="FolderId" Type="Int32" />
           <Property Name="TablesetId" Type="Int32" Nullable="false" />
+          <Property Name="bSaveBeforeImage" Type="Boolean" Nullable="false" />
           <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
           <Property Name="Summary" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
           <Property Name="SQL" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
@@ -816,6 +821,7 @@ warning 6002: The table/view 'MasterPricing.dbo.vwTypeListsList' does not have a
           <Property Name="BulkInsertColumn" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Message" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Data" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Batch" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Created" Type="DateTime" Nullable="false" Precision="7" />
         </EntityType>
         <EntityType Name="BulkUpdateLogs">
@@ -895,7 +901,9 @@ warning 6002: The table/view 'MasterPricing.dbo.vwTypeListsList' does not have a
           <Property Name="bLogTablesets" Type="Boolean" Nullable="false" />
           <Property Name="bLogFilters" Type="Boolean" Nullable="false" />
           <Property Name="bLogBulkInserts" Type="Boolean" Nullable="false" />
+          <Property Name="bLogBulkInsertsPerRow" Type="Boolean" Nullable="false" />
           <Property Name="bLogBulkUpdates" Type="Boolean" Nullable="false" />
+          <Property Name="bLogBulkUpdatesPerRow" Type="Boolean" Nullable="false" />
           <Property Name="bLogPortal" Type="Boolean" Nullable="false" />
           <Property Name="bAllowLogUsers" Type="Boolean" Nullable="false" />
           <Property Name="LastModified" Type="DateTime" Nullable="false" Precision="7" />
@@ -1289,6 +1297,7 @@ warning 6002: The table/view 'MasterPricing.dbo.vwTypeListsList' does not have a
                 <ScalarProperty Name="SQL" ColumnName="SQL" />
                 <ScalarProperty Name="Summary" ColumnName="Summary" />
                 <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="bSaveBeforeImage" ColumnName="bSaveBeforeImage" />
                 <ScalarProperty Name="TablesetId" ColumnName="TablesetId" />
                 <ScalarProperty Name="FolderId" ColumnName="FolderId" />
                 <ScalarProperty Name="Id" ColumnName="Id" />
@@ -1328,6 +1337,7 @@ warning 6002: The table/view 'MasterPricing.dbo.vwTypeListsList' does not have a
             <EntityTypeMapping TypeName="Quest.Services.Dbio.MasterPricing.BulkInsertLogs">
               <MappingFragment StoreEntitySet="BulkInsertLogs">
                 <ScalarProperty Name="Created" ColumnName="Created" />
+                <ScalarProperty Name="Batch" ColumnName="Batch" />
                 <ScalarProperty Name="Data" ColumnName="Data" />
                 <ScalarProperty Name="Message" ColumnName="Message" />
                 <ScalarProperty Name="BulkInsertColumn" ColumnName="BulkInsertColumn" />
@@ -1419,7 +1429,9 @@ warning 6002: The table/view 'MasterPricing.dbo.vwTypeListsList' does not have a
                 <ScalarProperty Name="LastModified" ColumnName="LastModified" />
                 <ScalarProperty Name="bAllowLogUsers" ColumnName="bAllowLogUsers" />
                 <ScalarProperty Name="bLogPortal" ColumnName="bLogPortal" />
+                <ScalarProperty Name="bLogBulkUpdatesPerRow" ColumnName="bLogBulkUpdatesPerRow" />
                 <ScalarProperty Name="bLogBulkUpdates" ColumnName="bLogBulkUpdates" />
+                <ScalarProperty Name="bLogBulkInsertsPerRow" ColumnName="bLogBulkInsertsPerRow" />
                 <ScalarProperty Name="bLogBulkInserts" ColumnName="bLogBulkInserts" />
                 <ScalarProperty Name="bLogFilters" ColumnName="bLogFilters" />
                 <ScalarProperty Name="bLogTablesets" ColumnName="bLogTablesets" />
