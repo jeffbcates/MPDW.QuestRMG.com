@@ -32,6 +32,7 @@ namespace Quest.MPDW.Controllers
         private UserSession _userSession = null;
         private LogSetting _logSetting = null;
         private HTTPRequestLogsMgr _httpRequestLogsMgr = null;
+        private PortalRequestLogsMgr _portalRequestLogsMgr = null;
 
         #endregion
 
@@ -128,7 +129,7 @@ namespace Quest.MPDW.Controllers
             {
                 return (status);
             }
-            status = logHTTPRequest();
+            status = logRequest();
             if (!questStatusDef.IsSuccess(status))
             {
                 return (status);
@@ -248,7 +249,6 @@ namespace Quest.MPDW.Controllers
          *=================================================================================================================================*/
         private void initialize()
         {
-            _httpRequestLogsMgr = new HTTPRequestLogsMgr(this.UserSession);
             loadLogSettings();
         }
         private questStatus loadLogSettings()
@@ -268,6 +268,73 @@ namespace Quest.MPDW.Controllers
             }
             this._logSetting = logSetting;
 
+            if (this._logSetting.bLogHTTPRequests)
+            {
+                _httpRequestLogsMgr = new HTTPRequestLogsMgr(this.UserSession);
+            }
+            if (this._logSetting.bLogPortal)
+            {
+                _portalRequestLogsMgr = new PortalRequestLogsMgr(this.UserSession);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        private questStatus logRequest()
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            // Log Portal request
+            status = logPortalRequest();
+            if (questStatusDef.IsSuccess(status))
+            {
+                // Do NOT log both portal and HTTP request with a portal request.
+                return (status);
+            }
+
+            // Log HTTP request
+            status = logHTTPRequest();
+            if (! questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        private questStatus logPortalRequest()
+        {
+            // Initialize
+            questStatus status = null;
+
+            if (! this._logSetting.bLogPortal)
+            {
+                // Portal logging not turned on, thus return WARNING so HTTP request can be logged.
+                return (new questStatus(Severity.Warning));
+            }
+
+            // If there is no agent, nothing to log.
+            if (Request.QueryString["_Agent"] == null)
+            {
+                return (new questStatus(Severity.Warning));
+            }
+
+            // Log portal request.
+            PortalRequestLog portalRequestLog = new PortalRequestLog();
+            if (this.UserSession != null)
+            {
+                portalRequestLog.UserSessionId = this.UserSession == null ? -1 : this.UserSession.Id;
+                portalRequestLog.Username = this.UserSession.User.Username;
+            }
+            portalRequestLog.Name = Request.QueryString["_Agent"].ToString().Replace("\"", "");
+            portalRequestLog.Method = Request.HttpMethod;
+            portalRequestLog.IPAddress = Request.UserHostAddress;
+            portalRequestLog.UserAgent = Request.UserAgent;
+            portalRequestLog.URL = Request.Url.ToString();
+            PortalRequestLogId portalRequestLogId = null;
+            status = _portalRequestLogsMgr.Create(portalRequestLog, out portalRequestLogId);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
             return (new questStatus(Severity.Success));
         }
         private questStatus logHTTPRequest()

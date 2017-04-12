@@ -1123,6 +1123,11 @@ namespace Quest.MPDW.Services.Data
         /*----------------------------------------------------------------------------------------------------------------------------------
          * Logging
          *---------------------------------------------------------------------------------------------------------------------------------*/
+        public questStatus LogException(System.Exception ex)
+        {
+
+            return (new questStatus(Severity.Warning, "Not implemented"));
+        }
         #endregion
 
         #endregion

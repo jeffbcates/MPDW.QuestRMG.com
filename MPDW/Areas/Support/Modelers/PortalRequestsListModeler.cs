@@ -63,14 +63,6 @@ namespace Quest.MPDW.Support.Modelers
                 return (status);
             }
 
-            // Set up query options.
-            // TEMPORARY: OPTIMIZE THIS
-            List<SearchField> searchFieldList = new List<SearchField>();
-            SearchOptions searchOptions = new SearchOptions();
-            searchOptions.SearchFieldList = searchFieldList;
-            queryOptions.SearchOptions = searchOptions;
-
-
             // List
             status = List(queryOptions, out portalRequestsListViewModel);
             if (!questStatusDef.IsSuccess(status))
