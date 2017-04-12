@@ -19,6 +19,8 @@ using Quest.Functional.FMS;
 using Quest.Functional.MasterPricing;
 using Quest.MPDW.Services.Data;
 using Quest.Services.Dbio.MasterPricing;
+using Quest.Functional.Logging;
+using Quest.Services.Data.Logging;
 
 
 namespace Quest.MasterPricing.Services.Data.Database
@@ -29,6 +31,9 @@ namespace Quest.MasterPricing.Services.Data.Database
         /*==================================================================================================================================
          * Declarations
          *=================================================================================================================================*/
+        private LogSetting _logSetting = null;
+        DbDatabaseLogsMgr _dbDatabaseLogsMgr = null;
+
         #endregion
 
 
@@ -48,6 +53,13 @@ namespace Quest.MasterPricing.Services.Data.Database
         /*==================================================================================================================================
          * Properties
          *=================================================================================================================================*/
+        public bool bLogging
+        {
+            get
+            {
+                return (this._logSetting.bLogDatabases);
+            }
+        }
         #endregion
 
 
@@ -69,6 +81,15 @@ namespace Quest.MasterPricing.Services.Data.Database
             using (MasterPricingEntities dbContext = new MasterPricingEntities())
             {
                 status = create(dbContext, database, out databaseId);
+                if (bLogging)
+                {
+                    DatabaseLog databaseLog = new DatabaseLog();
+                    databaseLog.Name = database.Name == null ? "(null)" : database.Name;
+                    databaseLog.Event = "CREATE";
+                    databaseLog.Data = status.ToString();
+                    DatabaseLogId databaseLogId = null;
+                    _dbDatabaseLogsMgr.Create(databaseLog, out databaseLogId);
+                }
                 if (!questStatusDef.IsSuccess(status))
                 {
                     return (status);
@@ -88,6 +109,15 @@ namespace Quest.MasterPricing.Services.Data.Database
 
             // Create the database in this transaction.
             status = create((MasterPricingEntities)trans.DbContext, database, out databaseId);
+            if (bLogging)
+            {
+                DatabaseLog databaseLog = new DatabaseLog();
+                databaseLog.Name = database.Name == null ? "(null)" : database.Name;
+                databaseLog.Event = "CREATE";
+                databaseLog.Data = status.ToString();
+                DatabaseLogId databaseLogId = null;
+                _dbDatabaseLogsMgr.Create(databaseLog, out databaseLogId);
+            }
             if (!questStatusDef.IsSuccess(status))
             {
                 return (status);
@@ -167,6 +197,15 @@ namespace Quest.MasterPricing.Services.Data.Database
             using (MasterPricingEntities dbContext = new MasterPricingEntities())
             {
                 status = update(dbContext, database);
+                if (bLogging)
+                {
+                    DatabaseLog databaseLog = new DatabaseLog();
+                    databaseLog.Name = database.Name == null ? "(null)" : database.Name;
+                    databaseLog.Event = "UPDATE";
+                    databaseLog.Data = status.ToString();
+                    DatabaseLogId databaseLogId = null;
+                    _dbDatabaseLogsMgr.Create(databaseLog, out databaseLogId);
+                }
                 if (!questStatusDef.IsSuccess(status))
                 {
                     return (status);
@@ -183,6 +222,15 @@ namespace Quest.MasterPricing.Services.Data.Database
 
             // Perform update in this transaction.
             status = update((MasterPricingEntities)trans.DbContext, database);
+            if (bLogging)
+            {
+                DatabaseLog databaseLog = new DatabaseLog();
+                databaseLog.Name = database.Name == null ? "(null)" : database.Name;
+                databaseLog.Event = "UPDATE";
+                databaseLog.Data = status.ToString();
+                DatabaseLogId databaseLogId = null;
+                _dbDatabaseLogsMgr.Create(databaseLog, out databaseLogId);
+            }
             if (!questStatusDef.IsSuccess(status))
             {
                 RollbackTransaction(trans);
@@ -282,6 +330,7 @@ namespace Quest.MasterPricing.Services.Data.Database
             questStatus status = null;
             try
             {
+                initLogging();
             }
             catch (System.Exception ex)
             {
@@ -291,6 +340,71 @@ namespace Quest.MasterPricing.Services.Data.Database
             }
             return (new questStatus(Severity.Success));
         }
+
+
+        #region Logging
+        /*----------------------------------------------------------------------------------------------------------------------------------
+         * Logging
+         *---------------------------------------------------------------------------------------------------------------------------------*/
+        private questStatus initLogging()
+        {
+            // Initialize
+            questStatus status = null;
+
+            status = loadLogSettings();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            status = initLogger();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        private questStatus loadLogSettings()
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            // Get log settings.
+            LogSetting logSetting = null;
+            DbLogSettingsMgr dbLogSettingsMgr = new DbLogSettingsMgr(this.UserSession);
+            status = dbLogSettingsMgr.Read(out logSetting);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                this._logSetting = new LogSetting();
+                return (status);
+            }
+            this._logSetting = logSetting;
+
+
+            return (new questStatus(Severity.Success));
+        }
+        private questStatus initLogger()
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            if (this._logSetting.bLogDatabases)
+            {
+                try
+                {
+                    _dbDatabaseLogsMgr = new DbDatabaseLogsMgr(this.UserSession);
+                }
+                catch (System.Exception ex)
+                {
+                    status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                            this.GetType().ToString(), MethodInfo.GetCurrentMethod().Name, ex.Message));
+                    return (status);
+                }
+            }
+            return (new questStatus(Severity.Success));
+        }
+        #endregion
 
 
         #region Databases
@@ -414,6 +528,15 @@ namespace Quest.MasterPricing.Services.Data.Database
                 status = read(dbContext, databaseId, out _database);
                 if (!questStatusDef.IsSuccess(status))
                 {
+                    if (bLogging)
+                    {
+                        DatabaseLog databaseLog = new DatabaseLog();
+                        databaseLog.Name = "Database.Id=" + databaseId.Id;
+                        databaseLog.Event = "DELETE";
+                        databaseLog.Data = status.ToString();
+                        DatabaseLogId databaseLogId = null;
+                        _dbDatabaseLogsMgr.Create(databaseLog, out databaseLogId);
+                    }
                     return (status);
                 }
 
@@ -427,7 +550,17 @@ namespace Quest.MasterPricing.Services.Data.Database
                         this.GetType().Name, MethodBase.GetCurrentMethod().Name,
                         ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
             }
-            return (new questStatus(Severity.Success));
+            status = new questStatus(Severity.Success, "Database successfully deleted.  Database.Id=" + databaseId.Id);
+            if (bLogging)
+            {
+                DatabaseLog databaseLog = new DatabaseLog();
+                databaseLog.Name = "Database.Id=" + databaseId.Id;
+                databaseLog.Event = "DELETE";
+                databaseLog.Data = status.ToString();
+                DatabaseLogId databaseLogId = null;
+                _dbDatabaseLogsMgr.Create(databaseLog, out databaseLogId);
+            }
+            return (status);
         }
         #endregion
 

@@ -40,11 +40,6 @@ namespace Quest.MasterPricing.Services.Data.Bulk
         /*==================================================================================================================================
          * Constructors
          *=================================================================================================================================*/
-        public DbBulkUpdateMgr()
-            : base()
-        {
-            initialize();
-        }
         public DbBulkUpdateMgr(UserSession userSession)
             : base(userSession)
         {
@@ -331,6 +326,41 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                                     // TEMPORARY
                                     continue;
                                 }
+
+
+
+                                // If a meta-parameter, fill in its value and continue.
+                                bool bIsMetaParameter = false;
+                                SqlParameter sqlMetaParameter = null;
+                                if (filterParam.ParameterName.Equals("@_Username", StringComparison.InvariantCultureIgnoreCase))
+                                {
+                                    bIsMetaParameter = true;
+                                    sqlMetaParameter = new SqlParameter(filterParam.ParameterName, SqlDbType.NVarChar);
+                                    sqlMetaParameter.Value = this.UserSession.User.Username;
+                                }
+                                else if (filterParam.ParameterName.Equals("@_UserSessionId", StringComparison.InvariantCultureIgnoreCase))
+                                {
+                                    bIsMetaParameter = true;
+                                    sqlMetaParameter = new SqlParameter(filterParam.ParameterName, SqlDbType.Int);
+                                    sqlMetaParameter.Value = this.UserSession.Id;
+                                }
+                                else if (filterParam.ParameterName.StartsWith("@_", StringComparison.InvariantCultureIgnoreCase))
+                                {
+                                    string logMessage = String.Format("ERROR: unknown meta-parameter: {0}", filterParam.ParameterName);
+                                    ////if (bLogging)
+                                    ////{
+                                    ////    bulkInsertLog.Message = logMessage;
+                                    ////    _dbBulkInsertLogsMgr.Create(bulkInsertLog, out bulkInsertLogId);
+                                    ////}
+                                    return (new questStatus(Severity.Error, logMessage));
+                                }
+                                if (bIsMetaParameter)
+                                {
+                                    cmd.Parameters.Add(sqlMetaParameter);
+                                    continue;
+                                }
+
+
 
                                 // Get the column name from the parameter name
                                 FilterItem bulkUpdateFilterItem = bulkUpdateRequest.Filter.FilterItemList.Find(delegate (FilterItem fi)

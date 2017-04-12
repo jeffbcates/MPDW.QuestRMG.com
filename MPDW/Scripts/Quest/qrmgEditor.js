@@ -809,6 +809,10 @@ function qrmgEditor(model) {
         _io.GetJSON(_url, _d, _ud);
     }
     _self.Delete = function () {
+        if (!_self._bROS) {
+            _self.Unmask();
+            return;
+        }
         if (_self._bChanges) {
             $('#btnCancel', '#mdlgDelChanges').unbind('click').on('click', function (e) {
                 _self.Unmask();

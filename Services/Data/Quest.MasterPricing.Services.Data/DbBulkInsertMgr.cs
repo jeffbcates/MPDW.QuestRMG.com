@@ -794,21 +794,29 @@ namespace Quest.MasterPricing.Services.Data.Bulk
             questStatus status = null;
             try
             {
-                status = loadLogSettings();
-                if (!questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
-                status = initLogger();
-                if (!questStatusDef.IsSuccess(status))
-                {
-                    return (status);
-                }
+                initLogging();
             }
             catch (System.Exception ex)
             {
                 status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                         this.GetType().ToString(), MethodInfo.GetCurrentMethod().Name, ex.Message));
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        private questStatus initLogging()
+        {
+            // Initialize
+            questStatus status = null;
+
+            status = loadLogSettings();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            status = initLogger();
+            if (!questStatusDef.IsSuccess(status))
+            {
                 return (status);
             }
             return (new questStatus(Severity.Success));

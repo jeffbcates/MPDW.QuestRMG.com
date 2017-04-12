@@ -162,7 +162,7 @@ namespace Quest.MasterPricing.Services.Business.Bulk
             questStatus status = null;
             try
             {
-                _dbBulkUpdateMgr = new DbBulkUpdateMgr();
+                _dbBulkUpdateMgr = new DbBulkUpdateMgr(this.UserSession);
             }
             catch (System.Exception ex)
             {

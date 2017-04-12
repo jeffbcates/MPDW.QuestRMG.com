@@ -320,6 +320,12 @@ namespace Quest.Services.Data.Logging
             databaseLogId = null;
 
 
+            // Initialize
+            databaseLog.UserSessionId = this.UserSession.Id;
+            databaseLog.Username = this.UserSession.User.Username;
+            databaseLog.Created = DateTime.Now;
+
+
             // Perform create
             try
             {

@@ -88,9 +88,57 @@ namespace Quest.Util.Status
         {
             StackFrame frame = new StackFrame(1);
             MethodBase method = frame.GetMethod();
-            this.Module = method.DeclaringType.AssemblyQualifiedName;
-            this.Method = method.Name;
+            ////this.Module = the calling class
+            ////this.Method = the calling class method
+
+            StackTrace stackTrace = new StackTrace();
+            for (int i=0; i < 10; i++)
+            {
+                StackFrame stackFrame = stackTrace.GetFrame(i);
+                Type type = stackFrame.GetType();
+                MethodBase methodBase = stackFrame.GetMethod();
+                int x = 4;
+                x = 44;
+            }
             this.Message = "";
+        }
+
+        public override string ToString()
+        {
+            StringBuilder sbToString = new StringBuilder();
+            switch (this.Severity)
+            {
+                case Severity.Debug:
+                    sbToString.Append("DEBUG: ");
+                    break;
+                case Severity.Success:
+                    sbToString.Append("SUCCESS: ");
+                    break;
+                case Severity.Warning:
+                    sbToString.Append("WARNING: ");
+                    break;
+                case Severity.Error:
+                    sbToString.Append("ERROR: ");
+                    break;
+                case Severity.Fatal:
+                    sbToString.Append("FATAL: ");
+                    break;
+                default:
+                    sbToString.Append("UNKNOWN: ");
+                    break;
+            }
+            sbToString.Append(this.Message);
+            if (!string.IsNullOrEmpty(this.Module))
+            {
+                sbToString.Append(", Module: ");
+                sbToString.Append(this.Module);
+            }
+            if (!string.IsNullOrEmpty(this.Method))
+            {
+                sbToString.Append(", Method: ");
+                sbToString.Append(this.Method);
+            }
+            return (sbToString.ToString());
         }
     }
 }
