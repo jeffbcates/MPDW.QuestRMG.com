@@ -23,6 +23,10 @@ function qrmgEditor(model) {
             ]
         },
     ];
+    // TODO: ...
+    _self._states = { CLEAR: 1, MODIFIED: 2, ROS: 3, ROSMODIFIED: 4 };
+    _self.State = _self._states.CLEAR;
+
 
     _self._init = function () {
         _self._initctx()
@@ -612,6 +616,7 @@ function qrmgEditor(model) {
     }
 
     _self._dooper = function (o, e) {
+        if (o.bROSRequired && !_self._bROS) { return; }
         _self.Mask(_self._mask);
         if (o.Validate) {
             if (!_self.Validate()) {
@@ -708,7 +713,6 @@ function qrmgEditor(model) {
         }
     }
 
-
     _self.Clear = function (bUM, bForce) {
         if (!bForce && _self._bChanges) {
             if (!confirm('Are you sure?  You will lose your change')) {
@@ -749,6 +753,18 @@ function qrmgEditor(model) {
         if (bUM) {
             ClearUserMessage();
         }
+        var Eops = [];
+        var Dops = [];
+        $.each(_self._model.operations, function (i, o) {
+            o.bROSRequired ? Dops.push(o.name) : Eops.push(o.name);
+        });
+
+        _self.Unmask();
+
+
+
+        _self.Operations(Eops, true, true);
+        _self.Operations(Dops, false, true);
         _self._docallback({ PostClear: true }, _d);
     }
     _self.Cancel = function (o) {
@@ -1180,8 +1196,43 @@ function qrmgEditor(model) {
         Unmask(e || _self._mask, null, bCM);
         _self.Buttons(true);
     }
+
     _self.Buttons = function (bEnable) {
         bEnable ? $('.avopsacts button', _self._e).removeAttr('disabled') : $('.avopsacts button', _self._e).attr('disabled', 'disabled');
+    }
+    _self._setops = function () {
+        var Eops = [];
+        var Dops = [];
+        $.each(_self._model.operations, function (i, o) {
+            o.bROSRequired ? Dops.push(o.name) : Eops.push(o.name);
+        });
+    }
+    _self.Operations = function (nn, bE, bV) {
+        if (!$.isArray(nn)) { return; }
+        $.each(nn, function (i, n) {
+            var _o = _self._getop(n);
+            if (_o) {
+                var e = $(_self._e).find('.avopsacts').find('button[id="' + n + '"]');
+                if (e) {
+                    if (bE != null) {
+                        if (bE) {
+                            $(e).removeAttr("disabled");
+                        }
+                        else {
+                            $(e).attr("disabled", "disabled");
+                        }
+                    }
+                    if (bV != null) {
+                        if (bV) {
+                            $(e).removeClass("hidden");
+                        }
+                        else {
+                            $(e).addClass("hidden");
+                        }
+                    }
+                }
+            }
+        });
     }
 
     _self._init();

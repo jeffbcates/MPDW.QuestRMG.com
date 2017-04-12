@@ -31,10 +31,10 @@
             { name: 'ConnectionString', label: 'Connection String', maxlength: 256, size: 55 },
         ],
         operations: [
-            { name: 'RefreshSchema', label: 'Refresh Schema Info', classes: "btn btn-primary" },
-            { name: 'Tables', label: 'Tables', classes: "btn btn-primary", uri: '/Database', view: true },
-            { name: 'Views', label: 'Views', classes: "btn btn-primary", uri: '/Database', view: true },
-            { name: 'StoredProcedures', label: 'Stored Procedures', classes: "btn btn-primary", uri: '/Database', view: true },
+            { name: 'RefreshSchema', label: 'Refresh Schema Info', classes: "btn btn-primary", bROSRequired: true },
+            { name: 'Tables', label: 'Tables', classes: "btn btn-primary", uri: '/Database', view: true, bROSRequired: true },
+            { name: 'Views', label: 'Views', classes: "btn btn-primary", uri: '/Database', view: true, bROSRequired: true },
+            { name: 'StoredProcedures', label: 'Stored Procedures', classes: "btn btn-primary", uri: '/Database', view: true, bROSRequired: true },
         ],
         actions: [
         ]
