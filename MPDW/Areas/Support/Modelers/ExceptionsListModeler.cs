@@ -8,6 +8,7 @@ using Quest.Util.Buffer;
 using Quest.Util.Data;
 using Quest.Functional.ASM;
 using Quest.Functional.FMS;
+using Quest.Functional.Logging;
 using Quest.MPDW.Models.List;
 using Quest.MPDW.Modelers;
 using Quest.MPDW.Support.Models;
@@ -169,6 +170,50 @@ namespace Quest.MPDW.Support.Modelers
         //----------------------------------------------------------------------------------------------------------------------------------
         // Validations
         //----------------------------------------------------------------------------------------------------------------------------------
+        #endregion
+
+
+        #region Commands
+        //----------------------------------------------------------------------------------------------------------------------------------
+        // Commands
+        //----------------------------------------------------------------------------------------------------------------------------------
+        public questStatus Clear(ExceptionsListViewModel exceptionsListViewModel)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            ExceptionLogsMgr exceptionLogsMgr = new ExceptionLogsMgr(this.UserSession);
+            status = exceptionLogsMgr.Clear();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus Delete(DeleteLogItemsViewModel deleteLogItemsViewModel)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            // Build id list
+            List<ExceptionLogId> exceptionLogIdList = new List<ExceptionLogId>();
+            foreach (BaseId baseId in deleteLogItemsViewModel.Items)
+            {
+                ExceptionLogId exceptionLogId = new ExceptionLogId(baseId.Id);
+                exceptionLogIdList.Add(exceptionLogId);
+            }
+
+            // Delete items
+            ExceptionLogsMgr exceptionLogsMgr = new ExceptionLogsMgr(this.UserSession);
+            status = exceptionLogsMgr.Delete(exceptionLogIdList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
         #endregion
 
         #endregion

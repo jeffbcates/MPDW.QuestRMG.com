@@ -373,6 +373,92 @@ namespace Quest.MPDW.Support
         /*==================================================================================================================================
          * POST Methods
          *=================================================================================================================================*/
+        [HttpPost]
+        public ActionResult Clear(HTTPRequestsListViewModel viewModel)
+        {
+            questStatus status = null;
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Log Operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = LogOperation();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                viewModel.questStatus = status;
+                return Json(viewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Authorize
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = Authorize(viewModel._ctx);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                viewModel.questStatus = status;
+                return Json(viewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Perform operation.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            HTTPRequestsListModeler httpRequestsListModeler = new HTTPRequestsListModeler(this.Request, this.UserSession);
+            status = httpRequestsListModeler.Clear(viewModel);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                viewModel.questStatus = status;
+                return Json(viewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Return result.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = new questStatus(Severity.Success, "HTTP Request log successfully cleared");
+            viewModel.questStatus = status;
+            return Json(viewModel, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public ActionResult Delete(DeleteLogItemsViewModel viewModel)
+        {
+            questStatus status = null;
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Log Operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = LogOperation();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                viewModel.questStatus = status;
+                return Json(viewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Authorize
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = Authorize(viewModel._ctx);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                viewModel.questStatus = status;
+                return Json(viewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Perform operation.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            HTTPRequestsListModeler httpRequestsListModeler = new HTTPRequestsListModeler(this.Request, this.UserSession);
+            status = httpRequestsListModeler.Delete(viewModel);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                viewModel.questStatus = status;
+                return Json(viewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Return result.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = new questStatus(Severity.Success, "Selected HTTP Request log entries successfully deleted");
+            viewModel.questStatus = status;
+            return Json(viewModel, JsonRequestBehavior.AllowGet);
+        }
         #endregion
 
 

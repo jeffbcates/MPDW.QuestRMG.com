@@ -8,6 +8,8 @@ using Quest.Util.Buffer;
 using Quest.Util.Data;
 using Quest.Functional.ASM;
 using Quest.Functional.FMS;
+using Quest.Functional.Logging;
+using Quest.Functional.Logging;
 using Quest.MPDW.Models.List;
 using Quest.MPDW.Modelers;
 using Quest.MPDW.Support.Models;
@@ -62,13 +64,16 @@ namespace Quest.MPDW.Support.Modelers
                 return (status);
             }
 
-            // Set up query options.
-            // TEMPORARY: OPTIMIZE THIS
-            List<SearchField> searchFieldList = new List<SearchField>();
-            SearchOptions searchOptions = new SearchOptions();
-            searchOptions.SearchFieldList = searchFieldList;
-            queryOptions.SearchOptions = searchOptions;
-
+            // Modify search queryOptions accordingly
+            SearchField sfUserSessionId = queryOptions.SearchOptions.SearchFieldList.Find(delegate (SearchField sf) { return (sf.Name.Equals("UserSessionId", StringComparison.InvariantCultureIgnoreCase)); });
+            if (sfUserSessionId != null)
+            {
+                if (string.IsNullOrEmpty(sfUserSessionId.Value.Trim()))
+                {
+                    sfUserSessionId.SearchOperation = SearchOperation.IsNull;
+                    sfUserSessionId.Value = null;
+                }
+            }
 
             // List
             status = List(queryOptions, out httpRequestsListViewModel);
@@ -169,6 +174,50 @@ namespace Quest.MPDW.Support.Modelers
         //----------------------------------------------------------------------------------------------------------------------------------
         // Validations
         //----------------------------------------------------------------------------------------------------------------------------------
+        #endregion
+
+
+        #region Commands
+        //----------------------------------------------------------------------------------------------------------------------------------
+        // Commands
+        //----------------------------------------------------------------------------------------------------------------------------------
+        public questStatus Clear(HTTPRequestsListViewModel httpRequestsListViewModel)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            HTTPRequestLogsMgr httpRequestLogsMgr = new HTTPRequestLogsMgr(this.UserSession);
+            status = httpRequestLogsMgr.Clear();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus Delete(DeleteLogItemsViewModel deleteLogItemsViewModel)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            // Build id list
+            List<HTTPRequestLogId> httpRequestLogIdList = new List<HTTPRequestLogId>();
+            foreach (BaseId baseId in deleteLogItemsViewModel.Items)
+            {
+                HTTPRequestLogId httpRequestLogId = new HTTPRequestLogId(baseId.Id);
+                httpRequestLogIdList.Add(httpRequestLogId);
+            }
+
+            // Delete items
+            HTTPRequestLogsMgr httpRequestLogsMgr = new HTTPRequestLogsMgr(this.UserSession);
+            status = httpRequestLogsMgr.Delete(httpRequestLogIdList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
         #endregion
 
         #endregion

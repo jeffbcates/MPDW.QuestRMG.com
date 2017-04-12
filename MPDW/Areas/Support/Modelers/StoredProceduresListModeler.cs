@@ -8,6 +8,7 @@ using Quest.Util.Buffer;
 using Quest.Util.Data;
 using Quest.Functional.ASM;
 using Quest.Functional.FMS;
+using Quest.Functional.Logging;
 using Quest.MPDW.Models.List;
 using Quest.MPDW.Modelers;
 using Quest.MPDW.Support.Models;
@@ -169,6 +170,50 @@ namespace Quest.MPDW.Support.Modelers
         //----------------------------------------------------------------------------------------------------------------------------------
         // Validations
         //----------------------------------------------------------------------------------------------------------------------------------
+        #endregion
+
+
+        #region Commands
+        //----------------------------------------------------------------------------------------------------------------------------------
+        // Commands
+        //----------------------------------------------------------------------------------------------------------------------------------
+        public questStatus Clear(StoredProceduresListViewModel storedProceduresListViewModel)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            StoredProcedureLogsMgr storedProcedureLogsMgr = new StoredProcedureLogsMgr(this.UserSession);
+            status = storedProcedureLogsMgr.Clear();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus Delete(DeleteLogItemsViewModel deleteLogItemsViewModel)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            // Build id list
+            List<StoredProcedureLogId> storedProcedureLogIdList = new List<StoredProcedureLogId>();
+            foreach (BaseId baseId in deleteLogItemsViewModel.Items)
+            {
+                StoredProcedureLogId storedProcedureLogId = new StoredProcedureLogId(baseId.Id);
+                storedProcedureLogIdList.Add(storedProcedureLogId);
+            }
+
+            // Delete items
+            StoredProcedureLogsMgr storedProcedureLogsMgr = new StoredProcedureLogsMgr(this.UserSession);
+            status = storedProcedureLogsMgr.Delete(storedProcedureLogIdList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
         #endregion
 
         #endregion

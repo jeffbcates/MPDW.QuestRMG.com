@@ -63,13 +63,6 @@ namespace Quest.MPDW.Support.Modelers
                 return (status);
             }
 
-            // Set up query options.
-            // TEMPORARY: OPTIMIZE THIS
-            ////List<SearchField> searchFieldList = new List<SearchField>();
-            ////SearchOptions searchOptions = new SearchOptions();
-            ////searchOptions.SearchFieldList = searchFieldList;
-            ////queryOptions.SearchOptions = searchOptions;
-
 
             // List
             status = List(queryOptions, out bulkInsertsListViewModel);
@@ -172,6 +165,11 @@ namespace Quest.MPDW.Support.Modelers
         //----------------------------------------------------------------------------------------------------------------------------------
         #endregion
 
+
+        #region Commands
+        //----------------------------------------------------------------------------------------------------------------------------------
+        // Commands
+        //----------------------------------------------------------------------------------------------------------------------------------
         public questStatus Clear(BulkInsertsListViewModel bulkInsertsListViewModel)
         {
             // Initialize
@@ -209,6 +207,8 @@ namespace Quest.MPDW.Support.Modelers
             }
             return (new questStatus(Severity.Success));
         }
+        #endregion
+
         #endregion
 
 

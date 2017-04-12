@@ -319,6 +319,10 @@ namespace Quest.MPDW.Services.Data
                         {
                             sbWhere.Append(dateOperatorSubClause(searchField.Name, value, searchField.SearchOperation));
                         }
+                        else if (value == null)
+                        {
+                            sbWhere.Append(" = NULL ");
+                        }
                         else
                         {
                             sbWhere.Append(String.Format(" = {0}", value));

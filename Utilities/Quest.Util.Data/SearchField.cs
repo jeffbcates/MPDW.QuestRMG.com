@@ -13,6 +13,7 @@ namespace Quest.Util.Data
         public Type Type { get; set; }
         public string Value { get; set; }
 
+
         public SearchField()
         {
             SearchOperation = SearchOperation.Equal;

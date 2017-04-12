@@ -8,6 +8,7 @@ using Quest.Util.Buffer;
 using Quest.Util.Data;
 using Quest.Functional.ASM;
 using Quest.Functional.FMS;
+using Quest.Functional.Logging;
 using Quest.MPDW.Models.List;
 using Quest.MPDW.Modelers;
 using Quest.MPDW.Support.Models;
@@ -169,6 +170,50 @@ namespace Quest.MPDW.Support.Modelers
         //----------------------------------------------------------------------------------------------------------------------------------
         // Validations
         //----------------------------------------------------------------------------------------------------------------------------------
+        #endregion
+
+            
+        #region Commands
+        //----------------------------------------------------------------------------------------------------------------------------------
+        // Commands
+        //----------------------------------------------------------------------------------------------------------------------------------
+        public questStatus Clear(TablesetsListViewModel tablesetsListViewModel)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            TablesetLogsMgr tablesetLogsMgr = new TablesetLogsMgr(this.UserSession);
+            status = tablesetLogsMgr.Clear();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus Delete(DeleteLogItemsViewModel deleteLogItemsViewModel)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            // Build id list
+            List<TablesetLogId> tablesetLogIdList = new List<TablesetLogId>();
+            foreach (BaseId baseId in deleteLogItemsViewModel.Items)
+            {
+                TablesetLogId tablesetLogId = new TablesetLogId(baseId.Id);
+                tablesetLogIdList.Add(tablesetLogId);
+            }
+
+            // Delete items
+            TablesetLogsMgr tablesetLogsMgr = new TablesetLogsMgr(this.UserSession);
+            status = tablesetLogsMgr.Delete(tablesetLogIdList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
         #endregion
 
         #endregion

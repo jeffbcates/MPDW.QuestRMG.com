@@ -112,6 +112,53 @@ namespace Quest.Services.Business.Logging
             }
             return (new questStatus(Severity.Success));
         }
+        public questStatus Delete(List<DatabaseLogId> databaseLogIdList)
+        {
+            // Initialize
+            questStatus status = null;
+            DbMgrTransaction trans = null;
+            Mgr mgr = new Mgr(this.UserSession);
+
+
+            try
+            {
+                // BEGIN TRANSACTION
+                status = mgr.BeginTransaction("Delete_DatabaseLogEntries_" + Guid.NewGuid().ToString(), out trans);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+
+                // Delete databaseLogId
+                foreach (DatabaseLogId databaseLogId in databaseLogIdList)
+                {
+                    status = _dbDatabaseLogsMgr.Delete(trans, databaseLogId);
+                    if (!questStatusDef.IsSuccess(status))
+                    {
+                        mgr.RollbackTransaction(trans);
+                        return (status);
+                    }
+                }
+
+                // COMMIT TRANSACTION
+                status = mgr.CommitTransaction(trans);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+            }
+            catch (System.Exception ex)
+            {
+                if (trans != null)
+                {
+                    mgr.RollbackTransaction(trans);
+                }
+                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                        this.GetType().Name, MethodBase.GetCurrentMethod().Name,
+                        ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+            }
+            return (new questStatus(Severity.Success));
+        }
         public questStatus List(QueryOptions queryOptions, out List<Quest.Functional.Logging.DatabaseLog> databaseLogList, out QueryResponse queryResponse)
         {
             // Initialize
@@ -121,6 +168,21 @@ namespace Quest.Services.Business.Logging
 
             // List
             status = _dbDatabaseLogsMgr.List(queryOptions, out databaseLogList, out queryResponse);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+
+        public questStatus Clear()
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            // Clear
+            status = _dbDatabaseLogsMgr.Clear();
             if (!questStatusDef.IsSuccess(status))
             {
                 return (status);

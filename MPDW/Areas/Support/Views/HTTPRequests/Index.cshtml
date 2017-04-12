@@ -40,6 +40,10 @@
             operations: [
             ],
             commands: [
+                { name: 'ShowSession', label: 'Show Session', method: 'GET', single: true, callback: cbShowSession },
+                { name: 'ClearSession', label: 'Clear Session', method: 'GET', NoSelectionsAllowed: true, callback: cbClearSession },
+                { name: 'Clear', label: 'Clear Log', method: 'POST', NoSelectionsAllowed: true, callback: cbClear },
+                { name: 'Delete', label: 'Delete Items', method: 'POST', callback: cbDelete },
             ],
             events: [
             ],
@@ -49,6 +53,35 @@
         _tblHTTPRequestLogs = new qrmgTable(tblHTTPRequestLogs);
     });
     function cbTblHTTPRequestLogs(ud, d) {
-
+    }
+    function cbShowSession(ud, d) {
+        if (d.questStatus) {
+            return;
+        }
+        else {
+            var r = _tblHTTPRequestLogs.GetRow(d.Id);
+            _tblHTTPRequestLogs.FilterColumn('UserSessionId', 1, r.UserSessionId, true);
+            _tblHTTPRequestLogs.Load();
+        }
+        return (true);
+    }
+    function cbClearSession(ud, d) {
+        _tblHTTPRequestLogs.ClearFilterColumn();
+        _tblHTTPRequestLogs.Load();
+        return (true);
+    }
+    function cbClear(ud, d) {
+        if (d.questStatus) {
+            if (IsAppSuccess(d)) {
+                _tblHTTPRequestLogs.Load();
+            }
+        }
+    }
+    function cbDelete(ud, d) {
+        if (d.questStatus) {
+            if (IsAppSuccess(d)) {
+                _tblHTTPRequestLogs.Load();
+            }
+        }
     }
 </script>

@@ -172,6 +172,11 @@ namespace Quest.MPDW.Support.Modelers
         //----------------------------------------------------------------------------------------------------------------------------------
         #endregion
 
+
+        #region Commands
+        //----------------------------------------------------------------------------------------------------------------------------------
+        // Commands
+        //----------------------------------------------------------------------------------------------------------------------------------
         public questStatus Clear(BulkUpdatesListViewModel bulkUpdatesListViewModel)
         {
             // Initialize
@@ -209,6 +214,8 @@ namespace Quest.MPDW.Support.Modelers
             }
             return (new questStatus(Severity.Success));
         }
+        #endregion
+
         #endregion
 
 

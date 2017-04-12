@@ -8,6 +8,7 @@ using Quest.Util.Buffer;
 using Quest.Util.Data;
 using Quest.Functional.ASM;
 using Quest.Functional.FMS;
+using Quest.Functional.Logging;
 using Quest.MPDW.Models.List;
 using Quest.MPDW.Modelers;
 using Quest.MPDW.Support.Models;
@@ -169,6 +170,50 @@ namespace Quest.MPDW.Support.Modelers
         //----------------------------------------------------------------------------------------------------------------------------------
         // Validations
         //----------------------------------------------------------------------------------------------------------------------------------
+        #endregion
+
+
+        #region Commands
+        //----------------------------------------------------------------------------------------------------------------------------------
+        // Commands
+        //----------------------------------------------------------------------------------------------------------------------------------
+        public questStatus Clear(DatabasesListViewModel databasesListViewModel)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            DatabaseLogsMgr databaseLogsMgr = new DatabaseLogsMgr(this.UserSession);
+            status = databaseLogsMgr.Clear();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus Delete(DeleteLogItemsViewModel deleteLogItemsViewModel)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            // Build id list
+            List<DatabaseLogId> databaseLogIdList = new List<DatabaseLogId>();
+            foreach (BaseId baseId in deleteLogItemsViewModel.Items)
+            {
+                DatabaseLogId databaseLogId = new DatabaseLogId(baseId.Id);
+                databaseLogIdList.Add(databaseLogId);
+            }
+
+            // Delete items
+            DatabaseLogsMgr databaseLogsMgr = new DatabaseLogsMgr(this.UserSession);
+            status = databaseLogsMgr.Delete(databaseLogIdList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
         #endregion
 
         #endregion

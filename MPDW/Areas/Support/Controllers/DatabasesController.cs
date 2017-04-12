@@ -373,6 +373,92 @@ namespace Quest.MPDW.Support
         /*==================================================================================================================================
          * POST Methods
          *=================================================================================================================================*/
+        [HttpPost]
+        public ActionResult Clear(DatabasesListViewModel viewModel)
+        {
+            questStatus status = null;
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Log Operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = LogOperation();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                viewModel.questStatus = status;
+                return Json(viewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Authorize
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = Authorize(viewModel._ctx);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                viewModel.questStatus = status;
+                return Json(viewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Perform operation.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            DatabasesListModeler databasesListModeler = new DatabasesListModeler(this.Request, this.UserSession);
+            status = databasesListModeler.Clear(viewModel);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                viewModel.questStatus = status;
+                return Json(viewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Return result.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = new questStatus(Severity.Success, "Database log successfully cleared");
+            viewModel.questStatus = status;
+            return Json(viewModel, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public ActionResult Delete(DeleteLogItemsViewModel viewModel)
+        {
+            questStatus status = null;
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Log Operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = LogOperation();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                viewModel.questStatus = status;
+                return Json(viewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Authorize
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = Authorize(viewModel._ctx);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                viewModel.questStatus = status;
+                return Json(viewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Perform operation.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            DatabasesListModeler databasesListModeler = new DatabasesListModeler(this.Request, this.UserSession);
+            status = databasesListModeler.Delete(viewModel);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                viewModel.questStatus = status;
+                return Json(viewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Return result.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = new questStatus(Severity.Success, "Selected Database log entries successfully deleted");
+            viewModel.questStatus = status;
+            return Json(viewModel, JsonRequestBehavior.AllowGet);
+        }
         #endregion
 
 

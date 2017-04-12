@@ -373,6 +373,92 @@ namespace Quest.MPDW.Support
         /*==================================================================================================================================
          * POST Methods
          *=================================================================================================================================*/
+        [HttpPost]
+        public ActionResult Clear(StoredProceduresListViewModel viewModel)
+        {
+            questStatus status = null;
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Log Operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = LogOperation();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                viewModel.questStatus = status;
+                return Json(viewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Authorize
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = Authorize(viewModel._ctx);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                viewModel.questStatus = status;
+                return Json(viewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Perform operation.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            StoredProceduresListModeler storedProceduresListModeler = new StoredProceduresListModeler(this.Request, this.UserSession);
+            status = storedProceduresListModeler.Clear(viewModel);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                viewModel.questStatus = status;
+                return Json(viewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Return result.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = new questStatus(Severity.Success, "Stored Procedure log successfully cleared");
+            viewModel.questStatus = status;
+            return Json(viewModel, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public ActionResult Delete(DeleteLogItemsViewModel viewModel)
+        {
+            questStatus status = null;
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Log Operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = LogOperation();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                viewModel.questStatus = status;
+                return Json(viewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Authorize
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = Authorize(viewModel._ctx);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                viewModel.questStatus = status;
+                return Json(viewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Perform operation.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            StoredProceduresListModeler storedProceduresListModeler = new StoredProceduresListModeler(this.Request, this.UserSession);
+            status = storedProceduresListModeler.Delete(viewModel);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                viewModel.questStatus = status;
+                return Json(viewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Return result.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = new questStatus(Severity.Success, "Selected Stored Procedure log entries successfully deleted");
+            viewModel.questStatus = status;
+            return Json(viewModel, JsonRequestBehavior.AllowGet);
+        }
         #endregion
 
 

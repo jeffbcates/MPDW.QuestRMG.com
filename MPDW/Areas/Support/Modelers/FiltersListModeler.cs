@@ -8,6 +8,7 @@ using Quest.Util.Buffer;
 using Quest.Util.Data;
 using Quest.Functional.ASM;
 using Quest.Functional.FMS;
+using Quest.Functional.Logging;
 using Quest.MPDW.Models.List;
 using Quest.MPDW.Modelers;
 using Quest.MPDW.Support.Models;
@@ -169,6 +170,50 @@ namespace Quest.MPDW.Support.Modelers
         //----------------------------------------------------------------------------------------------------------------------------------
         // Validations
         //----------------------------------------------------------------------------------------------------------------------------------
+        #endregion
+
+
+        #region Commands
+        //----------------------------------------------------------------------------------------------------------------------------------
+        // Commands
+        //----------------------------------------------------------------------------------------------------------------------------------
+        public questStatus Clear(FiltersListViewModel filtersListViewModel)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            FilterLogsMgr filterLogsMgr = new FilterLogsMgr(this.UserSession);
+            status = filterLogsMgr.Clear();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus Delete(DeleteLogItemsViewModel deleteLogItemsViewModel)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            // Build id list
+            List<FilterLogId> filterLogIdList = new List<FilterLogId>();
+            foreach (BaseId baseId in deleteLogItemsViewModel.Items)
+            {
+                FilterLogId filterLogId = new FilterLogId(baseId.Id);
+                filterLogIdList.Add(filterLogId);
+            }
+
+            // Delete items
+            FilterLogsMgr filterLogsMgr = new FilterLogsMgr(this.UserSession);
+            status = filterLogsMgr.Delete(filterLogIdList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
         #endregion
 
         #endregion

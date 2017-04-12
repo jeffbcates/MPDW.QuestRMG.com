@@ -624,7 +624,7 @@ function qrmgTable(model) {
     }
 
     _self._settr = function (dd) {
-        if (parseInt(dd.QueryResponse.TotalRecords) == 0) { return; }
+        ////if (parseInt(dd.QueryResponse.TotalRecords) == 0) { return; }
         $(_self._e).parent().find('span.questTableTotalRecordCount').text(dd.QueryResponse.TotalRecords);
     }
     _self._setps = function (dd) {
@@ -891,15 +891,20 @@ function qrmgTable(model) {
                 qrmgmvc.Global.Unmask(_self._mask);
                 return;
             }
-            if (_cmd.callback) {
-                var ud = {};
-                ud[n] = true;
-                var d = {};
+            var ud = {};
+            ud[n] = true;
+            var d = {};
+            if (_cmd.single || _cmd.edit) {
+                d[_self._keyc.name] = ids[0];
+            }
+            else {
                 var Items = [];
                 $.each(ids, function (i, s) {
                     Items.push({ Id: s });
                 });
                 d.Items = Items;
+            }
+            if (_cmd.callback) {
                 if (_cmd.callback(ud, d)) {
                     qrmgmvc.Global.Unmask(_self._mask);
                     return;
@@ -911,9 +916,6 @@ function qrmgTable(model) {
             }
             var _d = _self._getctx();
             $.extend(_d, d);
-            if (_cmd.single) {
-                _d[_self._keyc.name] = ids[0];
-            }
             var _io = new qrmgio(_self._rcmd);
             if (_cmd.edit) {
                 _self.Edit({ Id: ids[0] }, _cmd);
@@ -965,10 +967,15 @@ function qrmgTable(model) {
         if (IsUserMessage(d)) {
             DisplayUserMessage(d);
         }
-        if (_self._docallback(ud, d)) {
+        if (ud.callback) {
+            if (ud.callback(ud, d)) {
+                qrmgmvc.Global.Unmask(_self._mask);
+                return;
+            }
+        }
+        else if (_self._docallback(ud, d)) {
             return;
         }
-        // TODO: unmask
         qrmgmvc.Global.Unmask(_self._mask);
     }
 

@@ -269,6 +269,23 @@ namespace Quest.Services.Data.Logging
             }
             return (new questStatus(Severity.Success));
         }
+
+        public questStatus Clear()
+        {
+            try
+            {
+                using (MasterPricingEntities dbContext = new MasterPricingEntities())
+                {
+                    dbContext.FilterLogs.RemoveRange(dbContext.FilterLogs.Where(r => r.Id > 0));
+                    dbContext.SaveChanges();
+                }
+            }
+            catch (System.Exception ex)
+            {
+                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: clearing Filters Log {0}", ex.Message)));
+            }
+            return (new questStatus(Severity.Success));
+        }
         #endregion
 
 
