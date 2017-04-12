@@ -1899,19 +1899,19 @@
                 if (procedureParameter.bRequired) {
                     if (itm.bBulkUpdateValueRequired) {
                         bRequired = true;
-                        _placeholder = 'Parameter is required.  You MUST enter a value.';
+                        _placeholder = 'Filter procedure requires this parameter.  A bulk update value MUST be entered.';
                     }
                     else {
-                        _placeholder = 'Parameter is required.  If you do not enter a value, the results value will be used.';
+                        _placeholder = 'Filter procedure requires this parameter.  If you do not enter a value, the results value will be used.';
                     }
                 }
                 else {
                     if (itm.bBulkUpdateValueRequired) {
                         bRequired = true;
-                        _placeholder = 'Parameter is optional.  You MUST enter a value.';
+                        _placeholder = 'Filter procedure parameter is optional, but the Bulk Update requires a value.';
                     }
                     else {
-                        _placeholder = 'Parameter is optional.  If you do not enter a value, the results value will be used.';
+                        _placeholder = 'Filter procedure parameter is optional.  If you do not enter a value, the results value will be used.';
                     }
                 }
             }
