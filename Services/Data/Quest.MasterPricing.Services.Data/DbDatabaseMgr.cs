@@ -20,6 +20,8 @@ using Quest.Functional.MasterPricing;
 using Quest.MPDW.Services.Data;
 using Quest.Services.Dbio.MasterPricing;
 using Quest.MasterPricing.Services.Data.Database;
+using Quest.Functional.Logging;
+using Quest.Services.Data.Logging;
 
 
 namespace Quest.MasterPricing.Services.Data.Setup
@@ -31,6 +33,8 @@ namespace Quest.MasterPricing.Services.Data.Setup
          * Declarations
          *=================================================================================================================================*/
         private UserSession _userSession = null;
+        private LogSetting _logSetting = null;
+        DbDatabaseLogsMgr _dbDatabaseLogsMgr = null;
 
         #endregion
 
@@ -62,6 +66,13 @@ namespace Quest.MasterPricing.Services.Data.Setup
             get
             {
                 return (this._userSession);
+            }
+        }
+        public bool bLogging
+        {
+            get
+            {
+                return (this._logSetting.bLogDatabases);
             }
         }
         #endregion
@@ -153,7 +164,7 @@ namespace Quest.MasterPricing.Services.Data.Setup
              * Start transaction
              */
             string transactionName = null;
-            status = GetUniqueTransactionName("StoreDatabaseMetadata", out transactionName);
+            status = GetUniqueTransactionName("RefreshSchema_" + databaseId.Id.ToString() + "_" + Guid.NewGuid(), out transactionName);
             if (!questStatusDef.IsSuccess(status))
             {
                 return (status);
@@ -345,6 +356,17 @@ namespace Quest.MasterPricing.Services.Data.Setup
             {
                 RollbackTransaction(trans);
                 return (status);
+            }
+
+            // Log operation
+            if (bLogging)
+            {
+                DatabaseLog databaseLog = new DatabaseLog();
+                databaseLog.Name = database.Name == null ? "(null)" : database.Name;
+                databaseLog.Event = "REFRESH_SCHEMA";
+                databaseLog.Data = new questStatus(Severity.Success, "Database schema successfully refreshed").ToString();
+                DatabaseLogId databaseLogId = null;
+                _dbDatabaseLogsMgr.Create(databaseLog, out databaseLogId);
             }
             return (new questStatus(Severity.Success));
         }
@@ -1116,6 +1138,7 @@ namespace Quest.MasterPricing.Services.Data.Setup
             questStatus status = null;
             try
             {
+                initLogging();
             }
             catch (System.Exception ex)
             {
@@ -1157,6 +1180,71 @@ namespace Quest.MasterPricing.Services.Data.Setup
             }
             return (new questStatus(Severity.Success));
         }
+
+
+        #region Logging
+        /*----------------------------------------------------------------------------------------------------------------------------------
+         * Logging
+         *---------------------------------------------------------------------------------------------------------------------------------*/
+        private questStatus initLogging()
+        {
+            // Initialize
+            questStatus status = null;
+
+            status = loadLogSettings();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            status = initLogger();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        private questStatus loadLogSettings()
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            // Get log settings.
+            LogSetting logSetting = null;
+            DbLogSettingsMgr dbLogSettingsMgr = new DbLogSettingsMgr(this.UserSession);
+            status = dbLogSettingsMgr.Read(out logSetting);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                this._logSetting = new LogSetting();
+                return (status);
+            }
+            this._logSetting = logSetting;
+
+
+            return (new questStatus(Severity.Success));
+        }
+        private questStatus initLogger()
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            if (this._logSetting.bLogDatabases)
+            {
+                try
+                {
+                    _dbDatabaseLogsMgr = new DbDatabaseLogsMgr(this.UserSession);
+                }
+                catch (System.Exception ex)
+                {
+                    status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                            this.GetType().ToString(), MethodInfo.GetCurrentMethod().Name, ex.Message));
+                    return (status);
+                }
+            }
+            return (new questStatus(Severity.Success));
+        }
+        #endregion
 
 
         #region SQL Server Metadata

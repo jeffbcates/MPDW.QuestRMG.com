@@ -23,11 +23,11 @@
             callback: cbTblDatabaseLogs,
             columns: [
                 { name: 'Id', hidden: true, key: true },
+                { name: 'Event', label: 'Event' },
+                { name: 'Name', label: 'Name' },
+                { name: 'Data', label: 'Data' },
                 { name: 'UserSessionId', label: 'User Session' },
                 { name: 'Username', label: 'Username' },
-                { name: 'Name', label: 'Name' },
-                { name: 'Event', label: 'Event' },
-                { name: 'Data', label: 'Data' },
                 { name: 'Created', label: 'Created' },
             ],
             paging: {
@@ -36,11 +36,14 @@
                 PageSize: 100,
                 PageSizeOptions: [100, 200, 500, 1000],
             },
+            bNoDefaultOptions: true,
             operations: [
             ],
             commands: [
-                { name: 'Clear', label: 'Clear Log', method: 'POST', NoSelectionsAllowed: true },
-                { name: 'Delete', label: 'Delete Items', method: 'POST' },
+                { name: 'ShowDatabase', label: 'Show Database', method: 'GET', single: true, callback: cbShowDatabase },
+                { name: 'ClearDatabase', label: 'Clear Filter', method: 'GET', NoSelectionsAllowed: true, callback: cbClearFilter },
+                { name: 'Clear', label: 'Clear Log', method: 'POST', NoSelectionsAllowed: true, callback: cbClear },
+                { name: 'Delete', label: 'Delete Items', method: 'POST', callback: cbDelete },
             ],
             events: [
             ],
@@ -50,6 +53,35 @@
         _tblDatabaseLogs = new qrmgTable(tblDatabaseLogs);
     });
     function cbTblDatabaseLogs(ud, d) {
-
+    }
+    function cbShowDatabase(ud, d) {
+        if (d.questStatus) {
+            return;
+        }
+        else {
+            var r = _tblDatabaseLogs.GetRow(d.Id);
+            _tblDatabaseLogs.FilterColumn('Name', 1, r.Name, true);
+            _tblDatabaseLogs.Load();
+        }
+        return (true);
+    }
+    function cbClearFilter(ud, d) {
+        _tblDatabaseLogs.ClearFilterColumn();
+        _tblDatabaseLogs.Load();
+        return (true);
+    }
+    function cbClear(ud, d) {
+        if (d.questStatus) {
+            if (IsAppSuccess(d)) {
+                _tblDatabaseLogs.Load();
+            }
+        }
+    }
+    function cbDelete(ud, d) {
+        if (d.questStatus) {
+            if (IsAppSuccess(d)) {
+                _tblDatabaseLogs.Load();
+            }
+        }
     }
 </script>

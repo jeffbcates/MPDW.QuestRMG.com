@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Validation;
 using System.Data.Sql;
 using System.Data.SqlClient;
 using System.Data.SqlTypes;
@@ -429,6 +430,17 @@ namespace Quest.MasterPricing.Services.Data.Database
                     return (new questStatus(Severity.Error, "Quest.Functional.MasterPricing.Database not created"));
                 }
                 databaseId = new DatabaseId(_database.Id);
+            }
+            catch (DbEntityValidationException ex)
+            {
+                // Retrieve the error messages as a list of strings.
+                var errorMessages = ex.EntityValidationErrors.SelectMany(x => x.ValidationErrors).Select(x => x.ErrorMessage);
+
+                String fullErrorMessage = string.Join("; ", errorMessages);
+                String exceptionMessage = string.Concat(ex.Message, fullErrorMessage);
+                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                                        this.GetType().Name, MethodBase.GetCurrentMethod().Name,
+                                        exceptionMessage)));
             }
             catch (System.Exception ex)
             {

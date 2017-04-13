@@ -91,14 +91,33 @@ namespace Quest.Util.Status
             ////this.Module = the calling class
             ////this.Method = the calling class method
 
+            Type type = this.GetType();
             StackTrace stackTrace = new StackTrace();
             for (int i=0; i < 10; i++)
             {
-                StackFrame stackFrame = stackTrace.GetFrame(i);
-                Type type = stackFrame.GetType();
-                MethodBase methodBase = stackFrame.GetMethod();
-                int x = 4;
-                x = 44;
+                MethodBase methodBase = stackTrace.GetFrame(i).GetMethod();
+                if (methodBase.DeclaringType == null) { continue; }
+                if (type.FullName != methodBase.DeclaringType.FullName)
+                {
+                    this.Module = methodBase.DeclaringType.FullName;
+                    ParameterInfo[] parameterInfos = methodBase.GetParameters();
+                    StringBuilder sbArgs = new StringBuilder();
+                    for (int idx= 0; idx < parameterInfos.Length; idx++)
+                    {
+                        ParameterInfo pi = parameterInfos[idx];
+                        if (pi.IsOut)
+                        {
+                            sbArgs.Append(" out ");
+                        }
+                        sbArgs.Append(pi.ParameterType.FullName + " " + pi.Name);
+                        if (idx+1 < parameterInfos.Length)
+                        {
+                            sbArgs.Append(", ");
+                        }
+                    }
+                    this.Method = methodBase.Name + "(" + sbArgs.ToString() + ")";
+                    break;
+                }
             }
             this.Message = "";
         }
@@ -130,13 +149,11 @@ namespace Quest.Util.Status
             sbToString.Append(this.Message);
             if (!string.IsNullOrEmpty(this.Module))
             {
-                sbToString.Append(", Module: ");
-                sbToString.Append(this.Module);
+                sbToString.Append(" " + this.Module);
             }
             if (!string.IsNullOrEmpty(this.Method))
             {
-                sbToString.Append(", Method: ");
-                sbToString.Append(this.Method);
+                sbToString.Append("." + this.Method);
             }
             return (sbToString.ToString());
         }
