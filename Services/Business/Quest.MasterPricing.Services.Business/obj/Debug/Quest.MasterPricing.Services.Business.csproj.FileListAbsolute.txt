@@ -62,3 +62,5 @@ C:\Quest\src\MPDW\Services\Business\Quest.MasterPricing.Services.Business\bin\De
 C:\Quest\src\MPDW\Services\Business\Quest.MasterPricing.Services.Business\obj\Debug\Quest.MasterPricing.Services.Business.csprojResolveAssemblyReference.cache
 C:\Quest\src\MPDW\Services\Business\Quest.MasterPricing.Services.Business\obj\Debug\Quest.MasterPricing.Services.Business.dll
 C:\Quest\src\MPDW\Services\Business\Quest.MasterPricing.Services.Business\obj\Debug\Quest.MasterPricing.Services.Business.pdb
+C:\Quest\src\MPDW\Services\Business\Quest.MasterPricing.Services.Business\bin\Debug\Quest.Services.Business.Logging.dll
+C:\Quest\src\MPDW\Services\Business\Quest.MasterPricing.Services.Business\bin\Debug\Quest.Services.Business.Logging.pdb

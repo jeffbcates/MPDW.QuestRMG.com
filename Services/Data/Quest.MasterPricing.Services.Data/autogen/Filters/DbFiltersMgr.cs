@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Validation;
 using System.Data.Sql;
 using System.Data.SqlClient;
 using System.Data.SqlTypes;
@@ -19,6 +20,8 @@ using Quest.Functional.FMS;
 using Quest.Functional.MasterPricing;
 using Quest.MPDW.Services.Data;
 using Quest.Services.Dbio.MasterPricing;
+using Quest.Functional.Logging;
+using Quest.Services.Data.Logging;
 
 
 namespace Quest.MasterPricing.Services.Data.Filters
@@ -29,6 +32,9 @@ namespace Quest.MasterPricing.Services.Data.Filters
         /*==================================================================================================================================
          * Declarations
          *=================================================================================================================================*/
+        private LogSetting _logSetting = null;
+        DbFilterLogsMgr _dbFilterLogsMgr = null;
+
         #endregion
 
 
@@ -48,6 +54,13 @@ namespace Quest.MasterPricing.Services.Data.Filters
         /*==================================================================================================================================
          * Properties
          *=================================================================================================================================*/
+        public bool bLogging
+        {
+            get
+            {
+                return (this._logSetting.bLogFilters);
+            }
+        }
         #endregion
 
 
@@ -69,6 +82,17 @@ namespace Quest.MasterPricing.Services.Data.Filters
             using (MasterPricingEntities dbContext = new MasterPricingEntities())
             {
                 status = create(dbContext, filter, out filterId);
+                if (bLogging)
+                {
+                    FilterLog filterLog = new FilterLog();
+                    filterLog.Database = "";
+                    filterLog.Tableset = "Tableset.Id=" + filter.TablesetId.ToString();
+                    filterLog.Name = filter.Name == null ? "(null)" : filter.Name;
+                    filterLog.Event = "CREATE";
+                    filterLog.Data = status.ToString();
+                    FilterLogId filterLogId = null;
+                    _dbFilterLogsMgr.Create(filterLog, out filterLogId);
+                }
                 if (!questStatusDef.IsSuccess(status))
                 {
                     return (status);
@@ -88,25 +112,18 @@ namespace Quest.MasterPricing.Services.Data.Filters
 
             // Create the filter in this transaction.
             status = create((MasterPricingEntities)trans.DbContext, filter, out filterId);
-            if (! questStatusDef.IsSuccess(status))
+            if (bLogging)
             {
-                return (status);
+                FilterLog filterLog = new FilterLog();
+                filterLog.Database = "";
+                filterLog.Tableset = "Tableset.Id=" + filter.TablesetId.ToString();
+                filterLog.Name = filter.Name == null ? "(null)" : filter.Name;
+                filterLog.Event = "CREATE";
+                filterLog.Data = status.ToString();
+                FilterLogId filterLogId = null;
+                _dbFilterLogsMgr.Create(filterLog, out filterLogId);
             }
-            return (new questStatus(Severity.Success));
-        }
-        public questStatus Create(DbMgrTransaction trans, List<Quest.Functional.MasterPricing.Filter> filterList, out List<Quest.Functional.MasterPricing.Filter> filterIdList)
-        {
-            // Initialize
-            questStatus status = null;
-            filterIdList = null;
-
-
-            // Data rules.
-
-
-            // Create the filters in this transaction.
-            status = create((MasterPricingEntities)trans.DbContext, filterList, out filterIdList);
-            if (!questStatusDef.IsSuccess(status))
+            if (! questStatusDef.IsSuccess(status))
             {
                 return (status);
             }
@@ -300,6 +317,17 @@ namespace Quest.MasterPricing.Services.Data.Filters
             using (MasterPricingEntities dbContext = new MasterPricingEntities())
             {
                 status = update(dbContext, filter);
+                if (bLogging)
+                {
+                    FilterLog filterLog = new FilterLog();
+                    filterLog.Database = "";
+                    filterLog.Tableset = "Tableset.Id=" + filter.TablesetId.ToString();
+                    filterLog.Name = filter.Name == null ? "(null)" : filter.Name;
+                    filterLog.Event = "UPDATE";
+                    filterLog.Data = status.ToString();
+                    FilterLogId filterLogId = null;
+                    _dbFilterLogsMgr.Create(filterLog, out filterLogId);
+                }
                 if (!questStatusDef.IsSuccess(status))
                 {
                     return (status);
@@ -316,6 +344,17 @@ namespace Quest.MasterPricing.Services.Data.Filters
 
             // Perform update in this transaction.
             status = update((MasterPricingEntities)trans.DbContext, filter);
+            if (bLogging)
+            {
+                FilterLog filterLog = new FilterLog();
+                filterLog.Database = "";
+                filterLog.Tableset = "Tableset.Id=" + filter.TablesetId.ToString();
+                filterLog.Name = filter.Name == null ? "(null)" : filter.Name;
+                filterLog.Event = "UPDATE";
+                filterLog.Data = status.ToString();
+                FilterLogId filterLogId = null;
+                _dbFilterLogsMgr.Create(filterLog, out filterLogId);
+            }
             if (!questStatusDef.IsSuccess(status))
             {
                 RollbackTransaction(trans);
@@ -333,6 +372,17 @@ namespace Quest.MasterPricing.Services.Data.Filters
             using (MasterPricingEntities dbContext = new MasterPricingEntities())
             {
                 status = delete(dbContext, filterId);
+                if (bLogging)
+                {
+                    FilterLog filterLog = new FilterLog();
+                    filterLog.Database = "";
+                    filterLog.Tableset = "";
+                    filterLog.Name = "Filter.Id=" + filterId.Id.ToString();
+                    filterLog.Event = "DELETE";
+                    filterLog.Data = status.ToString();
+                    FilterLogId filterLogId = null;
+                    _dbFilterLogsMgr.Create(filterLog, out filterLogId);
+                }
                 if (!questStatusDef.IsSuccess(status))
                 {
                     return (status);
@@ -348,6 +398,17 @@ namespace Quest.MasterPricing.Services.Data.Filters
 
             // Perform delete in this transaction.
             status = delete((MasterPricingEntities)trans.DbContext, filterId);
+            if (bLogging)
+            {
+                FilterLog filterLog = new FilterLog();
+                filterLog.Database = "";
+                filterLog.Tableset = "";
+                filterLog.Name = "Filter.Id=" + filterId.Id.ToString();
+                filterLog.Event = "DELETE";
+                filterLog.Data = status.ToString();
+                FilterLogId filterLogId = null;
+                _dbFilterLogsMgr.Create(filterLog, out filterLogId);
+            }
             if (! questStatusDef.IsSuccess(status))
             {
                 RollbackTransaction(trans);
@@ -365,6 +426,17 @@ namespace Quest.MasterPricing.Services.Data.Filters
             using (MasterPricingEntities dbContext = new MasterPricingEntities())
             {
                 status = delete(dbContext, tablesetId);
+                if (bLogging)
+                {
+                    FilterLog filterLog = new FilterLog();
+                    filterLog.Database = "";
+                    filterLog.Tableset = "";
+                    filterLog.Name = "Tableset.Id=" + tablesetId.Id.ToString();
+                    filterLog.Event = "DELETE";
+                    filterLog.Data = status.ToString();
+                    FilterLogId filterLogId = null;
+                    _dbFilterLogsMgr.Create(filterLog, out filterLogId);
+                }
                 if (!questStatusDef.IsSuccess(status))
                 {
                     return (status);
@@ -380,6 +452,17 @@ namespace Quest.MasterPricing.Services.Data.Filters
 
             // Perform delete in this transaction.
             status = delete((MasterPricingEntities)trans.DbContext, tablesetId);
+            if (bLogging)
+            {
+                FilterLog filterLog = new FilterLog();
+                filterLog.Database = "";
+                filterLog.Tableset = "";
+                filterLog.Name = "TablesetId.Id=" + tablesetId.Id.ToString();
+                filterLog.Event = "DELETE";
+                filterLog.Data = status.ToString();
+                FilterLogId filterLogId = null;
+                _dbFilterLogsMgr.Create(filterLog, out filterLogId);
+            }
             if (!questStatusDef.IsSuccess(status))
             {
                 RollbackTransaction(trans);
@@ -447,6 +530,7 @@ namespace Quest.MasterPricing.Services.Data.Filters
             questStatus status = null;
             try
             {
+                initLogging();
             }
             catch (System.Exception ex)
             {
@@ -456,6 +540,71 @@ namespace Quest.MasterPricing.Services.Data.Filters
             }
             return (new questStatus(Severity.Success));
         }
+
+
+        #region Logging
+        /*----------------------------------------------------------------------------------------------------------------------------------
+         * Logging
+         *---------------------------------------------------------------------------------------------------------------------------------*/
+        private questStatus initLogging()
+        {
+            // Initialize
+            questStatus status = null;
+
+            status = loadLogSettings();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            status = initLogger();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        private questStatus loadLogSettings()
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            // Get log settings.
+            LogSetting logSetting = null;
+            DbLogSettingsMgr dbLogSettingsMgr = new DbLogSettingsMgr(this.UserSession);
+            status = dbLogSettingsMgr.Read(out logSetting);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                this._logSetting = new LogSetting();
+                return (status);
+            }
+            this._logSetting = logSetting;
+
+
+            return (new questStatus(Severity.Success));
+        }
+        private questStatus initLogger()
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            if (this._logSetting.bLogFilters)
+            {
+                try
+                {
+                    _dbFilterLogsMgr = new DbFilterLogsMgr(this.UserSession);
+                }
+                catch (System.Exception ex)
+                {
+                    status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                            this.GetType().ToString(), MethodInfo.GetCurrentMethod().Name, ex.Message));
+                    return (status);
+                }
+            }
+            return (new questStatus(Severity.Success));
+        }
+        #endregion
 
 
         #region Filters

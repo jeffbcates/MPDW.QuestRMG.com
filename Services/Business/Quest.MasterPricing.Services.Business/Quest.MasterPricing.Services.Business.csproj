@@ -81,6 +81,10 @@
       <Project>{2fabe5d5-3871-405c-a9c5-3e95e1f68bb1}</Project>
       <Name>Quest.Functional.ASM</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\..\Functional\Quest.Functional.Logging\Quest.Functional.Logging.csproj">
+      <Project>{83358b20-3c00-4d74-ac4b-bde8549418cd}</Project>
+      <Name>Quest.Functional.Logging</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\Functional\Quest.Functional.MasterPricing\Quest.Functional.MasterPricing.csproj">
       <Project>{81321b6d-3b5a-41b7-b587-b9b844da0678}</Project>
       <Name>Quest.Functional.MasterPricing</Name>
@@ -101,9 +105,17 @@
       <Project>{f6725741-207f-4195-8d1a-9e2dbd27b2b4}</Project>
       <Name>Quest.MasterPricing.Services.Data</Name>
     </ProjectReference>
+    <ProjectReference Include="..\..\Data\Quest.Services.Data.Logging\Quest.Services.Data.Logging.csproj">
+      <Project>{eef58ee7-d4ae-4f42-b2db-33484a984b6f}</Project>
+      <Name>Quest.Services.Data.Logging</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\Data\Quest.Services.Data\Quest.Services.Data.csproj">
       <Project>{483b1cd9-22b5-4361-89e5-5a0492acad43}</Project>
       <Name>Quest.Services.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Quest.Services.Business.Logging\Quest.Services.Business.Logging.csproj">
+      <Project>{50dc188e-95af-42af-824e-48ddc672db12}</Project>
+      <Name>Quest.Services.Business.Logging</Name>
     </ProjectReference>
     <ProjectReference Include="..\Quest.Services.Business\Quest.Services.Business.csproj">
       <Project>{47336c82-ddcd-4565-a9df-9e2eff6a4336}</Project>

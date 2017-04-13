@@ -81,21 +81,6 @@ namespace Quest.MasterPricing.Services.Business.Filters
             }
             return (new questStatus(Severity.Success));
         }
-        public questStatus Create(DbMgrTransaction trans, List<Quest.Functional.MasterPricing.Filter> filterList, out List<Quest.Functional.MasterPricing.Filter> filterIdList)
-        {
-            // Initialize
-            questStatus status = null;
-            filterIdList = null;
-
-
-            // Create filter
-            status = _dbFiltersMgr.Create(trans, filterList, out filterIdList);
-            if (!questStatusDef.IsSuccess(status))
-            {
-                return (status);
-            }
-            return (new questStatus(Severity.Success));
-        }
         public questStatus Read(FilterId filterId, out Filter filter)
         {
             // Initialize

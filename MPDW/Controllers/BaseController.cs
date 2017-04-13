@@ -249,6 +249,10 @@ namespace Quest.MPDW.Controllers
          *=================================================================================================================================*/
         private void initialize()
         {
+            if (Request == null)
+            {
+                return;
+            }
             loadLogSettings();
         }
         private questStatus loadLogSettings()
@@ -305,6 +309,13 @@ namespace Quest.MPDW.Controllers
             // Initialize
             questStatus status = null;
 
+
+            // If the custom controller factory invoked us w/o a Request context,
+            // we need to load log settings.
+            if (this._logSetting == null)
+            {
+                loadLogSettings();
+            }
             if (! this._logSetting.bLogPortal)
             {
                 // Portal logging not turned on, thus return WARNING so HTTP request can be logged.
