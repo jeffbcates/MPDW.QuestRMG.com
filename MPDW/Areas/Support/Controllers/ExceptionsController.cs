@@ -359,6 +359,50 @@ namespace Quest.MPDW.Support
         }
         #endregion
 
+        [HttpGet]
+        public ActionResult StackTrace(ExceptionsEditorViewModel viewModel)
+        {
+            questStatus status = null;
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Log Operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = LogOperation();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                viewModel.questStatus = status;
+                return Json(viewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Authorize
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = Authorize(viewModel._ctx);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                viewModel.questStatus = status;
+                return Json(viewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Get list of items.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            ExceptionsEditorViewModel exceptionsEditorViewModelNEW = null;
+            ExceptionsListModeler exceptionsListModeler = new ExceptionsListModeler(this.Request, this.UserSession);
+            status = exceptionsListModeler.StackTrace(viewModel, out exceptionsEditorViewModelNEW);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                viewModel.questStatus = status;
+                return Json(viewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Return view
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = new questStatus(Severity.Success);
+            exceptionsEditorViewModelNEW.questStatus = status;
+            return Json(exceptionsEditorViewModelNEW, JsonRequestBehavior.AllowGet);
+        }
 
         #region Options
         //----------------------------------------------------------------------------------------------------------------------------------

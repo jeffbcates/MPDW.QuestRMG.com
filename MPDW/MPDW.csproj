@@ -202,6 +202,7 @@
     <Compile Include="Areas\Support\Modelers\LogSettingsEditorModeler.cs" />
     <Compile Include="Areas\Support\Modelers\HTTPRequestsListModeler.cs" />
     <Compile Include="Areas\Support\Models\DeleteLogItemsViewModel.cs" />
+    <Compile Include="Areas\Support\Models\ExceptionsEditorViewModel.cs" />
     <Compile Include="Areas\Support\Models\PortalRequestsListViewModel.cs" />
     <Compile Include="Areas\Support\Models\PortalRequestLineItemViewModel.cs" />
     <Compile Include="Areas\Support\Models\BulkUpdatesListViewModel.cs" />

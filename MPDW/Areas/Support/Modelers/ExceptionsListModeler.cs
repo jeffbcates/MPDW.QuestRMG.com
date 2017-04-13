@@ -206,6 +206,30 @@ namespace Quest.MPDW.Support.Modelers
             }
             return (new questStatus(Severity.Success));
         }
+        public questStatus StackTrace(ExceptionsEditorViewModel exceptionsEditorViewModel, out ExceptionsEditorViewModel exceptionsEditorViewModelNEW)
+        {
+            // Initialize
+            questStatus status = null;
+            exceptionsEditorViewModelNEW = null;
+
+
+            // Get the exception
+            ExceptionLogId exceptionLogId = new ExceptionLogId(exceptionsEditorViewModel.Id);
+            ExceptionLog exceptionLog = null;
+            ExceptionLogsMgr exceptionLogsMgr = new ExceptionLogsMgr(this.UserSession);
+            status = exceptionLogsMgr.Read(exceptionLogId, out exceptionLog);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+            // Transfer model.
+            exceptionsEditorViewModelNEW = new ExceptionsEditorViewModel(this.UserSession, exceptionsEditorViewModel);
+            BufferMgr.TransferBuffer(exceptionLog, exceptionsEditorViewModelNEW);
+
+
+            return (new questStatus(Severity.Success));
+        }
         #endregion
 
         #endregion

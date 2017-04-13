@@ -592,3 +592,6 @@ button.active {
     position: absolute;
     display: none;
 }
+.modal-extra-wide {
+    width: 90% !important;
+}

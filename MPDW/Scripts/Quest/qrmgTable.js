@@ -43,6 +43,8 @@ function qrmgTable(model) {
     }
     _self._sorter;
     _self._cmdpfx = '_tblcmd_';
+    _self._bMasking = _self._model.mask || !_self._model.bNoMasking;
+
 
     _self._init = function () {
         _self._mask = _self._model.mask || _self._e;
@@ -865,11 +867,14 @@ function qrmgTable(model) {
         return (_o);
     }
 
-    _self._docmd = function (n) {
+    _self.Do = function (n, bConfirmed) {
+        _self._docmd(n, bConfirmed);
+    }
+    _self._docmd = function (n, bConfirmed) {
         ClearUserMessage();
         var _cmd = _self._getcmd(n);
         if (!_cmd) {
-            DisplayUserMessage('E|' + n  +' command definition not found.')
+            DisplayUserMessage('E|' + n + ' command definition not found.');
             return;
         }
         DisplayUserMessage('I|' + (_cmd.label || _cmd.name) + '...');
@@ -891,6 +896,7 @@ function qrmgTable(model) {
                 qrmgmvc.Global.Unmask(_self._mask);
                 return;
             }
+
             var ud = {};
             ud[n] = true;
             var d = {};
@@ -910,6 +916,12 @@ function qrmgTable(model) {
                     return;
                 }
             }
+
+            if (_cmd.confirm && !bConfirmed) {
+                $(_cmd.confirm).modal('show');
+                return;
+            }
+
             var _url = (_cmd.uri ? _cmd.uri : null);
             if (!_url) {
                 _url = _self._model.uri + "/" + _cmd.name;
@@ -1192,6 +1204,13 @@ function qrmgTable(model) {
             var translate = "translate(0," + this.scrollTop + "px)";
             this.querySelector("thead").style.transform = translate;
         });
+    }
+
+    _self.Mask = function () {
+        qrmgmvc.Global.Mask(_self._mask);
+    }
+    _self.Unmask = function (e, bCM, bForce) {
+        qrmgmvc.Global.Unmask(_self._mask);
     }
 
     _self._init();

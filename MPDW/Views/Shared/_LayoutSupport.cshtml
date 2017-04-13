@@ -293,3 +293,26 @@
 <form id="frmLogout" method="post" action="/Session/Logout">
     <input type="hidden" id="ctx" name="ctx" value="@Model.UserSession.Id" />
 </form>
+
+<div class="modal fade" id="mdlgClearLog" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Confirm Clear Log</h4>
+            </div>
+            <div class="modal-body">
+                <p>You are about to delete every item in this log.</p>
+                <p>Do you want to proceed?</p>
+            </div>
+
+            <div class="modal-footer">
+                <button id="btnCancel" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button id="btnConfirm" type="button" class="btn btn-danger" data-dismiss="modal">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+
