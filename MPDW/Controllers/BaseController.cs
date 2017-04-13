@@ -99,6 +99,10 @@ namespace Quest.MPDW.Controllers
             Dictionary<string, object> dictQueryString = nvcQueryString.AllKeys.ToDictionary(k => k, k => (object)nvcQueryString[k]);
             return (new RouteValueDictionary(dictQueryString));
         }
+        public NameValueCollection ParseQueryString(string queryString)
+        {
+            return(HttpUtility.ParseQueryString(queryString));
+        }
         #endregion
 
 
@@ -112,7 +116,7 @@ namespace Quest.MPDW.Controllers
         // Geo Options
         //----------------------------------------------------------------------------------------------------------------------------------
         #endregion
-        
+
         #endregion
 
 
@@ -145,6 +149,9 @@ namespace Quest.MPDW.Controllers
          *=================================================================================================================================*/
         public questStatus Authorize()
         {
+            // NOTE: THIS CLASS HAS REDUNDANT CODE TO AVOID RE-TETSING ALREADY TESTED CODE. INSTEAD, ---EXTENDING--- THE CODE, TEMPORARILY, IS THE WAY TO GO.
+            //       OPTIMIZE IT LATER.
+
             // If we have a user session context submitted, use it.  Otherwise, this is a non-user session authorization which could be anything, e.g.
             // user agent, IP address, etc.
             string _ctx = Request.QueryString["_ctx"];
@@ -164,7 +171,27 @@ namespace Quest.MPDW.Controllers
                     return (new questStatus(Severity.Fatal, String.Format("Invalid user session")));
                 }
             }
-
+            else if (Request.HttpMethod.Equals("POST", StringComparison.InvariantCultureIgnoreCase))
+            {
+                NameValueCollection nvc = ParseQueryString(Request.UrlReferrer.AbsoluteUri);
+                _ctx = nvc["_ctx"];
+                if (_ctx != null)
+                {
+                    try
+                    {
+                        int ictx = BaseId.INVALID_ID;
+                        if (!int.TryParse(_ctx, out ictx))
+                        {
+                            return (new questStatus(Severity.Error, String.Format("Invalid user session")));
+                        }
+                        return (Authorize(ictx));
+                    }
+                    catch (System.Exception ex)
+                    {
+                        return (new questStatus(Severity.Fatal, String.Format("Invalid user session")));
+                    }
+                }
+            }
             return (new questStatus(Severity.Success));
         }
         public questStatus Authorize(object userSessionViewModel)
@@ -255,6 +282,11 @@ namespace Quest.MPDW.Controllers
             }
             loadLogSettings();
         }
+
+        #region Logging
+        /*----------------------------------------------------------------------------------------------------------------------------------
+         * Logging
+         *---------------------------------------------------------------------------------------------------------------------------------*/
         private questStatus loadLogSettings()
         {
             // Initialize
@@ -375,6 +407,54 @@ namespace Quest.MPDW.Controllers
             }
             return (new questStatus(Severity.Success));
         }
+        #endregion
+
+
+        #region User Session
+        /*----------------------------------------------------------------------------------------------------------------------------------
+         * User Session
+         *---------------------------------------------------------------------------------------------------------------------------------*/
+        public questStatus GetRequestContext()
+        {
+            string _ctx = Request.QueryString["_ctx"];
+            if (_ctx != null)
+            {
+                try
+                {
+                    int ictx = BaseId.INVALID_ID;
+                    if (!int.TryParse(_ctx, out ictx))
+                    {
+                        return (new questStatus(Severity.Error, String.Format("Invalid user session")));
+                    }
+                }
+                catch (System.Exception)
+                {
+                    return (new questStatus(Severity.Fatal, String.Format("Invalid user session")));
+                }
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus LoadUserSession(int ictx)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            // Get user session and assign as property to this class.
+            UserSessionId userSessionId = new UserSessionId(ictx);
+            UserSession userSession = null;
+            status = ValidateUserSession(userSessionId, out userSession);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            this._userSession = userSession;
+
+
+            return (new questStatus(Severity.Success));
+        }
+        #endregion
+
         #endregion
     }
 }
