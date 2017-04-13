@@ -320,6 +320,12 @@ namespace Quest.Services.Data.Logging
             portalRequestLogId = null;
 
 
+            // Initialize
+            portalRequestLog.UserSessionId = this.UserSession.Id;
+            portalRequestLog.Username = this.UserSession.User.Username;
+            portalRequestLog.Created = DateTime.Now;
+
+
             // Perform create
             try
             {

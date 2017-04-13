@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Validation;
 using System.Data.Sql;
 using System.Data.SqlClient;
 using System.Data.SqlTypes;
@@ -20,6 +21,8 @@ using Quest.Functional.MasterPricing;
 using Quest.MPDW.Services.Data;
 using Quest.Services.Dbio.MasterPricing;
 using Quest.MasterPricing.Services.Data.Filters;
+using Quest.Functional.Logging;
+using Quest.Services.Data.Logging;
 
 
 namespace Quest.MasterPricing.Services.Data.Database
@@ -30,6 +33,9 @@ namespace Quest.MasterPricing.Services.Data.Database
         /*==================================================================================================================================
          * Declarations
          *=================================================================================================================================*/
+        private LogSetting _logSetting = null;
+        DbTablesetLogsMgr _dbTablesetLogsMgr = null;
+
         #endregion
 
 
@@ -49,6 +55,13 @@ namespace Quest.MasterPricing.Services.Data.Database
         /*==================================================================================================================================
          * Properties
          *=================================================================================================================================*/
+        public bool bLogging
+        {
+            get
+            {
+                return (this._logSetting.bLogTablesets);
+            }
+        }
         #endregion
 
 
@@ -70,6 +83,16 @@ namespace Quest.MasterPricing.Services.Data.Database
             using (MasterPricingEntities dbContext = new MasterPricingEntities())
             {
                 status = create(dbContext, tableset, out tablesetId);
+                if (bLogging)
+                {
+                    TablesetLog tablesetLog = new TablesetLog();
+                    tablesetLog.Database = "Database.Id=" + tableset.DatabaseId.ToString();
+                    tablesetLog.Name = tableset.Name == null ? "(null)" : tableset.Name;
+                    tablesetLog.Event = "CREATE";
+                    tablesetLog.Data = status.ToString();
+                    TablesetLogId tablesetLogId = null;
+                    _dbTablesetLogsMgr.Create(tablesetLog, out tablesetLogId);
+                }
                 if (!questStatusDef.IsSuccess(status))
                 {
                     return (status);
@@ -89,6 +112,16 @@ namespace Quest.MasterPricing.Services.Data.Database
 
             // Create the tableset in this transaction.
             status = create((MasterPricingEntities)trans.DbContext, tableset, out tablesetId);
+            if (bLogging)
+            {
+                TablesetLog tablesetLog = new TablesetLog();
+                tablesetLog.Database = "Database.Id=" + tableset.DatabaseId.ToString();
+                tablesetLog.Name = tableset.Name == null ? "(null)" : tableset.Name;
+                tablesetLog.Event = "CREATE";
+                tablesetLog.Data = status.ToString();
+                TablesetLogId tablesetLogId = null;
+                _dbTablesetLogsMgr.Create(tablesetLog, out tablesetLogId);
+            }
             if (!questStatusDef.IsSuccess(status))
             {
                 return (status);
@@ -225,6 +258,16 @@ namespace Quest.MasterPricing.Services.Data.Database
             using (MasterPricingEntities dbContext = new MasterPricingEntities())
             {
                 status = update(dbContext, tableset);
+                if (bLogging)
+                {
+                    TablesetLog tablesetLog = new TablesetLog();
+                    tablesetLog.Database = "Database.Id=" + tableset.DatabaseId.ToString();
+                    tablesetLog.Name = tableset.Name == null ? "(null)" : tableset.Name;
+                    tablesetLog.Event = "UPDATE";
+                    tablesetLog.Data = status.ToString();
+                    TablesetLogId tablesetLogId = null;
+                    _dbTablesetLogsMgr.Create(tablesetLog, out tablesetLogId);
+                }
                 if (!questStatusDef.IsSuccess(status))
                 {
                     return (status);
@@ -248,6 +291,16 @@ namespace Quest.MasterPricing.Services.Data.Database
 
             // Perform update in this transaction.
             status = update((MasterPricingEntities)trans.DbContext, tableset);
+            if (bLogging)
+            {
+                TablesetLog tablesetLog = new TablesetLog();
+                tablesetLog.Database = "Database.Id=" + tableset.DatabaseId.ToString();
+                tablesetLog.Name = tableset.Name == null ? "(null)" : tableset.Name;
+                tablesetLog.Event = "UPDATE";
+                tablesetLog.Data = status.ToString();
+                TablesetLogId tablesetLogId = null;
+                _dbTablesetLogsMgr.Create(tablesetLog, out tablesetLogId);
+            }
             if (!questStatusDef.IsSuccess(status))
             {
                 return (status);
@@ -264,6 +317,16 @@ namespace Quest.MasterPricing.Services.Data.Database
             using (MasterPricingEntities dbContext = new MasterPricingEntities())
             {
                 status = delete(dbContext, tablesetId);
+                if (bLogging)
+                {
+                    TablesetLog tablesetLog = new TablesetLog();
+                    tablesetLog.Database = "";
+                    tablesetLog.Name = "Tableset.Id=" + tablesetId.Id;
+                    tablesetLog.Event = "DELETE";
+                    tablesetLog.Data = status.ToString();
+                    TablesetLogId tablesetLogId = null;
+                    _dbTablesetLogsMgr.Create(tablesetLog, out tablesetLogId);
+                }
                 if (!questStatusDef.IsSuccess(status))
                 {
                     return (status);
@@ -279,6 +342,16 @@ namespace Quest.MasterPricing.Services.Data.Database
 
             // Perform delete in this transaction.
             status = delete((MasterPricingEntities)trans.DbContext, tablesetId);
+            if (bLogging)
+            {
+                TablesetLog tablesetLog = new TablesetLog();
+                tablesetLog.Database = "";
+                tablesetLog.Name = "Tableset.Id=" + tablesetId.Id;
+                tablesetLog.Event = "DELETE";
+                tablesetLog.Data = status.ToString();
+                TablesetLogId tablesetLogId = null;
+                _dbTablesetLogsMgr.Create(tablesetLog, out tablesetLogId);
+            }
             if (!questStatusDef.IsSuccess(status))
             {
                 RollbackTransaction(trans);
@@ -333,7 +406,6 @@ namespace Quest.MasterPricing.Services.Data.Database
             }
             return (new questStatus(Severity.Success));
         }
-
 
         public questStatus RemoveTablesetInfoIFDbChanged(Tableset tableset)
         {
@@ -501,6 +573,7 @@ namespace Quest.MasterPricing.Services.Data.Database
             questStatus status = null;
             try
             {
+                initLogging();
             }
             catch (System.Exception ex)
             {
@@ -510,6 +583,71 @@ namespace Quest.MasterPricing.Services.Data.Database
             }
             return (new questStatus(Severity.Success));
         }
+
+
+        #region Logging
+        /*----------------------------------------------------------------------------------------------------------------------------------
+         * Logging
+         *---------------------------------------------------------------------------------------------------------------------------------*/
+        private questStatus initLogging()
+        {
+            // Initialize
+            questStatus status = null;
+
+            status = loadLogSettings();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            status = initLogger();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        private questStatus loadLogSettings()
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            // Get log settings.
+            LogSetting logSetting = null;
+            DbLogSettingsMgr dbLogSettingsMgr = new DbLogSettingsMgr(this.UserSession);
+            status = dbLogSettingsMgr.Read(out logSetting);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                this._logSetting = new LogSetting();
+                return (status);
+            }
+            this._logSetting = logSetting;
+
+
+            return (new questStatus(Severity.Success));
+        }
+        private questStatus initLogger()
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            if (this._logSetting.bLogTablesets)
+            {
+                try
+                {
+                    _dbTablesetLogsMgr = new DbTablesetLogsMgr(this.UserSession);
+                }
+                catch (System.Exception ex)
+                {
+                    status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                            this.GetType().ToString(), MethodInfo.GetCurrentMethod().Name, ex.Message));
+                    return (status);
+                }
+            }
+            return (new questStatus(Severity.Success));
+        }
+        #endregion
 
 
         #region Tablesets
@@ -534,6 +672,17 @@ namespace Quest.MasterPricing.Services.Data.Database
                     return (new questStatus(Severity.Error, "Quest.Functional.MasterPricing.Tableset not created"));
                 }
                 tablesetId = new TablesetId(_tableset.Id);
+            }
+            catch (DbEntityValidationException ex)
+            {
+                // Retrieve the error messages as a list of strings.
+                var errorMessages = ex.EntityValidationErrors.SelectMany(x => x.ValidationErrors).Select(x => x.ErrorMessage);
+
+                String fullErrorMessage = string.Join("; ", errorMessages);
+                String exceptionMessage = string.Concat(ex.Message, fullErrorMessage);
+                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                                        this.GetType().Name, MethodBase.GetCurrentMethod().Name,
+                                        exceptionMessage)));
             }
             catch (System.Exception ex)
             {
@@ -636,6 +785,17 @@ namespace Quest.MasterPricing.Services.Data.Database
                 BufferMgr.TransferBuffer(tableset, _tableset);
                 dbContext.SaveChanges();
             }
+            catch (DbEntityValidationException ex)
+            {
+                // Retrieve the error messages as a list of strings.
+                var errorMessages = ex.EntityValidationErrors.SelectMany(x => x.ValidationErrors).Select(x => x.ErrorMessage);
+
+                String fullErrorMessage = string.Join("; ", errorMessages);
+                String exceptionMessage = string.Concat(ex.Message, fullErrorMessage);
+                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                                        this.GetType().Name, MethodBase.GetCurrentMethod().Name,
+                                        exceptionMessage)));
+            }
             catch (System.Exception ex)
             {
                 return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
@@ -663,6 +823,17 @@ namespace Quest.MasterPricing.Services.Data.Database
                 // Delete the record.
                 dbContext.Tablesets.Remove(_tableset);
                 dbContext.SaveChanges();
+            }
+            catch (DbEntityValidationException ex)
+            {
+                // Retrieve the error messages as a list of strings.
+                var errorMessages = ex.EntityValidationErrors.SelectMany(x => x.ValidationErrors).Select(x => x.ErrorMessage);
+
+                String fullErrorMessage = string.Join("; ", errorMessages);
+                String exceptionMessage = string.Concat(ex.Message, fullErrorMessage);
+                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                                        this.GetType().Name, MethodBase.GetCurrentMethod().Name,
+                                        exceptionMessage)));
             }
             catch (System.Exception ex)
             {

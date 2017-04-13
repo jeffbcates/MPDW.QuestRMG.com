@@ -320,6 +320,12 @@ namespace Quest.Services.Data.Logging
             filterLogId = null;
 
 
+            // Initialize
+            filterLog.UserSessionId = this.UserSession.Id;
+            filterLog.Username = this.UserSession.User.Username;
+            filterLog.Created = DateTime.Now;
+
+
             // Perform create
             try
             {

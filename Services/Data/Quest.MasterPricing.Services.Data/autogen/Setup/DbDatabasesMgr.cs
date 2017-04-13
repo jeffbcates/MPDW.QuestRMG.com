@@ -519,6 +519,17 @@ namespace Quest.MasterPricing.Services.Data.Database
                 BufferMgr.TransferBuffer(database, _database);
                 dbContext.SaveChanges();
             }
+            catch (DbEntityValidationException ex)
+            {
+                // Retrieve the error messages as a list of strings.
+                var errorMessages = ex.EntityValidationErrors.SelectMany(x => x.ValidationErrors).Select(x => x.ErrorMessage);
+
+                String fullErrorMessage = string.Join("; ", errorMessages);
+                String exceptionMessage = string.Concat(ex.Message, fullErrorMessage);
+                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                                        this.GetType().Name, MethodBase.GetCurrentMethod().Name,
+                                        exceptionMessage)));
+            }
             catch (System.Exception ex)
             {
                 return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
@@ -555,6 +566,17 @@ namespace Quest.MasterPricing.Services.Data.Database
                 // Delete the record.
                 dbContext.Databases.Remove(_database);
                 dbContext.SaveChanges();
+            }
+            catch (DbEntityValidationException ex)
+            {
+                // Retrieve the error messages as a list of strings.
+                var errorMessages = ex.EntityValidationErrors.SelectMany(x => x.ValidationErrors).Select(x => x.ErrorMessage);
+
+                String fullErrorMessage = string.Join("; ", errorMessages);
+                String exceptionMessage = string.Concat(ex.Message, fullErrorMessage);
+                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                                        this.GetType().Name, MethodBase.GetCurrentMethod().Name,
+                                        exceptionMessage)));
             }
             catch (System.Exception ex)
             {

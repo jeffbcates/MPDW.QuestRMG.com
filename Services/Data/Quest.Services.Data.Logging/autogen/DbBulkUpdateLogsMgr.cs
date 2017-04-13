@@ -320,6 +320,12 @@ namespace Quest.Services.Data.Logging
             bulkUpdateLogId = null;
 
 
+            // Initialize
+            bulkUpdateLog.UserSessionId = this.UserSession.Id;
+            bulkUpdateLog.Username = this.UserSession.User.Username;
+            bulkUpdateLog.Created = DateTime.Now;
+
+
             // Perform create
             try
             {

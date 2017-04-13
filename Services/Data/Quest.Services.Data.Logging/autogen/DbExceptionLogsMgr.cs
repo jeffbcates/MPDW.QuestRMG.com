@@ -320,6 +320,12 @@ namespace Quest.Services.Data.Logging
             exceptionLogId = null;
 
 
+            // Initialize
+            exceptionLog.UserSessionId = this.UserSession.Id;
+            exceptionLog.Username = this.UserSession.User.Username;
+            exceptionLog.Created = DateTime.Now;
+
+
             // Perform create
             try
             {

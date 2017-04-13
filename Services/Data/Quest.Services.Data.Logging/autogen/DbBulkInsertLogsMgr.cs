@@ -321,6 +321,12 @@ namespace Quest.Services.Data.Logging
             bulkInsertLogId = null;
 
 
+            // Initialize
+            bulkInsertLog.UserSessionId = this.UserSession.Id;
+            bulkInsertLog.Username = this.UserSession.User.Username;
+            bulkInsertLog.Created = DateTime.Now;
+
+
             // Perform create
             try
             {

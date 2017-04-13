@@ -320,6 +320,12 @@ namespace Quest.Services.Data.Logging
             storedProcedureLogId = null;
 
 
+            // Initialize
+            storedProcedureLog.UserSessionId = this.UserSession.Id;
+            storedProcedureLog.Username = this.UserSession.User.Username;
+            storedProcedureLog.Created = DateTime.Now;
+
+
             // Perform create
             try
             {
