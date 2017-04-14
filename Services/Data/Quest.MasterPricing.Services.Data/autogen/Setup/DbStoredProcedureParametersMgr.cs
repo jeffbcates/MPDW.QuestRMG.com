@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Validation;
 using System.Data.Sql;
 using System.Data.SqlClient;
 using System.Data.SqlTypes;
@@ -19,11 +20,13 @@ using Quest.Functional.FMS;
 using Quest.Functional.MasterPricing;
 using Quest.MPDW.Services.Data;
 using Quest.Services.Dbio.MasterPricing;
+using Quest.Functional.Logging;
+using Quest.Services.Data.Logging;
 
 
 namespace Quest.MasterPricing.Services.Data.Database
 {
-    public class DbStoredProcedureParametersMgr : DbMgrSessionBased
+    public class DbStoredProcedureParametersMgr : DbLogsMgr
     {
         #region Declarations
         /*==================================================================================================================================
@@ -337,9 +340,11 @@ namespace Quest.MasterPricing.Services.Data.Database
                     }
                     catch (System.Exception ex)
                     {
-                        return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                        status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                                 this.GetType().Name, MethodBase.GetCurrentMethod().Name,
-                                ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+                                ex.InnerException != null ? ex.InnerException.Message : ex.Message));
+                        LogException(ex, status);
+                        return (status);
                     }
                 }
             }
@@ -363,6 +368,7 @@ namespace Quest.MasterPricing.Services.Data.Database
             {
                 status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                         this.GetType().ToString(), MethodInfo.GetCurrentMethod().Name, ex.Message));
+                LogException(ex, status);
                 throw new System.Exception(status.Message, ex);
             }
             return (new questStatus(Severity.Success));
@@ -376,6 +382,7 @@ namespace Quest.MasterPricing.Services.Data.Database
         private questStatus create(MasterPricingEntities dbContext, Quest.Functional.MasterPricing.StoredProcedureParameter storedProcedureParameter, out StoredProcedureParameterId storedProcedureParameterId)
         {
             // Initialize
+            questStatus status = null;
             storedProcedureParameterId = null;
 
 
@@ -392,17 +399,32 @@ namespace Quest.MasterPricing.Services.Data.Database
                 }
                 storedProcedureParameterId = new StoredProcedureParameterId(_storedProcedureParameters.Id);
             }
+            catch (DbEntityValidationException ex)
+            {
+                var errorMessages = ex.EntityValidationErrors.SelectMany(x => x.ValidationErrors).Select(x => x.ErrorMessage);
+                String fullErrorMessage = string.Join("; ", errorMessages);
+                String exceptionMessage = string.Concat(ex.Message, fullErrorMessage);
+
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                                        this.GetType().Name, MethodBase.GetCurrentMethod().Name,
+                                        exceptionMessage));
+                LogException(ex, status);
+                return (status);
+            }
             catch (System.Exception ex)
             {
-                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                         this.GetType().Name, MethodBase.GetCurrentMethod().Name,
-                        ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+                        ex.InnerException != null ? ex.InnerException.Message : ex.Message));
+                LogException(ex, status);
+                return (status);
             }
             return (new questStatus(Severity.Success));
         }
         private questStatus create(MasterPricingEntities dbContext, List<Quest.Functional.MasterPricing.StoredProcedureParameter> storedProcedureParameterList, out List<Quest.Functional.MasterPricing.StoredProcedureParameter> storedProcedureParameterIdList)
         {
             // Initialize
+            questStatus status = null;
             storedProcedureParameterIdList = null;
 
 
@@ -427,17 +449,32 @@ namespace Quest.MasterPricing.Services.Data.Database
                     storedProcedureParameterIdList.Add(storedProcedureParameter);
                 }
             }
+            catch (DbEntityValidationException ex)
+            {
+                var errorMessages = ex.EntityValidationErrors.SelectMany(x => x.ValidationErrors).Select(x => x.ErrorMessage);
+                String fullErrorMessage = string.Join("; ", errorMessages);
+                String exceptionMessage = string.Concat(ex.Message, fullErrorMessage);
+
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                                        this.GetType().Name, MethodBase.GetCurrentMethod().Name,
+                                        exceptionMessage));
+                LogException(ex, status);
+                return (status);
+            }
             catch (System.Exception ex)
             {
-                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                         this.GetType().Name, MethodBase.GetCurrentMethod().Name,
-                        ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+                        ex.InnerException != null ? ex.InnerException.Message : ex.Message));
+                LogException(ex, status);
+                return (status);
             }
             return (new questStatus(Severity.Success));
         }
         private questStatus read(MasterPricingEntities dbContext, StoredProcedureParameterId storedProcedureParameterId, out Quest.Services.Dbio.MasterPricing.StoredProcedureParameters storedProcedureParameter)
         {
             // Initialize
+            questStatus status = null;
             storedProcedureParameter = null;
 
 
@@ -453,15 +490,18 @@ namespace Quest.MasterPricing.Services.Data.Database
             }
             catch (System.Exception ex)
             {
-                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                         this.GetType().Name, MethodBase.GetCurrentMethod().Name,
-                        ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+                        ex.InnerException != null ? ex.InnerException.Message : ex.Message));
+                LogException(ex, status);
+                return (status);
             }
             return (new questStatus(Severity.Success));
         }
         private questStatus read(MasterPricingEntities dbContext, StoredProcedureId storedProcedureId, out List<Quest.Services.Dbio.MasterPricing.StoredProcedureParameters> storedProcedureParameterList)
         {
             // Initialize
+            questStatus status = null;
             storedProcedureParameterList = null;
 
 
@@ -477,9 +517,11 @@ namespace Quest.MasterPricing.Services.Data.Database
             }
             catch (System.Exception ex)
             {
-                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                         this.GetType().Name, MethodBase.GetCurrentMethod().Name,
-                        ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+                        ex.InnerException != null ? ex.InnerException.Message : ex.Message));
+                LogException(ex, status);
+                return (status);
             }
             return (new questStatus(Severity.Success));
         }
@@ -504,11 +546,24 @@ namespace Quest.MasterPricing.Services.Data.Database
                 BufferMgr.TransferBuffer(storedProcedureParameter, _storedProcedureParameters);
                 dbContext.SaveChanges();
             }
+            catch (DbEntityValidationException ex)
+            {
+                var errorMessages = ex.EntityValidationErrors.SelectMany(x => x.ValidationErrors).Select(x => x.ErrorMessage);
+                String fullErrorMessage = string.Join("; ", errorMessages);
+                String exceptionMessage = string.Concat(ex.Message, fullErrorMessage);
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                                        this.GetType().Name, MethodBase.GetCurrentMethod().Name,
+                                        exceptionMessage));
+                LogException(ex, status);
+                return (status);
+            }
             catch (System.Exception ex)
             {
-                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                         this.GetType().Name, MethodBase.GetCurrentMethod().Name,
-                        ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+                        ex.InnerException != null ? ex.InnerException.Message : ex.Message));
+                LogException(ex, status);
+                return (status);
             }
             return (new questStatus(Severity.Success));
         }
@@ -532,11 +587,24 @@ namespace Quest.MasterPricing.Services.Data.Database
                 dbContext.StoredProcedureParameters.Remove(_storedProcedureParameters);
                 dbContext.SaveChanges();
             }
+            catch (DbEntityValidationException ex)
+            {
+                var errorMessages = ex.EntityValidationErrors.SelectMany(x => x.ValidationErrors).Select(x => x.ErrorMessage);
+                String fullErrorMessage = string.Join("; ", errorMessages);
+                String exceptionMessage = string.Concat(ex.Message, fullErrorMessage);
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                                        this.GetType().Name, MethodBase.GetCurrentMethod().Name,
+                                        exceptionMessage));
+                LogException(ex, status);
+                return (status);
+            }
             catch (System.Exception ex)
             {
-                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                         this.GetType().Name, MethodBase.GetCurrentMethod().Name,
-                        ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+                        ex.InnerException != null ? ex.InnerException.Message : ex.Message));
+                LogException(ex, status);
+                return (status);
             }
             return (new questStatus(Severity.Success));
         }
@@ -560,11 +628,24 @@ namespace Quest.MasterPricing.Services.Data.Database
                 dbContext.StoredProcedureParameters.RemoveRange(_storedProcedureParametersList);
                 dbContext.SaveChanges();
             }
+            catch (DbEntityValidationException ex)
+            {
+                var errorMessages = ex.EntityValidationErrors.SelectMany(x => x.ValidationErrors).Select(x => x.ErrorMessage);
+                String fullErrorMessage = string.Join("; ", errorMessages);
+                String exceptionMessage = string.Concat(ex.Message, fullErrorMessage);
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                                        this.GetType().Name, MethodBase.GetCurrentMethod().Name,
+                                        exceptionMessage));
+                LogException(ex, status);
+                return (status);
+            }
             catch (System.Exception ex)
             {
-                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                         this.GetType().Name, MethodBase.GetCurrentMethod().Name,
-                        ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+                        ex.InnerException != null ? ex.InnerException.Message : ex.Message));
+                LogException(ex, status);
+                return (status);
             }
             return (new questStatus(Severity.Success));
         }

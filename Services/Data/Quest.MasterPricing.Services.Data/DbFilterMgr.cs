@@ -985,7 +985,8 @@ namespace Quest.MasterPricing.Services.Data.Filters
 
             // Get filter
             Filter filter = null;
-            status = GetFilter(trans, filterId, out filter);
+            ////status = GetFilter(trans, filterId, out filter);
+            status = GetFilter(filterId, out filter);
             if (!questStatusDef.IsSuccess(status))
             {
                 return (status);

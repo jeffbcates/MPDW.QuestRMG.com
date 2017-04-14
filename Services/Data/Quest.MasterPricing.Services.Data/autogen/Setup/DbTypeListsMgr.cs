@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Configuration;
 using System.Data;
 using System.Data.Entity;
+using System.Data.Entity.Validation;
 using System.Data.Sql;
 using System.Data.SqlClient;
 using System.Data.SqlTypes;
@@ -19,11 +20,13 @@ using Quest.Functional.FMS;
 using Quest.Functional.MasterPricing;
 using Quest.MPDW.Services.Data;
 using Quest.Services.Dbio.MasterPricing;
+using Quest.Functional.Logging;
+using Quest.Services.Data.Logging;
 
 
 namespace Quest.MasterPricing.Services.Data.Database
 {
-    public class DbTypeListsMgr : DbMgrSessionBased
+    public class DbTypeListsMgr : DbLogsMgr
     {
         #region Declarations
         /*==================================================================================================================================
@@ -261,9 +264,11 @@ namespace Quest.MasterPricing.Services.Data.Database
                     }
                     catch (System.Exception ex)
                     {
-                        return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                        status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                                 this.GetType().Name, MethodBase.GetCurrentMethod().Name,
-                                ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+                                ex.InnerException != null ? ex.InnerException.Message : ex.Message));
+                        LogException(ex, status);
+                        return (status);
                     }
                 }
             }
@@ -287,6 +292,7 @@ namespace Quest.MasterPricing.Services.Data.Database
             {
                 status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                         this.GetType().ToString(), MethodInfo.GetCurrentMethod().Name, ex.Message));
+                LogException(ex, status);
                 throw new System.Exception(status.Message, ex);
             }
             return (new questStatus(Severity.Success));
@@ -300,6 +306,7 @@ namespace Quest.MasterPricing.Services.Data.Database
         private questStatus create(MasterPricingEntities dbContext, Quest.Functional.MasterPricing.TypeList typeList, out TypeListId typeListId)
         {
             // Initialize
+            questStatus status = null;
             typeListId = null;
 
 
@@ -316,17 +323,32 @@ namespace Quest.MasterPricing.Services.Data.Database
                 }
                 typeListId = new TypeListId(_typeList.Id);
             }
+            catch (DbEntityValidationException ex)
+            {
+                var errorMessages = ex.EntityValidationErrors.SelectMany(x => x.ValidationErrors).Select(x => x.ErrorMessage);
+                String fullErrorMessage = string.Join("; ", errorMessages);
+                String exceptionMessage = string.Concat(ex.Message, fullErrorMessage);
+
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                                        this.GetType().Name, MethodBase.GetCurrentMethod().Name,
+                                        exceptionMessage));
+                LogException(ex, status);
+                return (status);
+            }
             catch (System.Exception ex)
             {
-                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                         this.GetType().Name, MethodBase.GetCurrentMethod().Name,
-                        ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+                        ex.InnerException != null ? ex.InnerException.Message : ex.Message));
+                LogException(ex, status);
+                return (status);
             }
             return (new questStatus(Severity.Success));
         }
         private questStatus read(MasterPricingEntities dbContext, TypeListId typeListId, out Quest.Services.Dbio.MasterPricing.TypeLists typeList)
         {
             // Initialize
+            questStatus status = null;
             typeList = null;
 
 
@@ -342,15 +364,18 @@ namespace Quest.MasterPricing.Services.Data.Database
             }
             catch (System.Exception ex)
             {
-                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                         this.GetType().Name, MethodBase.GetCurrentMethod().Name,
-                        ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+                        ex.InnerException != null ? ex.InnerException.Message : ex.Message));
+                LogException(ex, status);
+                return (status);
             }
             return (new questStatus(Severity.Success));
         }
         private questStatus read(MasterPricingEntities dbContext, string name, out Quest.Services.Dbio.MasterPricing.TypeLists typeList)
         {
             // Initialize
+            questStatus status = null;
             typeList = null;
 
 
@@ -366,9 +391,11 @@ namespace Quest.MasterPricing.Services.Data.Database
             }
             catch (System.Exception ex)
             {
-                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                         this.GetType().Name, MethodBase.GetCurrentMethod().Name,
-                        ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+                        ex.InnerException != null ? ex.InnerException.Message : ex.Message));
+                LogException(ex, status);
+                return (status);
             }
             return (new questStatus(Severity.Success));
         }
@@ -393,11 +420,24 @@ namespace Quest.MasterPricing.Services.Data.Database
                 BufferMgr.TransferBuffer(typeList, _typeList);
                 dbContext.SaveChanges();
             }
+            catch (DbEntityValidationException ex)
+            {
+                var errorMessages = ex.EntityValidationErrors.SelectMany(x => x.ValidationErrors).Select(x => x.ErrorMessage);
+                String fullErrorMessage = string.Join("; ", errorMessages);
+                String exceptionMessage = string.Concat(ex.Message, fullErrorMessage);
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                                        this.GetType().Name, MethodBase.GetCurrentMethod().Name,
+                                        exceptionMessage));
+                LogException(ex, status);
+                return (status);
+            }
             catch (System.Exception ex)
             {
-                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                         this.GetType().Name, MethodBase.GetCurrentMethod().Name,
-                        ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+                        ex.InnerException != null ? ex.InnerException.Message : ex.Message));
+                LogException(ex, status);
+                return (status);
             }
             return (new questStatus(Severity.Success));
         }
@@ -421,13 +461,27 @@ namespace Quest.MasterPricing.Services.Data.Database
                 dbContext.TypeLists.Remove(_typeList);
                 dbContext.SaveChanges();
             }
+            catch (DbEntityValidationException ex)
+            {
+                var errorMessages = ex.EntityValidationErrors.SelectMany(x => x.ValidationErrors).Select(x => x.ErrorMessage);
+                String fullErrorMessage = string.Join("; ", errorMessages);
+                String exceptionMessage = string.Concat(ex.Message, fullErrorMessage);
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                                        this.GetType().Name, MethodBase.GetCurrentMethod().Name,
+                                        exceptionMessage));
+                LogException(ex, status);
+                return (status);
+            }
             catch (System.Exception ex)
             {
-                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                         this.GetType().Name, MethodBase.GetCurrentMethod().Name,
-                        ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+                        ex.InnerException != null ? ex.InnerException.Message : ex.Message));
+                LogException(ex, status);
+                return (status);
             }
-            return (new questStatus(Severity.Success));
+            status = new questStatus(Severity.Success, "TypeList successfully deleted.  TypeListId.Id=" + typeListId.Id);
+            return (status);
         }
         #endregion
 

@@ -397,9 +397,11 @@ namespace Quest.MasterPricing.Services.Data.Database
                     }
                     catch (System.Exception ex)
                     {
-                        return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                        status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                                 this.GetType().Name, MethodBase.GetCurrentMethod().Name,
-                                ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+                                ex.InnerException != null ? ex.InnerException.Message : ex.Message));
+                        LogException(ex, status);
+                        return (status);
                     }
                 }
             }
@@ -578,6 +580,7 @@ namespace Quest.MasterPricing.Services.Data.Database
             {
                 status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                         this.GetType().ToString(), MethodInfo.GetCurrentMethod().Name, ex.Message));
+                LogException(ex, status);
                 throw new System.Exception(status.Message, ex);
             }
             return (new questStatus(Severity.Success));
@@ -604,6 +607,7 @@ namespace Quest.MasterPricing.Services.Data.Database
                 {
                     status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                             this.GetType().ToString(), MethodInfo.GetCurrentMethod().Name, ex.Message));
+                    LogException(ex, status);
                     return (status);
                 }
             }
@@ -619,6 +623,7 @@ namespace Quest.MasterPricing.Services.Data.Database
         private questStatus create(MasterPricingEntities dbContext, Quest.Functional.MasterPricing.Tableset tableset, out TablesetId tablesetId)
         {
             // Initialize
+            questStatus status = null;
             tablesetId = null;
 
 
@@ -637,26 +642,30 @@ namespace Quest.MasterPricing.Services.Data.Database
             }
             catch (DbEntityValidationException ex)
             {
-                // Retrieve the error messages as a list of strings.
                 var errorMessages = ex.EntityValidationErrors.SelectMany(x => x.ValidationErrors).Select(x => x.ErrorMessage);
-
                 String fullErrorMessage = string.Join("; ", errorMessages);
                 String exceptionMessage = string.Concat(ex.Message, fullErrorMessage);
-                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                                         this.GetType().Name, MethodBase.GetCurrentMethod().Name,
-                                        exceptionMessage)));
+                                        exceptionMessage));
+                LogException(ex, status);
+                return (status);
             }
             catch (System.Exception ex)
             {
-                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                         this.GetType().Name, MethodBase.GetCurrentMethod().Name,
-                        ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+                        ex.InnerException != null ? ex.InnerException.Message : ex.Message));
+                LogException(ex, status);
+                return (status);
             }
             return (new questStatus(Severity.Success));
         }
         private questStatus read(MasterPricingEntities dbContext, TablesetId tablesetId, out Quest.Services.Dbio.MasterPricing.Tablesets tableset)
         {
             // Initialize
+            questStatus status = null;
             tableset = null;
 
 
@@ -672,15 +681,18 @@ namespace Quest.MasterPricing.Services.Data.Database
             }
             catch (System.Exception ex)
             {
-                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                         this.GetType().Name, MethodBase.GetCurrentMethod().Name,
-                        ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+                        ex.InnerException != null ? ex.InnerException.Message : ex.Message));
+                LogException(ex, status);
+                return (status);
             }
             return (new questStatus(Severity.Success));
         }
         private questStatus read(MasterPricingEntities dbContext, string name, out Quest.Services.Dbio.MasterPricing.Tablesets tableset)
         {
             // Initialize
+            questStatus status = null;
             tableset = null;
 
 
@@ -696,15 +708,18 @@ namespace Quest.MasterPricing.Services.Data.Database
             }
             catch (System.Exception ex)
             {
-                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                         this.GetType().Name, MethodBase.GetCurrentMethod().Name,
-                        ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+                        ex.InnerException != null ? ex.InnerException.Message : ex.Message));
+                LogException(ex, status);
+                return (status);
             }
             return (new questStatus(Severity.Success));
         }
         private questStatus read(MasterPricingEntities dbContext, DatabaseId databaseId, out List<Quest.Services.Dbio.MasterPricing.Tablesets> tablesetList)
         {
             // Initialize
+            questStatus status = null;
             tablesetList = null;
 
 
@@ -720,9 +735,11 @@ namespace Quest.MasterPricing.Services.Data.Database
             }
             catch (System.Exception ex)
             {
-                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                         this.GetType().Name, MethodBase.GetCurrentMethod().Name,
-                        ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+                        ex.InnerException != null ? ex.InnerException.Message : ex.Message));
+                LogException(ex, status);
+                return (status);
             }
             return (new questStatus(Severity.Success));
         }
@@ -749,20 +766,22 @@ namespace Quest.MasterPricing.Services.Data.Database
             }
             catch (DbEntityValidationException ex)
             {
-                // Retrieve the error messages as a list of strings.
                 var errorMessages = ex.EntityValidationErrors.SelectMany(x => x.ValidationErrors).Select(x => x.ErrorMessage);
-
                 String fullErrorMessage = string.Join("; ", errorMessages);
                 String exceptionMessage = string.Concat(ex.Message, fullErrorMessage);
-                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                                         this.GetType().Name, MethodBase.GetCurrentMethod().Name,
-                                        exceptionMessage)));
+                                        exceptionMessage));
+                LogException(ex, status);
+                return (status);
             }
             catch (System.Exception ex)
             {
-                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                         this.GetType().Name, MethodBase.GetCurrentMethod().Name,
-                        ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+                        ex.InnerException != null ? ex.InnerException.Message : ex.Message));
+                LogException(ex, status);
+                return (status);
             }
             return (new questStatus(Severity.Success));
         }
@@ -788,22 +807,34 @@ namespace Quest.MasterPricing.Services.Data.Database
             }
             catch (DbEntityValidationException ex)
             {
-                // Retrieve the error messages as a list of strings.
                 var errorMessages = ex.EntityValidationErrors.SelectMany(x => x.ValidationErrors).Select(x => x.ErrorMessage);
-
                 String fullErrorMessage = string.Join("; ", errorMessages);
                 String exceptionMessage = string.Concat(ex.Message, fullErrorMessage);
-                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                                         this.GetType().Name, MethodBase.GetCurrentMethod().Name,
-                                        exceptionMessage)));
+                                        exceptionMessage));
+                LogException(ex, status);
+                return (status);
             }
             catch (System.Exception ex)
             {
-                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                         this.GetType().Name, MethodBase.GetCurrentMethod().Name,
-                        ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+                        ex.InnerException != null ? ex.InnerException.Message : ex.Message));
+                LogException(ex, status);
+                return (status);
             }
-            return (new questStatus(Severity.Success));
+            status = new questStatus(Severity.Success, "Tableset successfully deleted.  TablesetId.Id=" + tablesetId.Id);
+            if (bLogging)
+            {
+                TablesetLog tablesetLog = new TablesetLog();
+                tablesetLog.Name = "TablesetId.Id=" + tablesetId.Id;
+                tablesetLog.Event = "DELETE";
+                tablesetLog.Data = status.ToString();
+                TablesetLogId tablesetLogId = null;
+                _dbTablesetLogsMgr.Create(tablesetLog, out tablesetLogId);
+            }
+            return (status);
         }
         #endregion
 

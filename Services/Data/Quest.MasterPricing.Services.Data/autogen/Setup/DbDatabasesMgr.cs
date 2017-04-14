@@ -400,9 +400,7 @@ namespace Quest.MasterPricing.Services.Data.Database
             }
             catch (DbEntityValidationException ex)
             {
-                // Retrieve the error messages as a list of strings.
                 var errorMessages = ex.EntityValidationErrors.SelectMany(x => x.ValidationErrors).Select(x => x.ErrorMessage);
-
                 String fullErrorMessage = string.Join("; ", errorMessages);
                 String exceptionMessage = string.Concat(ex.Message, fullErrorMessage);
 
@@ -425,6 +423,7 @@ namespace Quest.MasterPricing.Services.Data.Database
         private questStatus read(MasterPricingEntities dbContext, Quest.Functional.MasterPricing.DatabaseId databaseId, out Quest.Services.Dbio.MasterPricing.Databases database)
         {
             // Initialize
+            questStatus status = null;
             database = null;
 
 
@@ -440,15 +439,18 @@ namespace Quest.MasterPricing.Services.Data.Database
             }
             catch (System.Exception ex)
             {
-                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                         this.GetType().Name, MethodBase.GetCurrentMethod().Name,
-                        ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+                        ex.InnerException != null ? ex.InnerException.Message : ex.Message));
+                LogException(ex, status);
+                return (status);
             }
             return (new questStatus(Severity.Success));
         }
         private questStatus read(MasterPricingEntities dbContext, string name, out Quest.Services.Dbio.MasterPricing.Databases database)
         {
             // Initialize
+            questStatus status = null;
             database = null;
 
 
@@ -464,9 +466,11 @@ namespace Quest.MasterPricing.Services.Data.Database
             }
             catch (System.Exception ex)
             {
-                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                         this.GetType().Name, MethodBase.GetCurrentMethod().Name,
-                        ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+                        ex.InnerException != null ? ex.InnerException.Message : ex.Message));
+                LogException(ex, status);
+                return (status);
             }
             return (new questStatus(Severity.Success));
         }
@@ -493,20 +497,22 @@ namespace Quest.MasterPricing.Services.Data.Database
             }
             catch (DbEntityValidationException ex)
             {
-                // Retrieve the error messages as a list of strings.
                 var errorMessages = ex.EntityValidationErrors.SelectMany(x => x.ValidationErrors).Select(x => x.ErrorMessage);
-
                 String fullErrorMessage = string.Join("; ", errorMessages);
                 String exceptionMessage = string.Concat(ex.Message, fullErrorMessage);
-                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                                         this.GetType().Name, MethodBase.GetCurrentMethod().Name,
-                                        exceptionMessage)));
+                                        exceptionMessage));
+                LogException(ex, status);
+                return (status);
             }
             catch (System.Exception ex)
             {
-                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                         this.GetType().Name, MethodBase.GetCurrentMethod().Name,
-                        ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+                        ex.InnerException != null ? ex.InnerException.Message : ex.Message));
+                LogException(ex, status);
+                return (status);
             }
             return (new questStatus(Severity.Success));
         }
@@ -541,20 +547,22 @@ namespace Quest.MasterPricing.Services.Data.Database
             }
             catch (DbEntityValidationException ex)
             {
-                // Retrieve the error messages as a list of strings.
                 var errorMessages = ex.EntityValidationErrors.SelectMany(x => x.ValidationErrors).Select(x => x.ErrorMessage);
-
                 String fullErrorMessage = string.Join("; ", errorMessages);
                 String exceptionMessage = string.Concat(ex.Message, fullErrorMessage);
-                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                                         this.GetType().Name, MethodBase.GetCurrentMethod().Name,
-                                        exceptionMessage)));
+                                        exceptionMessage));
+                LogException(ex, status);
+                return (status);
             }
             catch (System.Exception ex)
             {
-                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                         this.GetType().Name, MethodBase.GetCurrentMethod().Name,
-                        ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+                        ex.InnerException != null ? ex.InnerException.Message : ex.Message));
+                LogException(ex, status);
+                return (status);
             }
             status = new questStatus(Severity.Success, "Database successfully deleted.  Database.Id=" + databaseId.Id);
             if (bLogging)

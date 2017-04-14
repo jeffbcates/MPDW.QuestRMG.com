@@ -633,7 +633,9 @@ namespace Quest.MasterPricing.Services.Business.Filters
                 filterLog.Name = "FilterId=" + runFilterRequest.FilterId.ToString();
                 filterLog.Event = "EXECUTE";
                 filterLog.Data = String.Format("RowLimit: {0}  ColLimit: {1}   PageNumber: {2}   PageSize: {3}   Result rows: {4}  questStatus: {5}",
-                        runFilterRequest.RowLimit, runFilterRequest.ColLimit, runFilterRequest.PageNumber, runFilterRequest.PageSize, resultsSet.NumRows, status.ToString());
+                        runFilterRequest.RowLimit, runFilterRequest.ColLimit, runFilterRequest.PageNumber, runFilterRequest.PageSize,
+                        resultsSet == null ? "(N/A)" : resultsSet.NumRows.ToString(), 
+                        status.ToString());
                 FilterLogId filterLogId = null;
                 _dbFilterLogsMgr.Create(filterLog, out filterLogId);
             }

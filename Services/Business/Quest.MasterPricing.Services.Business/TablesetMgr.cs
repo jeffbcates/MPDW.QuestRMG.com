@@ -427,27 +427,14 @@ namespace Quest.MasterPricing.Services.Business.Tablesets
 
 
             try
-            {
-                // Get all filters
-                List<Filter> filterList = null;
-                FilterMgr filterMgr = new FilterMgr(this.UserSession);
-                status = filterMgr.Read(trans, tablesetId, out filterList);
+            {              
+                // Delete tableset filters
+                FiltersMgr filtersMgr = new FiltersMgr(this.UserSession);
+                status = filtersMgr.Delete(trans, tablesetId);
                 if (!questStatusDef.IsSuccess(status))
                 {
                     RollbackTransaction(trans);
                     return (status);
-                }
-              
-                // Delete tableset filters
-                foreach (Filter filter in filterList)
-                {
-                    FilterId filterId = new FilterId(filter.Id);
-                    status = filterMgr.Delete(trans, filterId);
-                    if (!questStatusDef.IsSuccess(status))
-                    {
-                        RollbackTransaction(trans);
-                        return (status);
-                    }
                 }
 
                 // Delete Tableset
@@ -458,7 +445,6 @@ namespace Quest.MasterPricing.Services.Business.Tablesets
                     RollbackTransaction(trans);
                     return (status);
                 }
-
 
                 // COMMIT TRANSACTION
                 status = CommitTransaction(trans);
