@@ -247,10 +247,10 @@ namespace Quest.MasterPricing.Services.Data.Database
 
 
             // If the database was changed, delete the tablset configuration and any filters based on the tableset
-            status = RemoveTablesetInfoIFDbChanged(tableset);
-            if (!questStatusDef.IsSuccess(status))
+            questStatus status2 = RemoveTablesetInfoIFDbChanged(tableset);
+            if (!questStatusDef.IsSuccess(status2))
             {
-                return (status);
+                return (status2);
             }
 
             // Perform update.
@@ -272,7 +272,7 @@ namespace Quest.MasterPricing.Services.Data.Database
                     return (status);
                 }
             }
-            return (new questStatus(Severity.Success));
+            return (status2);
         }
         public questStatus Update(DbMgrTransaction trans, Quest.Functional.MasterPricing.Tableset tableset)
         {
@@ -282,10 +282,18 @@ namespace Quest.MasterPricing.Services.Data.Database
 
 
             // Remove all tableset info and filters based on the tableset if the database changed.
+            bool bFiltersRemoved = false;
             status = RemoveTablesetInfoIFDbChanged(trans, tableset);
             if (!questStatusDef.IsSuccess(status))
             {
-                return (status);
+                if (questStatusDef.IsWarning(status))
+                {
+                    bFiltersRemoved = true;
+                }
+                else
+                {
+                    return (status);
+                }
             }
 
             // Perform update in this transaction.
@@ -303,6 +311,10 @@ namespace Quest.MasterPricing.Services.Data.Database
             if (!questStatusDef.IsSuccess(status))
             {
                 return (status);
+            }
+            if (bFiltersRemoved)
+            {
+                return (new questStatus(Severity.Warning, "Tableset database was changed.  All tableset filters were deleted."));
             }
             return (new questStatus(Severity.Success));
         }
@@ -429,11 +441,15 @@ namespace Quest.MasterPricing.Services.Data.Database
             }
 
             // Remove all tableset configuration and filters based on the tableset.
-            status = RemoveTablesetInfoIFDbChanged(trans, tableset);
-            if (!questStatusDef.IsSuccess(status))
+            questStatus status2 = RemoveTablesetInfoIFDbChanged(trans, tableset);
+            if (!questStatusDef.IsSuccess(status2))
             {
-                RollbackTransaction(trans);
-                return (status);
+                // IF warning, it means the filters were removed due to the database changing on the tableset.
+                if (! questStatusDef.IsWarning(status2))
+                {
+                    RollbackTransaction(trans);
+                    return (status);
+                }
             }
 
 
@@ -444,8 +460,7 @@ namespace Quest.MasterPricing.Services.Data.Database
                 RollbackTransaction(trans);
                 return (status);
             }
-
-            return (new questStatus(Severity.Success));
+            return (status2);
         }
         public questStatus RemoveTablesetInfoIFDbChanged(DbMgrTransaction trans, Tableset tableset)
         {
@@ -476,6 +491,7 @@ namespace Quest.MasterPricing.Services.Data.Database
                 {
                     return (status);
                 }
+                return (new questStatus(Severity.Warning, "Tableset database was changed.  All tableset filters were deleted."));
             }
             return (new questStatus(Severity.Success));
         }

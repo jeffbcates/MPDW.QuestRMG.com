@@ -148,7 +148,8 @@ namespace Quest.MasterPricing.Services.Business.Tablesets
             questStatus status = null;
             tablesetId = null;
             DbMgrTransaction trans = null;
-
+            bool bFiltersRemoved = false;
+            questStatus status2 = null;
 
             try
             {
@@ -322,12 +323,20 @@ namespace Quest.MasterPricing.Services.Business.Tablesets
 
 
                 // Update tableset.
+                bFiltersRemoved = false;
                 _tableset.DatabaseId = tablesetConfiguration.Database.Id;
-                status = tablesetsMgr.Update(trans, _tableset);
-                if (!questStatusDef.IsSuccess(status))
+                status2 = tablesetsMgr.Update(trans, _tableset);
+                if (!questStatusDef.IsSuccess(status2))
                 {
-                    RollbackTransaction(trans);
-                    return (status);
+                    if (questStatusDef.IsWarning(status2))
+                    {
+                        bFiltersRemoved = true;
+                    }
+                    else
+                    {
+                        RollbackTransaction(trans);
+                        return (status);
+                    }
                 }
 
 
@@ -350,6 +359,10 @@ namespace Quest.MasterPricing.Services.Business.Tablesets
                 return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                         this.GetType().Name, MethodBase.GetCurrentMethod().Name,
                         ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+            }
+            if (bFiltersRemoved)
+            {
+                return (status2);
             }
             return (new questStatus(Severity.Success));
         }

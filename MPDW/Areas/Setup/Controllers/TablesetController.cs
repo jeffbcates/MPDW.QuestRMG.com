@@ -206,7 +206,7 @@ namespace Quest.MasterPricing.Setup
             bool bInitialCreation = tablesetEditorViewModel.Id < BaseId.VALID_ID ? true : false;
             TablesetEditorModeler tablesetEditorModeler = new TablesetEditorModeler(this.Request, this.UserSession);
             status = tablesetEditorModeler.Save(tablesetEditorViewModel);
-            if (!questStatusDef.IsSuccess(status))
+            if (!questStatusDef.IsSuccessOrWarning(status))
             {
                 tablesetEditorViewModel.questStatus = status;
                 return Json(tablesetEditorViewModel, JsonRequestBehavior.AllowGet);
@@ -215,7 +215,14 @@ namespace Quest.MasterPricing.Setup
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Return result.
              *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = new questStatus(Severity.Success, "Tableset successfully" + (bInitialCreation ? " created" : " updated"));
+            if (questStatusDef.IsWarning(status))
+            {
+                tablesetEditorViewModel.questStatus = status;
+            }
+            else
+            {
+                status = new questStatus(Severity.Success, "Tableset successfully" + (bInitialCreation ? " created" : " updated"));
+            }
             tablesetEditorViewModel.questStatus = status;
             return Json(tablesetEditorViewModel, JsonRequestBehavior.AllowGet);
         }

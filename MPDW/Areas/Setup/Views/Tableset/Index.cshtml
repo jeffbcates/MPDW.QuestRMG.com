@@ -43,9 +43,9 @@
         }
         else if (ud.Save) {
             if (d.questStatus) {
-                if (IsAppSuccess(d)) {
+                if (IsAppWarning(d)) {
                     if (d.questStatus.Message.indexOf("updated") > -1) {
-                        DisplayUserMessage('W|Tableset successfully saved.  However, all prior tableset configuration and filters were deleted.');
+                        DisplayUserMessage('W|Tableset successfully saved.  However, the database changed, so all filters were deleted.');
                     }
                 }
             }
