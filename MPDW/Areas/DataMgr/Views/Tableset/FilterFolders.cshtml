@@ -85,6 +85,7 @@
     }
     function cbPanelFilters(ud, d) {
         initTreeviewFilterExplorer();
+        initFolderEditor();
         initTablesetFiltersEditor();
         initTreeviewFilterFolderEntities();
         initTreeviewTablesetEntities();
@@ -116,18 +117,35 @@
     }
 
     function cbTabExplore(ud, d) {
-        if (ud.Init) {
+        if (ud.Init) {   
             var _h = [], _i = 0;
             _h[_i++] = '&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;';
-            _h[_i++] = '<button title="Create a new folder for filters" type="button" class="btn pnlbtn" id="pnlfltfldr_btnNew">New</button>';
+            _h[_i++] = '<div class="panel-tab-buttons">';
+            _h[_i++] = '    <button title="Navigate filter folders" type="button" class="btn pnlbtn active" id="pnlfltfldr_btnFolders">Folders</button>';
+            _h[_i++] = '    <button title="Create a new folder for filters" type="button" class="btn pnlbtn" id="pnlfltfldr_btnNew">New</button>';
+            _h[_i++] = '</div>';
+            _h[_i++] = '<div id="frmFolder" class="hidden">';
+            _h[_i++] = '</div>';
             _h[_i++] = '<div id="tvwFilterExplorer">';
             _h[_i++] = '</div>';
             return (_h.join(''));
         }
         else if (ud.Active) {
             if (ud.Before) {
-                _pnlFilters.Operations(['Entities', 'Items', 'Procedures', 'Save', 'Run', 'Test', 'Extend', 'SQLTab'], _frmFilter._bROS, true);
-                enadisSQLTabButtons($('#fltFilterId').val() > -1);
+                $('#pnlfltfldr_btnNew').unbind('click').click(function (e) {
+                    $('#tvwFilterExplorer').addClass('hidden');
+                    $('#tvwFilterExplorer').parent().find('.tvwFilterExplorer').addClass('hidden');
+                    $('#frmFolder').removeClass('hidden');
+                    $('#pnlfltfldr_btnNew').addClass('active');
+                    $('#pnlfltfldr_btnFolders').removeClass('active');
+                });
+                $('#pnlfltfldr_btnFolders').unbind('click').click(function (e) {
+                    $('#frmFolder').addClass('hidden');
+                    $('#tvwFilterExplorer').parent().find('.tvwFilterExplorer').removeClass('hidden');
+                    $('#tvwFilterExplorer').removeClass('hidden');
+                    $('#pnlfltfldr_btnFolders').addClass('active');
+                    $('#pnlfltfldr_btnNew').removeClass('active');
+                });
             }
             else if (ud.After) {
                 _tvwFilterExplorer.AutoFocus();
@@ -732,6 +750,85 @@
         }
     }
 </script>
+<script type="text/javascript">
+    var _frmFolder = null;
+    function initFolderEditor() {
+        var frmFolder = {
+            element: 'frmFolder',
+            prefix: 'fldr',
+            uri: '/DataMgr/Folder',
+            callback: cbFolderEditor,
+            classes: 'panelForm',
+            bNoLoad: true,
+            bAutoFocus: false,
+            bNoMasking: true,
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb']
+            },
+            fields: [
+                { name: 'Id', type: 'hidden', key: true },
+                { name: 'TablesetId', type: 'hidden' },
+                { name: 'Name', label: 'Name', required: true, maxlength: 256, size: 55 },
+                { name: 'Description', label: 'Description', maxlength: 256, size: 55 },
+            ],
+            opframe: 'pnlfrmbtns',
+            operations: [
+            ],
+            actions: [
+            ],
+            events: [
+                { name: 'AfterLoaded', callback: cbFrmFolderAfterLoaded },
+                { name: 'OnChange', callback: cbFrmFolderOnChange },
+            ]
+        }
+        _frmFolder = new qrmgEditor(frmFolder);
+        _frmFolder.SetField('TablesetId', _viewstate.TablesetId);
+        _frmFolder.GetOptions();
+    }
+    function cbFrmFolderOnChange(ud, bChanges) {
+    }
+    function cbFolderEditor(ud, d) {
+        if (ud.PostClear) {
+            _frmFolder.SetField('TablesetId', _viewstate.TablesetId);
+        }
+        else if (ud.Save) {
+            if (d.questStatus) {
+                DisplayUserMessage(d);
+            }
+            if (IsAppSuccess(d)) {
+                _frmFolder.GetOptions();
+                enadisPanels(true);
+            }
+        }
+        else if (ud.Read) {
+            if (IsAppSuccess(d)) {
+            }
+            else {
+                return;
+            }
+            qrmgmvc.Global.Unmask($('#pnlFilters'));
+        }
+        else if (ud.Delete) {
+            if (d.questStatus) {
+                if (IsAppSuccess(d)) {
+                }
+            }
+            else {
+                // klugie: Allow a delete regardless.
+            }
+        }
+    }
+    function cbFrmFolderAfterLoaded(ud, d) {
+    }
+</script>
+
+
+
+
+
+
+
+
 
 
 
