@@ -19,6 +19,7 @@ namespace Quest.Services.Dbio.MasterPricing
         public string Username { get; set; }
         public string Module { get; set; }
         public string Message { get; set; }
+        public string Status { get; set; }
         public string StackTrace { get; set; }
         public System.DateTime Created { get; set; }
     }

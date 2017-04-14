@@ -203,6 +203,7 @@
           <Property Name="Username" Type="nvarchar" MaxLength="50" Nullable="false" />
           <Property Name="Module" Type="nvarchar(max)" Nullable="false" />
           <Property Name="Message" Type="nvarchar(max)" Nullable="false" />
+          <Property Name="Status" Type="nvarchar(max)" />
           <Property Name="StackTrace" Type="nvarchar(max)" />
           <Property Name="Created" Type="datetime2" Precision="7" Nullable="false" />
         </EntityType>
@@ -863,6 +864,7 @@ warning 6002: The table/view 'MasterPricing.dbo.vwTypeListsList' does not have a
           <Property Name="Username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
           <Property Name="Module" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Message" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="StackTrace" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Created" Type="DateTime" Nullable="false" Precision="7" />
         </EntityType>
@@ -1393,6 +1395,7 @@ warning 6002: The table/view 'MasterPricing.dbo.vwTypeListsList' does not have a
               <MappingFragment StoreEntitySet="ExceptionLogs">
                 <ScalarProperty Name="Created" ColumnName="Created" />
                 <ScalarProperty Name="StackTrace" ColumnName="StackTrace" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
                 <ScalarProperty Name="Message" ColumnName="Message" />
                 <ScalarProperty Name="Module" ColumnName="Module" />
                 <ScalarProperty Name="Username" ColumnName="Username" />

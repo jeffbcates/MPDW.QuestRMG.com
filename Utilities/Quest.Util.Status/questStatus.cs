@@ -86,11 +86,6 @@ namespace Quest.Util.Status
 
         private void initialize()
         {
-            StackFrame frame = new StackFrame(1);
-            MethodBase method = frame.GetMethod();
-            ////this.Module = the calling class
-            ////this.Method = the calling class method
-
             Type type = this.GetType();
             StackTrace stackTrace = new StackTrace();
             for (int i=0; i < 10; i++)

@@ -82,6 +82,9 @@ namespace Quest.MasterPricing.Services.Data.Filters
          *---------------------------------------------------------------------------------------------------------------------------------*/
         public questStatus LogDatabaseEvent(DatabaseLog databaseLog)
         {
+            // TODO: REFACTOR USING DbLogsMgr
+
+
             // Initialize
             questStatus status = null;
 

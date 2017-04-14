@@ -48,7 +48,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="autogen\DbLogMgr.cs" />
+    <Compile Include="autogen\DbLogsMgr.cs" />
     <Compile Include="autogen\DbExceptionLogsMgr.cs" />
     <Compile Include="autogen\DbDatabaseLogsMgr.cs" />
     <Compile Include="autogen\DbFilterLogsMgr.cs" />

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Configuration;
+using System.Diagnostics;
 using System.Data;
 using System.Data.Entity;
 using System.Data.Sql;
@@ -1116,19 +1117,86 @@ namespace Quest.MPDW.Services.Data
             }
             return (new questStatus(Severity.Success));
         }
-        #endregion
-
-
-        #region Logging
-        /*----------------------------------------------------------------------------------------------------------------------------------
-         * Logging
-         *---------------------------------------------------------------------------------------------------------------------------------*/
-        public questStatus LogException(System.Exception ex)
+        public questStatus GetCaller(Type askingType, out questStatus Status)
         {
+            // Initialize
+            Status = null;
+            string module = null;
+            string method = null;
+            string message = null;
+            StackTrace stackTrace = new StackTrace();
+            int frameIndex = 0;
+            const int MAX_FRAMES = 20;
 
-            return (new questStatus(Severity.Warning, "Not implemented"));
+
+            // Get caller of given askingType
+            for (frameIndex = 0; frameIndex < MAX_FRAMES; frameIndex++)
+            {
+                MethodBase methodBase = stackTrace.GetFrame(frameIndex).GetMethod();
+                if (methodBase.DeclaringType == null) { continue; }
+                if (askingType.FullName == methodBase.DeclaringType.FullName)
+                {
+                    module = methodBase.DeclaringType.FullName;
+                    method = MethodSignature.GetMethodSignature(methodBase);
+                    break;
+                }
+            }
+            if (module == null)
+            {
+                return (new questStatus(Severity.Error, String.Format("ERROR: DbMgr.GetCaller: Calling type not found above askingType: {0}", askingType.ToString())));
+            }
+            Status = new questStatus(Severity.Fatal, module, method, message);
+            return (new questStatus(Severity.Success));
+        }
+        public string GetFullStackTrace(Type askingType, string StopAtNamespace)
+        {
+            // Initialize
+            StackTrace stackTrace = new StackTrace();
+            StackFrame[] stackFrameArray = stackTrace.GetFrames();
+
+
+            // Locate asking frame on stack, then start printing stack frame
+            bool bAskingFrameLocated = false;
+            StringBuilder sbFullStackTrace = new StringBuilder();
+            foreach (StackFrame stackFrame in stackFrameArray)
+            {
+                MethodBase methodBase = stackFrame.GetMethod();
+                if (methodBase.DeclaringType == null) { continue; }
+                if (!bAskingFrameLocated)
+                {
+                    bAskingFrameLocated = askingType.FullName == methodBase.DeclaringType.FullName;
+                    if (!bAskingFrameLocated)
+                    {
+                        continue;
+                    }
+                }
+                if (StopAtNamespace != null)
+                {
+                    if (StopAtNamespace == methodBase.DeclaringType.Namespace)
+                    {
+                        break;
+                    }
+                }
+                string module = methodBase.DeclaringType.FullName;
+                string fileName = stackFrame.GetFileName();
+                string method = MethodSignature.GetMethodSignature(stackFrame.GetMethod());
+                int lineNumber = stackFrame.GetFileLineNumber();
+
+                sbFullStackTrace.Append(" at " + module + "." + method);
+                if (!string.IsNullOrEmpty(fileName))
+                {
+                    sbFullStackTrace.Append(" in " + fileName);
+                }
+                if (lineNumber > 0)
+                {
+                    sbFullStackTrace.Append(" line " + lineNumber.ToString());
+                }
+                sbFullStackTrace.AppendLine();
+            }
+            return (sbFullStackTrace.ToString());
         }
         #endregion
+
 
         #endregion
 

@@ -27,6 +27,7 @@
                 { name: 'Username', label: 'Username' },
                 { name: 'Module', label: 'Module' },
                 { name: 'Message', label: 'Message' },
+                { name: 'Status', label: 'Status' },
                 { name: 'Created', label: 'Created' },
             ],
             paging: {
@@ -55,7 +56,7 @@
     function cbStackTrace(ud, d) {
         if (d.questStatus) {
             if (IsAppSuccess(d)) {
-                $('#pStackTrace').text(d.StackTrace);
+                $('#pStackTrace').html(d.StackTrace);
                 $('#btnClose', '#mdlgStackTrace').unbind('click').on('click', function (e) {
                     $('#mdlgStackTrace').modal('hide');
                     return;
@@ -83,7 +84,7 @@
     function cbDelete(ud, d) {
         if (d.questStatus) {
             if (IsAppSuccess(d)) {
-                _tblHTTPRequestLogs.Load();
+                _tblExceptionLogs.Load();
             }
         }
     }

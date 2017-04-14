@@ -13,6 +13,7 @@ namespace Quest.MPDW.Support.Models
         public string Username { get; set; }
         public string Module { get; set; }
         public string Message { get; set; }
+        public string Status { get; set; }
         public string Created { get; set; }
     }
 }

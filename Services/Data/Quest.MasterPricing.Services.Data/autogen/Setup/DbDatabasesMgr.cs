@@ -26,13 +26,12 @@ using Quest.Services.Data.Logging;
 
 namespace Quest.MasterPricing.Services.Data.Database
 {
-    public class DbDatabasesMgr : DbMgrSessionBased
+    public class DbDatabasesMgr : DbLogsMgr
     {
         #region Declarations
         /*==================================================================================================================================
          * Declarations
          *=================================================================================================================================*/
-        private LogSetting _logSetting = null;
         DbDatabaseLogsMgr _dbDatabaseLogsMgr = null;
 
         #endregion
@@ -58,7 +57,7 @@ namespace Quest.MasterPricing.Services.Data.Database
         {
             get
             {
-                return (this._logSetting.bLogDatabases);
+                return (this.LogSettings.bLogDatabases);
             }
         }
         #endregion
@@ -310,6 +309,10 @@ namespace Quest.MasterPricing.Services.Data.Database
                     }
                     catch (System.Exception ex)
                     {
+                        if (bLoggingExceptions)
+                        {
+
+                        }
                         return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                                 this.GetType().Name, MethodBase.GetCurrentMethod().Name,
                                 ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
@@ -331,7 +334,7 @@ namespace Quest.MasterPricing.Services.Data.Database
             questStatus status = null;
             try
             {
-                initLogging();
+                initLogger();
             }
             catch (System.Exception ex)
             {
@@ -347,50 +350,13 @@ namespace Quest.MasterPricing.Services.Data.Database
         /*----------------------------------------------------------------------------------------------------------------------------------
          * Logging
          *---------------------------------------------------------------------------------------------------------------------------------*/
-        private questStatus initLogging()
-        {
-            // Initialize
-            questStatus status = null;
-
-            status = loadLogSettings();
-            if (!questStatusDef.IsSuccess(status))
-            {
-                return (status);
-            }
-            status = initLogger();
-            if (!questStatusDef.IsSuccess(status))
-            {
-                return (status);
-            }
-            return (new questStatus(Severity.Success));
-        }
-        private questStatus loadLogSettings()
-        {
-            // Initialize
-            questStatus status = null;
-
-
-            // Get log settings.
-            LogSetting logSetting = null;
-            DbLogSettingsMgr dbLogSettingsMgr = new DbLogSettingsMgr(this.UserSession);
-            status = dbLogSettingsMgr.Read(out logSetting);
-            if (!questStatusDef.IsSuccess(status))
-            {
-                this._logSetting = new LogSetting();
-                return (status);
-            }
-            this._logSetting = logSetting;
-
-
-            return (new questStatus(Severity.Success));
-        }
         private questStatus initLogger()
         {
             // Initialize
             questStatus status = null;
 
 
-            if (this._logSetting.bLogDatabases)
+            if (this.LogSettings.bLogDatabases)
             {
                 try
                 {
@@ -400,6 +366,7 @@ namespace Quest.MasterPricing.Services.Data.Database
                 {
                     status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                             this.GetType().ToString(), MethodInfo.GetCurrentMethod().Name, ex.Message));
+                    LogException(ex, status);
                     return (status);
                 }
             }
@@ -415,6 +382,7 @@ namespace Quest.MasterPricing.Services.Data.Database
         private questStatus create(MasterPricingEntities dbContext, Quest.Functional.MasterPricing.Database database, out DatabaseId databaseId)
         {
             // Initialize
+            questStatus status = null;
             databaseId = null;
 
 
@@ -438,15 +406,20 @@ namespace Quest.MasterPricing.Services.Data.Database
 
                 String fullErrorMessage = string.Join("; ", errorMessages);
                 String exceptionMessage = string.Concat(ex.Message, fullErrorMessage);
-                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                                         this.GetType().Name, MethodBase.GetCurrentMethod().Name,
-                                        exceptionMessage)));
+                                        exceptionMessage));
+                LogException(ex, status);
+                return (status);
             }
             catch (System.Exception ex)
             {
-                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                status = new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
                         this.GetType().Name, MethodBase.GetCurrentMethod().Name,
-                        ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+                        ex.InnerException != null ? ex.InnerException.Message : ex.Message));
+                LogException(ex, status);
+                return (status);
             }
             return (new questStatus(Severity.Success));
         }

@@ -26,13 +26,12 @@ using Quest.Services.Data.Logging;
 
 namespace Quest.MasterPricing.Services.Data.Filters
 {
-    public class DbFiltersMgr : DbMgrSessionBased
+    public class DbFiltersMgr : DbLogsMgr
     {
         #region Declarations
         /*==================================================================================================================================
          * Declarations
          *=================================================================================================================================*/
-        private LogSetting _logSetting = null;
         DbFilterLogsMgr _dbFilterLogsMgr = null;
 
         #endregion
@@ -58,7 +57,7 @@ namespace Quest.MasterPricing.Services.Data.Filters
         {
             get
             {
-                return (this._logSetting.bLogFilters);
+                return (this.LogSettings.bLogDatabases);
             }
         }
         #endregion
@@ -530,7 +529,7 @@ namespace Quest.MasterPricing.Services.Data.Filters
             questStatus status = null;
             try
             {
-                initLogging();
+                initLogger();
             }
             catch (System.Exception ex)
             {
@@ -546,50 +545,13 @@ namespace Quest.MasterPricing.Services.Data.Filters
         /*----------------------------------------------------------------------------------------------------------------------------------
          * Logging
          *---------------------------------------------------------------------------------------------------------------------------------*/
-        private questStatus initLogging()
-        {
-            // Initialize
-            questStatus status = null;
-
-            status = loadLogSettings();
-            if (!questStatusDef.IsSuccess(status))
-            {
-                return (status);
-            }
-            status = initLogger();
-            if (!questStatusDef.IsSuccess(status))
-            {
-                return (status);
-            }
-            return (new questStatus(Severity.Success));
-        }
-        private questStatus loadLogSettings()
-        {
-            // Initialize
-            questStatus status = null;
-
-
-            // Get log settings.
-            LogSetting logSetting = null;
-            DbLogSettingsMgr dbLogSettingsMgr = new DbLogSettingsMgr(this.UserSession);
-            status = dbLogSettingsMgr.Read(out logSetting);
-            if (!questStatusDef.IsSuccess(status))
-            {
-                this._logSetting = new LogSetting();
-                return (status);
-            }
-            this._logSetting = logSetting;
-
-
-            return (new questStatus(Severity.Success));
-        }
         private questStatus initLogger()
         {
             // Initialize
             questStatus status = null;
 
 
-            if (this._logSetting.bLogFilters)
+            if (this.LogSettings.bLogFilters)
             {
                 try
                 {

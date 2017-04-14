@@ -27,6 +27,8 @@ using Quest.Services.Data.Logging;
 
 namespace Quest.MasterPricing.Services.Data.Bulk
 {
+    // TODO: REFACTOR USING DbLogsMgr
+
     public class DbBulkInsertMgr : DbSQLMgr
     {
         #region Declarations

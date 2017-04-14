@@ -227,6 +227,9 @@ namespace Quest.MPDW.Support.Modelers
             exceptionsEditorViewModelNEW = new ExceptionsEditorViewModel(this.UserSession, exceptionsEditorViewModel);
             BufferMgr.TransferBuffer(exceptionLog, exceptionsEditorViewModelNEW);
 
+            // Format the stack trace.
+            string _stackTrace = exceptionsEditorViewModelNEW.StackTrace.Replace(System.Environment.NewLine, "<br/>");
+            exceptionsEditorViewModelNEW.StackTrace = _stackTrace;
 
             return (new questStatus(Severity.Success));
         }
