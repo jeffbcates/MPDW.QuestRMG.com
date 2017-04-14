@@ -13,9 +13,11 @@ namespace Quest.Functional.Logging
         public int Id { get; set; }
         public int UserSessionId { get; set; }
         public string Username { get; set; }
-        public string Module { get; set; }
         public string Message { get; set; }
+        public string Module { get; set; }
+        public string Method { get; set; }
         public string Status { get; set; }
+        public string Data { get; set; }
         public string StackTrace { get; set; }
         public DateTime Created { get; set; }
     }

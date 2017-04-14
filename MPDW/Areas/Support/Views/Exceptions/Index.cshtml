@@ -23,11 +23,13 @@
             callback: cbTblExceptionLogs,
             columns: [
                 { name: 'Id', hidden: true, key: true },
+                { name: 'Message', label: 'Message' },
+                { name: 'Module', label: 'Module' },
+                { name: 'Method', label: 'Method' },
+                { name: 'Status', label: 'Status' },
+                { name: 'Data', label: 'Data' },
                 { name: 'UserSessionId', label: 'User Session' },
                 { name: 'Username', label: 'Username' },
-                { name: 'Module', label: 'Module' },
-                { name: 'Message', label: 'Message' },
-                { name: 'Status', label: 'Status' },
                 { name: 'Created', label: 'Created' },
             ],
             paging: {

@@ -210,6 +210,7 @@
     <Content Include="Database\MasterPricing_20170328001.txt" />
     <Content Include="Database\MasterPricing_20170329001.txt" />
     <Content Include="Database\MasterPricing_20170411001.txt" />
+    <Content Include="Database\MasterPricing_20170414001.txt" />
     <Content Include="Database\MasterPricing_20170606001_LOGGING_STARTED.txt" />
     <Content Include="Database\QuestERD_20170223001.txt" />
     <Content Include="Database\QuestERD_20170411001.txt" />

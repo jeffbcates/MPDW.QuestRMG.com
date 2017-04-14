@@ -149,11 +149,27 @@ namespace Quest.Services.Data.Logging
         {
             if (this.LogSettings.bLogExceptions)
             {
-                return (LogException(exception, null));
+                return (LogException(exception, null, null));
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus LogException(Exception exception, string Data)
+        {
+            if (this.LogSettings.bLogExceptions)
+            {
+                return (LogException(exception, null, Data));
             }
             return (new questStatus(Severity.Success));
         }
         public questStatus LogException(Exception exception, questStatus Status)
+        {
+            if (this.LogSettings.bLogExceptions)
+            {
+                return (LogException(exception, Status, null));
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus LogException(Exception exception, questStatus Status, string Data)
         {
             // Initialize
             questStatus status = null;
@@ -175,9 +191,11 @@ namespace Quest.Services.Data.Logging
                 return (new questStatus(Severity.Success));
             }
 
-            exceptionLog.Module = moduleStatus.ToString();
+            exceptionLog.Module = moduleStatus.Module;
+            exceptionLog.Method = moduleStatus.Method;
             exceptionLog.Message = exception.Message;
             exceptionLog.Status = Status == null ? null : Status.ToString();
+            exceptionLog.Data = Data;
             exceptionLog.StackTrace = GetFullStackTrace(this.GetType(), "System.Web.Mvc");
 
 
