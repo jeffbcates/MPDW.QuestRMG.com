@@ -1,12 +1,13 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
 using Quest.MPDW.Controllers;
 using Quest.Util.Status;
 using Quest.Util.Buffer;
-using Quest.Util.Data;
 using Quest.MPDW.Services.Data;
 using Quest.MPDW.Models;
 using Quest.MPDW.Modelers;
@@ -106,11 +107,24 @@ namespace Quest.MPDW.Support
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
-             * Return view
+             * Return result view model or as Excel
              *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = new questStatus(Severity.Success);
-            bulkInsertsListViewModelNEW.questStatus = status;
-            return Json(bulkInsertsListViewModelNEW, JsonRequestBehavior.AllowGet);
+            if (bulkInsertsListViewModel.bExportToExcel)
+            {
+                string filename = "BulkInsertsLog_" + DateTime.Now.ToString();
+                Response.ClearContent();
+                Response.AddHeader("content-disposition", "atachment;filename=" + filename + ".xls");
+                Response.AddHeader("Content-Type", "application/vnd.ms-excel");
+                writeTsv(bulkInsertsListViewModelNEW, Response.Output);
+                Response.Flush();
+                Response.End();
+                return new EmptyResult();
+            }
+            else {
+                status = new questStatus(Severity.Success);
+                bulkInsertsListViewModelNEW.questStatus = status;
+                return Json(bulkInsertsListViewModelNEW, JsonRequestBehavior.AllowGet);
+            }
         }
 
         #region Paging
@@ -467,6 +481,34 @@ namespace Quest.MPDW.Support
         /*==================================================================================================================================
          * Private Methods
          *=================================================================================================================================*/
+
+        #region Export Routines
+        //----------------------------------------------------------------------------------------------------------------------------------
+        // Export Routines
+        //----------------------------------------------------------------------------------------------------------------------------------
+        private void writeTsv(BulkInsertsListViewModel bulkInsertsListViewModel, TextWriter output)
+        {
+            PropertyInfo[] propertyInfos = typeof(BulkInsertLineItemViewModel).GetProperties();
+            foreach (PropertyInfo pi in propertyInfos)
+            {
+                output.Write(pi.Name); // header
+                output.Write("\t");
+            }
+            output.WriteLine();
+            foreach (BulkInsertLineItemViewModel lineItem in bulkInsertsListViewModel.Items)
+            {
+                foreach (PropertyInfo pi in propertyInfos)
+                {
+                    object _value = pi.GetValue(lineItem);
+                    string value = _value == null ? "(null)" : _value.ToString().Replace("\t", " ").Replace("\r", " ").Replace("\n", " ");
+                    output.Write(value);
+                    output.Write("\t");
+                }
+                output.WriteLine();
+            }
+        }
+        #endregion
+
         #endregion
     }
 }
