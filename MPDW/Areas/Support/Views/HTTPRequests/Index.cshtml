@@ -43,6 +43,7 @@
             commands: [
                 { name: 'ShowSession', label: 'Show Session', method: 'GET', single: true, callback: cbShowSession },
                 { name: 'ClearSession', label: 'Clear Session', method: 'GET', NoSelectionsAllowed: true, callback: cbClearSession },
+                { name: 'ExportToExcel', label: 'Export to Excel', method: 'GET', NoSelectionsAllowed: true, callback: cbExportToExcel },
                 { name: 'Clear', label: 'Clear Log', method: 'POST', NoSelectionsAllowed: true, callback: cbClear },
                 { name: 'Delete', label: 'Delete Items', method: 'POST', callback: cbDelete },
             ],
@@ -69,6 +70,41 @@
     function cbClearSession(ud, d) {
         _tblHTTPRequestLogs.ClearFilterColumn();
         _tblHTTPRequestLogs.Load();
+        return (true);
+    }
+    function cbExportToExcel(ud, d) {
+
+
+        $('#frmHTTPRequestLogsExportToExcel').remove();
+        var _frmExport = document.createElement("form");
+        _frmExport.setAttribute("id", "frmHTTPRequestLogsExportToExcel");
+        _frmExport.setAttribute("method", "get");
+        _frmExport.setAttribute("action", "/Support/HTTPRequests/List");
+        _frmExport.setAttribute("target", "_blank");
+
+        var _ctx =_tblHTTPRequestLogs._getctx();
+        for (var f in _ctx) {
+            var _in = document.createElement("input");
+            _in.setAttribute("type", "hidden");
+            _in.setAttribute("name", f);
+            if (f == 'QueryOptions') {
+                _in.setAttribute("value", JSON.stringify(_ctx[f]));
+            }
+            else {
+                _in.setAttribute("value", _ctx[f]);
+            }
+            _frmExport.appendChild(_in);
+        }
+
+        var _bExportToExcel = document.createElement("input");
+        _bExportToExcel.setAttribute("type", "hidden");
+        _bExportToExcel.setAttribute("name", "bExportToExcel");
+        _bExportToExcel.setAttribute("value", true);
+        _frmExport.appendChild(_bExportToExcel);
+
+        document.body.appendChild(_frmExport);
+        _frmExport.submit();
+
         return (true);
     }
     function cbClear(ud, d) {

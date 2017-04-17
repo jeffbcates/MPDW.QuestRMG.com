@@ -14,6 +14,7 @@ using Quest.MPDW.Models;
 using Quest.MPDW.Models.List;
 using Quest.MPDW.Services.Data;
 using Quest.MPDW.Services.Business.Accounts;
+using System.Web.Script.Serialization;
 
 
 namespace Quest.MPDW.Modelers
@@ -152,36 +153,48 @@ namespace Quest.MPDW.Modelers
                     }
                     else if (parts[0] == "QueryOptions")
                     {
-                        if (parts[1] == "SearchOptions")
+                        if (parts.Length == 1)  // Check for JSON serialized QueryString
                         {
-                            if (parts[2] == "SearchFieldList")
+                            if (!string.IsNullOrEmpty(httpRequestBase.QueryString["QueryOptions"]))
                             {
-                                int searchFieldIndex = -1;
-                                if (! int.TryParse(parts[3], out searchFieldIndex))
+                                string qryopts = httpRequestBase.QueryString["QueryOptions"].ToString();
+                                JavaScriptSerializer javaScriptSerializer = new JavaScriptSerializer();
+                                _queryOptions = javaScriptSerializer.Deserialize<QueryOptions>(qryopts);
+                            }
+                        }
+                        else if (parts.Length >= 2)
+                        {
+                            if (parts[1] == "SearchOptions")
+                            {
+                                if (parts[2] == "SearchFieldList")
                                 {
-                                    return (new questStatus(Severity.Error, String.Format("Invalid Search Field index value: {0}", parts[3] == null ? "(null)" : parts[3])));
-                                }
-                                if (_searchField == null)
-                                {
-                                    _searchField = new SearchField();
-                                }
-                                if (parts[4] == "Name")
-                                {
-                                    _searchField.Name = httpRequestBase.QueryString[index];
-                                }
-                                else if (parts[4] == "SearchOperation")
-                                {
-                                    _searchField.SearchOperation = (SearchOperation)Enum.Parse(typeof(SearchOperation), httpRequestBase.QueryString[index], true);
-                                }
-                                else if (parts[4] == "Type")
-                                {
-                                    _searchField.Type = Type.GetType(httpRequestBase.QueryString[index]);
-                                }
-                                else if (parts[4] == "Value")
-                                {
-                                    _searchField.Value = httpRequestBase.QueryString[index];
-                                    _queryOptions.SearchOptions.SearchFieldList.Add(_searchField);
-                                    _searchField = null;
+                                    int searchFieldIndex = -1;
+                                    if (!int.TryParse(parts[3], out searchFieldIndex))
+                                    {
+                                        return (new questStatus(Severity.Error, String.Format("Invalid Search Field index value: {0}", parts[3] == null ? "(null)" : parts[3])));
+                                    }
+                                    if (_searchField == null)
+                                    {
+                                        _searchField = new SearchField();
+                                    }
+                                    if (parts[4] == "Name")
+                                    {
+                                        _searchField.Name = httpRequestBase.QueryString[index];
+                                    }
+                                    else if (parts[4] == "SearchOperation")
+                                    {
+                                        _searchField.SearchOperation = (SearchOperation)Enum.Parse(typeof(SearchOperation), httpRequestBase.QueryString[index], true);
+                                    }
+                                    else if (parts[4] == "Type")
+                                    {
+                                        _searchField.Type = Type.GetType(httpRequestBase.QueryString[index]);
+                                    }
+                                    else if (parts[4] == "Value")
+                                    {
+                                        _searchField.Value = httpRequestBase.QueryString[index];
+                                        _queryOptions.SearchOptions.SearchFieldList.Add(_searchField);
+                                        _searchField = null;
+                                    }
                                 }
                             }
                         }

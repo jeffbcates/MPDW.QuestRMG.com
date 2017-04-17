@@ -100,8 +100,11 @@ namespace Quest.MPDW.Support.Modelers
                 return (status);
             }
 
-            // Sort 
-            httpRequestLogList.Sort(delegate (Quest.Functional.Logging.HTTPRequestLog i1, Quest.Functional.Logging.HTTPRequestLog i2) { return i2.Created.CompareTo(i1.Created); });
+            // Sort  if sort not specified.
+            if (queryOptions.SortColumns.Columns.Count == 0)
+            {
+                httpRequestLogList.Sort(delegate (Quest.Functional.Logging.HTTPRequestLog i1, Quest.Functional.Logging.HTTPRequestLog i2) { return i2.Created.CompareTo(i1.Created); });
+            }
 
 
             // Transfer model.

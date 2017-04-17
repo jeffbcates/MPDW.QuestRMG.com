@@ -15,6 +15,7 @@ namespace Quest.MPDW.Support.Models
     {
         public QueryOptionsViewModel QueryOptions { get; set; }
         public QueryResponseViewModel QueryResponse { get; set; }
+        public bool bExportToExcel { get; set; }
 
         public SupportBaseListViewModel() 
         {

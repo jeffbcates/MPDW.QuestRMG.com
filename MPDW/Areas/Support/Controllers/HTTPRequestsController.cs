@@ -1,6 +1,8 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
 using Quest.MPDW.Controllers;
@@ -105,11 +107,24 @@ namespace Quest.MPDW.Support
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
-             * Return view
+             * Return result view model or as Excel
              *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = new questStatus(Severity.Success);
-            tablesetsListViewModelNEW.questStatus = status;
-            return Json(tablesetsListViewModelNEW, JsonRequestBehavior.AllowGet);
+            if (httpRequestsListViewModel.bExportToExcel)
+            {
+                string filename = "HTTPReqestsLog_" + DateTime.Now.ToString();
+                Response.ClearContent();
+                Response.AddHeader("content-disposition", "atachment;filename=" + filename + ".xls");
+                Response.AddHeader("Content-Type", "application/vnd.ms-excel");
+                writeTsv(tablesetsListViewModelNEW, Response.Output);
+                Response.Flush();
+                Response.End();
+                return new EmptyResult();
+            }
+            else {
+                status = new questStatus(Severity.Success);
+                tablesetsListViewModelNEW.questStatus = status;
+                return Json(tablesetsListViewModelNEW, JsonRequestBehavior.AllowGet);
+            }
         }
 
         #region Paging
@@ -466,6 +481,33 @@ namespace Quest.MPDW.Support
         /*==================================================================================================================================
          * Private Methods
          *=================================================================================================================================*/
+        #region Export Routines
+        //----------------------------------------------------------------------------------------------------------------------------------
+        // Export Routines
+        //----------------------------------------------------------------------------------------------------------------------------------
+        private void writeTsv(HTTPRequestsListViewModel httpRequestsListViewModel, TextWriter output)
+        {
+            PropertyInfo[] propertyInfos = httpRequestsListViewModel.Items[0].GetType().GetProperties();
+            foreach (PropertyInfo pi in propertyInfos)
+            {
+                output.Write(pi.Name); // header
+                output.Write("\t");
+            }
+            output.WriteLine();
+            foreach (HTTPRequestLineItemViewModel lineItem in httpRequestsListViewModel.Items)
+            {
+                foreach (PropertyInfo pi in propertyInfos)
+                {
+                    object _value = pi.GetValue(lineItem);
+                    string value = _value == null ? "(null)" : _value.ToString().Replace("\t", " ").Replace("\r", " ").Replace("\n", " ");
+                    output.Write(value);
+                    output.Write("\t");
+                }
+                output.WriteLine();
+            }
+        }
+        #endregion        
+        
         #endregion
     }
 }

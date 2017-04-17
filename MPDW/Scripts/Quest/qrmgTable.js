@@ -21,7 +21,7 @@ function qrmgTable(model) {
     _self._pgr = {
         SortColumns: {
             Columns: [
-                { Name: 'Id', Direction: 1 },
+                ////{ Name: 'Id', Direction: 1 },
             ]
         },
         Paging: {
@@ -1153,6 +1153,9 @@ function qrmgTable(model) {
         var _ctx = _self._ctx.Context();
         _ctx.QueryOptions = {};
         _ctx.QueryOptions.SearchOptions = _self._pgr.SearchOptions;
+        _ctx.QueryOptions.Paging = {};
+        _ctx.QueryOptions.Paging = _self._pgr.Paging;
+        _ctx.QueryOptions.SortColumns = _self._pgr.SortColumns;
         return (_ctx);
     }
     _self._getViewState = function () {
