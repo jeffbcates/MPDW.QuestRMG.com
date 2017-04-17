@@ -8,6 +8,8 @@ using Quest.MPDW.Models;
 using Quest.MasterPricing.Setup.Models;
 using Quest.MasterPricing.Setup.Modelers;
 using Quest.Functional.MasterPricing;
+using Quest.MasterPricing.DataMgr.Models;
+using Quest.MasterPricing.DataMgr.Modelers;
 
 
 namespace Quest.MasterPricing.Setup
@@ -155,6 +157,106 @@ namespace Quest.MasterPricing.Setup
              * Return view.
              *---------------------------------------------------------------------------------------------------------------------------------*/
             return View("~/Areas/Setup/Views/TablesetConfiguration/Index.cshtml", tablesetConfigurationViewModel);
+        }
+        [HttpGet]
+        public ActionResult Filters(TablesetEditorViewModel viewModel)
+        {
+            questStatus status = null;
+            TablesetsListViewModel tablesetsListViewModel = null;
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Log Operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = LogOperation();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                tablesetsListViewModel = new TablesetsListViewModel(this.UserSession, viewModel);
+                tablesetsListViewModel.questStatus = status;
+                return (View("Index", viewModel));
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Authorize
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = Authorize(viewModel._ctx);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                tablesetsListViewModel = new TablesetsListViewModel(this.UserSession, viewModel);
+                tablesetsListViewModel.questStatus = status;
+                return (View("Index", viewModel));
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Read tableset data management info.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            DataMgrBaseViewModel dataMgrBaseViewModel = new DataMgrBaseViewModel(this.UserSession);
+            BufferMgr.TransferBuffer(viewModel, dataMgrBaseViewModel);
+
+            TablesetId tablesetId = new TablesetId(viewModel.Id);
+            DataMgrTablesetViewModel dataMgrTablesetViewModel = null;
+            TablesetDataModeler tablesetDataModeler = new TablesetDataModeler(this.Request, this.UserSession, dataMgrBaseViewModel);
+            status = tablesetDataModeler.Read(tablesetId, out dataMgrTablesetViewModel);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                dataMgrTablesetViewModel = new DataMgrTablesetViewModel(this.UserSession, viewModel);
+                dataMgrTablesetViewModel.questStatus = status;
+                return View(dataMgrTablesetViewModel);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Return view.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            return View("~/Areas/DataMgr/Views/Tableset/Index.cshtml", dataMgrTablesetViewModel);
+        }
+        [HttpGet]
+        public ActionResult Database(TablesetEditorViewModel viewModel)
+        {
+            questStatus status = null;
+            TablesetsListViewModel tablesetsListViewModel = null;
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Log Operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = LogOperation();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                tablesetsListViewModel = new TablesetsListViewModel(this.UserSession, viewModel);
+                tablesetsListViewModel.questStatus = status;
+                return (View("Index", viewModel));
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Authorize
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = Authorize(viewModel._ctx);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                tablesetsListViewModel = new TablesetsListViewModel(this.UserSession, viewModel);
+                tablesetsListViewModel.questStatus = status;
+                return (View("Index", viewModel));
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Read tableset for the database Id
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            TablesetId tablesetId = new TablesetId(viewModel.Id);
+            TablesetEditorViewModel tablesetEditorViewModel = null;
+            TablesetEditorModeler tablesetEditorModeler = new TablesetEditorModeler(this.Request, this.UserSession);
+            status = tablesetEditorModeler.Read(tablesetId, out tablesetEditorViewModel);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                tablesetsListViewModel = new TablesetsListViewModel(this.UserSession, viewModel);
+                tablesetsListViewModel.questStatus = status;
+                return (View("Index", viewModel));
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Return view.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            DatabaseEditorViewModel databaseEditorViewModel = new DatabaseEditorViewModel(this.UserSession, viewModel);
+            databaseEditorViewModel.Id = tablesetEditorViewModel.DatabaseId;
+            databaseEditorViewModel.questStatus = new questStatus(Severity.Warning);
+            return View("~/Areas/Setup/Views/Database/Index.cshtml", databaseEditorViewModel);
         }
 
         #region Paging
@@ -403,6 +505,8 @@ namespace Quest.MasterPricing.Setup
         }
 
         #endregion
+
+
 
         #endregion
 
