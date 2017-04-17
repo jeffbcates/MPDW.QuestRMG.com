@@ -10,6 +10,7 @@
 <div class="page-subtitle-frame">
     <div id="pTablesetSummary" class="page-subtitle pull-left"></div>
     <div id="pTablesetLastRefresh" class="page-subtitle pull-right"><b>Last Refresh:</b></div>
+    <div class="quick-button"><button id="btnTableSetConfiguration" class="btn btn-success">Configuration</button></div>
 </div>
 
 @{
@@ -2318,5 +2319,15 @@
             var pp = window.location.href.split('?');
             window.location.href = pp[0] + '/FilterFolders?' + pp[1];
         });
+        $('#btnTableSetConfiguration').click(function (e) {
+            qrmgmvc.Global.Mask($('#pnlFilters'));
+            var d = _pnlFilters.GetData();
+            var _ioTablesetCfg = new qrmgio(cbShowTablesetConfiguration);
+            _ioTablesetCfg.ShowView('/Setup/TablesetConfiguration', d);
+        });
     });
+    function cbShowTablesetConfiguration(ud, d) {
+        DisplayUserMessage('E|Displaying tableset configuration');
+        qrmgmvc.Global.Unmask($('#pnlFilters'));
+    }
 </script>

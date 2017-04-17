@@ -5,6 +5,7 @@
 }
 
 <h1>Tableset Configuration</h1>
+<div class="quick-button pull-right" style="margin-top: -30px;"><button id="btnTableFilters" class="btn btn-success">Filters</button></div>
 
 <input type="hidden" id="__frmTablesetConfigurationVIEW_STATE" value="@Html.Raw(Json.Encode(Model))" />
 
@@ -657,7 +658,19 @@
 
         initTablesetConfigurationEditor();
         tempDisplayMessage();
+
+        $('#btnTableFilters').click(function (e) {
+            qrmgmvc.Global.Mask($('#pageContentFrame'));
+            var d = _frmTableset.GetData();
+            d.Id = d.TablesetId;
+            var _ioTablesetCfg = new qrmgio(cbShowTablesetFilters);
+            _ioTablesetCfg.ShowView('/DataMgr/Tableset', d);
+        });
     });
+    function cbShowTablesetFilters(ud, d) {
+        DisplayUserMessage('E|Displaying tableset filters');
+        qrmgmvc.Global.Unmask($('#pageContentFrame'));
+    }
     function initViewstate() {
         _viewstate = JSON.parse($('#__frmTablesetConfigurationVIEW_STATE').val());
     }

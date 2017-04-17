@@ -608,3 +608,7 @@ button.active {
 .modal-extra-wide {
     width: 90% !important;
 }
+
+.quick-button {
+    clear: both;
+}

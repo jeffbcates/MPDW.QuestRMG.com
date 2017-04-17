@@ -5,6 +5,7 @@
 }
 
 <h1>Tableset Editor</h1>
+<div class="quick-button pull-right" style="margin-top: -30px;"><button id="btnTableFilters" class="btn btn-success">Filters</button></div>
 
 <input type="hidden" id="__frmTablesetVIEW_STATE" value="@Html.Raw(Json.Encode(Model))" />
 <div id="frmTableset">
@@ -69,6 +70,13 @@
         _viewstate = JSON.parse($('#__frmTablesetVIEW_STATE').val());
         _frmTableset = new qrmgEditor(frmTableset);
         _frmTableset.DisplayFormMessages();
+
+        $('#btnTableFilters').click(function (e) {
+            qrmgmvc.Global.Mask($('#pageContentFrame'));
+            var d = _frmTableset.GetData();
+            var _ioTablesetCfg = new qrmgio(cbShowTablesetFilters);
+            _ioTablesetCfg.ShowView('/DataMgr/Tableset', d);
+        });
     });
     function loadViewState(d) {
         _viewstate.Id = d.Id;
@@ -76,6 +84,10 @@
         _viewstate.bEnabled = d.bEnabled;
         _viewstate.Summary = d.Summary;
         _viewstate.DatabaseId = d.DatabaseId;
+    }
+    function cbShowTablesetFilters(ud, d) {
+        DisplayUserMessage('E|Displaying tableset filters');
+        qrmgmvc.Global.Unmask($('#pageContentFrame'));
     }
 </script>
 
