@@ -1,6 +1,8 @@
 ﻿using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Web;
 using System.Web.Mvc;
 using Quest.MPDW.Controllers;
@@ -95,9 +97,9 @@ namespace Quest.MPDW.Support
             /*----------------------------------------------------------------------------------------------------------------------------------
              * Get list of items.
              *---------------------------------------------------------------------------------------------------------------------------------*/
-            ExceptionsListViewModel tablesetsListViewModelNEW = null;
+            ExceptionsListViewModel exceptionsListViewModelNEW = null;
             ExceptionsListModeler exceptionsListModeler = new ExceptionsListModeler(this.Request, this.UserSession);
-            status = exceptionsListModeler.List(out tablesetsListViewModelNEW);
+            status = exceptionsListModeler.List(out exceptionsListViewModelNEW);
             if (!questStatusDef.IsSuccess(status))
             {
                 exceptionsListViewModel.questStatus = status;
@@ -105,11 +107,24 @@ namespace Quest.MPDW.Support
             }
 
             /*----------------------------------------------------------------------------------------------------------------------------------
-             * Return view
+             * Return result view model or as Excel
              *---------------------------------------------------------------------------------------------------------------------------------*/
-            status = new questStatus(Severity.Success);
-            tablesetsListViewModelNEW.questStatus = status;
-            return Json(tablesetsListViewModelNEW, JsonRequestBehavior.AllowGet);
+            if (exceptionsListViewModel.bExportToExcel)
+            {
+                string filename = "ExceptionsLog_" + DateTime.Now.ToString();
+                Response.ClearContent();
+                Response.AddHeader("content-disposition", "atachment;filename=" + filename + ".xls");
+                Response.AddHeader("Content-Type", "application/vnd.ms-excel");
+                writeTsv(exceptionsListViewModelNEW, Response.Output);
+                Response.Flush();
+                Response.End();
+                return new EmptyResult();
+            }
+            else {
+                status = new questStatus(Severity.Success);
+                exceptionsListViewModelNEW.questStatus = status;
+                return Json(exceptionsListViewModelNEW, JsonRequestBehavior.AllowGet);
+            }
         }
 
         #region Paging
@@ -510,6 +525,34 @@ namespace Quest.MPDW.Support
         /*==================================================================================================================================
          * Private Methods
          *=================================================================================================================================*/
+
+        #region Export Routines
+        //----------------------------------------------------------------------------------------------------------------------------------
+        // Export Routines
+        //----------------------------------------------------------------------------------------------------------------------------------
+        private void writeTsv(ExceptionsListViewModel exceptionsListViewModel, TextWriter output)
+        {
+            PropertyInfo[] propertyInfos = typeof(ExceptionLineItemViewModel).GetProperties();
+            foreach (PropertyInfo pi in propertyInfos)
+            {
+                output.Write(pi.Name); // header
+                output.Write("\t");
+            }
+            output.WriteLine();
+            foreach (ExceptionLineItemViewModel lineItem in exceptionsListViewModel.Items)
+            {
+                foreach (PropertyInfo pi in propertyInfos)
+                {
+                    object _value = pi.GetValue(lineItem);
+                    string value = _value == null ? "(null)" : _value.ToString().Replace("\t", " ").Replace("\r", " ").Replace("\n", " ");
+                    output.Write(value);
+                    output.Write("\t");
+                }
+                output.WriteLine();
+            }
+        }
+        #endregion 
+               
         #endregion
     }
 }

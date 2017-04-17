@@ -481,13 +481,14 @@ namespace Quest.MPDW.Support
         /*==================================================================================================================================
          * Private Methods
          *=================================================================================================================================*/
+
         #region Export Routines
         //----------------------------------------------------------------------------------------------------------------------------------
         // Export Routines
         //----------------------------------------------------------------------------------------------------------------------------------
         private void writeTsv(HTTPRequestsListViewModel httpRequestsListViewModel, TextWriter output)
         {
-            PropertyInfo[] propertyInfos = httpRequestsListViewModel.Items[0].GetType().GetProperties();
+            PropertyInfo[] propertyInfos = typeof(HTTPRequestLineItemViewModel).GetProperties();
             foreach (PropertyInfo pi in propertyInfos)
             {
                 output.Write(pi.Name); // header
