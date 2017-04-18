@@ -412,7 +412,12 @@ function qrmgTreeview(model) {
             _self._setiv();
             _self._bInit = true;
         }
-        _self.Unmask();
+        var _evt = _self._getevt("AfterLoaded");
+        if (_evt != null) {
+            if (_evt.callback("AfterLoaded", d)) {
+                return;
+            }
+        } _self.Unmask();
     }
 
     _self.Insert = function (Data) {
@@ -490,8 +495,11 @@ function qrmgTreeview(model) {
         n.state.selected = true;
         var e = $(_self._e).find('li[data-id="' + n.Id + '"]');
         $(e).addClass('node-selected').attr('style', 'color:#FFFFFF;background-color:#428bca;');
-        if (n.nodes.length) {
+        if (bExpand) {
             _self._tvw.expandNode(n);
+        }
+        else {
+            _self._tvw.collapseNode(n);
         }
         return (n);
     }

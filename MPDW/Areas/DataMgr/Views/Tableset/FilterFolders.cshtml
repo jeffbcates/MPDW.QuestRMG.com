@@ -726,6 +726,7 @@
     function cbTvwFilterFolders(op, msg, n, d) {
     }
     function cbTvwFilterExplorerAfterLoaded() {
+        bindFilterExplorerContextMenu();
     }
     function cbTvwFilterExplorerOnTreeRender(e) {
         if (!_tvwFilterExplorer) { return; }
@@ -1069,7 +1070,6 @@
     function cbTvwFilterFolderEntities(op, msg, n, d) {
     }
     function cbTvwFilterFolderEntitiesAfterLoaded() {
-        alert('After loaded');
     }
     function cbTvwFilterFolderEntitiesOnTreeRender(e) {
     }
@@ -1137,7 +1137,6 @@
     function cbTvwTablesetEntities(op, msg, n, d) {
     }
     function cbTvwTablesetEntitiesAfterLoaded() {
-        alert('After loaded');
     }
     function cbTvwTablesetEntitiesOnTreeRender(e) {
         if (!_tvwTablesetEntities) { return; }
@@ -1275,7 +1274,6 @@
     function cbTvwFilterFolderItems(op, msg, n, d) {
     }
     function cbTvwFilterFolderItemsAfterLoaded() {
-        alert('After loaded');
     }
     function cbTvwFilterFolderItemsOnTreeRender(e) {
     }
@@ -1582,7 +1580,6 @@
     function cbTvwFilterFolderSQL(op, msg, n, d) {
     }
     function cbTvwFilterFolderSQLAfterLoaded() {
-        alert('After loaded');
     }
     function cbTvwFilterFolderSQLOnTreeRender(e) {
     }
@@ -1659,7 +1656,6 @@
     function cbTvwFilterFolderProcedures(op, msg, n, d) {
     }
     function cbTvwFilterFolderProceduresAfterLoaded() {
-        alert('After loaded');
     }
     function cbTvwFilterFolderProceduresOnTreeRender(e) {
     }
@@ -2752,8 +2748,10 @@
 <script type="text/javascript">
     function bindFilterExplorerContextMenu() {
         var $contextMenu = $("#ctxmFilterExplorer");
+        var _currentNode;
 
-        $("body").on("contextmenu", "li.list-group-item", function (e) {
+        $("body").on("contextmenu", "#tvwFilterExplorer li.list-group-item", function (e) {
+            _currentNode = e.currentTarget;
             ClearUserMessage();
             $contextMenu.css({
                 display: "block",
@@ -2764,14 +2762,92 @@
         });
         $('#ctxmFilterExplorer li a').click(function (e) {
             var cmd = $(e.currentTarget).attr('href').substr(1);
-            DisplayUserMessage('W|' + cmd + ' selected folder!');
+            DisplayUserMessage('W|' + cmd + ' selected folder: ' + $(_currentNode).text() + '  Id: ' + $(_currentNode).attr('data-id'));
+            ctxmFilterExplorerDo(cmd, $(_currentNode).attr('data-id'));
             $contextMenu.hide();
+            _currentNode = null;
         });
         $('body').click(function (e) {
             if ($('#ctxmFilterExplorer:visible').length) {
                 ClearUserMessage();
                 $contextMenu.hide();
+                _currentNode = null;
             }
         });
     }
+    function ctxmFilterExplorerDo(cmd, id) {
+        if (cmd == 'Expand') {
+            ctxmFoldersExpand(id);
+        }
+        else if (cmd == 'Collapse') {
+            ctxmFoldersCollapse(id);
+        }
+        else if (cmd == 'NewSubfolder') {
+            ctxmFoldersNewSubfolder(id);
+        }
+        else if (cmd == 'Delete') {
+            ctxmFoldersDelete(id);
+        }
+    }
+    function ctxmFoldersExpand(id) {
+        _tvwFilterExplorer.Select(id, true);
+    }
+    function ctxmFoldersCollapse(id) {
+        _tvwFilterExplorer.Select(id, false);
+    }
+    function ctxmFoldersNewSubfolder(id) {
+        _tvwFilterExplorer.Select(id);
+        $('#dlgParentFolderId').val(id);
+        $('#mdlgParentFolder').text(_tvwFilterExplorer.GetNode(id).text);
+        $('#mdlgNewFilterFolder').modal('show');
+    }
+    function ctxmFoldersDelete(id) {
+        _tvwFilterExplorer.Select(id);
+        $('#mdlgConfirmDeleteFolder').modal('show');
+    }
 </script>
+
+
+<div class="modal fade" id="mdlgNewFilterFolder" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">New Filter Folder</h4>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" id="dlgParentFolderId" name="dlgParentFolderId">
+                <span style="font-weight: bold;font-size:1.2em;">Parent Folder:&nbsp;</span><span id="mdlgParentFolder" style="font-size:1.2em;"></span>
+                <br />
+                <br />
+                <input type="text" required="true" maxlength="256" size="55" class="form-control " name="dlgFolderName" id="dlgFolderName" data-toggle="tooltip">
+            </div>
+
+            <div class="modal-footer">
+                <button id="btnCancel" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button id="btnCreate" type="button" class="btn btn-danger" data-dismiss="modal">Create</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<div class="modal fade" id="mdlgConfirmDeleteFolder" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Confirm Delete Folder</h4>
+            </div>
+            <div class="modal-body">
+                <p style="color:#d9534f;font-weight: bold;">You are about to delete this filter folder.  All items inside that folder will be deleted, too.</p>
+                <p>Do you want to proceed?</p>
+            </div>
+
+            <div class="modal-footer">
+                <button id="btnCancel" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button id="btnConfirm" type="button" class="btn btn-danger" data-dismiss="modal">Delete</button>
+            </div>
+        </div>
+    </div>
+</div>
