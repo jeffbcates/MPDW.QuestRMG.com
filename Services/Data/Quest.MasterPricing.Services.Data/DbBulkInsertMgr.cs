@@ -37,7 +37,7 @@ namespace Quest.MasterPricing.Services.Data.Bulk
          *=================================================================================================================================*/
         private UserSession _userSession = null;
         private LogSetting _logSetting = null;
-        DbBulkInsertLogsMgr _dbBulkInsertLogsMgr = null;
+        private DbBulkInsertLogsMgr _dbBulkInsertLogsMgr = null;
 
         #endregion
 
@@ -217,7 +217,6 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                             cmd.CommandType = CommandType.StoredProcedure;
                             cmd.CommandText = filterProcedure.Name;
 
-
                             // Initialize logging info
                             if (bLogging)
                             {
@@ -249,7 +248,6 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                                     _dbBulkInsertLogsMgr.SetArray(logParameterList, out parameterArray);
                                     bulkInsertLog.Parameters = parameterArray;
                                 }
-
 
                                 // If a meta-parameter, fill in its value and continue.
                                 bool bIsMetaParameter = false;
@@ -306,9 +304,10 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                                 {
                                     bulkInsertLog.BulkInsertColumn = String.Format(" Name: {0}, Value: {1} ", bulkInsertColumnValue.Name, bulkInsertColumnValue.Value);
                                 }
-                                 
 
 
+
+                                // Bind the parameter
                                 // TODO:REFACTOR
                                 SqlDbType sqlDbType = (SqlDbType)Enum.Parse(typeof(SqlDbType), filterParam.SqlDbType, true);
                                 SqlParameter sqlParameter = new SqlParameter(filterParam.ParameterName, sqlDbType);
@@ -436,7 +435,7 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                                 }
                                 else if (bLoggingPerRow)
                                 {
-                                    bulkInsertLog.Message = "Successful bulk update";
+                                    bulkInsertLog.Message = "Successful bulk insert";
                                     bulkInsertLog.NumRows = _numRows;
                                     bulkInsertLog.BulkInsertColumn = null;
 
@@ -489,7 +488,7 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                         bulkInsertLog.Event = "COMMIT";
                         bulkInsertLog.NumRows = numRows;
                         bulkInsertLog.BulkInsertColumn = null;
-                        bulkInsertLog.Message = "Bulk operation successful";
+                        bulkInsertLog.Message = "Bulk isnert operation successful";
                         bulkInsertLog.Data = null;
 
                         _dbBulkInsertLogsMgr.Create(bulkInsertLog, out bulkInsertLogId);

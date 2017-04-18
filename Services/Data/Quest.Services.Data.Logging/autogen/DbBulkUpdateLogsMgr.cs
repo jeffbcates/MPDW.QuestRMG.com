@@ -23,7 +23,7 @@ using Quest.Services.Dbio.MasterPricing;
 
 namespace Quest.Services.Data.Logging
 {
-    public class DbBulkUpdateLogsMgr : DbMgrSessionBased
+    public class DbBulkUpdateLogsMgr : DbLogsMgr
     {
         #region Declarations
         /*==================================================================================================================================

@@ -21,8 +21,12 @@ namespace Quest.Services.Dbio.MasterPricing
         public string Tableset { get; set; }
         public string Filter { get; set; }
         public string Event { get; set; }
+        public int NumRows { get; set; }
+        public string Parameters { get; set; }
+        public string BulkUpdateColumn { get; set; }
         public string Message { get; set; }
         public string Data { get; set; }
+        public string Batch { get; set; }
         public System.DateTime Created { get; set; }
     }
 }
