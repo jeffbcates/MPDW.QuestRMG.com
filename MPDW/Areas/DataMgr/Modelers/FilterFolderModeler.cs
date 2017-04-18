@@ -117,6 +117,53 @@ namespace Quest.MasterPricing.DataMgr.Modelers
             }
             return (new questStatus(Severity.Success));
         }
+        public questStatus Load(FolderListViewModel folderListViewModel)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+            // Load all folders
+            FolderId folderId = null;
+            List<FilterFolder> filterFolderList = null;
+            FilterFoldersMgr filterFoldersMgr = new FilterFoldersMgr(this.UserSession);
+            status = filterFoldersMgr.Load(folderId, out filterFolderList);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                return (status);
+            }
+
+            // Transfer model
+            foreach (FilterFolder filterFolder in filterFolderList)
+            {
+                BootstrapTreenodeViewModel bootstrapTreenodeViewModel = null;
+                status = FormatBootstrapTreeviewNode(filterFolder, out bootstrapTreenodeViewModel);
+                if (!questStatusDef.IsSuccess(status))
+                {
+                    return (status);
+                }
+                folderListViewModel.Items.Add(bootstrapTreenodeViewModel);
+            }
+            return (new questStatus(Severity.Success));
+        }
+        public questStatus Delete(FilterFolderViewModel filterFolderViewModel)
+        {
+            // Initialize
+            questStatus status = null;
+
+
+
+            // Delete the folder
+            FilterFolderId filterFolderId = new FilterFolderId(filterFolderViewModel.Id);
+            FilterFoldersMgr filterFoldersMgr = new FilterFoldersMgr(this.UserSession);
+            status = filterFoldersMgr.Delete(filterFolderId);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                FormatErrorMessage(status, filterFolderViewModel);
+                return (status);
+            }
+            return (new questStatus(Severity.Success));
+        }
         #endregion
 
 

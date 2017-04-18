@@ -86,6 +86,51 @@ namespace Quest.MasterPricing.DataMgr
             filterFolderViewModel.questStatus = status;
             return Json(filterFolderViewModel, JsonRequestBehavior.AllowGet);
         }
+        [HttpGet]
+        public ActionResult Load(FolderListViewModel viewModel)
+        {
+            // Initialize
+            questStatus status = null;
+            UserMessageModeler userMessageModeler = null;
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Log Operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = LogOperation();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                userMessageModeler = new UserMessageModeler(status);
+                return Json(userMessageModeler, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Authorize
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = Authorize(viewModel._ctx);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                userMessageModeler = new UserMessageModeler(status);
+                return Json(userMessageModeler, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Get filter folders
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            FilterFolderModeler filterFolderModeler = new FilterFolderModeler(this.Request, this.UserSession);
+            status = filterFolderModeler.Load(viewModel);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                userMessageModeler = new UserMessageModeler(status);
+                return Json(userMessageModeler, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Return data.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = new questStatus(Severity.Success);
+            viewModel.questStatus = status;
+            return Json(viewModel, JsonRequestBehavior.AllowGet);
+        }
 
         #region Options
         //----------------------------------------------------------------------------------------------------------------------------------
@@ -142,6 +187,49 @@ namespace Quest.MasterPricing.DataMgr
              * Return result.
              *---------------------------------------------------------------------------------------------------------------------------------*/
             status = new questStatus(Severity.Success, "Folder successfully" + (bInitialCreation ? " created" : " updated"));
+            filterFolderViewModel.questStatus = status;
+            return Json(filterFolderViewModel, JsonRequestBehavior.AllowGet);
+        }
+        [HttpPost]
+        public ActionResult Delete(FilterFolderViewModel filterFolderViewModel)
+        {
+            questStatus status = null;
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Log Operation
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = LogOperation();
+            if (!questStatusDef.IsSuccess(status))
+            {
+                filterFolderViewModel.questStatus = status;
+                return Json(filterFolderViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Authorize
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = Authorize(filterFolderViewModel._ctx);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                filterFolderViewModel.questStatus = status;
+                return Json(filterFolderViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Perform operation.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            FilterFolderModeler filterFolderModeler = new FilterFolderModeler(this.Request, this.UserSession);
+            status = filterFolderModeler.Delete(filterFolderViewModel);
+            if (!questStatusDef.IsSuccess(status))
+            {
+                filterFolderViewModel.questStatus = status;
+                return Json(filterFolderViewModel, JsonRequestBehavior.AllowGet);
+            }
+
+            /*----------------------------------------------------------------------------------------------------------------------------------
+             * Return result.
+             *---------------------------------------------------------------------------------------------------------------------------------*/
+            status = new questStatus(Severity.Success, "Folder successfully deleted");
             filterFolderViewModel.questStatus = status;
             return Json(filterFolderViewModel, JsonRequestBehavior.AllowGet);
         }

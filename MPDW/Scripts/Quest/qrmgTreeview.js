@@ -386,7 +386,7 @@ function qrmgTreeview(model) {
         _self.Mask();
         if (!Data) {
             var _d = _self._getctx();
-            var _url = _self._bldurl(_self._uri + '/Load');
+            var _url = _self._uri + '/Load';
             var _io = new qrmgio(_self._rload);
             _io.GetJSON(_url, _d, 'Load');
         }

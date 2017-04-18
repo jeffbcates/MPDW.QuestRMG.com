@@ -679,6 +679,9 @@
 <!-- EXPLORE -->
 <script type="text/javascript">
     var _tvwFilterExplorer = null;
+    var gAfterLoadExpandNode = null;
+    var gAfterLoadSelectNode = null;
+    var bKlugieLockoutAfterLoaded = false;
     function initTreeviewFilterExplorer() {
         var tvwFilterExplorer = {
             element: 'tvwFilterExplorer',
@@ -726,7 +729,16 @@
     function cbTvwFilterFolders(op, msg, n, d) {
     }
     function cbTvwFilterExplorerAfterLoaded() {
+        if (bKlugieLockoutAfterLoaded) { return; }
         bindFilterExplorerContextMenu();
+        if (gAfterLoadExpandNode) {
+            bKlugieLockoutAfterLoaded = true;
+            _tvwFilterExplorer.Expand(gAfterLoadExpandNode);
+        }
+        if (gAfterLoadSelectNode) {
+            bKlugieLockoutAfterLoaded = true;
+            _tvwFilterExplorer.Select(gAfterLoadSelectNode, true);
+        }
     }
     function cbTvwFilterExplorerOnTreeRender(e) {
         if (!_tvwFilterExplorer) { return; }
@@ -2762,7 +2774,6 @@
         });
         $('#ctxmFilterExplorer li a').click(function (e) {
             var cmd = $(e.currentTarget).attr('href').substr(1);
-            DisplayUserMessage('W|' + cmd + ' selected folder: ' + $(_currentNode).text() + '  Id: ' + $(_currentNode).attr('data-id'));
             ctxmFilterExplorerDo(cmd, $(_currentNode).attr('data-id'));
             $contextMenu.hide();
             _currentNode = null;
@@ -2799,11 +2810,13 @@
         _tvwFilterExplorer.Select(id);
         $('#dlgParentFolderId').val(id);
         $('#mdlgParentFolder').text(_tvwFilterExplorer.GetNode(id).text);
-        $('#mdlgNewFilterFolder').modal('show');
+        showNewFilterDialog();
     }
     function ctxmFoldersDelete(id) {
         _tvwFilterExplorer.Select(id);
-        $('#mdlgConfirmDeleteFolder').modal('show');
+        var node = _tvwFilterExplorer.GetNode(id);
+        var parentNode = _tvwFilterExplorer.GetParent(id);
+        showDeleteFolderDialog(node, parentNode);
     }
 </script>
 
@@ -2820,7 +2833,7 @@
                 <span style="font-weight: bold;font-size:1.2em;">Parent Folder:&nbsp;</span><span id="mdlgParentFolder" style="font-size:1.2em;"></span>
                 <br />
                 <br />
-                <input type="text" required="true" maxlength="256" size="55" class="form-control " name="dlgFolderName" id="dlgFolderName" data-toggle="tooltip">
+                <input type="text" required="true" maxlength="256" size="55" class="form-control " name="dlgFolderName" id="dlgFolderName" data-toggle="tooltip" tabindex="0">
             </div>
 
             <div class="modal-footer">
@@ -2830,6 +2843,34 @@
         </div>
     </div>
 </div>
+<script type="text/javascript">
+    function showNewFilterDialog() {
+        bindNewFilterFolderDialog();
+        $('#dlgFolderName').val('');
+        $('#mdlgNewFilterFolder').modal('show');
+    }
+    function bindNewFilterFolderDialog() {
+        $('#mdlgNewFilterFolder').on('shown.bs.modal', function () {
+            $('#dlgFolderName').focus();
+        });
+        $('#btnCreate', '#mdlgNewFilterFolder').unbind('click').click(function (e) {
+            var d = _frmFilter._getctx();
+            d.FolderId = $('#dlgParentFolderId').val();
+            d.Name = $('#dlgFolderName').val();
+            var ioNewFolder = new qrmgio(cbNewFolder);
+            bKlugieLockoutAfterLoaded = false;
+            ioNewFolder.PostJSON('/DataMgr/Folder/Save', d);
+        });
+    }
+    function cbNewFolder(ud, d) {
+        DisplayUserMessage(d);
+        if (IsAppSuccess(d)) {
+            gAfterLoadExpandNode = d.FolderId;
+            gAfterLoadSelectNode = d.Id;
+            _tvwFilterExplorer.Load();
+        }
+    }
+</script>
 
 
 <div class="modal fade" id="mdlgConfirmDeleteFolder" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -2840,6 +2881,8 @@
                 <h4 class="modal-title" id="myModalLabel">Confirm Delete Folder</h4>
             </div>
             <div class="modal-body">
+                <input type="hidden" id="dlgParentDelFolderId" name="dlgParentDelFolderId">
+                <input type="hidden" id="dlgFolderId" name="dlgFolderId">
                 <p style="color:#d9534f;font-weight: bold;">You are about to delete this filter folder.  All items inside that folder will be deleted, too.</p>
                 <p>Do you want to proceed?</p>
             </div>
@@ -2851,3 +2894,30 @@
         </div>
     </div>
 </div>
+<script type="text/javascript">
+    function showDeleteFolderDialog(node, parentNode) {
+        $('#myModalLabel', '#mdlgConfirmDeleteFolder').text('Confirm Delete Folder: ' + node.text);
+        $('#dlgFolderId').val(node.Id);
+        parentNode ? $('#dlgParentDelFolderId').val(parentNode.Id) : $('#dlgParentDelFolderId').val('');
+        bindDeleteFolderDialog();
+        $('#mdlgConfirmDeleteFolder').modal('show');
+    }
+    function bindDeleteFolderDialog() {
+        $('#btnConfirm', '#mdlgConfirmDeleteFolder').unbind('click').click(function (e) {
+            var d = _frmFilter._getctx();
+            d.Id = $('#dlgFolderId').val();
+            var ud = { ParentId: $('#dlgParentDelFolderId').val() };
+            var ioDeleteFolder = new qrmgio(cbDeleteFolder);
+            bKlugieLockoutAfterLoaded = false;
+            ioDeleteFolder.PostJSON('/DataMgr/Folder/Delete', d, ud);
+        });
+    }
+    function cbDeleteFolder(ud, d) {
+        DisplayUserMessage(d);
+        if (IsAppSuccess(d)) {
+            gAfterLoadExpandNode = ud.ParentId;
+            gAfterLoadSelectNode = null;
+            _tvwFilterExplorer.Load();
+        }
+    }
+</script>

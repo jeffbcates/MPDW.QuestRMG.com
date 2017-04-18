@@ -179,6 +179,7 @@
     <Compile Include="App_Start\FilterConfig.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\WebApiConfig.cs" />
+    <Compile Include="Areas\DataMgr\Models\FolderListViewModel.cs" />
     <Compile Include="Areas\Support\Controllers\SettingsController.cs" />
     <Compile Include="Areas\Support\Controllers\PortalRequestsController.cs" />
     <Compile Include="Areas\Support\Controllers\BulkUpdatesController.cs" />
