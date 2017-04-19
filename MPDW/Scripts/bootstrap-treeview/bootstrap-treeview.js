@@ -524,7 +524,7 @@
 		this.buildTree(this.tree, 0);
 
 
-	    // ADDED: BEN GILLIS, EVENT TO READD CLASSES AFTER A RE-RENDER LOSES THOSE CLASSES (e.g. Draggable/Droppable).
+	    // ADDED: BEN GILLIS, EVENT TO READ CLASSES AFTER A RE-RENDER LOSES THOSE CLASSES (e.g. Draggable/Droppable).
 		if (this.options.onTreeRender) {
 		    this.options.onTreeRender('OnTreeRender');
 		}
@@ -554,7 +554,6 @@
                 .attr('title', node.title ? node.title : '')
 				.attr('style', _this.buildStyleOverride(node));
 
-
 			// Add indent/spacer to mimic tree structure
 			for (var i = 0; i < (level - 1); i++) {
 				treeItem.append(_this.template.indent);
@@ -567,7 +566,6 @@
 					classList.push(_this.options.collapseIcon);
 				}
 				else {
-
 				    node.nodes.length ? classList.push(_this.options.expandIcon) : classList.push(_this.options.emptyIcon);
 				}
 			}
@@ -663,31 +661,45 @@
 		var color = node.color;
 		var backColor = node.backColor;
 
-		////console.log('Tree.prototype.buildStyleOverride: highlightSelected=' + this.options.highlightSelected + '   node.state.selected=' + node.state.selected);
+	    ////console.log('Tree.prototype.buildStyleOverride: highlightSelected=' + this.options.highlightSelected + '   node.state.selected=' + node.state.selected);
+
+		////if (node.state.selected) {
+		////    console.log('Tree.prototype.buildStyleOverride: node.state.selected: ' + node.text);
+        ////}
 
 		if (this.options.highlightSelected && node.state.selected) {
 		    ////console.log('Tree.prototype.buildStyleOverride: this.options.highlightSelected && node.state.selected');
 
 		    if (this.options.selectedColor) {
-		        ////console.log('Tree.prototype.buildStyleOverride: this.options.selectedColor');
+		        ////console.log('Tree.prototype.buildStyleOverride: this.options.selectedColor: ' + this.options.selectedColor);
 				color = this.options.selectedColor;
 			}
 			if (this.options.selectedBackColor) {
-			    ////console.log('Tree.prototype.buildStyleOverride: this.options.selectedBackColor');
+			    ////console.log('Tree.prototype.buildStyleOverride: this.options.selectedBackColor: ' + this.options.selectedBackColor);
 			    backColor = this.options.selectedBackColor;
 			}
 		}
+		////if (node.state.selected) {
+		////    console.log('color: ' + color);
+		////    console.log('backColor: ' + backColor);
+		////}
 
 		if (this.options.highlightSearchResults && node.searchResult && !node.state.disabled) {
 		    ////console.log('Tree.prototype.buildStyleOverride: this.options.highlightSearchResults && node.searchResult && !node.state.disabled');
 
 		    if (this.options.searchResultColor) {
-				color = this.options.searchResultColor;
+		        ////console.log('Tree.prototype.buildStyleOverride: this.options.searchResultColor: ' + this.options.searchResultColor);
+		        color = this.options.searchResultColor;
 			}
 			if (this.options.searchResultBackColor) {
-				backColor = this.options.searchResultBackColor;
+			    ////console.log('Tree.prototype.buildStyleOverride: this.options.searchResultBackColor: ' + this.options.searchResultBackColor);
+			    backColor = this.options.searchResultBackColor;
 			}
 		}
+		////if (node.state.selected) {
+		////    console.log('color: ' + color);
+		////    console.log('backColor: ' + backColor);
+		////}
 
 		return 'color:' + color +
 			';background-color:' + backColor + ';';

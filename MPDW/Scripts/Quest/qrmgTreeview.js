@@ -71,6 +71,7 @@ function qrmgTreeview(model) {
         $(_self._e).treeview({
             data: Data || {},
             levels: 99,
+            highlightSelected: true,
             multiSelect: _self._model.multiSelect,
             onTreeRender: _self._onrndr
             , onNodeSelected: _self._onNodeSelected
@@ -300,11 +301,12 @@ function qrmgTreeview(model) {
     _self._bindnodes = function () {
         //console.log('qrmgTreeview._bindnodes');
         $(_self._e).find('ul.list-group li').unbind('click').on('click', function (e) {
-            //console.log('qrmgTreeview._bindnodes: click li');
+            console.log('qrmgTreeview._bindnodes: click li');
             _evt = _self._getevt("Click");
             if (_evt != null) {
                 //console.log('    calling Click event');
                 var n = _self.GetNode($(e.currentTarget).attr('data-id'));
+                n.state.selected = true;
                 if (_evt.callback({ Click: true, node: n, event: e })) {
                     //console.log('    Click event true');
                     e.stopPropagation();
@@ -495,11 +497,13 @@ function qrmgTreeview(model) {
         n.state.selected = true;
         var e = $(_self._e).find('li[data-id="' + n.Id + '"]');
         $(e).addClass('node-selected').attr('style', 'color:#FFFFFF;background-color:#428bca;');
-        if (bExpand) {
-            _self._tvw.expandNode(n);
-        }
-        else {
-            _self._tvw.collapseNode(n);
+        if (bExpand !== undefined) {
+            if (bExpand) {
+                _self._tvw.expandNode(n);
+            }
+            else {
+                _self._tvw.collapseNode(n);
+            }
         }
         return (n);
     }

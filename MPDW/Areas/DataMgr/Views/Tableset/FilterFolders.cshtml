@@ -759,18 +759,21 @@
             _tvwFilterFolderProcedures.Expand(id);
         }
     }
-    function selectFolder(id) {
+    function selectFolder(id, bExpand) {
+        if (_tvwFilterExplorer) {
+            _tvwFilterExplorer.Select(id, bExpand);
+        }
         if (_tvwFilterFolderEntities) {
-            _tvwFilterFolderEntities.Select(id, true);
+            _tvwFilterFolderEntities.Select(id, bExpand);
         }
         if (_tvwFilterFolderItems) {
-            _tvwFilterFolderItems.Select(id, true);
+            _tvwFilterFolderItems.Select(id, bExpand);
         }
         if (_tvwFilterFolderSQL) {
-            _tvwFilterFolderSQL.Select(id, true);
+            _tvwFilterFolderSQL.Select(id, bExpand);
         }
         if (_tvwFilterFolderProcedures) {
-            _tvwFilterFolderProcedures.Select(id, true);
+            _tvwFilterFolderProcedures.Select(id, bExpand);
         }
     }
     function cbTvwFilterExplorerOnTreeRender(e) {
@@ -792,8 +795,13 @@
             cbChangeFilter({ Change: true }, ud.node.Id);
         }
         else if (ud.node.type == 'folder') {
-            selectFolder(ud.node.Id);
+            var bExpand;
+            if ($(ud.event.target).hasClass('glyphicon')) {
+                bExpand = $(ud.event.target).hasClass('glyphicon-plus');
+            }
+            selectFolder(ud.node.Id, bExpand);
         }
+        return (true);
     }
 </script>
 
@@ -1132,6 +1140,14 @@
         if (ud.node.type == 'filter') {
             cbChangeFilter({ Change: true }, ud.node.Id);
         }
+        else if (ud.node.type == 'folder') {
+            var bExpand;
+            if ($(ud.event.target).hasClass('glyphicon')) {
+                bExpand = $(ud.event.target).hasClass('glyphicon-plus');
+            }
+            selectFolder(ud.node.Id, bExpand);
+        }
+        return (true);
     }
 </script>
 <script type="text/javascript">
@@ -1336,6 +1352,14 @@
         if (ud.node.type == 'filter') {
             cbChangeFilter({ Change: true }, ud.node.Id);
         }
+        else if (ud.node.type == 'folder') {
+            var bExpand;
+            if ($(ud.event.target).hasClass('glyphicon')) {
+                bExpand = $(ud.event.target).hasClass('glyphicon-plus');
+            }
+            selectFolder(ud.node.Id, bExpand);
+        }
+        return (true);
     }
 </script>
 <script type="text/javascript">
@@ -1642,6 +1666,14 @@
         if (ud.node.type == 'filter') {
             cbChangeFilter({ Change: true }, ud.node.Id);
         }
+        else if (ud.node.type == 'folder') {
+            var bExpand;
+            if ($(ud.event.target).hasClass('glyphicon')) {
+                bExpand = $(ud.event.target).hasClass('glyphicon-plus');
+            }
+            selectFolder(ud.node.Id, bExpand);
+        }
+        return (true);
     }
 </script>
 
@@ -1719,6 +1751,14 @@
         if (ud.node.type == 'filter') {
             cbChangeFilter({ Change: true }, ud.node.Id);
         }
+        else if (ud.node.type == 'folder') {
+            var bExpand;
+            if ($(ud.event.target).hasClass('glyphicon')) {
+                bExpand = $(ud.event.target).hasClass('glyphicon-plus');
+            }
+            selectFolder(ud.node.Id, bExpand);
+        }
+        return (true);
     }
 </script>
 <script type="text/javascript">
