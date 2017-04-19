@@ -12,6 +12,8 @@ namespace Quest.Services.Dbio.MasterPricing
     using System;
     using System.Data.Entity;
     using System.Data.Entity.Infrastructure;
+    using System.Data.Entity.Core.Objects;
+    using System.Linq;
     
     public partial class MasterPricingEntities : DbContext
     {
@@ -66,5 +68,87 @@ namespace Quest.Services.Dbio.MasterPricing
         public virtual DbSet<vwTablesetTablesList2> vwTablesetTablesList2 { get; set; }
         public virtual DbSet<vwTablesetViewsList2> vwTablesetViewsList2 { get; set; }
         public virtual DbSet<vwTypeListsList> vwTypeListsList { get; set; }
+    
+        public virtual int CleanDatabase()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("CleanDatabase");
+        }
+    
+        public virtual int CleanFilters()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("CleanFilters");
+        }
+    
+        public virtual int CleanSetup()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("CleanSetup");
+        }
+    
+        public virtual int CleanTablesets()
+        {
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("CleanTablesets");
+        }
+    
+        public virtual int DeleteFilterById(Nullable<int> filterId)
+        {
+            var filterIdParameter = filterId.HasValue ?
+                new ObjectParameter("FilterId", filterId) :
+                new ObjectParameter("FilterId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction("DeleteFilterById", filterIdParameter);
+        }
+    
+        public virtual ObjectResult<MPDWMetaFields_Result> MPDWMetaFields(string p_Username, Nullable<int> p_UserSessionId)
+        {
+            var p_UsernameParameter = p_Username != null ?
+                new ObjectParameter("p_Username", p_Username) :
+                new ObjectParameter("p_Username", typeof(string));
+    
+            var p_UserSessionIdParameter = p_UserSessionId.HasValue ?
+                new ObjectParameter("p_UserSessionId", p_UserSessionId) :
+                new ObjectParameter("p_UserSessionId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<MPDWMetaFields_Result>("MPDWMetaFields", p_UsernameParameter, p_UserSessionIdParameter);
+        }
+    
+        public virtual ObjectResult<ShowFilter_Result> ShowFilter(string filterName)
+        {
+            var filterNameParameter = filterName != null ?
+                new ObjectParameter("FilterName", filterName) :
+                new ObjectParameter("FilterName", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ShowFilter_Result>("ShowFilter", filterNameParameter);
+        }
+    
+        public virtual ObjectResult<ShowFilterById_Result> ShowFilterById(Nullable<int> filterId)
+        {
+            var filterIdParameter = filterId.HasValue ?
+                new ObjectParameter("FilterId", filterId) :
+                new ObjectParameter("FilterId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ShowFilterById_Result>("ShowFilterById", filterIdParameter);
+        }
+    
+        public virtual ObjectResult<ShowTableset_Result> ShowTableset(string tablesetName)
+        {
+            var tablesetNameParameter = tablesetName != null ?
+                new ObjectParameter("TablesetName", tablesetName) :
+                new ObjectParameter("TablesetName", typeof(string));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<ShowTableset_Result>("ShowTableset", tablesetNameParameter);
+        }
+    
+        public virtual ObjectResult<UnderBarTest_Result> UnderBarTest(string p_Username, Nullable<int> p_UserSessionId)
+        {
+            var p_UsernameParameter = p_Username != null ?
+                new ObjectParameter("p_Username", p_Username) :
+                new ObjectParameter("p_Username", typeof(string));
+    
+            var p_UserSessionIdParameter = p_UserSessionId.HasValue ?
+                new ObjectParameter("p_UserSessionId", p_UserSessionId) :
+                new ObjectParameter("p_UserSessionId", typeof(int));
+    
+            return ((IObjectContextAdapter)this).ObjectContext.ExecuteFunction<UnderBarTest_Result>("UnderBarTest", p_UsernameParameter, p_UserSessionIdParameter);
+        }
     }
 }

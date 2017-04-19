@@ -2825,6 +2825,9 @@
 </script>
 
 
+<ul id="ctxmExplorerTab" class="tvwContextMenu dropdown-menu" role="menu" style="display:none">
+    <li><a tabindex="-1" href="#NewFolder">New Folder</a></li>
+</ul>
 <ul id="ctxmFilterExplorer" class="tvwContextMenu dropdown-menu" role="menu" style="display:none">
     <li><a tabindex="-1" href="#Expand">Expand</a></li>
     <li><a tabindex="-1" href="#Collapse">Collapse</a></li>
@@ -2836,13 +2839,26 @@
 </ul>
 <script type="text/javascript">
     function bindFilterExplorerContextMenu() {
+        var ctxmExplorerTab = $("#ctxmExplorerTab");
         var ctxmFolder = $("#ctxmFilterExplorer");
         var _currentNode;
 
+        $("body").on("contextmenu", "#pnlfltExploreTab", function (e) {
+            _currentNode = null;
+            ClearUserMessage();
+            ctxmFolder.hide();
+            ctxmExplorerTab.css({
+                display: "block",
+                left: e.pageX,
+                top: e.pageY - 20
+            });
+            return (false);
+        });
         $("body").on("contextmenu", "#tvwFilterExplorer li.list-group-item", function (e) {
             if ($(e.currentTarget).find('.fa-filter').length) { return(false); }
             _currentNode = e.currentTarget;
             ClearUserMessage();
+            ctxmExplorerTab.hide();
             ctxmFolder.css({
                 display: "block",
                 left: e.pageX,
@@ -2850,19 +2866,44 @@
             });
             return(false);
         });
+        $('#ctxmExplorerTab li a').click(function (e) {
+            var cmd = $(e.currentTarget).attr('href').substr(1);
+            ctxmExplorerTabDo(cmd, $(_currentNode).attr('data-id'));
+            ctxmExplorerTab.hide();
+            ctxmFolder.hide();
+            _currentNode = null;
+        });
         $('#ctxmFilterExplorer li a').click(function (e) {
             var cmd = $(e.currentTarget).attr('href').substr(1);
             ctxmFilterExplorerDo(cmd, $(_currentNode).attr('data-id'));
+            ctxmExplorerTab.hide();
             ctxmFolder.hide();
             _currentNode = null;
         });
         $('body').click(function (e) {
+            if ($('#ctxmExplorerTab:visible').length) {
+                ClearUserMessage();
+                ctxmExplorerTab.hide();
+                ctxmFolder.hide();
+                _currentNode = null;
+            }
             if ($('#ctxmFilterExplorer:visible').length) {
                 ClearUserMessage();
+                ctxmExplorerTab.hide();
                 ctxmFolder.hide();
                 _currentNode = null;
             }
         });
+    }
+    function ctxmExplorerTabDo(cmd) {
+        if (cmd == 'NewFolder') {
+            ctxmExplorerNewFolder();
+        }
+    }
+    function ctxmExplorerNewFolder() {
+        $('#dlgParentFolderId').val('');
+        $('#mdlgParentFolder').text('');
+        showNewFilterDialog();
     }
     function ctxmFilterExplorerDo(cmd, id) {
         if (cmd == 'Expand') {

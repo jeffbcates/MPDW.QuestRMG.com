@@ -534,6 +534,30 @@ warning 6002: The table/view 'MasterPricing.dbo.vwTypeListsList' does not have a
           <Property Name="SQL" Type="nvarchar(max)" />
           <Property Name="Database" Type="nvarchar" MaxLength="256" />
         </EntityType>
+        <Function Name="CleanDatabase" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="CleanFilters" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="CleanSetup" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="CleanTablesets" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+        <Function Name="DeleteFilterById" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="FilterId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="MPDWMetaFields" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="p_Username" Type="nvarchar" Mode="In" />
+          <Parameter Name="p_UserSessionId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="ShowFilter" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="FilterName" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="ShowFilterById" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="FilterId" Type="int" Mode="In" />
+        </Function>
+        <Function Name="ShowTableset" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="TablesetName" Type="nvarchar" Mode="In" />
+        </Function>
+        <Function Name="UnderBarTest" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+          <Parameter Name="p_Username" Type="nvarchar" Mode="In" />
+          <Parameter Name="p_UserSessionId" Type="int" Mode="In" />
+        </Function>
         <EntityContainer Name="QuestServicesDbioMasterPricingStoreContainer">
           <EntitySet Name="FilterColumns" EntityType="Self.FilterColumns" Schema="DATAMGR" store:Type="Tables" />
           <EntitySet Name="FilterEntityTypes" EntityType="Self.FilterEntityTypes" Schema="DATAMGR" store:Type="Tables" />
@@ -671,6 +695,30 @@ warning 6002: The table/view 'MasterPricing.dbo.vwTypeListsList' does not have a
           <EntitySet Name="vwTablesetTablesList2" EntityType="Quest.Services.Dbio.MasterPricing.vwTablesetTablesList2" />
           <EntitySet Name="vwTablesetViewsList2" EntityType="Quest.Services.Dbio.MasterPricing.vwTablesetViewsList2" />
           <EntitySet Name="vwTypeListsList" EntityType="Quest.Services.Dbio.MasterPricing.vwTypeListsList" />
+          <FunctionImport Name="CleanDatabase" />
+          <FunctionImport Name="CleanFilters" />
+          <FunctionImport Name="CleanSetup" />
+          <FunctionImport Name="CleanTablesets" />
+          <FunctionImport Name="DeleteFilterById">
+            <Parameter Name="FilterId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="MPDWMetaFields" ReturnType="Collection(Quest.Services.Dbio.MasterPricing.MPDWMetaFields_Result)">
+            <Parameter Name="p_Username" Mode="In" Type="String" />
+            <Parameter Name="p_UserSessionId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="ShowFilter" ReturnType="Collection(Quest.Services.Dbio.MasterPricing.ShowFilter_Result)">
+            <Parameter Name="FilterName" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="ShowFilterById" ReturnType="Collection(Quest.Services.Dbio.MasterPricing.ShowFilterById_Result)">
+            <Parameter Name="FilterId" Mode="In" Type="Int32" />
+          </FunctionImport>
+          <FunctionImport Name="ShowTableset" ReturnType="Collection(Quest.Services.Dbio.MasterPricing.ShowTableset_Result)">
+            <Parameter Name="TablesetName" Mode="In" Type="String" />
+          </FunctionImport>
+          <FunctionImport Name="UnderBarTest" ReturnType="Collection(Quest.Services.Dbio.MasterPricing.UnderBarTest_Result)">
+            <Parameter Name="p_Username" Mode="In" Type="String" />
+            <Parameter Name="p_UserSessionId" Mode="In" Type="Int32" />
+          </FunctionImport>
         </EntityContainer>
         <EntityType Name="FilterColumns">
           <Key>
@@ -1191,6 +1239,43 @@ warning 6002: The table/view 'MasterPricing.dbo.vwTypeListsList' does not have a
           <Property Name="SQL" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
           <Property Name="Database" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
         </EntityType>
+        <ComplexType Name="MPDWMetaFields_Result">
+          <Property Type="String" Name="Username" Nullable="true" MaxLength="256" />
+          <Property Type="Int32" Name="UserSessionId" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="ShowFilter_Result">
+          <Property Type="String" Name="Column1" Nullable="false" MaxLength="8" />
+          <Property Type="Int32" Name="Id" Nullable="false" />
+          <Property Type="Int32" Name="FolderId" Nullable="true" />
+          <Property Type="Int32" Name="TablesetId" Nullable="false" />
+          <Property Type="Boolean" Name="bSaveBeforeImage" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="256" />
+          <Property Type="String" Name="Summary" Nullable="true" MaxLength="256" />
+          <Property Type="String" Name="SQL" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="ShowFilterById_Result">
+          <Property Type="String" Name="Column1" Nullable="false" MaxLength="8" />
+          <Property Type="Int32" Name="Id" Nullable="false" />
+          <Property Type="Int32" Name="FolderId" Nullable="true" />
+          <Property Type="Int32" Name="TablesetId" Nullable="false" />
+          <Property Type="Boolean" Name="bSaveBeforeImage" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="256" />
+          <Property Type="String" Name="Summary" Nullable="true" MaxLength="256" />
+          <Property Type="String" Name="SQL" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="ShowTableset_Result">
+          <Property Type="String" Name="Column1" Nullable="false" MaxLength="10" />
+          <Property Type="Int32" Name="Id" Nullable="false" />
+          <Property Type="Int32" Name="DatabaseId" Nullable="false" />
+          <Property Type="Boolean" Name="bEnabled" Nullable="false" />
+          <Property Type="String" Name="Name" Nullable="false" MaxLength="256" />
+          <Property Type="String" Name="Summary" Nullable="true" MaxLength="256" />
+          <Property Type="DateTime" Name="LastRefresh" Nullable="true" />
+        </ComplexType>
+        <ComplexType Name="UnderBarTest_Result">
+          <Property Type="String" Name="Username" Nullable="true" MaxLength="256" />
+          <Property Type="Int32" Name="UserSessionId" Nullable="true" />
+        </ComplexType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1742,6 +1827,68 @@ warning 6002: The table/view 'MasterPricing.dbo.vwTypeListsList' does not have a
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <FunctionImportMapping FunctionImportName="CleanDatabase" FunctionName="Quest.Services.Dbio.MasterPricing.Store.CleanDatabase" />
+          <FunctionImportMapping FunctionImportName="CleanFilters" FunctionName="Quest.Services.Dbio.MasterPricing.Store.CleanFilters" />
+          <FunctionImportMapping FunctionImportName="CleanSetup" FunctionName="Quest.Services.Dbio.MasterPricing.Store.CleanSetup" />
+          <FunctionImportMapping FunctionImportName="CleanTablesets" FunctionName="Quest.Services.Dbio.MasterPricing.Store.CleanTablesets" />
+          <FunctionImportMapping FunctionImportName="DeleteFilterById" FunctionName="Quest.Services.Dbio.MasterPricing.Store.DeleteFilterById" />
+          <FunctionImportMapping FunctionImportName="MPDWMetaFields" FunctionName="Quest.Services.Dbio.MasterPricing.Store.MPDWMetaFields">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Quest.Services.Dbio.MasterPricing.MPDWMetaFields_Result">
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="UserSessionId" ColumnName="UserSessionId" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="ShowFilter" FunctionName="Quest.Services.Dbio.MasterPricing.Store.ShowFilter">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Quest.Services.Dbio.MasterPricing.ShowFilter_Result">
+                <ScalarProperty Name="Column1" ColumnName="Column1" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="FolderId" ColumnName="FolderId" />
+                <ScalarProperty Name="TablesetId" ColumnName="TablesetId" />
+                <ScalarProperty Name="bSaveBeforeImage" ColumnName="bSaveBeforeImage" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Summary" ColumnName="Summary" />
+                <ScalarProperty Name="SQL" ColumnName="SQL" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="ShowFilterById" FunctionName="Quest.Services.Dbio.MasterPricing.Store.ShowFilterById">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Quest.Services.Dbio.MasterPricing.ShowFilterById_Result">
+                <ScalarProperty Name="Column1" ColumnName="Column1" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="FolderId" ColumnName="FolderId" />
+                <ScalarProperty Name="TablesetId" ColumnName="TablesetId" />
+                <ScalarProperty Name="bSaveBeforeImage" ColumnName="bSaveBeforeImage" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Summary" ColumnName="Summary" />
+                <ScalarProperty Name="SQL" ColumnName="SQL" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="ShowTableset" FunctionName="Quest.Services.Dbio.MasterPricing.Store.ShowTableset">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Quest.Services.Dbio.MasterPricing.ShowTableset_Result">
+                <ScalarProperty Name="Column1" ColumnName="Column1" />
+                <ScalarProperty Name="Id" ColumnName="Id" />
+                <ScalarProperty Name="DatabaseId" ColumnName="DatabaseId" />
+                <ScalarProperty Name="bEnabled" ColumnName="bEnabled" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="Summary" ColumnName="Summary" />
+                <ScalarProperty Name="LastRefresh" ColumnName="LastRefresh" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
+          <FunctionImportMapping FunctionImportName="UnderBarTest" FunctionName="Quest.Services.Dbio.MasterPricing.Store.UnderBarTest">
+            <ResultMapping>
+              <ComplexTypeMapping TypeName="Quest.Services.Dbio.MasterPricing.UnderBarTest_Result">
+                <ScalarProperty Name="Username" ColumnName="Username" />
+                <ScalarProperty Name="UserSessionId" ColumnName="UserSessionId" />
+              </ComplexTypeMapping>
+            </ResultMapping>
+          </FunctionImportMapping>
         </EntityContainerMapping>
       </Mapping>
     </edmx:Mappings>

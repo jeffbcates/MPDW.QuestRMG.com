@@ -57,6 +57,10 @@ namespace Quest.MasterPricing.DataMgr.Modelers
             // Transfer model
             Quest.Functional.MasterPricing.FilterFolder filterFolder = new Functional.MasterPricing.FilterFolder();
             BufferMgr.TransferBuffer(filterFolderViewModel, filterFolder, true);
+            if (filterFolderViewModel.FolderId < BaseId.VALID_ID)
+            {
+                filterFolder.FolderId = null;
+            }
 
 
             // Determine if this is a create or update
@@ -154,9 +158,19 @@ namespace Quest.MasterPricing.DataMgr.Modelers
 
 
             // Delete the folder
+            ////FilterFolderId filterFolderId = new FilterFolderId(filterFolderViewModel.Id);
+            ////FilterFoldersMgr filterFoldersMgr = new FilterFoldersMgr(this.UserSession);
+            ////status = filterFoldersMgr.Delete(filterFolderId);
+            ////if (!questStatusDef.IsSuccess(status))
+            ////{
+            ////    FormatErrorMessage(status, filterFolderViewModel);
+            ////    return (status);
+            ////}
+
+
             FilterFolderId filterFolderId = new FilterFolderId(filterFolderViewModel.Id);
-            FilterFoldersMgr filterFoldersMgr = new FilterFoldersMgr(this.UserSession);
-            status = filterFoldersMgr.Delete(filterFolderId);
+            FolderMgr folderMgr = new FolderMgr(this.UserSession);
+            status = folderMgr.Delete(filterFolderId);
             if (!questStatusDef.IsSuccess(status))
             {
                 FormatErrorMessage(status, filterFolderViewModel);

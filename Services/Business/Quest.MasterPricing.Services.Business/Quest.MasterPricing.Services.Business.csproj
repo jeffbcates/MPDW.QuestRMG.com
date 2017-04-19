@@ -63,6 +63,7 @@
     <Compile Include="autogen\Setup\ViewsMgr.cs" />
     <Compile Include="autogen\Setup\TablesMgr.cs" />
     <Compile Include="DatabaseMgr.cs" />
+    <Compile Include="FolderMgr.cs" />
     <Compile Include="TypeListMgr.cs" />
     <Compile Include="LookupMgr.cs" />
     <Compile Include="BulkDeleteMgr.cs" />

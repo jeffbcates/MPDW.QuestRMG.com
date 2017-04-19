@@ -124,6 +124,9 @@
     <Compile Include="Lookups.cs">
       <DependentUpon>Quest.Services.tt</DependentUpon>
     </Compile>
+    <Compile Include="MPDWMetaFields_Result.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
     <Compile Include="PortalRequestLogs.cs">
       <DependentUpon>Quest.Services.tt</DependentUpon>
     </Compile>
@@ -142,6 +145,15 @@
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Quest.Services.Dbio.edmx</DependentUpon>
+    </Compile>
+    <Compile Include="ShowFilterById_Result.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ShowFilter_Result.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="ShowTableset_Result.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
     </Compile>
     <Compile Include="StoredProcedureLogs.cs">
       <DependentUpon>Quest.Services.tt</DependentUpon>
@@ -171,6 +183,9 @@
       <DependentUpon>Quest.Services.tt</DependentUpon>
     </Compile>
     <Compile Include="TypeLists.cs">
+      <DependentUpon>Quest.Services.tt</DependentUpon>
+    </Compile>
+    <Compile Include="UnderBarTest_Result.cs">
       <DependentUpon>Quest.Services.tt</DependentUpon>
     </Compile>
     <Compile Include="Views.cs">

@@ -839,7 +839,7 @@ namespace Quest.MasterPricing.Services.Business.Filters
             questStatus status = null;
             try
             {
-                _dbFilterMgr = new DbFilterMgr();
+                _dbFilterMgr = new DbFilterMgr(this.UserSession);
                 initLogging();
             }
             catch (System.Exception ex)

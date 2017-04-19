@@ -1,0 +1,123 @@
+﻿@model Quest.MPDW.Support.Models.TablesetsViewModel
+@{
+    ViewBag.Title = "Tablesets Log";
+    Layout = "~/Views/Shared/_LayoutSupport.cshtml";
+}
+
+<div class="questTableTitle">Tablesets Log</div>
+
+<div id="tblTablesetLogs" class="qrmgTable"></div>
+
+<script type="text/javascript">
+    var _tblTablesetLogs;
+    $(function () {
+        var tblTablesetLogs = {
+            name: 'tblTablesetLogs',
+            element: 'tblTablesetLogs',
+            prefix: 'tblset',
+            uri: '/Support/Tablesets',
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb']
+            },
+            autoLoad: true,
+            callback: cbTblTablesetLogs,
+            columns: [
+                { name: 'Id', hidden: true, key: true },
+                { name: 'Event', label: 'Event' },
+                { name: 'Name', label: 'Name' },
+                { name: 'Database', label: 'Database' },
+                { name: 'Data', label: 'Data' },
+                { name: 'UserSessionId', label: 'User Session' },
+                { name: 'Username', label: 'Username' },
+                { name: 'Created', label: 'Created' },
+            ],
+            paging: {
+                Top: true,
+                Bottom: true,
+                PageSize: 100,
+                PageSizeOptions: [100, 200, 500, 1000],
+            },
+            bNoDefaultOptions: true,
+            operations: [
+            ],
+            commands: [
+                { name: 'ShowTableset', label: 'Show Tableset', method: 'GET', single: true, callback: cbShowTableset },
+                { name: 'ExportToExcel', label: 'Export to Excel', method: 'GET', NoSelectionsAllowed: true, callback: cbExportToExcel },
+                { name: 'ClearFilter', label: 'Clear Filter', method: 'GET', NoSelectionsAllowed: true, callback: cbClearFilter },
+                { name: 'Clear', label: 'Clear Log', method: 'POST', NoSelectionsAllowed: true, callback: cbClear },
+                { name: 'Delete', label: 'Delete Items', method: 'POST', callback: cbDelete },
+            ],
+            events: [
+            ],
+            contextMenu: [
+            ]
+        }
+        _tblTablesetLogs = new qrmgTable(tblTablesetLogs);
+    });
+    function cbTblTablesetLogs(ud, d) {
+    }
+    function cbShowTableset(ud, d) {
+        if (d.questStatus) {
+            return;
+        }
+        else {
+            var r = _tblTablesetLogs.GetRow(d.Id);
+            _tblTablesetLogs.FilterColumn('Name', 1, r.Name, true);
+            _tblTablesetLogs.Load();
+        }
+        return (true);
+    }
+    function cbExportToExcel(ud, d) {
+
+        $('#frmTablesetLogsExportToExcel').remove();
+        var _frmExport = document.createElement("form");
+        _frmExport.setAttribute("id", "frmTablesetLogsExportToExcel");
+        _frmExport.setAttribute("method", "get");
+        _frmExport.setAttribute("action", "/Support/Tablesets/List");
+        _frmExport.setAttribute("target", "_blank");
+
+        var _ctx = _tblTablesetLogs._getctx();
+        for (var f in _ctx) {
+            var _in = document.createElement("input");
+            _in.setAttribute("type", "hidden");
+            _in.setAttribute("name", f);
+            if (f == 'QueryOptions') {
+                _in.setAttribute("value", JSON.stringify(_ctx[f]));
+            }
+            else {
+                _in.setAttribute("value", _ctx[f]);
+            }
+            _frmExport.appendChild(_in);
+        }
+
+        var _bExportToExcel = document.createElement("input");
+        _bExportToExcel.setAttribute("type", "hidden");
+        _bExportToExcel.setAttribute("name", "bExportToExcel");
+        _bExportToExcel.setAttribute("value", true);
+        _frmExport.appendChild(_bExportToExcel);
+
+        document.body.appendChild(_frmExport);
+        _frmExport.submit();
+
+        return (true);
+    }
+    function cbClearFilter(ud, d) {
+        _tblTablesetLogs.ClearFilterColumn();
+        _tblTablesetLogs.Load();
+        return (true);
+    }
+    function cbClear(ud, d) {
+        if (d.questStatus) {
+            if (IsAppSuccess(d)) {
+                _tblTablesetLogs.Load();
+            }
+        }
+    }
+    function cbDelete(ud, d) {
+        if (d.questStatus) {
+            if (IsAppSuccess(d)) {
+                _tblTablesetLogs.Load();
+            }
+        }
+    }
+</script>
