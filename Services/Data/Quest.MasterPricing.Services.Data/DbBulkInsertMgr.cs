@@ -198,7 +198,10 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                 bulkInsertLog.Event = "Open";
                 using (SqlConnection conn = new SqlConnection(database.ConnectionString))
                 {
-                    bulkInsertLog.Event = "Connect";
+                    if (bLogging)
+                    {
+                        bulkInsertLog.Event = "Connect";
+                    }
                     conn.Open();
                     SqlTransaction trans = null;
                     if (bTransaction)
@@ -698,11 +701,29 @@ namespace Quest.MasterPricing.Services.Data.Bulk
         {
             // Initialize
             questStatus status = null;
-
+            BulkInsertLog bulkInsertLog = bLogging ? new BulkInsertLog() : null;
+            BulkInsertLogId bulkInsertLogId = null;
+            string logMessage = null;
 
             // Execute bulk insert SQL
             try
             {
+                // Initialize log
+                if (bLogging)
+                {
+                    bulkInsertLog.Event = "Initialize";
+                    bulkInsertLog.UserSessionId = this.UserSession.Id;
+                    bulkInsertLog.Username = this.UserSession.User.Username;
+                    bulkInsertLog.Batch = Guid.NewGuid().ToString();
+                    string Filter = null;
+                    status = _dbBulkInsertLogsMgr.SetFilter(bulkInsertRequest.Filter, out Filter);
+                    if (!questStatusDef.IsSuccess(status))
+                    {
+                        return (status);
+                    }
+                    bulkInsertLog.Filter = Filter;
+                }
+
                 // Get tableset
                 TablesetId tablesetId = new TablesetId(bulkInsertRequest.Filter.TablesetId);
                 Tableset tableset = null;
@@ -711,6 +732,16 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                 if (!questStatusDef.IsSuccessOrWarning(status))
                 {
                     return (status);
+                }
+                if (bLogging)
+                {
+                    string Tableset = null;
+                    status = _dbBulkInsertLogsMgr.SetTableset(tableset, out Tableset);
+                    if (!questStatusDef.IsSuccess(status))
+                    {
+                        return (status);
+                    }
+                    bulkInsertLog.Tableset = Tableset;
                 }
 
                 // Get database
@@ -722,29 +753,78 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                 {
                     return (status);
                 }
+                if (bLogging)
+                {
+                    string Database = null;
+                    status = _dbBulkInsertLogsMgr.SetDatabase(database, out Database);
+                    if (!questStatusDef.IsSuccess(status))
+                    {
+                        return (status);
+                    }
+                    if (bLogging)
+                    {
+                        bulkInsertLog.Database = Database;
+                    }
+                }
 
                 // Execute sql
                 using (SqlConnection sqlConnection = new SqlConnection(database.ConnectionString))
                 {
+                    if (bLogging)
+                    {
+                        bulkInsertLog.Event = "Connect";
+                    }
                     sqlConnection.Open();
 
                     using (SqlCommand cmd = sqlConnection.CreateCommand())
                     {
+                        if (bLogging)
+                        {
+                            bulkInsertLog.Event = "Command";
+                        }
+
                         cmd.CommandText = bulkInsertRequest.SQL;
                         cmd.CommandType = CommandType.Text;
+                        if (bLogging)
+                        {
+                            bulkInsertLog.Data = cmd.CommandText;
+                        }
 
+                        if (bLogging)
+                        {
+                            bulkInsertLog.Event = "ExecuteNonQuery";
+                        }
                         int numRows = cmd.ExecuteNonQuery();
                         if (numRows != bulkInsertRequest.Rows.Count)
                         {
-                            return (new questStatus(Severity.Error, String.Format("ERROR: Bulk insert SQL execution failed: Rows: {0}", numRows)));
+                            logMessage = String.Format("ERROR: Bulk insert SQL execution failed: Rows: {0}", numRows);
+                            if (bLogging)
+                            {
+                                bulkInsertLog.Message = logMessage;
+                                _dbBulkInsertLogsMgr.Create(bulkInsertLog, out bulkInsertLogId);
+                            }
+                            return (new questStatus(Severity.Error, logMessage));
+                        }
+                        if (bLogging)
+                        {
+                            logMessage = String.Format("SUCCESS: Bulk insert SQL succeeded: Rows: {0}", numRows);
+                            bulkInsertLog.Message = logMessage;
+                            bulkInsertLog.NumRows = numRows;
+                            _dbBulkInsertLogsMgr.Create(bulkInsertLog, out bulkInsertLogId);
                         }
                     }
                 }
             }
             catch (System.Exception ex)
             {
-                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: executing bulk insert SQL {0} SQL: {1}",
-                    bulkInsertRequest.SQL, ex.Message)));
+                logMessage = String.Format("EXCEPTION: executing bulk insert SQL {0} SQL: {1}",
+                    bulkInsertRequest.SQL, ex.Message);
+                if (bLogging)
+                {
+                    bulkInsertLog.Message = logMessage;
+                    _dbBulkInsertLogsMgr.Create(bulkInsertLog, out bulkInsertLogId);
+                }
+                return (new questStatus(Severity.Fatal, logMessage));
             }
             return (new questStatus(Severity.Success));
         }

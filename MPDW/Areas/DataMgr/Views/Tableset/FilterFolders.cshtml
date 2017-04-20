@@ -690,7 +690,11 @@
                 label: 'Filter Folders: ',
                 filter: true
             },
+            draggable: true,
+            droppable: true,
+            dropsource: 'self',
             sorted: false,
+            multiSelect: true,
             ctx: {
                 elements: ['_questctx', '_questmm', '_questnb'],
             },
@@ -703,6 +707,7 @@
                 { name: 'Refresh', callback: cbTvwFilterExplorerRefresh },
                 { name: 'OnChange', callback: cbTvwFilterExplorerOnChange },
                 { name: 'Click', callback: cbTvwFilterExplorerOnClick },
+                { name: 'OnDrop', callback: cbTvwFilterExplorerOnDrop },
             ],
             operations: [
                 { name: 'Remove', label: 'Remove', classes: "btn btn-primary" },
@@ -799,9 +804,17 @@
             if ($(ud.event.target).hasClass('glyphicon')) {
                 bExpand = $(ud.event.target).hasClass('glyphicon-plus');
             }
+            var bKlugieDeselect = $(ud.event.target).hasClass('node-selected');
             selectFolder(ud.node.Id, bExpand);
+            if (bKlugieDeselect) {
+                _tvwFilterExplorer.Deselect(ud.node.Id);
+            }
         }
         return (true);
+    }
+    function cbTvwFilterExplorerOnDrop(e, ui) {
+        var x = 4;
+        x = 44;
     }
 </script>
 

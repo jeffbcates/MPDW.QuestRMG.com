@@ -148,12 +148,14 @@ function qrmgTreeview(model) {
                     //////console.log("droppable drop: ");
                     _self.Change(true);
                     if ($(ui.draggable).closest('div.treeview').attr('id') == _self._e.substr(1)) {
-                        _self.Refresh();
-                        return;
+                        if (_self._model.dropsource != 'self') {
+                            _self.Refresh();
+                            return;
+                        }
                     }
                     var _evt = _self._getevt("OnDrop");
                     if (_evt != null) {
-                        if (_evt.callback("OnDrop", ui)) {
+                        if (_evt.callback(e, ui)) {
                             return;
                         }
                     }
@@ -518,8 +520,13 @@ function qrmgTreeview(model) {
         n.state.selected = false;
         var e = $(_self._e).find('li[data-id="' + n.Id + '"]');
         $(e).removeClass('node-selected').attr('style', 'color:null;background-color:null;');
-        if (n.nodes.length) {
-            _self._tvw.expandNode(n);
+        if (bExpand !== undefined) {
+            if (bExpand) {
+                _self._tvw.expandNode(n);
+            }
+            else {
+                _self._tvw.collapseNode(n);
+            }
         }
         return (n);
     }
