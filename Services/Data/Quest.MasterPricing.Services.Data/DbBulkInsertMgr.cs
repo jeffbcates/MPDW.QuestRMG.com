@@ -788,12 +788,9 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                         if (bLogging)
                         {
                             bulkInsertLog.Data = cmd.CommandText;
-                        }
-
-                        if (bLogging)
-                        {
                             bulkInsertLog.Event = "ExecuteNonQuery";
                         }
+
                         int numRows = cmd.ExecuteNonQuery();
                         if (numRows != bulkInsertRequest.Rows.Count)
                         {

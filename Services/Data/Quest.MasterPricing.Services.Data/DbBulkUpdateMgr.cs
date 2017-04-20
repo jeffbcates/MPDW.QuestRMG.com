@@ -178,9 +178,28 @@ namespace Quest.MasterPricing.Services.Data.Bulk
             // Initialize
             questStatus status = null;
             numRows = -1;
+            BulkUpdateLog bulkUpdateLog = bLogging ? new BulkUpdateLog() : null;
+            BulkUpdateLogId bulkUpdateLogId = null;
+            string logMessage = null;
 
             try
             {
+                // Initialize log
+                if (bLogging)
+                {
+                    bulkUpdateLog.Event = "Initialize";
+                    bulkUpdateLog.UserSessionId = this.UserSession.Id;
+                    bulkUpdateLog.Username = this.UserSession.User.Username;
+                    bulkUpdateLog.Batch = Guid.NewGuid().ToString();
+                    string Filter = null;
+                    status = _dbBulkUpdateLogsMgr.SetFilter(bulkUpdateRequest.Filter, out Filter);
+                    if (!questStatusDef.IsSuccess(status))
+                    {
+                        return (status);
+                    }
+                    bulkUpdateLog.Filter = Filter;
+                }
+
                 // Get database connection string
                 TablesetId tablesetId = new TablesetId(bulkUpdateRequest.Filter.TablesetId);
                 Tableset tableset = null;
@@ -190,6 +209,17 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                 {
                     return (status);
                 }
+                if (bLogging)
+                {
+                    string Tableset = null;
+                    status = _dbBulkUpdateLogsMgr.SetTableset(tableset, out Tableset);
+                    if (!questStatusDef.IsSuccess(status))
+                    {
+                        return (status);
+                    }
+                    bulkUpdateLog.Tableset = Tableset;
+                }
+
                 DatabaseId databaseId = new DatabaseId(tableset.DatabaseId);
                 Quest.Functional.MasterPricing.Database database = null;
                 DbDatabasesMgr dbDatabasesMgr = new DbDatabasesMgr(this.UserSession);
@@ -198,40 +228,99 @@ namespace Quest.MasterPricing.Services.Data.Bulk
                 {
                     return (status);
                 }
+                if (bLogging)
+                {
+                    string Database = null;
+                    status = _dbBulkUpdateLogsMgr.SetDatabase(database, out Database);
+                    if (!questStatusDef.IsSuccess(status))
+                    {
+                        return (status);
+                    }
+                    bulkUpdateLog.Database = Database;
+                }
+
 
                 using (SqlConnection conn = new SqlConnection(database.ConnectionString))
                 {
+                    if (bLogging)
+                    {
+                        bulkUpdateLog.Event = "Connect";
+                    }
                     conn.Open();
                     using (SqlCommand cmd = new SqlCommand(null, conn))
                     {
+                        if (bLogging)
+                        {
+                            bulkUpdateLog.Event = "Command";
+                        }
+
                         cmd.CommandType = CommandType.Text;
                         cmd.CommandText = bulkUpdateRequest.SQL;
+                        if (bLogging)
+                        {
+                            bulkUpdateLog.Data = cmd.CommandText;
+                            bulkUpdateLog.Event = "ExecuteNonQuery";
+                        }
+
                         try
                         {
-                            int retval = cmd.ExecuteNonQuery();
-                            if (retval < 0)
+                            numRows = cmd.ExecuteNonQuery();
+                            if (numRows < 0)
                             {
-                                return (new questStatus(Severity.Error, String.Format("ERROR: Bulk update failed: {0}", numRows)));
+                                logMessage = String.Format("ERROR: Bulk update failed: {0}", numRows);
+                                if (bLogging)
+                                {
+                                    bulkUpdateLog.Message = logMessage;
+                                    _dbBulkUpdateLogsMgr.Create(bulkUpdateLog, out bulkUpdateLogId);
+                                }
+                                return (new questStatus(Severity.Error, logMessage));
                             }
-                            if (retval == 0)
+                            else if (numRows == 0)
                             {
-                                return (new questStatus(Severity.Warning, String.Format("WARNING: {0} rows bulk updated", numRows)));
+                                logMessage = String.Format("WARNING: {0} rows bulk updated", numRows);
+                                if (bLogging)
+                                {
+                                    bulkUpdateLog.Message = logMessage;
+                                    _dbBulkUpdateLogsMgr.Create(bulkUpdateLog, out bulkUpdateLogId);
+                                }
+                                return (new questStatus(Severity.Warning, logMessage));
                             }
-                            numRows += retval;
+                            else
+                            {
+                                if (bLogging)
+                                {
+                                    logMessage = String.Format("SUCCESS: Bulk update SQL succeeded: {0} rows updated", numRows);
+                                    bulkUpdateLog.Message = logMessage;
+                                    bulkUpdateLog.NumRows = numRows;
+                                    _dbBulkUpdateLogsMgr.Create(bulkUpdateLog, out bulkUpdateLogId);
+                                }
+                            }
                         }
                         catch (System.Exception ex)
                         {
-                            return (new questStatus(Severity.Error, String.Format("EXCEPTION: Bulk update failed: {0}",
-                                    ex.Message)));
+                            logMessage = String.Format("EXCEPTION: Bulk update failed: {0}",
+                                    ex.Message);
+                            if (bLogging)
+                            {
+                                bulkUpdateLog.Message = logMessage;
+                                _dbBulkUpdateLogsMgr.Create(bulkUpdateLog, out bulkUpdateLogId);
+                            }
+                            return (new questStatus(Severity.Error, logMessage));
                         }
                     }
                 }
             }
             catch (System.Exception ex)
             {
-                return (new questStatus(Severity.Fatal, String.Format("EXCEPTION: {0}.{1}: {2}",
+                logMessage = String.Format("EXCEPTION: {0}.{1}: {2}",
                         this.GetType().Name, MethodBase.GetCurrentMethod().Name,
-                        ex.InnerException != null ? ex.InnerException.Message : ex.Message)));
+                        ex.InnerException != null ? ex.InnerException.Message : ex.Message);
+                if (bLogging)
+                {
+                    bulkUpdateLog.Message = logMessage;
+                    _dbBulkUpdateLogsMgr.Create(bulkUpdateLog, out bulkUpdateLogId);
+                }
+                return (new questStatus(Severity.Fatal, logMessage));
             }
             return (new questStatus(Severity.Success));
         }
