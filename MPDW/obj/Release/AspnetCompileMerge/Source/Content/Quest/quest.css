@@ -1,0 +1,1180 @@
+﻿#mainNav {
+    max-height: 50px;
+    z-index: 5000;
+}
+
+#cobanner {
+  position: relative;
+  display: inline-block;
+  float: left;
+}
+#btnMainMenu {
+    background-color: #002f63;
+    float: right !important;
+    margin-right: 0;
+}
+.icon-bar {
+    background-color: #FFFFFF !important;
+}
+.logo {
+  background-color: #ffffff;
+  display: inline-block;
+  float: left;
+  font-family: "Raleway",sans-serif;
+  font-size: 12px;
+  font-weight: 500;
+  height: 30px;
+  line-height: 30px;
+  margin: -6px 10px auto auto;
+  padding-top: 1px;
+  text-align: center;
+  width: 30px;
+}
+.coname {
+    font-size: 14px;
+    color: #002F63;
+}
+.coname:hover {
+    color: #f05f40;
+}
+.appTitle {
+    overflow:hidden;
+    text-align: center;
+    color: #002F63;
+    font-family: "Open Sans","Helvetica Neue",Arial,sans-serif;
+    font-weight: 700;
+    font-size: 24px;
+    padding-top: 6px;
+    text-transform: uppercase;
+}
+#navbarMainMenu {
+  z-index: 2;
+}
+#mainMenuFrame {
+  position: relative;
+  display: inline-block;
+  margin-right: 30px;
+  float: right;
+}
+#mainMenu {
+    background-color: transparent;
+}
+#content {
+  display: block;
+  margin-left: 0;
+  margin-right: 0;
+  margin-top: 10px;
+  position: relative;
+  height: 100%;
+}
+._questctx {
+    display: none;
+}
+#pageContent {
+     margin-bottom: 150px;
+}
+
+.qrmgNavbar {
+  position: fixed;
+  top: 50px;
+  width: 30px;
+  bottom: 30px;
+  background-color: #1a4473;
+  border: 4px solid #486a8f;
+  border-right: none;
+}
+
+.questNavbarHeader {
+  position: relative;
+  display: block;
+  height: 30px;
+  width: 100%;
+  background-color: #1a4473;
+  z-index: 2;
+}
+.questNavbarTack {
+  color: #FFFFFF;
+  float: right;
+  height: 100%;
+  padding-top: 10px;
+  text-align: center;
+  width: 30px;
+  cursor: pointer;
+}
+.questNavbarTack:hover {
+    cursor: pointer;
+}
+.qrmgNavbar ul {
+    list-style-type: none;
+    padding: 0;
+}
+.questNavbarFrame {
+    position: relative;
+    display: block;
+    top: 12px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+    .questNavbarFrame > ul > li:first-child {
+    }
+.questNavbarFrame ul li a {
+    padding-left: 20px;
+}
+ul.sub-menu li a {
+    padding-left: 40px;
+}
+
+a.currentNavbarItem {
+  background-color: #ffffff;
+  color: #013064 !important;
+}
+a.currentNavbarItem:hover {
+  background-color: #ffffff !important;
+  color: #f05f40 !important;
+}
+.qrmgNavbar ul li {
+    padding: 0;
+}
+.qrmgNavbar ul li.current {
+}
+.qrmgNavbar ul li a {
+    display: block;
+    text-decoration: none;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    color: rgba(255,255,255,0.8);
+}
+.navbar-autoscroll {
+    color: #f4b642 !important;
+}
+.qrmgNavbar ul li a:hover {
+    color: #FFFFFF;
+    background-color: #345983;
+}
+.navbar-autoscroll:hover {
+    color: #f4b642 !important;
+    background-color: #345983 !important;
+}
+.qrmgNavbar-left {
+    float: left;
+}
+.qrmgNavbar-right {
+    float: right;
+}
+.currentItem,.currentItem:hover, .currentItem:focus {
+    background-color: #FFFFFF;
+}
+.currentItem a span.title {
+  color: #f05f40;
+  font-weight: 700;
+}
+.currentMenuItem {
+  background-color: #ffffff;
+  color: #c04b34 !important;
+}
+
+
+#pageContentFrame {
+  padding-top: 80px;
+  padding-left: 50px;
+  padding-right: 20px;
+}
+
+.umsg {
+    position: fixed;
+    display: block;
+    top: 50px;
+    left: 31px;
+    right: 1px;
+    height: 40px;
+    overflow: hidden;
+    border: 2px solid #002F63;
+    background-color: #f4f8fb;
+    padding: 10px;
+    z-index: 2000;
+    text-align: center;
+}
+.umsg:hover {
+    height: auto;
+    min-height: 40px;
+    transition: height 0.5s;
+    cursor: pointer;
+}
+.umsgX {
+  position: fixed;
+  display: inline-block;
+  color: #8da3b9;
+  font-weight: 500;
+  height: 40px;
+  overflow: hidden;
+  padding-top: 12px;
+  right: 1px;
+  text-align: center;
+  top: 50px;
+  width: 50px;
+  cursor: pointer;
+  background-color: transparent;
+  opacity: 0.6;
+  z-index: 2001;
+}
+.umsgX:hover {
+    color: #F05F40 !important;
+    opacity: 0.6;
+}
+
+.usermarquis {
+  position: fixed;
+  width: auto;
+  right: 10px;
+  color: #53a653;
+  font-weight: bold;
+  padding-top: 5px;
+  padding-left: 10px;
+  background: #ffffff none repeat scroll 0 0;
+  z-index: 2;
+}
+.usermarquis:hover {
+  color: #f05f40 !important;
+  cursor: pointer;
+}
+
+.page-title {
+
+}
+.page-subtitle-frame {
+  position: relative;
+  display: block;
+  height: 40px;
+  width: 100%;
+  clear: both;
+  padding-right: 10px;
+}
+.page-subtitle {
+
+}
+
+
+footer {
+  background-color: #001B3B;
+  bottom: 0;
+  color: #ffffff;
+  display: block;
+  position: fixed;
+  height: 30px;
+  width: 100%;
+  z-index: 5000;
+}
+.copyright {
+    font-size: 0.7em;
+    padding-top: 10px;
+}
+.admin-copyright {
+    margin-top: 0;
+}
+
+
+@-moz-document url-prefix() {
+  fieldset { display: table-cell; }
+}
+
+
+
+.questTableTitle {
+  clear: both;
+  display: block;
+  font-size: 2em;
+  margin-bottom: 20px;
+  position: relative;
+}
+.questHelpTitle {
+  clear: both;
+  display: block;
+  font-size: 2em;
+  margin-bottom: 20px;
+  position: relative;
+  color: #c04b34 !important;
+  margin-top: 24px;
+}
+.sublist {
+  padding-top: 20px;
+}
+
+.questTableFrame {
+}
+.questTableOperations {
+  display: inline-block;
+  float: right;
+  height: auto;
+  margin-bottom: 10px;
+  position: relative;
+}
+.questTableOperations button {
+    margin-left: 4px;
+}
+.questTableSubframe {
+    bottom: 0;
+    left: 0;
+    position: absolute;
+    right: 0;
+    top: 0;
+}
+.questTableBodyFrame {
+  bottom: 0;
+  display: block;
+  left: 0;
+  overflow: scroll;
+  position: absolute;
+  right: 0;
+  top: 50px;
+}
+.pnl-tab-instructions {
+    font-weight: bold;
+    font-size: 1.2em;
+    color: #c9302c;
+}
+.pnlbtn {
+  background-color: #AACCDD;
+}
+.pnlbtn:hover {
+  background-color: #70B3D6;
+}
+pnlbtn:active {
+  background-color: #70B3D6;
+}
+.qrmgTable {
+  margin-bottom: 0 !important;
+}
+.qrmgTable thead {
+  background-color: #d5e8fc;
+  border: 1px solid #add4f4;
+}
+.qrmgTable thead th {
+    white-space: nowrap;
+}
+.qrmgTable tbody {
+
+}
+.qrmgTable tfoot {
+
+}
+.no-sort {
+    font-size: 20px;
+}
+._tblsel {
+    width: 50px;
+    color: #3598dc !important;
+}
+._tblcmds {
+    width: 50px !important;
+    color: #002f63 !important;
+    padding: 5px !important;
+}
+._tblcmds li {
+    font-size: 16px !important;
+}
+._tblcmds li:hover {
+    color: #3598dc !important;
+    background-color: #EEEEEE !important;
+}
+._tblcmds li:active {
+    color: #3598dc !important;
+    background-color: #EEEEEE !important;
+}
+.tblbtnop {
+    color: #FFFFFF !important;
+    background-color: #49A2E0 !important;
+}
+.tblbtnop:hover {
+    background-color: #3089C6 !important;
+}
+.tblbtnop:active {
+    background-color: #3089C6 !important;
+}
+.questSort {
+    float: right;
+    height: 0;
+    font-size: 1.5em;
+    color: #DDDDDD;
+    opacity: 0.5;
+}
+.questSortUp {
+}
+.questSortDown {
+}
+.questSorted {
+    color: #F05F40;
+    opacity: 1.0 !important;
+}
+.clear {
+    clear: both;
+}
+.questTableHeaderFrame {
+    position: relative;
+    display: block;
+    clear: both;
+    margin-top: 4px;
+    height: 50px;
+    min-height: 25px;
+    width: auto;
+    min-width: 42px;
+    margin-left: 10px;
+    margin-bottom: 10px;
+}
+.questTableHeaderInfo {
+    display: inline-block;
+    float: left;
+    height: 50px;
+    min-height: 20px;
+    padding-left: 10px;
+    padding-top: 18px;
+    position: relative;
+}
+.questTableInlineHeaderInfo {
+  display: inline-block;
+  padding-left: 20px;
+  padding-top: 3px;
+  position: relative;
+  margin-bottom: 10px;
+}
+.questTableHeaderFrame .questTablePager {
+    padding-top: 10px;
+}
+
+.questTableSuccess {
+}
+.questTableWarning {
+    background-color: yellow;
+}.questTableError {
+    background-color: #f04f50;
+}.questTableFatal {
+    color: white;
+    background-color: #8f1f1f;
+}
+
+.questTableFooterFrame {
+  position: relative;
+  display: block;
+  clear: both;
+  margin-top: 20px;
+  height: auto;
+  min-height: 50px;
+  width: auto;
+  min-width: 42px;
+  margin-left: 10px;
+}
+.questTableFooterInfo {
+  position: relative;
+  display: inline-block;
+  float: left;
+  height: auto;
+  width: auto;
+  min-height: 20px;
+}
+
+
+.questTableTotalRecords {
+  position: relative;
+  display: inline-block;
+  height: auto;
+  width: auto;
+  min-height: 20px;
+  font-weight: bold;
+  margin-right: 40px;
+}
+
+.questTablePageSize {
+  position: relative;
+  display: inline-block;
+  height: auto;
+  width: auto;
+  min-height: 20px;
+  margin-left: 40px;
+  font-weight: bold;
+}
+.questTablePageSizeSelect {
+    border: 1px solid #8298B3;
+    text-align: right;
+    padding-right: 4px;
+}
+.questTablePageSizeSelect option {
+    text-align: right;
+}
+
+.questTableFilter {
+  position: relative;
+  display: inline-block;
+  height: auto;
+  width: auto;
+  min-height: 20px;
+  font-weight: bold;
+  margin-left: 30px;
+}
+.questTableFilter input {
+    width: 300px;
+    height: 20px;
+    font-weight: normal;
+    border: 1px solid #8298B3;
+}
+
+.questTreeviewFilter {
+  position: relative;
+  display: inline-block;
+  height: auto;
+  width: auto;
+  min-height: 20px;
+  font-weight: bold;
+}
+.questTreeviewFilter input {
+    width: 200px;
+    height: 20px;
+    font-weight: normal;
+    border: 1px solid #8298B3;
+}
+.tvwcmd {
+    cursor: pointer;
+    padding-right: 12px;
+}
+.tvwcmd:hover {
+    color: #f4b642 !important;
+}
+.tvwcmd:active {
+    color: #f4b642 !important;
+}
+.questTreeviewCommands {
+  position: relative;
+  display: inline-block;
+  height: auto;
+  width: auto;
+  min-height: 20px;
+  font-weight: bold;
+  /*margin-top: 10px;*/
+  margin-right: 4px;
+  float: right;
+  font-size: 24px;
+  color: #3598dc;
+}
+
+.questTablePager {
+  position: relative;
+  display: inline-block;
+  float: right;
+  height: 50px;
+  width: auto;
+  /*border: 1px solid green;*/
+}
+.questTablePagerButton {
+  border: 1px solid #8298B3;
+  color: #f04f50;
+  display: inline-block;
+  margin: 4px;
+  height: 30px;
+  width: 30px;
+  padding: 0 4px;
+  position: relative;
+  vertical-align: middle;
+}
+.questTablePagerButton:hover, .questTablePagerButton:focus {
+    background-color: #EAF3F1;
+}
+.questPagerFirst {
+  margin-left: 4px;
+  margin-top: 6px;
+  padding-left: 2px;
+}
+.questPagerFirst:before {
+    font-family:'FontAwesome';
+    content: "\f048";
+}
+.questPagerPrev {
+  font-size: 1.4em;
+  padding-left: 6px;
+  padding-top: 1px;
+}
+.questPagerPrev:before {
+    font-family:'FontAwesome';
+    content: "\f0d9";
+}
+.questTablePagerNofM {
+  border: 1px solid #8298B3;
+  color: #f04f50;
+  display: inline-block;
+  font-size: 1em;
+  margin: 4px;
+  min-height: 30px;
+  min-width: 120px;
+  padding: 4px;
+  position: relative;
+  text-align: center;
+  vertical-align: middle;
+}
+.questPagerNext {
+  font-size: 1.4em;
+  padding-left: 8px;
+  padding-top: 1px;
+}
+.questPagerNext:before {
+    font-family:'FontAwesome';
+    content: "\f0da";
+}
+.questPagerLast {
+  margin-left: 5px;
+  margin-top: 6px;
+  padding-left: 2px;
+}
+.questPagerLast:before {
+    font-family:'FontAwesome';
+    content: "\f051";
+}
+
+.btn-quest {
+  /*text-shadow: 0 -1px 0 rgba(0, 0, 0, .2);
+  -webkit-box-shadow: inset 0 1px 0 rgba(255, 255, 255, .15), 0 1px 1px rgba(0, 0, 0, .075);
+          box-shadow: inset 0 1px 0 rgba(255, 255, 255, .15), 0 1px 1px rgba(0, 0, 0, .075);*/
+}
+
+
+.btn-new {
+  background-color: #F05F40;
+  border-color: #F05F40;
+  color: #FFFFFF;
+}
+.btn-new:hover, .btn-new:focus {
+  background-color: #A8422C;
+  background-position: 0 -15px;
+  color: #FFFFFF;
+}
+.btn-new:active, .btn-new.active {
+  background-color: #A8422C;
+  border-color: #A8422C;
+  color: #FFFFFF;
+}
+
+.btn-new.disabled, .btn-new[disabled] {
+  background-color: #666666;
+  background-image: none;
+  color: #CCCCCC;
+}
+
+
+.btn-refresh {
+  background-color: #D0E3E5;
+  border-color: #D0E3E5;
+  color: #FFFFFF;
+}
+.btn-refresh:hover, .btn-refresh:focus {
+  background-color: #82B3C1;
+  background-position: 0 -15px;
+  color: #FFFFFF;
+}
+.btn-refresh:active, .btn-refresh.active {
+  background-color: #82B3C1;
+  border-color: #D0E3E5;
+  color: #FFFFFF;
+}
+
+.btn-refresh.disabled, .btn-refresh[disabled] {
+  background-color: #666666;
+  background-image: none;
+  color: #CCCCCC;
+}
+
+.alignLeft {
+    text-align: left;
+}
+.alignCenter {
+    text-align: center;
+}
+.alignRight {
+    text-align: right;
+}
+.questmask {
+  background: rgba(211,211,211,0.5) url("../Images/preloader2.gif") no-repeat scroll 50% 50%;
+  border: 1px solid #cccccc;
+  bottom: 0;
+  left: 0;
+  position: fixed;
+  display: block;
+  right: 0;
+  top: 0;
+  z-index: 10000;
+}
+.loader {
+    border: 16px solid #f3f3f3;  
+    border-top: 16px solid #3498db;  
+    border-radius: 50%;
+    width: 120px;
+    height: 120px;
+    animation: spin 2s linear infinite;
+}
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+@-webkit-keyframes spin {
+  0% { -webkit-transform: rotate(0deg); }
+  100% { -webkit-transform: rotate(360deg); }
+}
+.trSelected {
+    background-color: #EAECF3;
+}
+.nowrap {
+    white-space: nowrap;
+}
+.xpander {
+  height: 20px;
+  text-align: center;
+  width: 20px;
+}
+.xpander:hover {
+  color: #FFFFFF;
+}
+
+.cotitle {
+    color: #FFFFFF;
+    font-family: "Open Sans","Helvetica Neue",Arial,sans-serif;
+    font-weight: 700;
+    font-size: 12px;
+    text-transform: uppercase;
+}
+#userErrorTitle {
+  font-weight: bold;
+  line-height: 1.6em;
+}
+#userErrorList {
+    list-style: none;
+}
+.modal {
+    z-index: 100000 !important;
+}
+
+.table-header-control {
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #8298b3;
+  border-radius: 4px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+  color: #001b3b;
+  display: inline-block;
+  font-size: 14px;
+  height: 34px;
+  line-height: 1.42857;
+  padding: 6px 12px;
+  transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+}
+.table-header-control[disabled], .table-header-control[readonly] {
+    background-color: #eee;
+    opacity: 1;
+}
+.portlet-toolbar-label {
+  font-size: 0.9em;
+  padding-left: 10px;
+}
+.portlet-toolbar-text {
+  border: 1px solid #8298B3;
+  margin-right: 15px;
+  margin-top: 10px;
+  width: 60px;
+}
+.purple-stripe-background {
+   background: rgba(0, 0, 0, 0) repeating-linear-gradient(45deg, rgba(96, 109, 188, 0.5), rgba(96, 109, 188, 0.5) 10px, rgba(70, 82, 152, 0.5) 10px, rgba(70, 82, 152, 0.5) 20px) repeat scroll 0 0;
+}
+.questFilterPanel {
+  background: rgba(0, 0, 0, 0) repeating-linear-gradient(45deg, rgba(96, 109, 188, 0.5), rgba(96, 109, 188, 0.5) 10px, rgba(70, 82, 152, 0.5) 10px, rgba(70, 82, 152, 0.5) 20px) repeat scroll 0 0;
+  bottom: 0;
+  display: block;
+  left: 0;
+  position: absolute;
+  right: 0;
+  top: 0;
+}
+.filterItemMenu {
+    color: #3598dc !important;
+}
+.questFilterItem {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: auto;
+    padding: 8px;
+    background: #EEEFFF;
+    border: 4px solid #CCCCCC;
+    border-bottom: none;
+    overflow: auto;
+    cursor: move;
+}
+.questFilterItem:hover {
+    background: #FFFFFF;
+}
+.questFilterItemHidden {
+  background: rgba(255, 255, 255, 1) repeating-linear-gradient(-45deg, rgba(220, 220, 220, 0.3), rgba(220, 220, 220, 0.3) 10px, rgba(128, 128, 128, 0.3) 10px, rgba(128, 128, 128, 0.3) 20px) repeat scroll 0 0 !important;
+}
+.questFilterItemHidden:hover {
+  background: rgba(255, 255, 255, 1) repeating-linear-gradient(-45deg, rgba(220, 220, 220, 0.2), rgba(220, 220, 220, 0.2) 10px, rgba(128, 128, 128, 0.2) 10px, rgba(128, 128, 128, 0.2) 20px) repeat scroll 0 0 !important;
+}
+.panel-control {
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #8298b3;
+  border-radius: 4px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+  color: #001b3b;
+  display: block;
+  font-size: 14px;
+  height: 34px;
+  line-height: 1.42857;
+  padding: 6px 12px;
+  transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+}
+.panel-control[disabled], .panel-control[readonly] {
+    background-color: #eee;
+    opacity: 1;
+}
+
+.short-label {
+    font-weight: 600;
+    margin-top: 1px;
+    margin-left: 20px;
+    margin-right: 8px;
+}
+.short-control {
+  background-color: #fff;
+  background-image: none;
+  border: 1px solid #8298b3;
+  border-radius: 4px;
+  box-shadow: 0 1px 1px rgba(0, 0, 0, 0.075) inset;
+  color: #001b3b;
+  display: inline-block;
+  font-size: 14px;
+  height: 34px;
+  line-height: 1.42857;
+  padding: 6px 12px;
+  transition: border-color 0.15s ease-in-out 0s, box-shadow 0.15s ease-in-out 0s;
+}
+.short-control[disabled], .short-control[readonly] {
+    background-color: #eee;
+    opacity: 1;
+}
+.form-frame {
+    margin-bottom: 20px;
+}
+
+.questFilterItemControls {
+  cursor: pointer;
+  display: inline-block;
+  font-size: 1.5em;
+  padding-left: 5px;
+  padding-right: 5px;
+  position: relative;
+  vertical-align: top;
+  color: #333333;
+}
+.questFilterItemControls:hover {
+    color: #3598dc;
+}
+.filterItemDropdownMenu {
+  color: #002f63;
+  padding: 5px;
+  min-width: 250px;
+}
+.filterItemDropdownMenu li {
+    font-size: 16px;
+}
+.filterItemDropdownMenu li:hover {
+    color: #3598dc;
+    background-color: #EEEEEE;
+}
+.filterItemDropdownMenu li:active {
+    color: #3598dc;
+    background-color: #EEEEEE;
+}
+.questFilterItemSpecifier {
+  display: inline-block;
+  overflow: visible;
+  padding-left: 10px;
+  position: relative;
+  width: 30%;
+}
+.questFilterCogItem {
+    margin-bottom: 4px;
+}
+.questFilterItemLabel {
+    width: 100%;
+}
+.questFilterItemCogLabel {
+  display: inline-block;
+  float: left;
+  min-width: 50px;
+  padding-top: 4px;
+  width: auto;
+}
+.questFilterItemCogInput {
+  overflow: hidden;
+  width: auto;
+}
+.questFilterJoinFrame {
+  min-width: 450px;
+}
+.questFilterItemJoin {
+  color: darkgreen;
+  display: block;
+  height: 2em;
+  position: relative;
+  width: auto;
+}
+.questFilterItemLookup {
+  color: darkblue;
+}
+.questFilterItemTypeList {
+  color: darkblue;
+}
+.modal-title {
+    font-weight: bold;
+}
+
+.questFilterColumnEntity {
+  display: block;
+  font-size: 0.8em;
+  position: relative;
+}
+.lookupColumnInfo {
+    display:block;
+    position: relative;
+    width: 100%;
+    font-size: 1.2em;
+    font-weight: bold;
+}
+.questFilterColumn {
+  display: block;
+  font-size: 1.2em;
+  font-weight: bold;
+  position: relative;
+}
+.questFilterItemOpFrame {
+  display: inline-block;
+  position: relative;
+  width: 65%;
+  float:right;
+  margin-bottom: 10px;
+}
+.fltitmblk {
+    position: relative;
+    display: inline-block;
+}
+.filtsel {
+    width: 170px;
+    height: 28px;
+}
+.fltitmoo {
+    vertical-align: top;
+    padding-right: 10px;
+    float: left;
+}
+.fltitmvv {
+    width: 55%;
+    float: left;
+}
+.questFilterOR {
+  display: block;
+  padding-top: 20px;
+  width: 100%;
+}
+
+.filtvalues {
+  border: 1px solid #8298B3;
+  font-weight: normal;
+  height: 28px;
+  width: 100%;
+}
+.filtinput {
+  border: none;
+  font-weight: normal;
+  height: 26px;
+  width: 100%;
+}
+.fltitmlbl {
+  border: 1px solid #cccccc;
+}
+.filtinputlbl {
+    border: 1px solid #002f63;
+    font-weight: normal;
+    height: 26px;
+    width: 100%;
+}
+.fltitmctrl {
+    float: right;
+}
+.fltitmop {
+  display: inline-block;
+  font-size: 1.5em;
+  padding-left: 5px;
+  position: relative;
+}
+.ddvisible {
+    overflow: visible !important;
+}
+.fltitmop a {
+  font-size: 20px;
+  opacity: 0.8;
+  padding-left: 10px;
+  text-decoration: none !important;
+}
+.fltitmop a:hover {
+    text-decoration: none !important;
+}.fltitmop a:active {
+    text-decoration: none !important;
+}
+.fltitmdel {
+
+}
+.fltitmnew {
+
+}
+.fltitmX {
+
+}
+.fltitmPlus {
+
+}
+.filttags {
+     position: relative;
+     display: block;
+     width: 100%;
+     margin-top: 4px;
+ }
+.filtverr {
+  background: #dd0000 !important;
+}
+.filtvtag {
+    position: relative;
+    display: inline-block;
+    width: auto;
+    background: #666666 none repeat scroll 0 0;
+    color: #ffffff;
+    margin-left: 4px;
+    padding: 4px 6px;
+    border-radius: 4px 0 0 4px !important;
+    margin-bottom: 3px;
+}
+.filtvx {
+    position: relative;
+    display: inline-block;
+    width: auto;
+    background: #666666;
+    color: #CCCCCC;
+    border-left: 1px solid #CCCCCC;
+    cursor: pointer;
+    padding: 4px 6px 4px 4px;
+    border-radius: 0 4px 4px 0 !important;
+}
+
+#mdlJoin .modal-dialog .modal-content .modal-body {
+    display: table;
+    min-width: 100%;
+    padding: 15px;
+}
+
+.bulktable {
+    padding: 5px;
+}
+.bulkUpdateTable {
+    table-layout: auto;
+    width: 98%;
+    border-spacing: 5px;
+    border-collapse: separate;
+}
+td.td-nullit {
+  white-space: nowrap;
+}
+td.td-nullit input {
+  margin-left: 20px;
+}
+td.td-label {
+    text-align: right;
+}
+td.td-input {
+    width: 99%;
+}
+.bulkgridframe {
+  bottom: 4px;
+  display: block;
+  left: 4px;
+  position: absolute;
+  right: 0;
+  top: 0;
+  overflow: auto;
+}
+.bulkInsertTable {
+    table-layout: auto;
+    width: 100%;
+    border-spacing: 5px;
+    border-collapse: separate;
+}
+.bulkInsertTable thead th {
+  background-color: #EEEEEE;
+  padding: 4px 10px 4px 10px;
+  border: 1px solid #cccccc;
+}
+.bulkInsertTable tbody tr td {
+    padding: 0 !important;
+}
+.bulkTable tbody tr td input:required {
+    border: 1px solid #3598dc;
+}
+.row-action {
+    cursor: pointer;
+    font-weight: bold;
+}
+.row-action:hover {
+    border: 1px solid red;
+}
+.bold {
+    font-weight: bold;
+}
+.mpdw-help {
+  color: #162335;
+  font-size: 1.3em;
+}
+.mpdw-help p {
+  color: #091a09;
+  font-size: 1.3em;
+}
+.mpdw-help ol {
+}
+.mpdw-help ol li {
+    padding-bottom: 20px;
+}
+
+
+.page-frame {
+    display: block;
+}
+.half-frame {
+}
+.admin-treeview-frame {
+  border: 3px solid #65a1c1;
+  display: inline-block;
+  height: 400px;
+  margin-right: 20px;
+  overflow: auto;
+  padding: 4px;
+  position: relative;
+  vertical-align: top;
+  width: 550px;
+}
+.admin-treeview {
+  bottom: 4px;
+  color: #1a4473;
+  left: 4px;
+  min-height: 300px;
+  overflow: auto;
+  position: absolute;
+  right: 4px;
+  top: 46px;
+}
+.admin-treeview .node-icon {
+  color: #65a1c1;
+}
+.qrmg-min-width250 {
+    min-width: 250px;
+}

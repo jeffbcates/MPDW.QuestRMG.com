@@ -55,6 +55,7 @@
       <EntityTypeMapping TypeName="Quest.Services.Dbio.FMS.Users">
         <MappingFragment StoreEntitySet="Users">
           <ScalarProperty Name="Created" ColumnName="Created" />
+          <ScalarProperty Name="bLogSession" ColumnName="bLogSession" />
           <ScalarProperty Name="bActive" ColumnName="bActive" />
           <ScalarProperty Name="bEnabled" ColumnName="bEnabled" />
           <ScalarProperty Name="Password" ColumnName="Password" />

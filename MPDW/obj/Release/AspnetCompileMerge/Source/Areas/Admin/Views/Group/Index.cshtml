@@ -1,0 +1,42 @@
+﻿@model Quest.MPDW.Admin.Models.GroupEditorViewModel
+@{
+    ViewBag.Title = "Group Editor";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h1>Group Editor</h1>
+
+<input type="hidden" id="__frmGroupVIEW_STATE" value="@Html.Raw(Json.Encode(Model))" />
+<div id="frmGroup">
+</div>
+
+<script type="text/javascript">
+    var _frmGroup = null;
+    var frmGroup = {
+        element: 'frmGroup',
+        prefix: '',
+        uri: '/Admin/Group',
+        callback: cbGroupEditor,
+        mask: 'body',
+        ctx: {
+            elements: ['_questctx', '_questmm', '_questnb']
+        },
+        fields: [
+            { name: 'Id', type: 'hidden', key: true },
+            { name: 'Name', label: 'Name', required: true, maxlength: 256, size: 55 },
+            { name: 'Description', label: 'Description', maxlength: 256, size: 55 },
+        ],
+        operations: [
+            { name: 'Users', label: 'Users', classes: "btn btn-primary", uri: '/Admin/Group', view: true },
+            { name: 'Privileges', label: 'Privileges', classes: "btn btn-primary", uri: '/Admin/Group', view: true },
+        ],
+        actions: [
+        ]
+    }
+    function cbGroupEditor(ud, d) {
+    }
+    $(function () {
+        _frmGroup = new qrmgEditor(frmGroup);
+        _frmGroup.DisplayFormMessages();
+    });
+</script>

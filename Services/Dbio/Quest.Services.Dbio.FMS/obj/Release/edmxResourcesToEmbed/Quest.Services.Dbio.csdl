@@ -93,6 +93,7 @@
     <Property Name="Password" Type="String" Nullable="false" MaxLength="1024" FixedLength="false" Unicode="true" />
     <Property Name="bEnabled" Type="Boolean" Nullable="false" />
     <Property Name="bActive" Type="Boolean" Nullable="false" />
+    <Property Name="bLogSession" Type="Boolean" Nullable="false" />
     <Property Name="Created" Type="DateTime" Nullable="false" Precision="7" />
   </EntityType>
   <EntityType Name="UserSessionPrivileges">

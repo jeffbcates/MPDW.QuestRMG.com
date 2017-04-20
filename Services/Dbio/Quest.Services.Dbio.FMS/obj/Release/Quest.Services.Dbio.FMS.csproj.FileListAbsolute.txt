@@ -8,3 +8,13 @@ C:\Quest\dev\Template\FMS\Services\Dbio\Quest.Services.Dbio.FMS\bin\Release\Enti
 C:\Quest\dev\Template\FMS\Services\Dbio\Quest.Services.Dbio.FMS\obj\Release\Quest.Services.Dbio.FMS.csprojResolveAssemblyReference.cache
 C:\Quest\dev\Template\FMS\Services\Dbio\Quest.Services.Dbio.FMS\obj\Release\Quest.Services.Dbio.FMS.dll
 C:\Quest\dev\Template\FMS\Services\Dbio\Quest.Services.Dbio.FMS\obj\Release\Quest.Services.Dbio.FMS.pdb
+C:\Source\Repos\MPDW\Services\Dbio\Quest.Services.Dbio.FMS\bin\Release\Quest.Services.Dbio.FMS.dll.config
+C:\Source\Repos\MPDW\Services\Dbio\Quest.Services.Dbio.FMS\bin\Release\Quest.Services.Dbio.FMS.dll
+C:\Source\Repos\MPDW\Services\Dbio\Quest.Services.Dbio.FMS\bin\Release\Quest.Services.Dbio.FMS.pdb
+C:\Source\Repos\MPDW\Services\Dbio\Quest.Services.Dbio.FMS\bin\Release\EntityFramework.dll
+C:\Source\Repos\MPDW\Services\Dbio\Quest.Services.Dbio.FMS\bin\Release\EntityFramework.SqlServer.dll
+C:\Source\Repos\MPDW\Services\Dbio\Quest.Services.Dbio.FMS\bin\Release\EntityFramework.xml
+C:\Source\Repos\MPDW\Services\Dbio\Quest.Services.Dbio.FMS\bin\Release\EntityFramework.SqlServer.xml
+C:\Source\Repos\MPDW\Services\Dbio\Quest.Services.Dbio.FMS\obj\Release\Quest.Services.Dbio.FMS.csprojResolveAssemblyReference.cache
+C:\Source\Repos\MPDW\Services\Dbio\Quest.Services.Dbio.FMS\obj\Release\Quest.Services.Dbio.FMS.dll
+C:\Source\Repos\MPDW\Services\Dbio\Quest.Services.Dbio.FMS\obj\Release\Quest.Services.Dbio.FMS.pdb

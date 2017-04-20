@@ -1,0 +1,704 @@
+﻿@model Quest.MasterPricing.Setup.Models.TablesetConfigurationViewModel
+@{
+    ViewBag.Title = "Tableset Configuration";
+    Layout = "~/Views/Shared/_LayoutSetupTablesetConfiguration.cshtml";
+}
+
+<h1>Tableset Configuration</h1>
+<div class="quick-button pull-right" style="margin-top: -30px;"><button id="btnTableFilters" class="btn btn-success">Filters</button></div>
+
+<input type="hidden" id="__frmTablesetConfigurationVIEW_STATE" value="@Html.Raw(Json.Encode(Model))" />
+
+<div id="frmTableset"></div>
+<br />
+
+<div id="frmDatabase"></div>
+
+<br />
+<br />
+<br />
+<div id="titleTables" class="portlet box blue editorFrame">
+    <div class="portlet-title">
+        <div class="caption">Tables</div>
+    </div>
+</div>
+
+<div id="tvwTablesetTables" class="tvwFrame purple-stripe-background"></div>
+<br />
+<br />
+<div id="tvwDatabaseTables" class="tvwFrame"></div>
+
+<br />
+<br />
+<br />
+<div id="titleViews" class="portlet box blue editorFrame">
+    <div class="portlet-title">
+        <div class="caption">Views</div>
+    </div>
+</div>
+<div id="tvwTablesetViews" class="tvwFrame purple-stripe-background"></div>
+<br />
+<br />
+<div id="tvwDatabaseViews" class="tvwFrame"></div>
+
+
+<div id="frmTablesetConfiguration"></div>
+
+<script type="text/javascript">
+    var _frmTableset = null;
+    function initTablesets() {
+        var frmTableset = {
+            element: 'frmTableset',
+            prefix: 'tblset',
+            uri: '/Setup/TablesetConfiguration',
+            callback: cbTablesetEditor,
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb']
+            },
+            fields: [
+                { name: 'TablesetId', label: 'Tableset', type: 'select', key: true, callback: cbTablesetId },
+            ],
+            bNoDefaultOptions: true,
+            operations: [
+            ],
+            actions: [
+            ],
+            events: [
+            ],
+        }
+        _frmTableset = new qrmgEditor(frmTableset);
+    }
+    function cbTablesetEditor(ud, d) {
+        if (ud.PostLoad) {
+            _frmTableset.SetField('TablesetId', _viewstate.Tableset.Id);
+        }
+        if (ud.Read) {
+            loadConfiguration(d);
+            return (true);
+        }
+    }
+    function cbTablesetId(ud, d) {
+        if (ud.Change) {
+            if (d == -1) {
+                _viewstate.Database = {};
+                _viewstate.Tableset = {};
+                _viewstate.DBTableList = [];
+                _viewstate.DBViewList = [];
+                _viewstate.TableList = [];
+                _viewstate.ViewList = [];
+                _frmDatabase.Clear();
+                _tvwTablesetTables.Clear();
+                _tvwDatabaseTables.Clear();
+                _tvwTablesetViews.Clear();
+                _tvwDatabaseViews.Clear();
+            }
+            else {
+                _frmTableset.Read($('#tblsetTablesetId').val(), true);
+            }
+        }
+    }
+    function RefreshScreen() {
+        qrmgmvc.Global.Mask($('#pageContent'));
+        cbTablesetId({ Change: true }, _frmTableset.GetData().TablesetId);
+    }
+</script>
+<script type="text/javascript">
+    var _frmDatabase = null;
+    function initDatabases() {
+        var frmDatabase = {
+            element: 'frmDatabase',
+            prefix: 'db',
+            uri: '/Setup/Database',
+            callback: cbDatabaseEditor,
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb']
+            },
+            fields: [
+                { name: 'DatabaseId', label: 'Database', type: 'select', key: true, callback: cbDatabaseId },
+            ],
+            bNoDefaultOptions: true,
+            operations: [
+            ],
+            actions: [
+            ],
+            events: [
+            ],
+        }
+        _frmDatabase = new qrmgEditor(frmDatabase);
+    }
+    function cbDatabaseEditor(ud, d) {
+        if (ud.PostLoad) {
+            _frmDatabase.SetField('DatabaseId', _viewstate.Database.Id);
+        }
+        if (ud.Read) {
+            loadConfiguration(d);
+            return (true);
+        }
+    }
+    function cbDatabaseId(ud, d) {
+        if (ud.Change) {
+            qrmgmvc.Global.Mask($('#pageContentFrame'));
+            _frmTablesetConfiguration.Change(true);
+            var _d = _frmDatabase.GetData();
+            _d.Id = _d.DatabaseId;
+            $.extend(_d, _ctx);
+            var _ioDBTables = new qrmgio(cbLoadDatabaseEntities);
+            _ioDBTables.GetJSON('/Setup/Database/Entities', _d);
+        }
+    }
+    function cbLoadDatabaseEntities(ud, d) {
+        if (d.UserMessage) {
+            DisplayUserMessage(d.UserMessage);
+        }
+        else {
+            _viewstate.DBTableList = d.Tables;
+            _tvwTablesetTables.Clear();
+            loadTreeviewDatabaseTables(d.Tables);
+
+            _viewstate.DBViewList = d.Views;
+            _tvwTablesetViews.Clear();
+            loadTreeviewDatabaseViews(d.Views);
+        }
+        qrmgmvc.Global.Unmask();
+    }
+</script>
+
+<script type="text/javascript">
+    var _tvwTablesetTables = null;
+    function initTreeviewTablesetTables() {
+        var tvwTablesetTables = {
+            element: 'tvwTablesetTables',
+            pfx: 'tstt',
+            uri: '/Setup/Tables',
+            keyname: 'TablesetId',
+            header: {
+                count: true,
+                label: 'Tableset Tables: ',
+                filter: true
+            },
+            draggable: true,
+            droppable: true,
+            dropsource: _tvwDatabaseTables,
+            sorted: true,
+            multiSelect: true,
+            bRangeSelect: true,
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb'],
+                objects: [_frmDatabase]
+            },
+            viewstate: { element: '__frmTablesetConfigurationVIEW_STATE' },
+            callback: cbTvwTablesetTables,
+            events: [
+                { name: 'AfterLoaded', callback: cbTvwTablesetTablesAfterLoaded },
+                { name: 'NodeSelected', callback: cbTvwTablesetTablesNodeSelected },
+                { name: 'OnTreeRender', callback: cbTvwTablesetTablesOnTreeRender },
+                { name: 'OnDrop', callback: cbTvwTablesetTablesOnDrop },
+                { name: 'Refresh', callback: cbTvwTablesetTablesRefresh },
+            ],
+            operations: [
+                { name: 'Remove', label: 'Remove', classes: "btn btn-primary" },
+            ],
+            commands: [
+                { name: 'SelectAll', classes: 'fa fa-check-square', title: 'Select all items', callback: cbTvwTablesetTablesSelectAll },
+                { name: 'DeselectAll', classes: 'fa fa-square-o', title: 'Deselect all items', callback: cbTvwTablesetTablesDeselectAll },
+                { name: 'Transfer', classes: 'fa fa-exchange', title: 'Transfer selected to Database Tables', callback: cbTransferToDatabaseTables },
+            ]
+        }
+        _tvwTablesetTables = new qrmgTreeview(tvwTablesetTables);
+        loadTreeviewTablesetTables();
+    }
+    function loadTreeviewTablesetTables() {
+        var _d = { questStatus: _viewstate.questStatus, Items: _viewstate.TableList };
+        _tvwTablesetTables.Fill(_d);
+    }
+    function cbTvwTablesetTables(op, msg, n, d) {
+    }
+    function cbTvwTablesetTablesAfterLoaded() {
+    }
+    function cbTvwTablesetTablesNodeSelected(evt, d, e) {
+        e.stopPropagation();
+    }
+    function cbTvwTablesetTablesOnTreeRender(e) {
+        if (!_tvwTablesetTables) { return; }
+        $(_tvwTablesetTables._e + ' ul li span.fa-table').closest('li').addClass('tvwTable');
+        $(_tvwTablesetTables._e + ' ul li span.fa-th').closest('li').addClass('tvwView');
+    }
+    function cbTvwTablesetTablesOnDrop() {
+        _frmTablesetConfiguration.Change(true);
+        _frmTablesetConfiguration.Buttons(true);
+    }
+    function cbTvwTablesetTablesRefresh(e) {
+        $('#draggingContainer').remove();
+    }
+    function cbTvwTablesetTablesSelectAll(ud, ee) {
+        _tvwTablesetTables.SelectAll();
+    }
+    function cbTvwTablesetTablesDeselectAll(ud, ee) {
+        _tvwTablesetTables.DeselectAll();
+    }
+    function cbTransferToDatabaseTables(ud, ee) {
+        var _nn = [];
+        var _idd = [];
+        $.each(ee, function (i, e) {
+            var id = parseInt(e.dataset.id);
+            var n = _tvwTablesetTables.GetNode(id);
+            _nn.push(n);
+            _idd.push(id);
+        });
+        var _d = { questStatus: _viewstate.questStatus, Items: _nn };
+        _tvwDatabaseTables.Insert(_d);
+        $.each(_idd, function (i, id) {
+            _tvwTablesetTables.Remove(id);
+        });
+        _frmTablesetConfiguration.Change(true);
+    }
+</script>
+<script type="text/javascript">
+    var _tvwDatabaseTables = null;
+    function initTreeviewDatabaseTables() {
+        var tvwDatabaseTables = {
+            element: 'tvwDatabaseTables',
+            pfx: 'dbtt',
+            uri: '/DataMgr/Database',
+            keyname: 'DatabaseId',
+            header: {
+                count: true,
+                label: 'Database Tables: ',
+                filter: true
+            },
+            draggable: true,
+            droppable: true,
+            dropsource: _tvwTablesetTables,
+            sorted: true,
+            multiSelect: true,
+            bRangeSelect: true,
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb'],
+                objects: [_frmDatabase]
+            },
+            viewstate: { element: '__frmTablesetConfigurationVIEW_STATE' },
+            callback: cbTvwDatabaseTables,
+            events: [
+                { name: 'AfterLoaded', callback: cbTvwDatabaseTablesAfterLoaded },
+                { name: 'NodeSelected', callback: cbTvwDatabaseTablesNodeSelected },
+                { name: 'OnTreeRender', callback: cbTvwDatabaseTablesOnTreeRender },
+                { name: 'OnDrop', callback: cbTvwDatabaseTablesOnDrop },
+                { name: 'Refresh', callback: cbTvwDatabaseTablesRefresh },
+            ],
+            operations: [
+                { name: 'Add', label: 'Add', classes: "btn btn-primary" },
+            ],
+            commands: [
+                { name: 'SelectAll', classes: 'fa fa-check-square', title: 'Select all items', callback: cbTvwDatabaseTablesSelectAll },
+                { name: 'DeselectAll', classes: 'fa fa-square-o', title: 'Deselect all items', callback: cbTvwDatabaseTablesDeselectAll },
+                { name: 'Transfer', classes: 'fa fa-exchange', title: 'Transfer selected to Tableset Tables', callback: cbTransferToTablesetTables },
+            ]
+        }
+        _tvwDatabaseTables = new qrmgTreeview(tvwDatabaseTables);
+        loadTreeviewDatabaseTables();
+    }
+    function loadTreeviewDatabaseTables(tt) {
+        var _d = { questStatus: _viewstate.questStatus, Items: tt ? tt : _viewstate.DBTableList };
+        _tvwDatabaseTables.Fill(_d);
+    }
+    function cbTvwDatabaseTables(op, msg, n, d) {
+    }
+    function cbTvwDatabaseTablesAfterLoaded() {
+    }
+    function cbTvwDatabaseTablesNodeSelected(evt, d, e) {
+        e.stopPropagation();
+    }
+    function cbTvwDatabaseTablesOnTreeRender(e) {
+        if (!_tvwDatabaseTables) { return; }
+        $(_tvwDatabaseTables._e + ' ul li span.fa-table').closest('li').addClass('tvwTable');
+        $(_tvwDatabaseTables._e + ' ul li span.fa-th').closest('li').addClass('tvwView');
+    }
+    function cbTvwDatabaseTablesOnDrop() {
+        _frmTablesetConfiguration.Change(true);
+        _frmTablesetConfiguration.Buttons(true);
+    }
+    function cbTvwDatabaseTablesRefresh(e) {
+        $('#draggingContainer').remove();
+    }
+    function cbTvwDatabaseTablesSelectAll(ud, ee) {
+        _tvwDatabaseTables.SelectAll();
+    }
+    function cbTvwDatabaseTablesDeselectAll(ud, ee) {
+        _tvwDatabaseTables.DeselectAll();
+    }
+    function cbTransferToTablesetTables(ud, ee) {
+        var _nn = [];
+        var _idd = [];
+        $.each(ee, function (i, e) {
+            var id = parseInt(e.dataset.id);
+            var n = _tvwDatabaseTables.GetNode(id);
+            _nn.push(n);
+            _idd.push(id);
+        });
+        var _d = { questStatus: _viewstate.questStatus, Items: _nn };
+        _tvwTablesetTables.Insert(_d);
+        $.each(_idd, function (i, id) {
+            _tvwDatabaseTables.Remove(id);
+        });
+        _frmTablesetConfiguration.Change(true);
+    }
+</script>
+
+
+<script type="text/javascript">
+    var _tvwTablesetViews = null;
+    function initTreeviewTablesetViews() {
+        var tvwTablesetViews = {
+            element: 'tvwTablesetViews',
+            pfx: 'tsvv',
+            uri: '/Setup/Views',
+            keyname: 'ViewsetId',
+            header: {
+                count: true,
+                label: 'Tableset Views: ',
+                filter: true
+            },
+            draggable: true,
+            droppable: true,
+            dropsource: _tvwDatabaseViews,
+            sorted: true,
+            multiSelect: true,
+            bRangeSelect: true,
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb'],
+                objects: [_frmDatabase]
+            },
+            viewstate: { element: '__frmTablesetConfigurationVIEW_STATE' },
+            callback: cbTvwTablesetViews,
+            events: [
+                { name: 'AfterLoaded', callback: cbTvwTablesetViewsAfterLoaded },
+                { name: 'NodeSelected', callback: cbTvwTablesetViewsNodeSelected },
+                { name: 'OnTreeRender', callback: cbTvwTablesetViewsOnTreeRender },
+                { name: 'OnDrop', callback: cbTvwTablesetViewsOnDrop },
+                { name: 'Refresh', callback: cbTvwTablesetViewsRefresh },
+            ],
+            operations: [
+                { name: 'Remove', label: 'Remove', classes: "btn btn-primary" },
+            ],
+            commands: [
+                { name: 'SelectAll', classes: 'fa fa-check-square', title: 'Select all items', callback: cbTvwTablesetViewsSelectAll },
+                { name: 'DeselectAll', classes: 'fa fa-square-o', title: 'Deselect all items', callback: cbTvwTablesetViewsDeselectAll },
+                { name: 'Transfer', classes: 'fa fa-exchange', title: 'Transfer selected to Database Views', callback: cbTransferToDatabaseViews },
+            ]
+        }
+        _tvwTablesetViews = new qrmgTreeview(tvwTablesetViews);
+        loadTreeviewTablesetViews();
+    }
+    function loadTreeviewTablesetViews() {
+        var _d = { questStatus: _viewstate.questStatus, Items: _viewstate.ViewList };
+        _tvwTablesetViews.Fill(_d);
+    }
+    function cbTvwTablesetViews(op, msg, n, d) {
+    }
+    function cbTvwTablesetViewsAfterLoaded() {
+    }
+    function cbTvwTablesetViewsNodeSelected(evt, d, e) {
+        e.stopPropagation();
+    }
+    function cbTvwTablesetViewsOnTreeRender() {
+        if (!_tvwTablesetViews) { return; }
+        $(_tvwTablesetViews._e + ' ul li span.fa-table').closest('li').addClass('tvwTable');
+        $(_tvwTablesetViews._e + ' ul li span.fa-th').closest('li').addClass('tvwView');
+    }
+    function cbTvwTablesetViewsOnDrop() {
+        _frmTablesetConfiguration.Change(true);
+        _frmTablesetConfiguration.Buttons(true);
+    }
+    function cbTvwTablesetViewsRefresh() {
+        $('#draggingContainer').remove();
+    }
+    function cbTvwTablesetViewsSelectAll(ud, ee) {
+        _tvwTablesetViews.SelectAll();
+    }
+    function cbTvwTablesetViewsDeselectAll(ud, ee) {
+        _tvwTablesetViews.DeselectAll();
+    }
+    function cbTransferToDatabaseViews(ud, ee) {
+        var _nn = [];
+        var _idd = [];
+        $.each(ee, function (i, e) {
+            var id = parseInt(e.dataset.id);
+            var n = _tvwTablesetViews.GetNode(id);
+            _nn.push(n);
+            _idd.push(id);
+        });
+        var _d = { questStatus: _viewstate.questStatus, Items: _nn };
+        _tvwDatabaseViews.Insert(_d);
+        $.each(_idd, function (i, id) {
+            _tvwTablesetViews.Remove(id);
+        });
+        _frmTablesetConfiguration.Change(true);
+    }
+</script>
+<script type="text/javascript">
+    var _tvwDatabaseViews = null;
+    function initTreeviewDatabaseViews() {
+        var tvwDatabaseViews = {
+            element: 'tvwDatabaseViews',
+            pfx: 'dbvv',
+            uri: '/DataMgr/Database',
+            keyname: 'DatabaseId',
+            header: {
+                count: true,
+                label: 'Database Views: ',
+                filter: true
+            },
+            draggable: true,
+            droppable: true,
+            dropsource: _tvwTablesetViews,
+            sorted: true,
+            multiSelect: true,
+            bRangeSelect: true,
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb'],
+                objects: [_frmDatabase]
+            },
+            viewstate: { element: '__frmTablesetConfigurationVIEW_STATE' },
+            callback: cbTvwDatabaseViews,
+            events: [
+                { name: 'AfterLoaded', callback: cbTvwDatabaseViewsAfterLoaded },
+                { name: 'NodeSelected', callback: cbTvwDatabaseViewsNodeSelected },
+                { name: 'OnTreeRender', callback: cbTvwDatabaseViewsOnTreeRender },
+                { name: 'OnDrop', callback: cbTvwDatabaseViewsOnDrop },
+                { name: 'Refresh', callback: cbTvwDatabaseViewsRefresh },
+            ],
+            operations: [
+                { name: 'Add', label: 'Add', classes: "btn btn-primary" },
+            ],
+            commands: [
+                { name: 'SelectAll', classes: 'fa fa-check-square', title: 'Select all items', callback: cbTvwDatabaseViewsSelectAll },
+                { name: 'DeselectAll', classes: 'fa fa-square-o', title: 'Deselect all items', callback: cbTvwDatabaseViewsDeselectAll },
+                { name: 'Transfer', classes: 'fa fa-exchange', title: 'Transfer selected to Tableset Views', callback: cbTransferToTablesetViews },
+            ]
+        }
+        _tvwDatabaseViews = new qrmgTreeview(tvwDatabaseViews);
+        loadTreeviewDatabaseViews();
+    }
+    function loadTreeviewDatabaseViews(tt) {
+        var _d = { questStatus: _viewstate.questStatus, Items: tt ? tt : _viewstate.DBViewList };
+        _tvwDatabaseViews.Fill(_d);
+    }
+    function cbTvwDatabaseViews(op, msg, n, d) {
+    }
+    function cbTvwDatabaseViewsAfterLoaded() {
+    }
+    function cbTvwDatabaseViewsNodeSelected(evt, d, e) {
+        e.stopPropagation();
+    }
+    function cbTvwDatabaseViewsOnTreeRender(e) {
+        if (!_tvwDatabaseViews) { return; }
+        $(_tvwDatabaseViews._e + ' ul li span.fa-table').closest('li').addClass('tvwTable');
+        $(_tvwDatabaseViews._e + ' ul li span.fa-th').closest('li').addClass('tvwView');
+    }
+    function cbTvwDatabaseViewsOnDrop() {
+        _frmTablesetConfiguration.Change(true);
+        _frmTablesetConfiguration.Buttons(true);
+    }
+    function cbTvwDatabaseViewsRefresh() {
+        $('#draggingContainer').remove();
+    }
+    function cbTvwDatabaseViewsSelectAll(ud, ee) {
+        _tvwDatabaseViews.SelectAll();
+    }
+    function cbTvwDatabaseViewsDeselectAll(ud, ee) {
+        _tvwDatabaseViews.DeselectAll();
+    }
+    function cbTransferToTablesetViews(ud, ee) {
+        var _nn = [];
+        var _idd = [];
+        $.each(ee, function (i, e) {
+            var id = parseInt(e.dataset.id);
+            var n = _tvwDatabaseViews.GetNode(id);
+            _nn.push(n);
+            _idd.push(id);
+        });
+        var _d = { questStatus: _viewstate.questStatus, Items: _nn };
+        _tvwTablesetViews.Insert(_d);
+        $.each(_idd, function (i, id) {
+            _tvwDatabaseViews.Remove(id);
+        });
+        _frmTablesetConfiguration.Change(true);
+    }
+</script>
+
+
+<script type="text/javascript">
+    var _frmTablesetConfiguration = null;
+    function initTablesetConfigurationEditor() {
+        var frmTableset = {
+            element: 'frmTablesetConfiguration',
+            prefix: 'tblsetcfg',
+            uri: '/Setup/TablesetConfiguration',
+            callback: cbTablesetConfigurationEditor,
+            mask: '#pageContentFrame',
+            SaveMessage: 'W|Saving tableset and retrieving stored procedure metdata ...',
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb']
+            },
+            fields: [
+                { name: 'Id', type: 'hidden', key: true },
+            ],
+            operations: [
+            ],
+            actions: [
+            ],
+            events: [
+                { name: 'BeforeSave', callback: cbFrmTablesetConfigurationBeforeSave },
+                { name: 'AfterSave', callback: cbFrmTablesetConfigurationAfterSave },
+            ],
+        }
+        _frmTablesetConfiguration = new qrmgEditor(frmTableset);
+        _frmTablesetConfiguration.SetField('Id', _viewstate.TablesetId);
+    }
+    function cbTablesetConfigurationEditor(ud, d) {
+        if (ud.Save) {
+            if (d.questStatus) {
+                if (IsAppSuccess(d)) {
+                    _frmTablesetConfiguration.Change(false);
+                }
+                // klugie
+                qrmgmvc.Global.Unmask($('#pageContent'));
+            }
+        }
+        else if (ud.Delete) {
+            if (d.questStatus) {
+                if (IsAppSuccess(d)) {
+                    _tvwTablesetTables.Clear();
+                    _tvwDatabaseTables.Clear();
+                    _tvwTablesetViews.Clear();
+                    _tvwDatabaseViews.Clear();
+                    cbDatabaseId({ Change: true });
+                }
+            }
+            else {
+                var ts = _frmTableset.GetData();
+                if (ts.TablesetId > 0) {
+                    _frmTablesetConfiguration.SetField("Id", ts.TablesetId);
+                    _frmTablesetConfiguration._bROS = true;
+                }
+            }
+        }
+        else if (ud.Clear) {
+            if (d.questStatus) {
+            }
+            else {
+                _frmDatabase.Clear();
+                _frmTableset.Clear();
+                _tvwTablesetTables.Clear();
+                _tvwDatabaseTables.Clear();
+                _tvwTablesetViews.Clear();
+                _tvwDatabaseViews.Clear();
+            }
+        }
+    }
+    function cbFrmTablesetConfigurationBeforeSave(ud, d) {
+        qrmgmvc.Global.Mask($('#pageContent'));
+        var _d = {};
+
+        // TODO: modularize.
+        _d.Database = {};
+        _d.Database.Id = $('#dbDatabaseId').val();
+        _d.Database.Name = null;
+        _d.Database.Server = null;
+        _d.Database.Summary = null;
+        _d.Database.ConnectionString = null;
+
+        // TODO: modularize.
+        _d.TablesetId = $('#tblsetTablesetId').val();
+        _d.Tableset = {};
+        _d.Tableset.Id = $('#tblsetTablesetId').val();
+        _d.Tableset.DatabaseId = $('#dbDatabaseId').val();
+        _d.Tableset.Database = null;
+        _d.Tableset.Name = null;
+        _d.Tableset.Summary = null;
+        _d.Tableset.Created = null;
+
+        // TODO: get from treeview; modularize
+        _d.TableList = [];
+        $('#tvwTablesetTables ul.list-group li').each(function(i, e) {
+            _d.TableList.push({ text: $(e).text() });
+        });
+        _d.ViewList = [];
+        $('#tvwTablesetViews ul.list-group li').each(function (i, e) {
+            _d.ViewList.push({ text: $(e).text() });
+        });
+
+        $.extend(d, _d);
+    }
+    function cbFrmTablesetConfigurationAfterSave(ud, d) {
+        RefreshScreen();
+        return (true);
+    }
+</script>
+
+
+
+<script type="text/javascript">
+    var _viewstate;
+    $(function () {
+        initViewstate();
+        initTablesets();
+        initDatabases();
+
+        initTreeviewDatabaseTables();
+        initTreeviewDatabaseViews();
+
+        initTreeviewTablesetTables();
+        initTreeviewTablesetViews();
+
+        _tvwTablesetTables.DropSource(_tvwDatabaseTables);
+        _tvwDatabaseTables.DropSource(_tvwTablesetTables);
+        _tvwTablesetViews.DropSource(_tvwDatabaseViews);
+        _tvwDatabaseViews.DropSource(_tvwTablesetViews);
+
+        initTablesetConfigurationEditor();
+        tempDisplayMessage();
+
+        $('#btnTableFilters').click(function (e) {
+            qrmgmvc.Global.Mask($('#pageContentFrame'));
+            var d = _frmTableset.GetData();
+            d.Id = d.TablesetId;
+            var _ioTablesetCfg = new qrmgio(cbShowTablesetFilters);
+            _ioTablesetCfg.ShowView('/DataMgr/Tableset', d);
+        });
+    });
+    function cbShowTablesetFilters(ud, d) {
+        DisplayUserMessage('E|Displaying tableset filters');
+        qrmgmvc.Global.Unmask($('#pageContentFrame'));
+    }
+    function initViewstate() {
+        _viewstate = JSON.parse($('#__frmTablesetConfigurationVIEW_STATE').val());
+    }
+    function tempDisplayMessage() {
+        if (_viewstate.questStatus.Severity == 3) {
+            DisplayUserMessage('E|' + _viewstate.questStatus.Message);
+        }
+        else if (_viewstate.questStatus.Severity == 4) {
+            DisplayUserMessage('F|' + _viewstate.questStatus.Message);
+        }
+    }
+    function loadConfiguration(d) {
+        if (d.UserMessage) {
+            _tvwTablesetTables.Clear();
+            _tvwDatabaseTables.Clear();
+            _tvwTablesetViews.Clear();
+            _tvwDatabaseViews.Clear();
+        }
+        else {
+            $('input[Id="__frmTablesetConfigurationVIEW_STATE"]').val(JSON.stringify(d));
+            _frmTableset.SetField('TablesetId', d.Tableset.Id);
+            _frmDatabase.SetField('DatabaseId', d.Database.Id);
+            initViewstate();
+            loadTreeviewTablesetTables();
+            loadTreeviewDatabaseTables();
+            loadTreeviewTablesetViews();
+            loadTreeviewDatabaseViews();
+        }
+        qrmgmvc.Global.Unmask($('#pageContentFrame'));
+    }
+</script>

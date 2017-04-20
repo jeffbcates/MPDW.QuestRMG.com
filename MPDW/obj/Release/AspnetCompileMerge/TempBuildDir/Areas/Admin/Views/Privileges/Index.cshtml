@@ -1,0 +1,53 @@
+﻿@model Quest.MPDW.Admin.Models.PrivilegesListViewModel
+@{
+    ViewBag.Title = "Privileges";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="questTableTitle">Privilege List</div>
+
+<div id="tblPrivileges" class="qrmgTable"></div>
+
+<script type="text/javascript">
+    var _tblPrivileges;
+    $(function () {
+        var tblPrivileges = {
+            name: 'tblPrivileges',
+            element: 'tblPrivileges',
+            prefix: 'db',
+            uri: '/Admin/Privileges',
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb']
+            },
+            autoLoad: true,
+            editor: { uri: '/Admin/Privilege' },
+            callback: cbTblPrivileges,
+            columns: [
+                { name: 'Id', hidden: true, key: true },
+                { name: 'Name', label: 'Name' },
+                { name: 'Description', label: 'Description' },
+            ],
+            paging: {
+                Top: true,
+                Bottom: true,
+                PageSize: 10,
+                PageSizeOptions: [10, 20, 30, 50, 100],
+            },
+            operations: [
+            ],
+            commands: [
+                { name: 'Read', label: 'Edit', edit: true },
+                { name: 'Users', label: 'Users', uri: '/Admin/Privilege/Users', type: 'view', single: true },
+                { name: 'Groups', label: 'Groups', uri: '/Admin/Privilege/Groups', type: 'view', single: true },
+            ],
+            events: [
+            ],
+            contextMenu: [
+            ]
+        }
+        _tblPrivileges = new qrmgTable(tblPrivileges);
+    });
+    function cbTblPrivileges(ud, d) {
+
+    }
+</script>

@@ -1,0 +1,647 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="Quest.Services.Dbio.MasterPricing.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="FilterColumns">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="FilterId" Type="int" Nullable="false" />
+    <Property Name="FilterEntityTypeId" Type="int" Nullable="false" />
+    <Property Name="FilterEntityId" Type="int" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
+  </EntityType>
+  <EntityType Name="FilterEntityTypes">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="80" Nullable="false" />
+  </EntityType>
+  <EntityType Name="FilterFolders">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="FolderId" Type="int" />
+    <Property Name="Name" Type="nvarchar" MaxLength="255" Nullable="false" />
+    <Property Name="Description" Type="nvarchar(max)" />
+    <Property Name="Created" Type="datetime2" Precision="7" Nullable="false" />
+    <Property Name="Modified" Type="datetime2" Precision="7" />
+  </EntityType>
+  <EntityType Name="FilterItemJoins">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="FilterItemId" Type="int" Nullable="false" />
+    <Property Name="JoinType" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="SourceSchema" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="SourceEntityName" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="SourceColumnName" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="TargetEntityTypeId" Type="int" Nullable="false" />
+    <Property Name="TargetSchema" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="TargetEntityName" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="TargetColumnName" Type="nvarchar" MaxLength="256" Nullable="false" />
+  </EntityType>
+  <EntityType Name="FilterItems">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="FilterId" Type="int" Nullable="false" />
+    <Property Name="FilterEntityTypeId" Type="int" Nullable="false" />
+    <Property Name="FilterEntityId" Type="int" Nullable="false" />
+    <Property Name="LookupId" Type="int" />
+    <Property Name="TypeListId" Type="int" />
+    <Property Name="Label" Type="nvarchar" MaxLength="256" />
+    <Property Name="ParameterName" Type="nvarchar" MaxLength="256" />
+    <Property Name="bHidden" Type="bit" Nullable="false" />
+    <Property Name="bBulkUpdateValueRequired" Type="bit" Nullable="false" />
+  </EntityType>
+  <EntityType Name="FilterOperations">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="FilterItemId" Type="int" Nullable="false" />
+    <Property Name="FilterOperatorId" Type="int" Nullable="false" />
+  </EntityType>
+  <EntityType Name="FilterOperators">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
+  </EntityType>
+  <EntityType Name="FilterProcedureParameters">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="FilterProcedureId" Type="int" Nullable="false" />
+    <Property Name="bRequired" Type="bit" Nullable="false" />
+    <Property Name="Offset" Type="int" Nullable="false" />
+    <Property Name="ParameterName" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="DbType" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Direction" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="SqlDbType" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Size" Type="int" Nullable="false" />
+    <Property Name="IsNullable" Type="bit" Nullable="false" />
+    <Property Name="ForceColumnEncryption" Type="bit" />
+    <Property Name="LocaleId" Type="int" />
+    <Property Name="Precision" Type="varbinary" MaxLength="1" />
+    <Property Name="Scale" Type="varbinary" MaxLength="1" />
+    <Property Name="SourceColumn" Type="nvarchar(max)" />
+    <Property Name="SourceColumnNullMapping" Type="bit" />
+    <Property Name="TypeName" Type="nvarchar(max)" />
+    <Property Name="UdtTypeName" Type="nvarchar(max)" />
+  </EntityType>
+  <EntityType Name="FilterProcedures">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="FilterId" Type="int" Nullable="false" />
+    <Property Name="Action" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Filters">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="FolderId" Type="int" />
+    <Property Name="TablesetId" Type="int" Nullable="false" />
+    <Property Name="bSaveBeforeImage" Type="bit" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="Summary" Type="nvarchar" MaxLength="256" />
+    <Property Name="SQL" Type="nvarchar(max)" />
+  </EntityType>
+  <EntityType Name="FilterTables">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="FilterId" Type="int" Nullable="false" />
+    <Property Name="Schema" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
+  </EntityType>
+  <EntityType Name="FilterValues">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="FilterOperationId" Type="int" Nullable="false" />
+    <Property Name="Value" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="FilterViews">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="FilterId" Type="int" Nullable="false" />
+    <Property Name="Schema" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
+  </EntityType>
+  <EntityType Name="BulkInsertLogs">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserSessionId" Type="int" Nullable="false" />
+    <Property Name="Username" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Database" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Tableset" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Filter" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Event" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="NumRows" Type="int" Nullable="false" />
+    <Property Name="Parameters" Type="nvarchar(max)" />
+    <Property Name="BulkInsertColumn" Type="nvarchar(max)" />
+    <Property Name="Message" Type="nvarchar(max)" />
+    <Property Name="Data" Type="nvarchar(max)" />
+    <Property Name="Batch" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Created" Type="datetime2" Precision="7" Nullable="false" />
+  </EntityType>
+  <EntityType Name="BulkUpdateLogs">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserSessionId" Type="int" Nullable="false" />
+    <Property Name="Username" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Database" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Tableset" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Filter" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Event" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="NumRows" Type="int" Nullable="false" />
+    <Property Name="Parameters" Type="nvarchar(max)" />
+    <Property Name="BulkUpdateColumn" Type="nvarchar(max)" />
+    <Property Name="Message" Type="nvarchar(max)" />
+    <Property Name="Data" Type="nvarchar(max)" />
+    <Property Name="Batch" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Created" Type="datetime2" Precision="7" Nullable="false" />
+  </EntityType>
+  <EntityType Name="DatabaseLogs">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserSessionId" Type="int" Nullable="false" />
+    <Property Name="Username" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="Event" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Data" Type="nvarchar(max)" />
+    <Property Name="Created" Type="datetime2" Precision="7" Nullable="false" />
+  </EntityType>
+  <EntityType Name="ExceptionLogs">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserSessionId" Type="int" Nullable="false" />
+    <Property Name="Username" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Message" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Module" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Method" Type="nvarchar(max)" />
+    <Property Name="Status" Type="nvarchar(max)" />
+    <Property Name="Data" Type="nvarchar(max)" />
+    <Property Name="StackTrace" Type="nvarchar(max)" />
+    <Property Name="Created" Type="datetime2" Precision="7" Nullable="false" />
+  </EntityType>
+  <EntityType Name="FilterLogs">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserSessionId" Type="int" Nullable="false" />
+    <Property Name="Username" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Database" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="Tableset" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="Event" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Data" Type="nvarchar(max)" />
+    <Property Name="Created" Type="datetime2" Precision="7" Nullable="false" />
+  </EntityType>
+  <EntityType Name="HTTPRequestLogs">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserSessionId" Type="int" />
+    <Property Name="Username" Type="nvarchar" MaxLength="50" />
+    <Property Name="Method" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="IPAddress" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="UserAgent" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="URL" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Created" Type="datetime2" Precision="7" Nullable="false" />
+  </EntityType>
+  <EntityType Name="LogSettings">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="bLogHTTPRequests" Type="bit" Nullable="false" />
+    <Property Name="bLogExceptions" Type="bit" Nullable="false" />
+    <Property Name="bLogStoredProcedures" Type="bit" Nullable="false" />
+    <Property Name="bLogDatabases" Type="bit" Nullable="false" />
+    <Property Name="bLogTablesets" Type="bit" Nullable="false" />
+    <Property Name="bLogFilters" Type="bit" Nullable="false" />
+    <Property Name="bLogBulkInserts" Type="bit" Nullable="false" />
+    <Property Name="bLogBulkInsertsPerRow" Type="bit" Nullable="false" />
+    <Property Name="bLogBulkUpdates" Type="bit" Nullable="false" />
+    <Property Name="bLogBulkUpdatesPerRow" Type="bit" Nullable="false" />
+    <Property Name="bLogPortal" Type="bit" Nullable="false" />
+    <Property Name="bAllowLogUsers" Type="bit" Nullable="false" />
+    <Property Name="LastModified" Type="datetime2" Precision="7" Nullable="false" />
+  </EntityType>
+  <EntityType Name="PortalRequestLogs">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserSessionId" Type="int" Nullable="false" />
+    <Property Name="Username" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="Method" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="IPAddress" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="UserAgent" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="URL" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Created" Type="datetime2" Precision="7" Nullable="false" />
+  </EntityType>
+  <EntityType Name="StoredProcedureLogs">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserSessionId" Type="int" Nullable="false" />
+    <Property Name="Username" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Arguments" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Response" Type="nvarchar(max)" />
+    <Property Name="Created" Type="datetime2" Precision="7" Nullable="false" />
+  </EntityType>
+  <EntityType Name="TablesetLogs">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="UserSessionId" Type="int" Nullable="false" />
+    <Property Name="Username" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Database" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="Event" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Data" Type="nvarchar(max)" />
+    <Property Name="Created" Type="datetime2" Precision="7" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Columns">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="EntityTypeId" Type="int" Nullable="false" />
+    <Property Name="EntityId" Type="int" Nullable="false" />
+    <Property Name="DisplayOrder" Type="int" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="DataType" Type="nvarchar" MaxLength="80" Nullable="false" />
+    <Property Name="DataTypeName" Type="nvarchar" MaxLength="80" Nullable="false" />
+    <Property Name="ColumnSize" Type="int" Nullable="false" />
+    <Property Name="bIsIdentity" Type="bit" Nullable="false" />
+    <Property Name="bAllowDbNull" Type="bit" Nullable="false" />
+    <Property Name="bIsAutoIncrement" Type="bit" />
+    <Property Name="bIsKey" Type="bit" />
+    <Property Name="bIsReadOnly" Type="bit" />
+    <Property Name="bIsRowVersion" Type="bit" />
+    <Property Name="bIsUnique" Type="bit" />
+    <Property Name="bIsHidden" Type="bit" />
+    <Property Name="Summary" Type="nvarchar" MaxLength="256" />
+  </EntityType>
+  <EntityType Name="Databases">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Server" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="Summary" Type="nvarchar" MaxLength="256" />
+    <Property Name="ConnectionString" Type="nvarchar(max)" />
+    <Property Name="LastRefresh" Type="datetime2" Precision="7" />
+  </EntityType>
+  <EntityType Name="EntityTypes">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="50" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Lookups">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="DatabaseId" Type="int" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="Label" Type="nvarchar" MaxLength="256" />
+    <Property Name="Summary" Type="nvarchar" MaxLength="256" />
+    <Property Name="SQL" Type="nvarchar(max)" />
+    <Property Name="KeyField" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="TextFields" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Arguments" Type="nvarchar(max)" />
+  </EntityType>
+  <EntityType Name="StoredProcedureParameters">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="StoredProcedureId" Type="int" Nullable="false" />
+    <Property Name="bRequired" Type="bit" Nullable="false" />
+    <Property Name="Offset" Type="int" Nullable="false" />
+    <Property Name="ParameterName" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="DbType" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Direction" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="SqlDbType" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="Size" Type="int" Nullable="false" />
+    <Property Name="IsNullable" Type="bit" Nullable="false" />
+    <Property Name="ForceColumnEncryption" Type="bit" />
+    <Property Name="LocaleId" Type="int" />
+    <Property Name="Precision" Type="varbinary" MaxLength="1" />
+    <Property Name="Scale" Type="varbinary" MaxLength="1" />
+    <Property Name="SourceColumn" Type="nvarchar(max)" />
+    <Property Name="SourceColumnNullMapping" Type="bit" />
+    <Property Name="TypeName" Type="nvarchar(max)" />
+    <Property Name="UdtTypeName" Type="nvarchar(max)" />
+  </EntityType>
+  <EntityType Name="StoredProcedures">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="DatabaseId" Type="int" Nullable="false" />
+    <Property Name="Name" Type="nvarchar(max)" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Tables">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="DatabaseId" Type="int" Nullable="false" />
+    <Property Name="Schema" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="Summary" Type="nvarchar" MaxLength="256" />
+  </EntityType>
+  <EntityType Name="TypeLists">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="DatabaseId" Type="int" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="Summary" Type="nvarchar" MaxLength="256" />
+    <Property Name="SQL" Type="nvarchar(max)" />
+  </EntityType>
+  <EntityType Name="Views">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="DatabaseId" Type="int" Nullable="false" />
+    <Property Name="Schema" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="Summary" Type="nvarchar" MaxLength="256" />
+  </EntityType>
+  <EntityType Name="TablesetColumns">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="EntityTypeId" Type="int" Nullable="false" />
+    <Property Name="TableSetEntityId" Type="int" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Tablesets">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="DatabaseId" Type="int" Nullable="false" />
+    <Property Name="bEnabled" Type="bit" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="Summary" Type="nvarchar" MaxLength="256" />
+    <Property Name="LastRefresh" Type="datetime2" Precision="7" />
+  </EntityType>
+  <EntityType Name="TablesetTables">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TablesetId" Type="int" Nullable="false" />
+    <Property Name="Schema" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
+  </EntityType>
+  <EntityType Name="TablesetViews">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="TablesetId" Type="int" Nullable="false" />
+    <Property Name="Schema" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'MasterPricing.dbo.vwLookupsList4' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="vwLookupsList4">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="DatabaseId" />
+      <PropertyRef Name="Name" />
+      <PropertyRef Name="KeyField" />
+      <PropertyRef Name="TextFields" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="DatabaseId" Type="int" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="Label" Type="nvarchar" MaxLength="256" />
+    <Property Name="Summary" Type="nvarchar" MaxLength="256" />
+    <Property Name="SQL" Type="nvarchar(max)" />
+    <Property Name="KeyField" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="TextFields" Type="nvarchar(max)" Nullable="false" />
+    <Property Name="Arguments" Type="nvarchar(max)" />
+    <Property Name="Database" Type="nvarchar" MaxLength="256" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'MasterPricing.dbo.vwTablesetsList4' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="vwTablesetsList4">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="DatabaseId" />
+      <PropertyRef Name="bEnabled" />
+      <PropertyRef Name="Name" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="DatabaseId" Type="int" Nullable="false" />
+    <Property Name="bEnabled" Type="bit" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="Summary" Type="nvarchar" MaxLength="256" />
+    <Property Name="LastRefresh" Type="datetime2" Precision="7" />
+    <Property Name="Database" Type="nvarchar" MaxLength="256" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'MasterPricing.dbo.vwTablesetTablesList2' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="vwTablesetTablesList2">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="TablesetId" />
+      <PropertyRef Name="TablesetName" />
+      <PropertyRef Name="Name" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="TablesetId" Type="int" Nullable="false" />
+    <Property Name="TablesetName" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="Summary" Type="nvarchar" MaxLength="256" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'MasterPricing.dbo.vwTablesetViewsList2' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="vwTablesetViewsList2">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="TablesetId" />
+      <PropertyRef Name="TablesetName" />
+      <PropertyRef Name="Name" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="TablesetId" Type="int" Nullable="false" />
+    <Property Name="TablesetName" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="Summary" Type="nvarchar" MaxLength="256" />
+  </EntityType>
+  <!--Errors Found During Generation:
+warning 6002: The table/view 'MasterPricing.dbo.vwTypeListsList' does not have a primary key defined. The key has been inferred and the definition was created as a read-only table/view.-->
+  <EntityType Name="vwTypeListsList">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="DatabaseId" />
+      <PropertyRef Name="Name" />
+    </Key>
+    <Property Name="Id" Type="int" Nullable="false" />
+    <Property Name="DatabaseId" Type="int" Nullable="false" />
+    <Property Name="Name" Type="nvarchar" MaxLength="256" Nullable="false" />
+    <Property Name="Summary" Type="nvarchar" MaxLength="256" />
+    <Property Name="SQL" Type="nvarchar(max)" />
+    <Property Name="Database" Type="nvarchar" MaxLength="256" />
+  </EntityType>
+  <Function Name="CleanDatabase" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="CleanFilters" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="CleanSetup" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="CleanTablesets" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo" />
+  <Function Name="DeleteFilterById" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="FilterId" Type="int" Mode="In" />
+  </Function>
+  <Function Name="MPDWMetaFields" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="p_Username" Type="nvarchar" Mode="In" />
+    <Parameter Name="p_UserSessionId" Type="int" Mode="In" />
+  </Function>
+  <Function Name="ShowFilter" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="FilterName" Type="nvarchar" Mode="In" />
+  </Function>
+  <Function Name="ShowFilterById" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="FilterId" Type="int" Mode="In" />
+  </Function>
+  <Function Name="ShowTableset" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="TablesetName" Type="nvarchar" Mode="In" />
+  </Function>
+  <Function Name="UnderBarTest" Aggregate="false" BuiltIn="false" NiladicFunction="false" IsComposable="false" ParameterTypeSemantics="AllowImplicitConversion" Schema="dbo">
+    <Parameter Name="p_Username" Type="nvarchar" Mode="In" />
+    <Parameter Name="p_UserSessionId" Type="int" Mode="In" />
+  </Function>
+  <EntityContainer Name="QuestServicesDbioMasterPricingStoreContainer">
+    <EntitySet Name="FilterColumns" EntityType="Self.FilterColumns" Schema="DATAMGR" store:Type="Tables" />
+    <EntitySet Name="FilterEntityTypes" EntityType="Self.FilterEntityTypes" Schema="DATAMGR" store:Type="Tables" />
+    <EntitySet Name="FilterFolders" EntityType="Self.FilterFolders" Schema="DATAMGR" store:Type="Tables" />
+    <EntitySet Name="FilterItemJoins" EntityType="Self.FilterItemJoins" Schema="DATAMGR" store:Type="Tables" />
+    <EntitySet Name="FilterItems" EntityType="Self.FilterItems" Schema="DATAMGR" store:Type="Tables" />
+    <EntitySet Name="FilterOperations" EntityType="Self.FilterOperations" Schema="DATAMGR" store:Type="Tables" />
+    <EntitySet Name="FilterOperators" EntityType="Self.FilterOperators" Schema="DATAMGR" store:Type="Tables" />
+    <EntitySet Name="FilterProcedureParameters" EntityType="Self.FilterProcedureParameters" Schema="DATAMGR" store:Type="Tables" />
+    <EntitySet Name="FilterProcedures" EntityType="Self.FilterProcedures" Schema="DATAMGR" store:Type="Tables" />
+    <EntitySet Name="Filters" EntityType="Self.Filters" Schema="DATAMGR" store:Type="Tables" />
+    <EntitySet Name="FilterTables" EntityType="Self.FilterTables" Schema="DATAMGR" store:Type="Tables" />
+    <EntitySet Name="FilterValues" EntityType="Self.FilterValues" Schema="DATAMGR" store:Type="Tables" />
+    <EntitySet Name="FilterViews" EntityType="Self.FilterViews" Schema="DATAMGR" store:Type="Tables" />
+    <EntitySet Name="BulkInsertLogs" EntityType="Self.BulkInsertLogs" Schema="LOGS" store:Type="Tables" />
+    <EntitySet Name="BulkUpdateLogs" EntityType="Self.BulkUpdateLogs" Schema="LOGS" store:Type="Tables" />
+    <EntitySet Name="DatabaseLogs" EntityType="Self.DatabaseLogs" Schema="LOGS" store:Type="Tables" />
+    <EntitySet Name="ExceptionLogs" EntityType="Self.ExceptionLogs" Schema="LOGS" store:Type="Tables" />
+    <EntitySet Name="FilterLogs" EntityType="Self.FilterLogs" Schema="LOGS" store:Type="Tables" />
+    <EntitySet Name="HTTPRequestLogs" EntityType="Self.HTTPRequestLogs" Schema="LOGS" store:Type="Tables" />
+    <EntitySet Name="LogSettings" EntityType="Self.LogSettings" Schema="LOGS" store:Type="Tables" />
+    <EntitySet Name="PortalRequestLogs" EntityType="Self.PortalRequestLogs" Schema="LOGS" store:Type="Tables" />
+    <EntitySet Name="StoredProcedureLogs" EntityType="Self.StoredProcedureLogs" Schema="LOGS" store:Type="Tables" />
+    <EntitySet Name="TablesetLogs" EntityType="Self.TablesetLogs" Schema="LOGS" store:Type="Tables" />
+    <EntitySet Name="Columns" EntityType="Self.Columns" Schema="SETUP" store:Type="Tables" />
+    <EntitySet Name="Databases" EntityType="Self.Databases" Schema="SETUP" store:Type="Tables" />
+    <EntitySet Name="EntityTypes" EntityType="Self.EntityTypes" Schema="SETUP" store:Type="Tables" />
+    <EntitySet Name="Lookups" EntityType="Self.Lookups" Schema="SETUP" store:Type="Tables" />
+    <EntitySet Name="StoredProcedureParameters" EntityType="Self.StoredProcedureParameters" Schema="SETUP" store:Type="Tables" />
+    <EntitySet Name="StoredProcedures" EntityType="Self.StoredProcedures" Schema="SETUP" store:Type="Tables" />
+    <EntitySet Name="Tables" EntityType="Self.Tables" Schema="SETUP" store:Type="Tables" />
+    <EntitySet Name="TypeLists" EntityType="Self.TypeLists" Schema="SETUP" store:Type="Tables" />
+    <EntitySet Name="Views" EntityType="Self.Views" Schema="SETUP" store:Type="Tables" />
+    <EntitySet Name="TablesetColumns" EntityType="Self.TablesetColumns" Schema="TABLESET" store:Type="Tables" />
+    <EntitySet Name="Tablesets" EntityType="Self.Tablesets" Schema="TABLESET" store:Type="Tables" />
+    <EntitySet Name="TablesetTables" EntityType="Self.TablesetTables" Schema="TABLESET" store:Type="Tables" />
+    <EntitySet Name="TablesetViews" EntityType="Self.TablesetViews" Schema="TABLESET" store:Type="Tables" />
+    <EntitySet Name="vwLookupsList4" EntityType="Self.vwLookupsList4" store:Type="Views" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [vwLookupsList4].[Id] AS [Id], 
+    [vwLookupsList4].[DatabaseId] AS [DatabaseId], 
+    [vwLookupsList4].[Name] AS [Name], 
+    [vwLookupsList4].[Label] AS [Label], 
+    [vwLookupsList4].[Summary] AS [Summary], 
+    [vwLookupsList4].[SQL] AS [SQL], 
+    [vwLookupsList4].[KeyField] AS [KeyField], 
+    [vwLookupsList4].[TextFields] AS [TextFields], 
+    [vwLookupsList4].[Arguments] AS [Arguments], 
+    [vwLookupsList4].[Database] AS [Database]
+    FROM [dbo].[vwLookupsList4] AS [vwLookupsList4]</DefiningQuery>
+    </EntitySet>
+    <EntitySet Name="vwTablesetsList4" EntityType="Self.vwTablesetsList4" store:Type="Views" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [vwTablesetsList4].[Id] AS [Id], 
+    [vwTablesetsList4].[DatabaseId] AS [DatabaseId], 
+    [vwTablesetsList4].[bEnabled] AS [bEnabled], 
+    [vwTablesetsList4].[Name] AS [Name], 
+    [vwTablesetsList4].[Summary] AS [Summary], 
+    [vwTablesetsList4].[LastRefresh] AS [LastRefresh], 
+    [vwTablesetsList4].[Database] AS [Database]
+    FROM [dbo].[vwTablesetsList4] AS [vwTablesetsList4]</DefiningQuery>
+    </EntitySet>
+    <EntitySet Name="vwTablesetTablesList2" EntityType="Self.vwTablesetTablesList2" store:Type="Views" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [vwTablesetTablesList2].[Id] AS [Id], 
+    [vwTablesetTablesList2].[TablesetId] AS [TablesetId], 
+    [vwTablesetTablesList2].[TablesetName] AS [TablesetName], 
+    [vwTablesetTablesList2].[Name] AS [Name], 
+    [vwTablesetTablesList2].[Summary] AS [Summary]
+    FROM [dbo].[vwTablesetTablesList2] AS [vwTablesetTablesList2]</DefiningQuery>
+    </EntitySet>
+    <EntitySet Name="vwTablesetViewsList2" EntityType="Self.vwTablesetViewsList2" store:Type="Views" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [vwTablesetViewsList2].[Id] AS [Id], 
+    [vwTablesetViewsList2].[TablesetId] AS [TablesetId], 
+    [vwTablesetViewsList2].[TablesetName] AS [TablesetName], 
+    [vwTablesetViewsList2].[Name] AS [Name], 
+    [vwTablesetViewsList2].[Summary] AS [Summary]
+    FROM [dbo].[vwTablesetViewsList2] AS [vwTablesetViewsList2]</DefiningQuery>
+    </EntitySet>
+    <EntitySet Name="vwTypeListsList" EntityType="Self.vwTypeListsList" store:Type="Views" store:Schema="dbo">
+      <DefiningQuery>SELECT 
+    [vwTypeListsList].[Id] AS [Id], 
+    [vwTypeListsList].[DatabaseId] AS [DatabaseId], 
+    [vwTypeListsList].[Name] AS [Name], 
+    [vwTypeListsList].[Summary] AS [Summary], 
+    [vwTypeListsList].[SQL] AS [SQL], 
+    [vwTypeListsList].[Database] AS [Database]
+    FROM [dbo].[vwTypeListsList] AS [vwTypeListsList]</DefiningQuery>
+    </EntitySet>
+  </EntityContainer>
+</Schema>

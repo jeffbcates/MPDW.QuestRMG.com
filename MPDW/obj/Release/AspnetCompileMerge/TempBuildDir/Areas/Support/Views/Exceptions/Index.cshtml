@@ -1,0 +1,146 @@
+﻿@model Quest.MPDW.Support.Models.ExceptionsViewModel
+@{
+    ViewBag.Title = "Exceptions Log";
+    Layout = "~/Views/Shared/_LayoutSupport.cshtml";
+}
+
+<div class="questTableTitle">Exceptions Log</div>
+
+<div id="tblExceptionLogs" class="qrmgTable"></div>
+
+<script type="text/javascript">
+    var _tblExceptionLogs;
+    $(function () {
+        var tblExceptionLogs = {
+            name: 'tblExceptionLogs',
+            element: 'tblExceptionLogs',
+            prefix: 'exc',
+            uri: '/Support/Exceptions',
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb']
+            },
+            autoLoad: true,
+            callback: cbTblExceptionLogs,
+            columns: [
+                { name: 'Id', hidden: true, key: true },
+                { name: 'Message', label: 'Message' },
+                { name: 'Module', label: 'Module' },
+                { name: 'Method', label: 'Method' },
+                { name: 'Status', label: 'Status' },
+                { name: 'Data', label: 'Data' },
+                { name: 'UserSessionId', label: 'User Session' },
+                { name: 'Username', label: 'Username' },
+                { name: 'Created', label: 'Created' },
+            ],
+            paging: {
+                Top: true,
+                Bottom: true,
+                PageSize: 100,
+                PageSizeOptions: [100, 200, 500, 1000],
+            },
+            bNoDefaultOptions: true,
+            operations: [
+            ],
+            commands: [
+                { name: 'StackTrace', label: 'Stack Trace', single: true, callback: cbStackTrace },
+                { name: 'ExportToExcel', label: 'Export to Excel', method: 'GET', NoSelectionsAllowed: true, callback: cbExportToExcel },
+                { name: 'Clear', label: 'Clear Log', method: 'POST', NoSelectionsAllowed: true, callback: cbClear, confirm: '#mdlgClearLog' },
+                { name: 'Delete', label: 'Delete Items', method: 'POST', callback: cbDelete },
+            ],
+            events: [
+            ],
+            contextMenu: [
+            ]
+        }
+        _tblExceptionLogs = new qrmgTable(tblExceptionLogs);
+    });
+    function cbTblExceptionLogs(ud, d) {
+    }
+    function cbStackTrace(ud, d) {
+        if (d.questStatus) {
+            if (IsAppSuccess(d)) {
+                $('#pStackTrace').html(d.StackTrace);
+                $('#btnClose', '#mdlgStackTrace').unbind('click').on('click', function (e) {
+                    $('#mdlgStackTrace').modal('hide');
+                    return;
+                });
+                $('#mdlgStackTrace').modal('show');
+            }
+        }
+    }
+    function cbExportToExcel(ud, d) {
+
+        $('#frmExceptionLogsExportToExcel').remove();
+        var _frmExport = document.createElement("form");
+        _frmExport.setAttribute("id", "frmExceptionLogsExportToExcel");
+        _frmExport.setAttribute("method", "get");
+        _frmExport.setAttribute("action", "/Support/Exceptions/List");
+        _frmExport.setAttribute("target", "_blank");
+
+        var _ctx = _tblExceptionLogs._getctx();
+        for (var f in _ctx) {
+            var _in = document.createElement("input");
+            _in.setAttribute("type", "hidden");
+            _in.setAttribute("name", f);
+            if (f == 'QueryOptions') {
+                _in.setAttribute("value", JSON.stringify(_ctx[f]));
+            }
+            else {
+                _in.setAttribute("value", _ctx[f]);
+            }
+            _frmExport.appendChild(_in);
+        }
+
+        var _bExportToExcel = document.createElement("input");
+        _bExportToExcel.setAttribute("type", "hidden");
+        _bExportToExcel.setAttribute("name", "bExportToExcel");
+        _bExportToExcel.setAttribute("value", true);
+        _frmExport.appendChild(_bExportToExcel);
+
+        document.body.appendChild(_frmExport);
+        _frmExport.submit();
+
+        return (true);
+    }
+    function cbClear(ud, d) {
+        if (d.questStatus) {
+            if (IsAppSuccess(d)) {
+                _tblExceptionLogs.Load();
+            }
+        }
+        else {
+            $('#btnCancel', '#mdlgClearLog').unbind('click').on('click', function (e) {
+                _tblExceptionLogs.Unmask();
+                return;
+            });
+            $('#btnConfirm', '#mdlgClearLog').unbind('click').on('click', function (e) {
+                _tblExceptionLogs.Do('Clear', true);
+            });
+        }
+    }
+    function cbDelete(ud, d) {
+        if (d.questStatus) {
+            if (IsAppSuccess(d)) {
+                _tblExceptionLogs.Load();
+            }
+        }
+    }
+</script>
+
+<div class="modal modal fade" id="mdlgStackTrace" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-extra-wide">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalLabel">Exception Stack Trace</h4>
+            </div>
+            <div class="modal-body">
+                <p id="pStackTrace">(Stack trace in here)</p>
+            </div>
+
+            <div class="modal-footer">
+                <button id="btnClose" type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>

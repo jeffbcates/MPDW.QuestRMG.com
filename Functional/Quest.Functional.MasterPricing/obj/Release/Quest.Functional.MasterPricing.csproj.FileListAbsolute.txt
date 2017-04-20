@@ -1,0 +1,8 @@
+C:\Source\Repos\MPDW\Functional\Quest.Functional.MasterPricing\bin\Release\Quest.Functional.MasterPricing.dll
+C:\Source\Repos\MPDW\Functional\Quest.Functional.MasterPricing\bin\Release\Quest.Functional.MasterPricing.pdb
+C:\Source\Repos\MPDW\Functional\Quest.Functional.MasterPricing\bin\Release\Quest.Util.Data.dll
+C:\Source\Repos\MPDW\Functional\Quest.Functional.MasterPricing\bin\Release\Quest.Util.Status.dll
+C:\Source\Repos\MPDW\Functional\Quest.Functional.MasterPricing\bin\Release\Quest.Util.Data.pdb
+C:\Source\Repos\MPDW\Functional\Quest.Functional.MasterPricing\bin\Release\Quest.Util.Status.pdb
+C:\Source\Repos\MPDW\Functional\Quest.Functional.MasterPricing\obj\Release\Quest.Functional.MasterPricing.dll
+C:\Source\Repos\MPDW\Functional\Quest.Functional.MasterPricing\obj\Release\Quest.Functional.MasterPricing.pdb

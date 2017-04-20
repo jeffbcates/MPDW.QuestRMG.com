@@ -56,6 +56,7 @@
     <Property Name="Password" Type="nvarchar" MaxLength="1024" Nullable="false" />
     <Property Name="bEnabled" Type="bit" Nullable="false" />
     <Property Name="bActive" Type="bit" Nullable="false" />
+    <Property Name="bLogSession" Type="bit" Nullable="false" />
     <Property Name="Created" Type="datetime2" Precision="7" Nullable="false" />
   </EntityType>
   <EntityType Name="UserSessionPrivileges">

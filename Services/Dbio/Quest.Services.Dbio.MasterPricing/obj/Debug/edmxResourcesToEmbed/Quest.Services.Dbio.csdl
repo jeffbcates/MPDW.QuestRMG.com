@@ -1,0 +1,626 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="Quest.Services.Dbio.MasterPricing" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityContainer Name="MasterPricingEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="FilterColumns" EntityType="Quest.Services.Dbio.MasterPricing.FilterColumns" />
+    <EntitySet Name="FilterEntityTypes" EntityType="Quest.Services.Dbio.MasterPricing.FilterEntityTypes" />
+    <EntitySet Name="FilterFolders" EntityType="Quest.Services.Dbio.MasterPricing.FilterFolders" />
+    <EntitySet Name="FilterItemJoins" EntityType="Quest.Services.Dbio.MasterPricing.FilterItemJoins" />
+    <EntitySet Name="FilterItems" EntityType="Quest.Services.Dbio.MasterPricing.FilterItems" />
+    <EntitySet Name="FilterOperations" EntityType="Quest.Services.Dbio.MasterPricing.FilterOperations" />
+    <EntitySet Name="FilterOperators" EntityType="Quest.Services.Dbio.MasterPricing.FilterOperators" />
+    <EntitySet Name="FilterProcedureParameters" EntityType="Quest.Services.Dbio.MasterPricing.FilterProcedureParameters" />
+    <EntitySet Name="FilterProcedures" EntityType="Quest.Services.Dbio.MasterPricing.FilterProcedures" />
+    <EntitySet Name="Filters" EntityType="Quest.Services.Dbio.MasterPricing.Filters" />
+    <EntitySet Name="FilterTables" EntityType="Quest.Services.Dbio.MasterPricing.FilterTables" />
+    <EntitySet Name="FilterValues" EntityType="Quest.Services.Dbio.MasterPricing.FilterValues" />
+    <EntitySet Name="FilterViews" EntityType="Quest.Services.Dbio.MasterPricing.FilterViews" />
+    <EntitySet Name="BulkInsertLogs" EntityType="Quest.Services.Dbio.MasterPricing.BulkInsertLogs" />
+    <EntitySet Name="BulkUpdateLogs" EntityType="Quest.Services.Dbio.MasterPricing.BulkUpdateLogs" />
+    <EntitySet Name="DatabaseLogs" EntityType="Quest.Services.Dbio.MasterPricing.DatabaseLogs" />
+    <EntitySet Name="ExceptionLogs" EntityType="Quest.Services.Dbio.MasterPricing.ExceptionLogs" />
+    <EntitySet Name="FilterLogs" EntityType="Quest.Services.Dbio.MasterPricing.FilterLogs" />
+    <EntitySet Name="HTTPRequestLogs" EntityType="Quest.Services.Dbio.MasterPricing.HTTPRequestLogs" />
+    <EntitySet Name="LogSettings" EntityType="Quest.Services.Dbio.MasterPricing.LogSettings" />
+    <EntitySet Name="PortalRequestLogs" EntityType="Quest.Services.Dbio.MasterPricing.PortalRequestLogs" />
+    <EntitySet Name="StoredProcedureLogs" EntityType="Quest.Services.Dbio.MasterPricing.StoredProcedureLogs" />
+    <EntitySet Name="TablesetLogs" EntityType="Quest.Services.Dbio.MasterPricing.TablesetLogs" />
+    <EntitySet Name="Columns" EntityType="Quest.Services.Dbio.MasterPricing.Columns" />
+    <EntitySet Name="Databases" EntityType="Quest.Services.Dbio.MasterPricing.Databases" />
+    <EntitySet Name="EntityTypes" EntityType="Quest.Services.Dbio.MasterPricing.EntityTypes" />
+    <EntitySet Name="Lookups" EntityType="Quest.Services.Dbio.MasterPricing.Lookups" />
+    <EntitySet Name="StoredProcedureParameters" EntityType="Quest.Services.Dbio.MasterPricing.StoredProcedureParameters" />
+    <EntitySet Name="StoredProcedures" EntityType="Quest.Services.Dbio.MasterPricing.StoredProcedures" />
+    <EntitySet Name="Tables" EntityType="Quest.Services.Dbio.MasterPricing.Tables" />
+    <EntitySet Name="TypeLists" EntityType="Quest.Services.Dbio.MasterPricing.TypeLists" />
+    <EntitySet Name="Views" EntityType="Quest.Services.Dbio.MasterPricing.Views" />
+    <EntitySet Name="TablesetColumns" EntityType="Quest.Services.Dbio.MasterPricing.TablesetColumns" />
+    <EntitySet Name="Tablesets" EntityType="Quest.Services.Dbio.MasterPricing.Tablesets" />
+    <EntitySet Name="TablesetTables" EntityType="Quest.Services.Dbio.MasterPricing.TablesetTables" />
+    <EntitySet Name="TablesetViews" EntityType="Quest.Services.Dbio.MasterPricing.TablesetViews" />
+    <EntitySet Name="vwLookupsList4" EntityType="Quest.Services.Dbio.MasterPricing.vwLookupsList4" />
+    <EntitySet Name="vwTablesetsList4" EntityType="Quest.Services.Dbio.MasterPricing.vwTablesetsList4" />
+    <EntitySet Name="vwTablesetTablesList2" EntityType="Quest.Services.Dbio.MasterPricing.vwTablesetTablesList2" />
+    <EntitySet Name="vwTablesetViewsList2" EntityType="Quest.Services.Dbio.MasterPricing.vwTablesetViewsList2" />
+    <EntitySet Name="vwTypeListsList" EntityType="Quest.Services.Dbio.MasterPricing.vwTypeListsList" />
+    <FunctionImport Name="CleanDatabase" />
+    <FunctionImport Name="CleanFilters" />
+    <FunctionImport Name="CleanSetup" />
+    <FunctionImport Name="CleanTablesets" />
+    <FunctionImport Name="DeleteFilterById">
+      <Parameter Name="FilterId" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="MPDWMetaFields" ReturnType="Collection(Quest.Services.Dbio.MasterPricing.MPDWMetaFields_Result)">
+      <Parameter Name="p_Username" Mode="In" Type="String" />
+      <Parameter Name="p_UserSessionId" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="ShowFilter" ReturnType="Collection(Quest.Services.Dbio.MasterPricing.ShowFilter_Result)">
+      <Parameter Name="FilterName" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="ShowFilterById" ReturnType="Collection(Quest.Services.Dbio.MasterPricing.ShowFilterById_Result)">
+      <Parameter Name="FilterId" Mode="In" Type="Int32" />
+    </FunctionImport>
+    <FunctionImport Name="ShowTableset" ReturnType="Collection(Quest.Services.Dbio.MasterPricing.ShowTableset_Result)">
+      <Parameter Name="TablesetName" Mode="In" Type="String" />
+    </FunctionImport>
+    <FunctionImport Name="UnderBarTest" ReturnType="Collection(Quest.Services.Dbio.MasterPricing.UnderBarTest_Result)">
+      <Parameter Name="p_Username" Mode="In" Type="String" />
+      <Parameter Name="p_UserSessionId" Mode="In" Type="Int32" />
+    </FunctionImport>
+  </EntityContainer>
+  <EntityType Name="FilterColumns">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FilterId" Type="Int32" Nullable="false" />
+    <Property Name="FilterEntityTypeId" Type="Int32" Nullable="false" />
+    <Property Name="FilterEntityId" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="FilterEntityTypes">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="80" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="FilterFolders">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FolderId" Type="Int32" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="255" FixedLength="false" Unicode="true" />
+    <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Created" Type="DateTime" Nullable="false" Precision="7" />
+    <Property Name="Modified" Type="DateTime" Precision="7" />
+  </EntityType>
+  <EntityType Name="FilterItemJoins">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FilterItemId" Type="Int32" Nullable="false" />
+    <Property Name="JoinType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="SourceSchema" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="SourceEntityName" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="SourceColumnName" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="TargetEntityTypeId" Type="Int32" Nullable="false" />
+    <Property Name="TargetSchema" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="TargetEntityName" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="TargetColumnName" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="FilterItems">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FilterId" Type="Int32" Nullable="false" />
+    <Property Name="FilterEntityTypeId" Type="Int32" Nullable="false" />
+    <Property Name="FilterEntityId" Type="Int32" Nullable="false" />
+    <Property Name="LookupId" Type="Int32" />
+    <Property Name="TypeListId" Type="Int32" />
+    <Property Name="Label" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="ParameterName" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="bHidden" Type="Boolean" Nullable="false" />
+    <Property Name="bBulkUpdateValueRequired" Type="Boolean" Nullable="false" />
+  </EntityType>
+  <EntityType Name="FilterOperations">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FilterItemId" Type="Int32" Nullable="false" />
+    <Property Name="FilterOperatorId" Type="Int32" Nullable="false" />
+  </EntityType>
+  <EntityType Name="FilterOperators">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="FilterProcedureParameters">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FilterProcedureId" Type="Int32" Nullable="false" />
+    <Property Name="bRequired" Type="Boolean" Nullable="false" />
+    <Property Name="Offset" Type="Int32" Nullable="false" />
+    <Property Name="ParameterName" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="DbType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Direction" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="SqlDbType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Size" Type="Int32" Nullable="false" />
+    <Property Name="IsNullable" Type="Boolean" Nullable="false" />
+    <Property Name="ForceColumnEncryption" Type="Boolean" />
+    <Property Name="LocaleId" Type="Int32" />
+    <Property Name="Precision" Type="Binary" MaxLength="1" FixedLength="false" />
+    <Property Name="Scale" Type="Binary" MaxLength="1" FixedLength="false" />
+    <Property Name="SourceColumn" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="SourceColumnNullMapping" Type="Boolean" />
+    <Property Name="TypeName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="UdtTypeName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="FilterProcedures">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FilterId" Type="Int32" Nullable="false" />
+    <Property Name="Action" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="Filters">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FolderId" Type="Int32" />
+    <Property Name="TablesetId" Type="Int32" Nullable="false" />
+    <Property Name="bSaveBeforeImage" Type="Boolean" Nullable="false" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="Summary" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="SQL" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="FilterTables">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FilterId" Type="Int32" Nullable="false" />
+    <Property Name="Schema" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="FilterValues">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FilterOperationId" Type="Int32" Nullable="false" />
+    <Property Name="Value" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="FilterViews">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="FilterId" Type="Int32" Nullable="false" />
+    <Property Name="Schema" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="BulkInsertLogs">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserSessionId" Type="Int32" Nullable="false" />
+    <Property Name="Username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Database" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Tableset" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Filter" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Event" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="NumRows" Type="Int32" Nullable="false" />
+    <Property Name="Parameters" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="BulkInsertColumn" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Message" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Data" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Batch" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Created" Type="DateTime" Nullable="false" Precision="7" />
+  </EntityType>
+  <EntityType Name="BulkUpdateLogs">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserSessionId" Type="Int32" Nullable="false" />
+    <Property Name="Username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Database" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Tableset" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Filter" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Event" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="NumRows" Type="Int32" Nullable="false" />
+    <Property Name="Parameters" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="BulkUpdateColumn" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Message" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Data" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Batch" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Created" Type="DateTime" Nullable="false" Precision="7" />
+  </EntityType>
+  <EntityType Name="DatabaseLogs">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserSessionId" Type="Int32" Nullable="false" />
+    <Property Name="Username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="Event" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Data" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Created" Type="DateTime" Nullable="false" Precision="7" />
+  </EntityType>
+  <EntityType Name="ExceptionLogs">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserSessionId" Type="Int32" Nullable="false" />
+    <Property Name="Username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Message" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Module" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Method" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Status" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Data" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="StackTrace" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Created" Type="DateTime" Nullable="false" Precision="7" />
+  </EntityType>
+  <EntityType Name="FilterLogs">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserSessionId" Type="Int32" Nullable="false" />
+    <Property Name="Username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Database" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="Tableset" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="Event" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Data" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Created" Type="DateTime" Nullable="false" Precision="7" />
+  </EntityType>
+  <EntityType Name="HTTPRequestLogs">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserSessionId" Type="Int32" />
+    <Property Name="Username" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Method" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="IPAddress" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UserAgent" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="URL" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Created" Type="DateTime" Nullable="false" Precision="7" />
+  </EntityType>
+  <EntityType Name="LogSettings">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="bLogHTTPRequests" Type="Boolean" Nullable="false" />
+    <Property Name="bLogExceptions" Type="Boolean" Nullable="false" />
+    <Property Name="bLogStoredProcedures" Type="Boolean" Nullable="false" />
+    <Property Name="bLogDatabases" Type="Boolean" Nullable="false" />
+    <Property Name="bLogTablesets" Type="Boolean" Nullable="false" />
+    <Property Name="bLogFilters" Type="Boolean" Nullable="false" />
+    <Property Name="bLogBulkInserts" Type="Boolean" Nullable="false" />
+    <Property Name="bLogBulkInsertsPerRow" Type="Boolean" Nullable="false" />
+    <Property Name="bLogBulkUpdates" Type="Boolean" Nullable="false" />
+    <Property Name="bLogBulkUpdatesPerRow" Type="Boolean" Nullable="false" />
+    <Property Name="bLogPortal" Type="Boolean" Nullable="false" />
+    <Property Name="bAllowLogUsers" Type="Boolean" Nullable="false" />
+    <Property Name="LastModified" Type="DateTime" Nullable="false" Precision="7" />
+  </EntityType>
+  <EntityType Name="PortalRequestLogs">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserSessionId" Type="Int32" Nullable="false" />
+    <Property Name="Username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="Method" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="IPAddress" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="UserAgent" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="URL" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Created" Type="DateTime" Nullable="false" Precision="7" />
+  </EntityType>
+  <EntityType Name="StoredProcedureLogs">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserSessionId" Type="Int32" Nullable="false" />
+    <Property Name="Username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Arguments" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Response" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Created" Type="DateTime" Nullable="false" Precision="7" />
+  </EntityType>
+  <EntityType Name="TablesetLogs">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="UserSessionId" Type="Int32" Nullable="false" />
+    <Property Name="Username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Database" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="Event" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Data" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Created" Type="DateTime" Nullable="false" Precision="7" />
+  </EntityType>
+  <EntityType Name="Columns">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="EntityTypeId" Type="Int32" Nullable="false" />
+    <Property Name="EntityId" Type="Int32" Nullable="false" />
+    <Property Name="DisplayOrder" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="DataType" Type="String" Nullable="false" MaxLength="80" FixedLength="false" Unicode="true" />
+    <Property Name="DataTypeName" Type="String" Nullable="false" MaxLength="80" FixedLength="false" Unicode="true" />
+    <Property Name="ColumnSize" Type="Int32" Nullable="false" />
+    <Property Name="bIsIdentity" Type="Boolean" Nullable="false" />
+    <Property Name="bAllowDbNull" Type="Boolean" Nullable="false" />
+    <Property Name="bIsAutoIncrement" Type="Boolean" />
+    <Property Name="bIsKey" Type="Boolean" />
+    <Property Name="bIsReadOnly" Type="Boolean" />
+    <Property Name="bIsRowVersion" Type="Boolean" />
+    <Property Name="bIsUnique" Type="Boolean" />
+    <Property Name="bIsHidden" Type="Boolean" />
+    <Property Name="Summary" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="Databases">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Server" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="Summary" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="ConnectionString" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="LastRefresh" Type="DateTime" Precision="7" />
+  </EntityType>
+  <EntityType Name="EntityTypes">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="Lookups">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="DatabaseId" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="Label" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="Summary" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="SQL" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="KeyField" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="TextFields" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Arguments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="StoredProcedureParameters">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="StoredProcedureId" Type="Int32" Nullable="false" />
+    <Property Name="bRequired" Type="Boolean" Nullable="false" />
+    <Property Name="Offset" Type="Int32" Nullable="false" />
+    <Property Name="ParameterName" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="DbType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Direction" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="SqlDbType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="Size" Type="Int32" Nullable="false" />
+    <Property Name="IsNullable" Type="Boolean" Nullable="false" />
+    <Property Name="ForceColumnEncryption" Type="Boolean" />
+    <Property Name="LocaleId" Type="Int32" />
+    <Property Name="Precision" Type="Binary" MaxLength="1" FixedLength="false" />
+    <Property Name="Scale" Type="Binary" MaxLength="1" FixedLength="false" />
+    <Property Name="SourceColumn" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="SourceColumnNullMapping" Type="Boolean" />
+    <Property Name="TypeName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="UdtTypeName" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="StoredProcedures">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="DatabaseId" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="Tables">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="DatabaseId" Type="Int32" Nullable="false" />
+    <Property Name="Schema" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="Summary" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="TypeLists">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="DatabaseId" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="Summary" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="SQL" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="Views">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="DatabaseId" Type="Int32" Nullable="false" />
+    <Property Name="Schema" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="Summary" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="TablesetColumns">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="EntityTypeId" Type="Int32" Nullable="false" />
+    <Property Name="TableSetEntityId" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="Tablesets">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="DatabaseId" Type="Int32" Nullable="false" />
+    <Property Name="bEnabled" Type="Boolean" Nullable="false" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="Summary" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="LastRefresh" Type="DateTime" Precision="7" />
+  </EntityType>
+  <EntityType Name="TablesetTables">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TablesetId" Type="Int32" Nullable="false" />
+    <Property Name="Schema" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="TablesetViews">
+    <Key>
+      <PropertyRef Name="Id" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="TablesetId" Type="Int32" Nullable="false" />
+    <Property Name="Schema" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="vwLookupsList4">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="DatabaseId" />
+      <PropertyRef Name="Name" />
+      <PropertyRef Name="KeyField" />
+      <PropertyRef Name="TextFields" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="DatabaseId" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="Label" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="Summary" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="SQL" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="KeyField" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+    <Property Name="TextFields" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Arguments" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Database" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="vwTablesetsList4">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="DatabaseId" />
+      <PropertyRef Name="bEnabled" />
+      <PropertyRef Name="Name" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="DatabaseId" Type="Int32" Nullable="false" />
+    <Property Name="bEnabled" Type="Boolean" Nullable="false" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="Summary" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="LastRefresh" Type="DateTime" Precision="7" />
+    <Property Name="Database" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="vwTablesetTablesList2">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="TablesetId" />
+      <PropertyRef Name="TablesetName" />
+      <PropertyRef Name="Name" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="TablesetId" Type="Int32" Nullable="false" />
+    <Property Name="TablesetName" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="Summary" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="vwTablesetViewsList2">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="TablesetId" />
+      <PropertyRef Name="TablesetName" />
+      <PropertyRef Name="Name" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="TablesetId" Type="Int32" Nullable="false" />
+    <Property Name="TablesetName" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="Summary" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <EntityType Name="vwTypeListsList">
+    <Key>
+      <PropertyRef Name="Id" />
+      <PropertyRef Name="DatabaseId" />
+      <PropertyRef Name="Name" />
+    </Key>
+    <Property Name="Id" Type="Int32" Nullable="false" />
+    <Property Name="DatabaseId" Type="Int32" Nullable="false" />
+    <Property Name="Name" Type="String" Nullable="false" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="Summary" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+    <Property Name="SQL" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+    <Property Name="Database" Type="String" MaxLength="256" FixedLength="false" Unicode="true" />
+  </EntityType>
+  <ComplexType Name="MPDWMetaFields_Result">
+    <Property Type="String" Name="Username" Nullable="true" MaxLength="256" />
+    <Property Type="Int32" Name="UserSessionId" Nullable="true" />
+  </ComplexType>
+  <ComplexType Name="ShowFilter_Result">
+    <Property Type="String" Name="Column1" Nullable="false" MaxLength="8" />
+    <Property Type="Int32" Name="Id" Nullable="false" />
+    <Property Type="Int32" Name="FolderId" Nullable="true" />
+    <Property Type="Int32" Name="TablesetId" Nullable="false" />
+    <Property Type="Boolean" Name="bSaveBeforeImage" Nullable="false" />
+    <Property Type="String" Name="Name" Nullable="false" MaxLength="256" />
+    <Property Type="String" Name="Summary" Nullable="true" MaxLength="256" />
+    <Property Type="String" Name="SQL" Nullable="true" />
+  </ComplexType>
+  <ComplexType Name="ShowFilterById_Result">
+    <Property Type="String" Name="Column1" Nullable="false" MaxLength="8" />
+    <Property Type="Int32" Name="Id" Nullable="false" />
+    <Property Type="Int32" Name="FolderId" Nullable="true" />
+    <Property Type="Int32" Name="TablesetId" Nullable="false" />
+    <Property Type="Boolean" Name="bSaveBeforeImage" Nullable="false" />
+    <Property Type="String" Name="Name" Nullable="false" MaxLength="256" />
+    <Property Type="String" Name="Summary" Nullable="true" MaxLength="256" />
+    <Property Type="String" Name="SQL" Nullable="true" />
+  </ComplexType>
+  <ComplexType Name="ShowTableset_Result">
+    <Property Type="String" Name="Column1" Nullable="false" MaxLength="10" />
+    <Property Type="Int32" Name="Id" Nullable="false" />
+    <Property Type="Int32" Name="DatabaseId" Nullable="false" />
+    <Property Type="Boolean" Name="bEnabled" Nullable="false" />
+    <Property Type="String" Name="Name" Nullable="false" MaxLength="256" />
+    <Property Type="String" Name="Summary" Nullable="true" MaxLength="256" />
+    <Property Type="DateTime" Name="LastRefresh" Nullable="true" />
+  </ComplexType>
+  <ComplexType Name="UnderBarTest_Result">
+    <Property Type="String" Name="Username" Nullable="true" MaxLength="256" />
+    <Property Type="Int32" Name="UserSessionId" Nullable="true" />
+  </ComplexType>
+</Schema>

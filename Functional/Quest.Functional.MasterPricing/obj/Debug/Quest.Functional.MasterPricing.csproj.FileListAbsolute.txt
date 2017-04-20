@@ -14,3 +14,12 @@ C:\Quest\src\MPDW\Functional\Quest.Functional.MasterPricing\bin\Debug\Quest.Util
 C:\Quest\src\MPDW\Functional\Quest.Functional.MasterPricing\obj\Debug\Quest.Functional.MasterPricing.csprojResolveAssemblyReference.cache
 C:\Quest\src\MPDW\Functional\Quest.Functional.MasterPricing\obj\Debug\Quest.Functional.MasterPricing.dll
 C:\Quest\src\MPDW\Functional\Quest.Functional.MasterPricing\obj\Debug\Quest.Functional.MasterPricing.pdb
+C:\Source\Repos\MPDW\Functional\Quest.Functional.MasterPricing\bin\Debug\Quest.Functional.MasterPricing.dll
+C:\Source\Repos\MPDW\Functional\Quest.Functional.MasterPricing\bin\Debug\Quest.Functional.MasterPricing.pdb
+C:\Source\Repos\MPDW\Functional\Quest.Functional.MasterPricing\bin\Debug\Quest.Util.Data.dll
+C:\Source\Repos\MPDW\Functional\Quest.Functional.MasterPricing\bin\Debug\Quest.Util.Status.dll
+C:\Source\Repos\MPDW\Functional\Quest.Functional.MasterPricing\bin\Debug\Quest.Util.Data.pdb
+C:\Source\Repos\MPDW\Functional\Quest.Functional.MasterPricing\bin\Debug\Quest.Util.Status.pdb
+C:\Source\Repos\MPDW\Functional\Quest.Functional.MasterPricing\obj\Debug\Quest.Functional.MasterPricing.csprojResolveAssemblyReference.cache
+C:\Source\Repos\MPDW\Functional\Quest.Functional.MasterPricing\obj\Debug\Quest.Functional.MasterPricing.dll
+C:\Source\Repos\MPDW\Functional\Quest.Functional.MasterPricing\obj\Debug\Quest.Functional.MasterPricing.pdb

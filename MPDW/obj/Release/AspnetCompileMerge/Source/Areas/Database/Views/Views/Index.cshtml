@@ -1,0 +1,87 @@
+﻿@model Quest.MasterPricing.Database.Models.ViewsListViewModel
+@{
+    ViewBag.Title = "Database Views List";
+    Layout = "~/Views/Shared/_LayoutDatabase.cshtml";
+}
+
+<input type="hidden" id="__tblViewsVIEW_STATE" value="@Html.Raw(Json.Encode(Model))" />
+
+<div class="questTableTitle">Database Views List</div>
+<div class="page-subtitle-frame">
+    <div id="pDatabaseName" class="page-subtitle pull-left"><b>Name:</b></div>
+    <div id="pTablesetLastRefresh" class="page-subtitle pull-right"><b>Last Refresh:</b></div>
+</div>
+
+<div id="tblViews" class="qrmgTable"></div>
+
+<script type="text/javascript">
+    var _viewstate;
+    var _tblViews;
+    $(function () {
+        initViewstate();
+        var tblViews = {
+            name: 'tblViews',
+            element: 'tblViews',
+            prefix: 'vv',
+            uri: '/Database/Views',
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb'],
+                master: { viewstate: true, field: 'DatabaseId' },
+                ////master: { element: true, name: 'DatabaseId', value: '#DatabaseId' }
+            },
+            autoLoad: true,
+            ////editor: { uri: '/Database/View' },
+            callback: cbTblViews,
+            columns: [
+                { name: 'Id', hidden: true, key: true },
+                { name: 'Schema', label: 'Schema' },
+                { name: 'Name', label: 'View Name' },
+            ],
+            paging: {
+                Top: true,
+                Bottom: true,
+                PageSize: 100,
+                PageSizeOptions: [100, 200, 300, 1000],
+            },
+            bNoDefaultOptions: true,
+            operations: [
+                { name: 'Database', label: 'Database', uri: '/Setup/Database', args: [{ viewstate: true, field: 'DatabaseId', name: 'Id' }] },
+                { name: 'Tables', label: 'Tables', uri: '/Database/Tables', args: [{ viewstate: true, field: 'DatabaseId', name: 'Id' }] },
+                { name: 'StoredProcedures', label: 'Stored Procedures', uri: '/Database/StoredProcedures', args: [{ viewstate: true, field: 'DatabaseId', name: 'Id' }] },
+            ],
+            commands: [
+                { name: 'Columns', label: 'Columns', uri: '/Database/Columns', type: 'view', single: true, callback: cbShowColumns },
+            ],
+            events: [
+                { name: 'DoubleClick', callback: cbViewsDoubleClick },
+            ],
+            contextMenu: [
+            ]
+        }
+        _tblViews = new qrmgTable(tblViews);
+    });
+    function cbTblViews(ud, d) {
+
+    }
+    function cbViewsDoubleClick(ud, d) {
+        $.extend(d, _tblViews._getctx());
+        d.ParentEntityType = 'view';
+        d.DatabaseId = _viewstate.DatabaseId;
+        var _io = new qrmgio(cbShowColumnView);
+        _io.ShowView('/Database/Columns', d);
+
+    }
+    function cbShowColumnView(ud, d) {
+
+    }
+    function cbShowColumns(ud, d) {
+        $.extend(d, { ParentEntityType: 'view', DatabaseId: _viewstate.DatabaseId });
+    }
+    function initViewstate() {
+        _viewstate = JSON.parse($('#__tblViewsVIEW_STATE').val());
+        $('#pDatabaseName').html('<b>Name:</b>&nbsp;' + _viewstate.Database.Name);
+        $('#pTablesetLastRefresh').html('<b>Last Refresh:</b>&nbsp;' + _viewstate.Database.LastRefresh);
+    }
+</script>
+
+
