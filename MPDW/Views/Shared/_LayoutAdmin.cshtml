@@ -233,7 +233,6 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
                 <h4 class="modal-title" id="myModalLabel">Confirm Delete</h4>
             </div>
             <div class="modal-body">
@@ -306,3 +305,46 @@
         });
     });
 </script>
+
+<div class="modal fade" id="mdlgUserMarquis" tabindex="-1" role="dialog" aria-labelledby="myModalUserSessionDialog" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+                <h4 class="modal-title" id="myModalUserSessionDialog">User Session</h4>
+            </div>
+            <div class="modal-body">
+                <p><span class="bold">First Name:</span> @Model.UserSession.User.FirstName</p>
+                <p><span class="bold">Last Name:</span> @Model.UserSession.User.LastName</p>
+                <p><span class="bold">Username:</span> @Model.UserSession.User.Username</p>
+                <p><span class="bold">Logged In:</span> @Model.UserSession.Created</p>
+                <p><span class="bold">User Session:</span> @Model.UserSession.Id</p>
+                <p><span class="bold">User Agent:</span> @Model.UserSession.UserAgent</p>
+                <p><span class="bold">IP Address:</span> @Model.UserSession.IPAddress</p>
+            </div>
+            <div class="modal-footer">
+                <button id="btnCancel" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+                <button id="btnLogoff" type="button" class="btn btn-danger" data-dismiss="modal">Logoff</button>
+            </div>
+        </div>
+    </div>
+</div>
+<script type="text/javascript">
+    $(function () {
+        $('#mdlgUserMarquis button').on('click', function (e) {
+            var id = $(e.currentTarget).attr('id');
+            if (id == 'btnCancel') {
+                $('#mdlgUserMarquis').modal('hide');
+            }
+            else if (id == 'btnLogoff') {
+                logoff();
+            }
+        });
+    });
+    function logoff() {
+        $('#frmLogout').submit();
+    }
+</script>
+<form id="frmLogout" method="post" action="/Session/Logout">
+    <input type="hidden" id="ctx" name="ctx" value="@Model.UserSession.Id" />
+</form>

@@ -237,15 +237,14 @@
                 <h4 class="modal-title" id="myModalUserSessionDialog">User Session</h4>
             </div>
             <div class="modal-body">
-                <p>First Name: @Model.UserSession.User.FirstName</p>
-                <p>Last Name: @Model.UserSession.User.LastName</p>
-                <p>Username: @Model.UserSession.User.Username</p>
-                <p>Logged In: @Model.UserSession.Created</p>
-                <p>User Session: @Model.UserSession.Id</p>
-                <p>User Agent: @Model.UserSession.UserAgent</p>
-                <p>IP Address: @Model.UserSession.IPAddress</p>
+                <p><span class="bold">First Name:</span> @Model.UserSession.User.FirstName</p>
+                <p><span class="bold">Last Name:</span> @Model.UserSession.User.LastName</p>
+                <p><span class="bold">Username:</span> @Model.UserSession.User.Username</p>
+                <p><span class="bold">Logged In:</span> @Model.UserSession.Created</p>
+                <p><span class="bold">User Session:</span> @Model.UserSession.Id</p>
+                <p><span class="bold">User Agent:</span> @Model.UserSession.UserAgent</p>
+                <p><span class="bold">IP Address:</span> @Model.UserSession.IPAddress</p>
             </div>
-
             <div class="modal-footer">
                 <button id="btnCancel" type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                 <button id="btnLogoff" type="button" class="btn btn-danger" data-dismiss="modal">Logoff</button>

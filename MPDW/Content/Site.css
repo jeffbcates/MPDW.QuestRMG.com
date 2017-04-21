@@ -612,3 +612,18 @@ button.active {
 .quick-button {
     clear: both;
 }
+.modal .modal-dialog .modal-content .modal-header {
+    background-color: #f4f8fb;
+}
+.modal .modal-dialog .modal-content .modal-header button.close {
+    background-image: none !important;
+    color: #002f63 !important;
+    font-size: 2.2em !important;
+    height: auto !important;
+    opacity: 0.9;
+    text-indent: 0;
+    width: auto !important;
+}
+.modal .modal-dialog .modal-content .modal-header button.close:hover {
+    color: #f05f40 !important;
+}
