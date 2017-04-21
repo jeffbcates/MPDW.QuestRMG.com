@@ -59,6 +59,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quest.Services.Business", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quest.MasterPricing.Services.Business", "Services\Business\Quest.MasterPricing.Services.Business\Quest.MasterPricing.Services.Business.csproj", "{E91F43E8-159B-428C-8C60-36440DC6EA29}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Doc", "Doc", "{61373EE7-7D3E-4233-A9CC-7C100382D02D}"
+	ProjectSection(SolutionItems) = preProject
+		Doc\MPDW Architecture Overview.vsd = Doc\MPDW Architecture Overview.vsd
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
