@@ -986,6 +986,7 @@ function qrmgTable(model) {
             }
         }
         else if (_self._docallback(ud, d)) {
+            qrmgmvc.Global.Unmask(_self._mask);
             return;
         }
         qrmgmvc.Global.Unmask(_self._mask);

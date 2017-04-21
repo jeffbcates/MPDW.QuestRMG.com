@@ -20,6 +20,7 @@
                 elements: ['_questctx', '_questmm', '_questnb']
             },
             autoLoad: true,
+            mask: '#pageContent',
             callback: cbTblBulkInsertLogs,
             columns: [
                 { name: 'Id', hidden: true, key: true },
@@ -48,8 +49,8 @@
             ],
             commands: [
                 { name: 'ShowBatch', label: 'Show Batch', method: 'GET', single: true, callback: cbShowBatch },
-                { name: 'ExportToExcel', label: 'Export to Excel', method: 'GET', NoSelectionsAllowed: true, callback: cbExportToExcel },
                 { name: 'ClearBatch', label: 'Clear Batch', method: 'GET', NoSelectionsAllowed: true, callback: cbClearBatch },
+                { name: 'ExportToExcel', label: 'Export to Excel', method: 'GET', NoSelectionsAllowed: true, callback: cbExportToExcel },
                 { name: 'Clear', label: 'Clear Log', method: 'POST', NoSelectionsAllowed: true, callback: cbClear },
                 { name: 'Delete', label: 'Delete Items', method: 'POST', callback: cbDelete },
             ],

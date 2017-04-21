@@ -20,6 +20,7 @@
                 elements: ['_questctx', '_questmm', '_questnb']
             },
             autoLoad: true,
+            mask: '#pageContent',
             callback: cbTblPortalRequestLogs,
             columns: [
                 { name: 'Id', hidden: true, key: true },
@@ -43,8 +44,8 @@
             ],
             commands: [
                 { name: 'ShowSession', label: 'Show Session', method: 'GET', single: true, callback: cbShowSession },
-                { name: 'ExportToExcel', label: 'Export to Excel', method: 'GET', NoSelectionsAllowed: true, callback: cbExportToExcel },
                 { name: 'ClearSession', label: 'Clear Session', method: 'GET', NoSelectionsAllowed: true, callback: cbClearSession },
+                { name: 'ExportToExcel', label: 'Export to Excel', method: 'GET', NoSelectionsAllowed: true, callback: cbExportToExcel },
                 { name: 'Clear', label: 'Clear Log', method: 'POST', NoSelectionsAllowed: true, callback: cbClear },
                 { name: 'Delete', label: 'Delete Items', method: 'POST', callback: cbDelete },
             ],
