@@ -83,6 +83,5 @@ C:\Source\Repos\MPDW\Services\Data\Quest.MasterPricing.Services.Data\bin\Debug\Q
 C:\Source\Repos\MPDW\Services\Data\Quest.MasterPricing.Services.Data\bin\Debug\EntityFramework.xml
 C:\Source\Repos\MPDW\Services\Data\Quest.MasterPricing.Services.Data\bin\Debug\Quest.Services.Dbio.PWTrackerLogging.pdb
 C:\Source\Repos\MPDW\Services\Data\Quest.MasterPricing.Services.Data\bin\Debug\Quest.Services.Dbio.FMS.pdb
-C:\Source\Repos\MPDW\Services\Data\Quest.MasterPricing.Services.Data\obj\Debug\Quest.MasterPricing.Services.Data.csprojResolveAssemblyReference.cache
 C:\Source\Repos\MPDW\Services\Data\Quest.MasterPricing.Services.Data\obj\Debug\Quest.MasterPricing.Services.Data.dll
 C:\Source\Repos\MPDW\Services\Data\Quest.MasterPricing.Services.Data\obj\Debug\Quest.MasterPricing.Services.Data.pdb

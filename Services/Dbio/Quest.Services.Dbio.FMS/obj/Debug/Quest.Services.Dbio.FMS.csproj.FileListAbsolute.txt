@@ -5,5 +5,6 @@ C:\Source\Repos\MPDW\Services\Dbio\Quest.Services.Dbio.FMS\bin\Debug\EntityFrame
 C:\Source\Repos\MPDW\Services\Dbio\Quest.Services.Dbio.FMS\bin\Debug\EntityFramework.SqlServer.dll
 C:\Source\Repos\MPDW\Services\Dbio\Quest.Services.Dbio.FMS\bin\Debug\EntityFramework.xml
 C:\Source\Repos\MPDW\Services\Dbio\Quest.Services.Dbio.FMS\bin\Debug\EntityFramework.SqlServer.xml
+C:\Source\Repos\MPDW\Services\Dbio\Quest.Services.Dbio.FMS\obj\Debug\Quest.Services.Dbio.FMS.csprojResolveAssemblyReference.cache
 C:\Source\Repos\MPDW\Services\Dbio\Quest.Services.Dbio.FMS\obj\Debug\Quest.Services.Dbio.FMS.dll
 C:\Source\Repos\MPDW\Services\Dbio\Quest.Services.Dbio.FMS\obj\Debug\Quest.Services.Dbio.FMS.pdb
