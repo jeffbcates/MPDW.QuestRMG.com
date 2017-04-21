@@ -1,0 +1,132 @@
+﻿@model Quest.MasterPricing.Database.Models.ParameterListViewModel
+@{
+    ViewBag.Title = "Parameter List";
+    Layout = "~/Views/Shared/_LayoutDatabase.cshtml";
+}
+
+<input type="hidden" id="__tblParametersVIEW_STATE" value="@Html.Raw(Json.Encode(Model))" />
+
+<div class="questTableTitle">Parameter List</div>
+<div class="page-subtitle-frame">
+    <div id="pDatabaseName" class="page-subtitle pull-left"><b>Database:</b></div>
+    <div id="pTablesetLastRefresh" class="page-subtitle pull-right"><b>Last Refresh:</b></div>
+    <br/>
+    <div id="pEntityName" class="page-subtitle pull-left"></div>
+</div>
+
+<div id="tblParameters" class="qrmgTable"></div>
+
+<script type="text/javascript">
+    var _viewstate;
+    var _tblParameters;
+    function initParameterList() {
+        initViewstate();
+        var tblParameters = {
+            name: 'tblParameters',
+            element: 'tblParameters',
+            prefix: 'tt',
+            uri: '/Database/Parameters',
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb'],
+                master: { viewstate: true, field: 'StoredProcedureId' },
+            },
+            autoLoad: false,
+            callback: cbTblTables,
+            columns: [
+                { name: 'Id', hidden: true, key: true },
+                { name: 'ParameterName', label: 'Parameter Name' },
+                { name: 'Direction', label: 'Direction' },
+                { name: 'SqlDbType', label: 'SQL Type' },
+                { name: 'bRequired', label: 'Required' },
+            ],
+            paging: {
+                Top: true,
+                Bottom: true,
+                PageSize: 100,
+                PageSizeOptions: [10, 20, 30, 100],
+            },
+            bNoDefaultOptions: true,
+            operations: [
+                { name: 'Database', label: 'Database', uri: '/Setup/Database', args: [{ viewstate: true, field: 'DatabaseId', name: 'Id' }] },
+                { name: 'Tables', label: 'Tables', uri: '/Database/Tables', args: [{ viewstate: true, field: 'DatabaseId', name: 'Id' }] },
+                { name: 'Views', label: 'Views', uri: '/Database/Views', args: [{ viewstate: true, field: 'DatabaseId', name: 'Id' }] },
+                { name: 'StoredProcedures', label: 'Stored Procedures', uri: '/Database/StoredProcedures', args: [{ viewstate: true, field: 'DatabaseId', name: 'Id' }] },
+            ],
+            commands: [
+                { name: 'MakeRequired', label: 'Make Required', NoSelectionsAllowed: true, method: 'POST', callback: cbMakeRequired },
+            ],
+            events: [
+            ],
+            contextMenu: [
+            ]
+        }
+        _tblParameters = new qrmgTable(tblParameters);
+        _tblParameters.Load(_viewstate);
+    }
+    function cbTblTables(ud, d) {
+        if (d.questStatus) {
+            if (IsAppSuccess(d)) {
+                _tblParameters.Refresh();
+            }
+        }
+    }
+    function cbTablesDoubleClick(ud, d) {
+        $.extend(d, _tblParameters._getctx());
+        d.ParentEntityType = 'sproc';
+        d.DatabaseId = _viewstate.DatabaseId;
+        var _io = new qrmgio(cbShowParameterView);
+        _io.ShowView('/Database/Parameters', d);
+
+    }
+    function cbShowParameterView(ud, d) {
+
+    }
+    function cbMakeRequired(ud, d) {
+        if (d.questStatus) {
+            if (IsAppSuccess(d)) {
+                _tblParameters.Refresh();
+            }
+        }
+        else {
+            $.extend(d, { StoredProcedureId: _viewstate.StoredProcedure.Id });
+        }
+    }
+    function initViewstate() {
+        _viewstate = JSON.parse($('#__tblParametersVIEW_STATE').val());
+        $('#pDatabaseName').html('<b>Name:</b>&nbsp;' + _viewstate.Database.Name);
+        $('#pTablesetLastRefresh').html('<b>Last Refresh:</b>&nbsp;' + _viewstate.Database.LastRefresh);
+        $('#pEntityName').html('<b>StoredProcedure:</b>&nbsp;' + klugieRenderOptions('StoredProcedureOptions'));
+        $('select[id="StoredProcedureOptions"]').val(_viewstate.StoredProcedureId);
+        $('select[id="StoredProcedureOptions"]').on('change', function (e) {
+            changeStoredProcedure();
+        });
+    }
+    function klugieRenderOptions(n) {
+        if (!_viewstate[n] || !$.isArray(_viewstate[n])) { return (''); }
+        var _h = [], _i = 0;
+        _h[_i++] = '<select id="' + n + '" class="table-header-control">';
+        $.each(_viewstate[n], function (i, o) {
+            _h[_i++] = '<option value="' + o.Id + '">' + o.Label + '</option>';
+        });
+        _h[_i++] = '</select>';
+        return (_h.join(''));
+    }
+    function changeStoredProcedure() {
+        qrmgmvc.Global.Mask($('#content'));
+        var d = _tblParameters._getctx();
+        d.DatabaseId = _viewstate.DatabaseId;
+        d.Id = $('select[id="StoredProcedureOptions"]').val();
+        d.ParentEntityType = 'sproc';
+        var _io = new qrmgio(cbChangeStoredProcedure);
+        _io.ShowView('/Database/Parameters', d);
+    }
+    function cbChangeStoredProcedure() {
+        DisplayUserMessage('E|Error changing stored procedure.');
+        qrmgmvc.Global.Unmask($('#content'));
+    }
+    $(function () {
+        initParameterList();
+    });
+</script>
+
+

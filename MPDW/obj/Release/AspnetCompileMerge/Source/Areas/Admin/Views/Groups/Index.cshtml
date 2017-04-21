@@ -1,0 +1,53 @@
+﻿@model Quest.MPDW.Admin.Models.GroupsListViewModel
+@{
+    ViewBag.Title = "Groups";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<div class="questTableTitle">Group List</div>
+
+<div id="tblGroups" class="qrmgTable"></div>
+
+<script type="text/javascript">
+    var _tblGroups;
+    $(function () {
+        var tblGroups = {
+            name: 'tblGroups',
+            element: 'tblGroups',
+            prefix: 'db',
+            uri: '/Admin/Groups',
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb']
+            },
+            autoLoad: true,
+            editor: { uri: '/Admin/Group' },
+            callback: cbTblGroups,
+            columns: [
+                { name: 'Id', hidden: true, key: true },
+                { name: 'Name', label: 'Name' },
+                { name: 'Description', label: 'Description' },
+            ],
+            paging: {
+                Top: true,
+                Bottom: true,
+                PageSize: 10,
+                PageSizeOptions: [10, 20, 30, 50, 100],
+            },
+            operations: [
+            ],
+            commands: [
+                { name: 'Read', label: 'Edit', edit: true },
+                { name: 'Users', label: 'Users', uri: '/Admin/Group/Users', type: 'view', single: true },
+                { name: 'Privileges', label: 'Privileges', uri: '/Admin/Group/Privileges', type: 'view', single: true },
+            ],
+            events: [
+            ],
+            contextMenu: [
+            ]
+        }
+        _tblGroups = new qrmgTable(tblGroups);
+    });
+    function cbTblGroups(ud, d) {
+
+    }
+</script>

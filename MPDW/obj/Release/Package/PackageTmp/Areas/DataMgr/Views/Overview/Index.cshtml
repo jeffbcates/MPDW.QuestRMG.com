@@ -1,0 +1,21 @@
+﻿@model Quest.MasterPricing.DataMgr.Models.DataMgrOverviewViewModel
+@{
+    ViewBag.Title = "Data Management Overview";
+    Layout = "~/Views/Shared/_LayoutDataMgr.cshtml";
+}
+
+
+<div class="questHelpTitle">Manage Data</div>
+
+<div class="mpdw-help">
+    <p>You have to setup MPDW before you can run filters:</p>
+    <ol>
+        <li><b>Database</b> - You must create a new database with a connection string that will open the database.  MPDW will load metadata on the database, which tables, views, stored procedures, etc. it has.  You can view that information from the Databases section of Setup.  IF a database design changes, you can refresh MPDW's metadata by clicking 'Refresh Schema Info' for the database.</li>
+        <li><b>Tableset</b> - Some databases are very large, but you only want to work with some tables, views, etc.  Therefore, you create a tableset with those tables, views, etc.  NOTE: Only enabled Tablesets show up in the navbar to the left.  You will see all enabled Tablesets listed in the Navbar to the left when you are in the Manage Data section of MPDW.</li>
+        <li><b>Lookups</b> - Optional.  A lookup is the data that ends up in a select box.  For example, a list of all customer names or customer locations.  These select boxes end up in filter result grids when that filter column is configured to point to a lookup.  Click 'Manage Data' in the upper right-hand corner for more details.</li>
+        <li><b>Typelists</b> - Optional.  Typelists are like lookups other than you can enter a new value if you don't want to select any of the values in the lookup.</li>
+    </ol>
+
+
+    <p>Once you have the above setup, you can manage data.  Click on 'Manage Data' in the upper right-hand menu to learn more.</p>
+</div>

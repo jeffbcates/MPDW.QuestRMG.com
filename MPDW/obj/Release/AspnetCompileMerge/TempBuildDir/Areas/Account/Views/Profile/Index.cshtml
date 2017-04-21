@@ -1,0 +1,29 @@
+﻿@model Quest.MPDW.Account.Models.AccountHomeViewModel
+@{
+    ViewBag.Title = "My Profile";
+    Layout = "~/Views/Shared/_LayoutAccount.cshtml";
+}
+
+<h1>My Profile</h1>
+
+
+<ul class="nav nav-tabs">
+    <li class="active"><a data-toggle="tab" href="#Framework">Framework</a></li>
+    <li><a data-toggle="tab" href="#Employer">Employer</a></li>
+    <li><a data-toggle="tab" href="#SolutionShop">Solution Shop</a></li>
+</ul>
+
+<div class="tab-content">
+    <div id="Framework" class="tab-pane fade in active">
+        <h3>Framework Profile Settings</h3>
+        <p>Load Framework profile in here.</p>
+    </div>
+    <div id="Employer" class="tab-pane fade">
+        <h3>Employer Profile Settings</h3>
+        <p>Load Employer profile in here.</p>
+    </div>
+    <div id="SolutionShop" class="tab-pane fade">
+        <h3>Solution Shop Profile Settings</h3>
+        <p>Load Solution Shop profile in here.</p>
+    </div>
+</div>

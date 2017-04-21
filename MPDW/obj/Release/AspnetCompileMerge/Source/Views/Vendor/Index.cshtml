@@ -1,0 +1,42 @@
+﻿@model Quest.MPDW.Vendor.Models.VendorsListViewModel
+@{
+    ViewBag.Title = "Vendors";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="questTableTitle">Vendors</div>
+
+<div id="tblVendors" class="qrmgTable"></div>
+
+<script type="text/javascript">
+    $(function () {
+        var _tblVendors;
+        var tblVendors = {
+            name: 'tblVendors',
+            element: 'tblVendors',
+            prefix: 'vndr',
+            uri: '/Vendor',
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb']
+            },
+            autoLoad: true,
+            editor: false,
+            columns: [
+                { name: 'Id', hidden: true, key: true },
+                { name: 'Name', label: 'Name', width: '400px' },
+                { name: 'Personal', label: 'Personal' },
+                { name: 'CreateDate', label: 'Create Date' },
+            ],
+            operations: [
+                { name: 'New', label: '&nbsp;&nbsp;New&nbsp;&nbsp;', tooltip: 'Create a new vendor', uri: '/Vendor/Editor', classes: 'btn-new' },
+            ],
+            commands: [
+            ],
+            events: [
+            ],
+            contextMenu: [
+            ]
+        }
+        _tblVendors = new qrmgTable(tblVendors);
+    });
+</script>

@@ -1,0 +1,279 @@
+﻿@model Quest.MPDW.Admin.Models.UserPrivilegesViewModel
+@{
+    ViewBag.Title = "User Privileges";
+    Layout = "~/Views/Shared/_LayoutAdmin.cshtml";
+}
+
+<h1>User Privileges</h1>
+
+<input type="hidden" id="__frmUserPrivilegesVIEW_STATE" value="@Html.Raw(Json.Encode(Model))" />
+
+<div id="frmUser" class="form-frame"></div>
+
+
+<div class="page-frame">
+    <div id="tvwUserPrivilegesFrame" class="admin-treeview-frame">
+        <div id="tvwUserPrivileges" class="admin-treeview"></div>
+    </div>
+    <div id="tvwPrivilegesFrame" class="admin-treeview-frame">
+        <div id="tvwPrivileges" class="admin-treeview"></div>
+    </div>
+</div>
+
+
+
+
+<script type="text/javascript">
+    var _frmUser = null;
+    function initUserForm() {
+        var frmUser = {
+            element: 'frmUser',
+            prefix: 'usr',
+            uri: '/Admin/User',
+            callback: cbUserEditor,
+            mask: 'body',
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb']
+            },
+            ShortFields: true,
+            fields: [
+                { name: 'Id', type: 'hidden', key: true },
+                { name: 'User', label: 'User', type: 'select', callback: cbUserOptions },
+                { name: 'LastName', label: 'Last Name', readonly: true },
+                { name: 'FirstName', label: 'First Name', readonly: true },
+                { name: 'Username', label: 'Username', readonly: true },
+            ],
+            bNoDefaultOptions: true,
+            operations: [
+                { name: 'Save', label: 'Save', classes: "btn btn-success", uri: '/Admin/UserPrivileges', view: true, callback: cbSaveUserPrivileges },
+                { name: 'Back', label: 'Back', classes: "btn btn-warning", uri: '/Admin/User/Cancel', view: true },
+                { name: 'Groups', label: 'Groups', classes: "btn btn-primary", uri: '/Admin/User', view: true },
+                { name: 'Sessions', label: 'Sessions', classes: "btn btn-primary", uri: '/Admin/Sessions/Index', view: true },
+            ],
+            actions: [
+            ]
+        }
+        _frmUser = new qrmgEditor(frmUser);
+        _frmUser.SetField("LastName", _viewstate.User.LastName);
+        _frmUser.SetField("FirstName", _viewstate.User.FirstName);
+        _frmUser.SetField("Username", _viewstate.User.Username);
+    }
+    function cbUserEditor(ud, d) {
+    }
+    function cbUserOptions(ud, d) {
+        if (ud.PostLoad) {
+            qrmgmvc.Global.Mask($('#pageContentFrame'));
+            read(_viewstate.Id);
+        }
+        else if (ud.Change) {
+            qrmgmvc.Global.Mask($('#pageContentFrame'));
+            if (d == -1) {
+                clearScreen();
+                qrmgmvc.Global.Unmask($('#pageContentFrame'));
+                return (true);
+            }
+            read(d);
+            return (true);
+        }
+    }
+    function clearScreen() {
+        _frmUser.Clear();
+        _tvwUserPrivileges.Clear();
+        _tvwPrivileges.Clear();
+    }
+    function read(id) {
+        var _d = _frmUser._getctx();
+        _d.Id = id;
+        var ioRead = new qrmgio(cbPostRead);
+        ioRead.GetJSON('/Admin/UserPrivileges/Read', _d);
+    }
+    function cbPostRead(ud, d) {
+        if (!IsAppSuccess(d)) {
+            return;
+        }
+        _frmUser.Load(d.User);
+        $('#usrUser').val(d.User.Id);
+        loadPrivileges(d.Privileges);
+        loadUserPrivileges(d.UserPrivileges);
+        qrmgmvc.Global.Unmask($('#pageContentFrame'));
+    }
+    function cbSaveUserPrivileges(ud, d) {
+        if (d.questStatus) {
+            DisplayUserMessage(d);
+            if (IsAppSuccess(d)) {
+                _tvwUserPrivileges.ClearSelected();
+                _tvwPrivileges.ClearSelected();
+            }
+            qrmgmvc.Global.Unmask($('#pageContentFrame'));
+            return;
+        }
+        else {
+            qrmgmvc.Global.Mask($('#pageContentFrame'));
+            ClearUserMessage();
+            var _d = _frmUser._getctx();
+            _d.User = _frmUser.GetData();
+            _d.Id = _d.User.Id;
+            _d.UserPrivileges = _tvwUserPrivileges.GetData();
+            var ioRead = new qrmgio(cbSaveUserPrivileges);
+            ioRead._postJSON('/Admin/UserPrivileges/Save', _d);
+            return (true);
+        }
+    }
+</script>
+
+
+
+
+<script type="text/javascript">
+    var _tvwUserPrivileges = null;
+    function initTreeviewUserPrivileges() {
+        var tvwUserPrivileges = {
+            element: 'tvwUserPrivileges',
+            pfx: 'tvwusrgrp',
+            uri: '/Admin/UserPrivileges',
+            keyname: 'Id',
+            header: {
+                bInlineHeader: true,
+                count: true,
+                label: 'User Privileges: ',
+                filter: true
+            },
+            draggable: true,
+            ASMDragging: true,
+            droppable: true,
+            dropsource: _tvwPrivileges,
+            sorted: false,
+            multiSelect: true,
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb'],
+            },
+            viewstate: { element: '__frmUserPrivilegesVIEW_STATE' },
+            callback: cbTvwUserPrivileges,
+            bNoUserMessages: true,
+            events: [
+                { name: 'AfterLoaded', callback: cbTvwUserPrivilegesAfterLoaded },
+                { name: 'OnTreeRender', callback: cbOnTvwUserPrivilegesRender },
+                { name: 'Refresh', callback: cbTvwUserPrivilegesRefresh },
+                { name: 'OnChange', callback: cbTvwUserPrivilegesOnChange },
+                { name: 'OnDrop', callback: cbTvwUserPrivilegesOnDrop },
+            ],
+            operations: [
+                { name: 'Remove', label: 'Remove', classes: "btn btn-primary" },
+            ],
+        }
+        _tvwUserPrivileges = new qrmgTreeview(tvwUserPrivileges);
+        loadUserPrivileges();
+    }
+    function loadUserPrivileges(gg) {
+        var _d = { questStatus: _viewstate.questStatus, Items: gg ? gg : _viewstate.UserPrivileges };
+        _tvwUserPrivileges.Fill(_d);
+        _tvwUserPrivileges.Change(false);
+    }
+    function cbTvwUserPrivileges(op, msg, n, d) {
+    }
+    function cbTvwUserPrivilegesAfterLoaded() {
+    }
+    function cbOnTvwUserPrivilegesRender(e) {
+        if (!_tvwUserPrivileges) { return; }
+        _tvwUserPrivileges.Draggable();
+        _tvwUserPrivileges.Droppable();
+    }
+    function cbTvwUserPrivilegesRefresh(ui) {
+        $('#draggingContainer').remove();
+    }
+    function cbTvwUserPrivilegesOnChange(ud, bChanges) {
+    }
+    function cbTvwUserPrivilegesOnDrop(ud, d) {
+    }
+</script>
+<script type="text/javascript">
+    var _tvwPrivileges = null;
+    function initTreeviewPrivileges() {
+        var tvwPrivileges = {
+            element: 'tvwPrivileges',
+            pfx: 'tvwgrp',
+            uri: '/Admin/Privileges',
+            keyname: 'Id',
+            header: {
+                bInlineHeader: true,
+                count: true,
+                label: 'Privileges: ',
+                filter: true
+            },
+            draggable: true,
+            droppable: true,
+            dropsource: _tvwUserPrivileges,
+            sorted: false,
+            multiSelect: true,
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb'],
+            },
+            viewstate: { element: '__frmUserPrivilegesVIEW_STATE' },
+            callback: cbTvwPrivileges,
+            bNoUserMessages: true,
+            events: [
+                { name: 'AfterLoaded', callback: cbTvwPrivilegesAfterLoaded },
+                { name: 'OnTreeRender', callback: cbOnTvwPrivilegesRender },
+                { name: 'Refresh', callback: cbTvwPrivilegesRefresh },
+                { name: 'OnChange', callback: cbTvwPrivilegesOnChange },
+                { name: 'OnDrop', callback: cbTvwPrivilegesOnDrop },
+            ],
+            operations: [
+                { name: 'Remove', label: 'Remove', classes: "btn btn-primary" },
+            ],
+        }
+        _tvwPrivileges = new qrmgTreeview(tvwPrivileges);
+        loadPrivileges();
+    }
+    function loadPrivileges(gg) {
+        var _d = { questStatus: _viewstate.questStatus, Items: gg ? gg : _viewstate.Privileges };
+        _tvwPrivileges.Fill(_d);
+        _tvwPrivileges.Change(false);
+    }
+    function cbTvwPrivileges(op, msg, n, d) {
+    }
+    function cbTvwPrivilegesAfterLoaded() {
+    }
+    function cbOnTvwPrivilegesRender(e) {
+        if (!_tvwPrivileges) { return; }
+        _tvwPrivileges.Draggable();
+        _tvwPrivileges.Droppable();
+    }
+    function cbTvwPrivilegesRefresh(e) {
+        $('#draggingContainer').remove();
+    }
+    function cbTvwPrivilegesOnChange(ud, bChanges) {
+    }
+    function cbTvwPrivilegesOnDrop(ud, d) {
+    }
+</script>
+
+<script type="text/javascript">
+    var _viewstate;
+    $(function () {
+        initView();
+    });
+    function initView() {
+        initViewstate();
+
+        initUserForm()
+        initTreeviewUserPrivileges();
+        initTreeviewPrivileges();
+
+        _tvwPrivileges.DropSource(_tvwUserPrivileges);
+        _tvwUserPrivileges.DropSource(_tvwPrivileges);
+
+        displayViewMessage();
+    }
+    function initViewstate() {
+        _viewstate = JSON.parse($('#__frmUserPrivilegesVIEW_STATE').val());
+    }
+    function displayViewMessage() {
+        if (_viewstate.questStatus.Severity == 3) {
+            DisplayUserMessage('E|' + _viewstate.questStatus.Message);
+        }
+        else if (_viewstate.questStatus.Severity == 4) {
+            DisplayUserMessage('F|' + _viewstate.questStatus.Message);
+        }
+    }
+</script>

@@ -4,7 +4,7 @@
     <EntitySetMapping Name="FilterColumns">
       <EntityTypeMapping TypeName="Quest.Services.Dbio.MasterPricing.FilterColumns">
         <MappingFragment StoreEntitySet="FilterColumns">
-          <ScalarProperty Name="TablesetColumnId" ColumnName="TablesetColumnId" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="FilterEntityId" ColumnName="FilterEntityId" />
           <ScalarProperty Name="FilterEntityTypeId" ColumnName="FilterEntityTypeId" />
           <ScalarProperty Name="FilterId" ColumnName="FilterId" />
@@ -20,11 +20,29 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <EntitySetMapping Name="FilterFolders">
+      <EntityTypeMapping TypeName="Quest.Services.Dbio.MasterPricing.FilterFolders">
+        <MappingFragment StoreEntitySet="FilterFolders">
+          <ScalarProperty Name="Modified" ColumnName="Modified" />
+          <ScalarProperty Name="Created" ColumnName="Created" />
+          <ScalarProperty Name="Description" ColumnName="Description" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="FolderId" ColumnName="FolderId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
     <EntitySetMapping Name="FilterItemJoins">
       <EntityTypeMapping TypeName="Quest.Services.Dbio.MasterPricing.FilterItemJoins">
         <MappingFragment StoreEntitySet="FilterItemJoins">
+          <ScalarProperty Name="TargetColumnName" ColumnName="TargetColumnName" />
+          <ScalarProperty Name="TargetEntityName" ColumnName="TargetEntityName" />
+          <ScalarProperty Name="TargetSchema" ColumnName="TargetSchema" />
+          <ScalarProperty Name="TargetEntityTypeId" ColumnName="TargetEntityTypeId" />
+          <ScalarProperty Name="SourceColumnName" ColumnName="SourceColumnName" />
+          <ScalarProperty Name="SourceEntityName" ColumnName="SourceEntityName" />
+          <ScalarProperty Name="SourceSchema" ColumnName="SourceSchema" />
           <ScalarProperty Name="JoinType" ColumnName="JoinType" />
-          <ScalarProperty Name="ColumnId" ColumnName="ColumnId" />
           <ScalarProperty Name="FilterItemId" ColumnName="FilterItemId" />
           <ScalarProperty Name="Id" ColumnName="Id" />
         </MappingFragment>
@@ -33,6 +51,8 @@
     <EntitySetMapping Name="FilterItems">
       <EntityTypeMapping TypeName="Quest.Services.Dbio.MasterPricing.FilterItems">
         <MappingFragment StoreEntitySet="FilterItems">
+          <ScalarProperty Name="bBulkUpdateValueRequired" ColumnName="bBulkUpdateValueRequired" />
+          <ScalarProperty Name="bHidden" ColumnName="bHidden" />
           <ScalarProperty Name="ParameterName" ColumnName="ParameterName" />
           <ScalarProperty Name="Label" ColumnName="Label" />
           <ScalarProperty Name="TypeListId" ColumnName="TypeListId" />
@@ -79,6 +99,7 @@
           <ScalarProperty Name="DbType" ColumnName="DbType" />
           <ScalarProperty Name="ParameterName" ColumnName="ParameterName" />
           <ScalarProperty Name="Offset" ColumnName="Offset" />
+          <ScalarProperty Name="bRequired" ColumnName="bRequired" />
           <ScalarProperty Name="FilterProcedureId" ColumnName="FilterProcedureId" />
           <ScalarProperty Name="Id" ColumnName="Id" />
         </MappingFragment>
@@ -100,7 +121,9 @@
           <ScalarProperty Name="SQL" ColumnName="SQL" />
           <ScalarProperty Name="Summary" ColumnName="Summary" />
           <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="bSaveBeforeImage" ColumnName="bSaveBeforeImage" />
           <ScalarProperty Name="TablesetId" ColumnName="TablesetId" />
+          <ScalarProperty Name="FolderId" ColumnName="FolderId" />
           <ScalarProperty Name="Id" ColumnName="Id" />
         </MappingFragment>
       </EntityTypeMapping>
@@ -108,7 +131,8 @@
     <EntitySetMapping Name="FilterTables">
       <EntityTypeMapping TypeName="Quest.Services.Dbio.MasterPricing.FilterTables">
         <MappingFragment StoreEntitySet="FilterTables">
-          <ScalarProperty Name="TablesetTableId" ColumnName="TablesetTableId" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Schema" ColumnName="Schema" />
           <ScalarProperty Name="FilterId" ColumnName="FilterId" />
           <ScalarProperty Name="Id" ColumnName="Id" />
         </MappingFragment>
@@ -126,8 +150,169 @@
     <EntitySetMapping Name="FilterViews">
       <EntityTypeMapping TypeName="Quest.Services.Dbio.MasterPricing.FilterViews">
         <MappingFragment StoreEntitySet="FilterViews">
-          <ScalarProperty Name="TablesetViewId" ColumnName="TablesetViewId" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Schema" ColumnName="Schema" />
           <ScalarProperty Name="FilterId" ColumnName="FilterId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="BulkInsertLogs">
+      <EntityTypeMapping TypeName="Quest.Services.Dbio.MasterPricing.BulkInsertLogs">
+        <MappingFragment StoreEntitySet="BulkInsertLogs">
+          <ScalarProperty Name="Created" ColumnName="Created" />
+          <ScalarProperty Name="Batch" ColumnName="Batch" />
+          <ScalarProperty Name="Data" ColumnName="Data" />
+          <ScalarProperty Name="Message" ColumnName="Message" />
+          <ScalarProperty Name="BulkInsertColumn" ColumnName="BulkInsertColumn" />
+          <ScalarProperty Name="Parameters" ColumnName="Parameters" />
+          <ScalarProperty Name="NumRows" ColumnName="NumRows" />
+          <ScalarProperty Name="Event" ColumnName="Event" />
+          <ScalarProperty Name="Filter" ColumnName="Filter" />
+          <ScalarProperty Name="Tableset" ColumnName="Tableset" />
+          <ScalarProperty Name="Database" ColumnName="Database" />
+          <ScalarProperty Name="Username" ColumnName="Username" />
+          <ScalarProperty Name="UserSessionId" ColumnName="UserSessionId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="BulkUpdateLogs">
+      <EntityTypeMapping TypeName="Quest.Services.Dbio.MasterPricing.BulkUpdateLogs">
+        <MappingFragment StoreEntitySet="BulkUpdateLogs">
+          <ScalarProperty Name="Created" ColumnName="Created" />
+          <ScalarProperty Name="Batch" ColumnName="Batch" />
+          <ScalarProperty Name="Data" ColumnName="Data" />
+          <ScalarProperty Name="Message" ColumnName="Message" />
+          <ScalarProperty Name="BulkUpdateColumn" ColumnName="BulkUpdateColumn" />
+          <ScalarProperty Name="Parameters" ColumnName="Parameters" />
+          <ScalarProperty Name="NumRows" ColumnName="NumRows" />
+          <ScalarProperty Name="Event" ColumnName="Event" />
+          <ScalarProperty Name="Filter" ColumnName="Filter" />
+          <ScalarProperty Name="Tableset" ColumnName="Tableset" />
+          <ScalarProperty Name="Database" ColumnName="Database" />
+          <ScalarProperty Name="Username" ColumnName="Username" />
+          <ScalarProperty Name="UserSessionId" ColumnName="UserSessionId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="DatabaseLogs">
+      <EntityTypeMapping TypeName="Quest.Services.Dbio.MasterPricing.DatabaseLogs">
+        <MappingFragment StoreEntitySet="DatabaseLogs">
+          <ScalarProperty Name="Created" ColumnName="Created" />
+          <ScalarProperty Name="Data" ColumnName="Data" />
+          <ScalarProperty Name="Event" ColumnName="Event" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Username" ColumnName="Username" />
+          <ScalarProperty Name="UserSessionId" ColumnName="UserSessionId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="ExceptionLogs">
+      <EntityTypeMapping TypeName="Quest.Services.Dbio.MasterPricing.ExceptionLogs">
+        <MappingFragment StoreEntitySet="ExceptionLogs">
+          <ScalarProperty Name="Created" ColumnName="Created" />
+          <ScalarProperty Name="StackTrace" ColumnName="StackTrace" />
+          <ScalarProperty Name="Data" ColumnName="Data" />
+          <ScalarProperty Name="Status" ColumnName="Status" />
+          <ScalarProperty Name="Method" ColumnName="Method" />
+          <ScalarProperty Name="Module" ColumnName="Module" />
+          <ScalarProperty Name="Message" ColumnName="Message" />
+          <ScalarProperty Name="Username" ColumnName="Username" />
+          <ScalarProperty Name="UserSessionId" ColumnName="UserSessionId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="FilterLogs">
+      <EntityTypeMapping TypeName="Quest.Services.Dbio.MasterPricing.FilterLogs">
+        <MappingFragment StoreEntitySet="FilterLogs">
+          <ScalarProperty Name="Created" ColumnName="Created" />
+          <ScalarProperty Name="Data" ColumnName="Data" />
+          <ScalarProperty Name="Event" ColumnName="Event" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Tableset" ColumnName="Tableset" />
+          <ScalarProperty Name="Database" ColumnName="Database" />
+          <ScalarProperty Name="Username" ColumnName="Username" />
+          <ScalarProperty Name="UserSessionId" ColumnName="UserSessionId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="HTTPRequestLogs">
+      <EntityTypeMapping TypeName="Quest.Services.Dbio.MasterPricing.HTTPRequestLogs">
+        <MappingFragment StoreEntitySet="HTTPRequestLogs">
+          <ScalarProperty Name="Created" ColumnName="Created" />
+          <ScalarProperty Name="URL" ColumnName="URL" />
+          <ScalarProperty Name="UserAgent" ColumnName="UserAgent" />
+          <ScalarProperty Name="IPAddress" ColumnName="IPAddress" />
+          <ScalarProperty Name="Method" ColumnName="Method" />
+          <ScalarProperty Name="Username" ColumnName="Username" />
+          <ScalarProperty Name="UserSessionId" ColumnName="UserSessionId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="LogSettings">
+      <EntityTypeMapping TypeName="Quest.Services.Dbio.MasterPricing.LogSettings">
+        <MappingFragment StoreEntitySet="LogSettings">
+          <ScalarProperty Name="LastModified" ColumnName="LastModified" />
+          <ScalarProperty Name="bAllowLogUsers" ColumnName="bAllowLogUsers" />
+          <ScalarProperty Name="bLogPortal" ColumnName="bLogPortal" />
+          <ScalarProperty Name="bLogBulkUpdatesPerRow" ColumnName="bLogBulkUpdatesPerRow" />
+          <ScalarProperty Name="bLogBulkUpdates" ColumnName="bLogBulkUpdates" />
+          <ScalarProperty Name="bLogBulkInsertsPerRow" ColumnName="bLogBulkInsertsPerRow" />
+          <ScalarProperty Name="bLogBulkInserts" ColumnName="bLogBulkInserts" />
+          <ScalarProperty Name="bLogFilters" ColumnName="bLogFilters" />
+          <ScalarProperty Name="bLogTablesets" ColumnName="bLogTablesets" />
+          <ScalarProperty Name="bLogDatabases" ColumnName="bLogDatabases" />
+          <ScalarProperty Name="bLogStoredProcedures" ColumnName="bLogStoredProcedures" />
+          <ScalarProperty Name="bLogExceptions" ColumnName="bLogExceptions" />
+          <ScalarProperty Name="bLogHTTPRequests" ColumnName="bLogHTTPRequests" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="PortalRequestLogs">
+      <EntityTypeMapping TypeName="Quest.Services.Dbio.MasterPricing.PortalRequestLogs">
+        <MappingFragment StoreEntitySet="PortalRequestLogs">
+          <ScalarProperty Name="Created" ColumnName="Created" />
+          <ScalarProperty Name="URL" ColumnName="URL" />
+          <ScalarProperty Name="UserAgent" ColumnName="UserAgent" />
+          <ScalarProperty Name="IPAddress" ColumnName="IPAddress" />
+          <ScalarProperty Name="Method" ColumnName="Method" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Username" ColumnName="Username" />
+          <ScalarProperty Name="UserSessionId" ColumnName="UserSessionId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="StoredProcedureLogs">
+      <EntityTypeMapping TypeName="Quest.Services.Dbio.MasterPricing.StoredProcedureLogs">
+        <MappingFragment StoreEntitySet="StoredProcedureLogs">
+          <ScalarProperty Name="Created" ColumnName="Created" />
+          <ScalarProperty Name="Response" ColumnName="Response" />
+          <ScalarProperty Name="Arguments" ColumnName="Arguments" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Username" ColumnName="Username" />
+          <ScalarProperty Name="UserSessionId" ColumnName="UserSessionId" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+    <EntitySetMapping Name="TablesetLogs">
+      <EntityTypeMapping TypeName="Quest.Services.Dbio.MasterPricing.TablesetLogs">
+        <MappingFragment StoreEntitySet="TablesetLogs">
+          <ScalarProperty Name="Created" ColumnName="Created" />
+          <ScalarProperty Name="Data" ColumnName="Data" />
+          <ScalarProperty Name="Event" ColumnName="Event" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Database" ColumnName="Database" />
+          <ScalarProperty Name="Username" ColumnName="Username" />
+          <ScalarProperty Name="UserSessionId" ColumnName="UserSessionId" />
           <ScalarProperty Name="Id" ColumnName="Id" />
         </MappingFragment>
       </EntityTypeMapping>
@@ -208,6 +393,7 @@
           <ScalarProperty Name="DbType" ColumnName="DbType" />
           <ScalarProperty Name="ParameterName" ColumnName="ParameterName" />
           <ScalarProperty Name="Offset" ColumnName="Offset" />
+          <ScalarProperty Name="bRequired" ColumnName="bRequired" />
           <ScalarProperty Name="StoredProcedureId" ColumnName="StoredProcedureId" />
           <ScalarProperty Name="Id" ColumnName="Id" />
         </MappingFragment>
@@ -268,6 +454,7 @@
     <EntitySetMapping Name="Tablesets">
       <EntityTypeMapping TypeName="Quest.Services.Dbio.MasterPricing.Tablesets">
         <MappingFragment StoreEntitySet="Tablesets">
+          <ScalarProperty Name="LastRefresh" ColumnName="LastRefresh" />
           <ScalarProperty Name="Summary" ColumnName="Summary" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="bEnabled" ColumnName="bEnabled" />
@@ -312,10 +499,11 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
-    <EntitySetMapping Name="vwTablesetsList3">
-      <EntityTypeMapping TypeName="Quest.Services.Dbio.MasterPricing.vwTablesetsList3">
-        <MappingFragment StoreEntitySet="vwTablesetsList3">
+    <EntitySetMapping Name="vwTablesetsList4">
+      <EntityTypeMapping TypeName="Quest.Services.Dbio.MasterPricing.vwTablesetsList4">
+        <MappingFragment StoreEntitySet="vwTablesetsList4">
           <ScalarProperty Name="Database" ColumnName="Database" />
+          <ScalarProperty Name="LastRefresh" ColumnName="LastRefresh" />
           <ScalarProperty Name="Summary" ColumnName="Summary" />
           <ScalarProperty Name="Name" ColumnName="Name" />
           <ScalarProperty Name="bEnabled" ColumnName="bEnabled" />
@@ -358,5 +546,67 @@
         </MappingFragment>
       </EntityTypeMapping>
     </EntitySetMapping>
+    <FunctionImportMapping FunctionImportName="CleanDatabase" FunctionName="Quest.Services.Dbio.MasterPricing.Store.CleanDatabase" />
+    <FunctionImportMapping FunctionImportName="CleanFilters" FunctionName="Quest.Services.Dbio.MasterPricing.Store.CleanFilters" />
+    <FunctionImportMapping FunctionImportName="CleanSetup" FunctionName="Quest.Services.Dbio.MasterPricing.Store.CleanSetup" />
+    <FunctionImportMapping FunctionImportName="CleanTablesets" FunctionName="Quest.Services.Dbio.MasterPricing.Store.CleanTablesets" />
+    <FunctionImportMapping FunctionImportName="DeleteFilterById" FunctionName="Quest.Services.Dbio.MasterPricing.Store.DeleteFilterById" />
+    <FunctionImportMapping FunctionImportName="MPDWMetaFields" FunctionName="Quest.Services.Dbio.MasterPricing.Store.MPDWMetaFields">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="Quest.Services.Dbio.MasterPricing.MPDWMetaFields_Result">
+          <ScalarProperty Name="Username" ColumnName="Username" />
+          <ScalarProperty Name="UserSessionId" ColumnName="UserSessionId" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="ShowFilter" FunctionName="Quest.Services.Dbio.MasterPricing.Store.ShowFilter">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="Quest.Services.Dbio.MasterPricing.ShowFilter_Result">
+          <ScalarProperty Name="Column1" ColumnName="Column1" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="FolderId" ColumnName="FolderId" />
+          <ScalarProperty Name="TablesetId" ColumnName="TablesetId" />
+          <ScalarProperty Name="bSaveBeforeImage" ColumnName="bSaveBeforeImage" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Summary" ColumnName="Summary" />
+          <ScalarProperty Name="SQL" ColumnName="SQL" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="ShowFilterById" FunctionName="Quest.Services.Dbio.MasterPricing.Store.ShowFilterById">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="Quest.Services.Dbio.MasterPricing.ShowFilterById_Result">
+          <ScalarProperty Name="Column1" ColumnName="Column1" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="FolderId" ColumnName="FolderId" />
+          <ScalarProperty Name="TablesetId" ColumnName="TablesetId" />
+          <ScalarProperty Name="bSaveBeforeImage" ColumnName="bSaveBeforeImage" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Summary" ColumnName="Summary" />
+          <ScalarProperty Name="SQL" ColumnName="SQL" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="ShowTableset" FunctionName="Quest.Services.Dbio.MasterPricing.Store.ShowTableset">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="Quest.Services.Dbio.MasterPricing.ShowTableset_Result">
+          <ScalarProperty Name="Column1" ColumnName="Column1" />
+          <ScalarProperty Name="Id" ColumnName="Id" />
+          <ScalarProperty Name="DatabaseId" ColumnName="DatabaseId" />
+          <ScalarProperty Name="bEnabled" ColumnName="bEnabled" />
+          <ScalarProperty Name="Name" ColumnName="Name" />
+          <ScalarProperty Name="Summary" ColumnName="Summary" />
+          <ScalarProperty Name="LastRefresh" ColumnName="LastRefresh" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
+    <FunctionImportMapping FunctionImportName="UnderBarTest" FunctionName="Quest.Services.Dbio.MasterPricing.Store.UnderBarTest">
+      <ResultMapping>
+        <ComplexTypeMapping TypeName="Quest.Services.Dbio.MasterPricing.UnderBarTest_Result">
+          <ScalarProperty Name="Username" ColumnName="Username" />
+          <ScalarProperty Name="UserSessionId" ColumnName="UserSessionId" />
+        </ComplexTypeMapping>
+      </ResultMapping>
+    </FunctionImportMapping>
   </EntityContainerMapping>
 </Mapping>

@@ -1,0 +1,62 @@
+﻿@model Quest.MPDW.Support.Models.LogSettingsViewModel
+@{
+    ViewBag.Title = "Log Settings";
+    Layout = "~/Views/Shared/_LayoutSupport.cshtml";
+}
+
+<h1>Log Settings</h1>
+
+<div id="frmSettings" class="form-frame"></div>
+
+
+<script type="text/javascript">
+    var _frmSettings = null;
+    function initSettingsForm() {
+        var frmSettings = {
+            element: 'frmSettings',
+            prefix: 'set',
+            uri: '/Support/Settings',
+            callback: cbSettingsEditor,
+            mask: 'body',
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb']
+            },
+            fieldClasses: 'qrmg-min-width250',
+            fields: [
+                { name: 'Id', type: 'hidden', key: true },
+                { name: 'bLogHTTPRequests', label: 'Log HTTP Requests', type: 'checkbox' },
+                { name: 'bLogExceptions', label: 'Log Exceptions', type: 'checkbox' },
+                { name: 'bLogStoredProcedures', label: 'Log Stored Procedures', type: 'checkbox' },
+                { name: 'bLogDatabases', label: 'Log Databases', type: 'checkbox' },
+                { name: 'bLogTablesets', label: 'Log Tablesets', type: 'checkbox' },
+                { name: 'bLogFilters', label: 'Log Filters', type: 'checkbox' },
+                { name: 'bLogBulkInserts', label: 'Log Bulk Inserts', type: 'checkbox' },
+                { name: 'bLogBulkInsertsPerRow', label: 'Log each row in a Bulk Insert', type: 'checkbox' },
+                { name: 'bLogBulkUpdates', label: 'Log Bulk Updates', type: 'checkbox' },
+                { name: 'bLogBulkUpdatesPerRow', label: 'Log each row in a Bulk Update', type: 'checkbox' },
+                { name: 'bLogPortal', label: 'Log QuestRMG Portal Requests', type: 'checkbox' },
+                { name: 'bAllowLogUsers', label: 'Allow User Session Logging', type: 'checkbox' },
+            ],
+            bNoDefaultOptions: true,
+            operations: [
+                { name: 'Save', label: 'Save', classes: "btn btn-success", uri: '/Support/Settings', callback: cbSaveSettings },
+            ],
+            actions: [
+            ]
+        }
+        _frmSettings = new qrmgEditor(frmSettings);
+        _frmSettings.Read();
+    }
+    function cbSettingsEditor(ud, d) {
+    }
+    function cbSaveSettings(ud, d) {
+        if (d.questStatus) {
+            DisplayUserMessage(d.questStatus);
+        }
+    }
+</script>
+<script type="text/javascript">
+    $(function () {
+        initSettingsForm();
+    });
+</script>

@@ -1,0 +1,55 @@
+﻿@model Quest.MasterPricing.Setup.Models.TablesetsListViewModel
+@{
+    ViewBag.Title = "Tableset List";
+    Layout = "~/Views/Shared/_LayoutSetup.cshtml";
+}
+
+<div class="questTableTitle">Tableset List</div>
+
+<div id="tblTablesets" class="qrmgTable"></div>
+
+<script type="text/javascript">
+    var _tblTablesets;
+    $(function () {
+        var tblTablesets = {
+            name: 'tblTablesets',
+            element: 'tblTablesets',
+            prefix: 'ttbls',
+            uri: '/Setup/Tablesets',
+            ctx: {
+                elements: ['_questctx', '_questmm', '_questnb']
+            },
+            autoLoad: true,
+            editor: { uri: '/Setup/Tableset' },
+            callback: cbTblTablesets,
+            columns: [
+                { name: 'Id', hidden: true, key: true },
+                { name: 'Name', label: 'Name', width: '400px' },
+                { name: 'Summary', label: 'Summary' },
+                { name: 'Database', label: 'Database' },
+            ],
+            paging: {
+                Top: true,
+                Bottom: true,
+                PageSize: 10,
+                PageSizeOptions: [10, 20, 30, 50, 100],
+            },
+            operations: [
+            ],
+            commands: [
+                { name: 'Read', label: 'Edit', edit: true },
+                { name: 'Configuration', label: 'Configuration', single: true, type: 'view' },
+                { name: 'Filters', label: 'Filters', single: true, type: 'view' },
+                { name: 'Database', label: 'Database', single: true, type: 'view' },
+            ],
+            events: [
+            ],
+            contextMenu: [
+            ]
+        }
+        _tblTablesets = new qrmgTable(tblTablesets);
+    });
+    function cbTblTablesets(ud, d) {
+
+    }
+</script>
