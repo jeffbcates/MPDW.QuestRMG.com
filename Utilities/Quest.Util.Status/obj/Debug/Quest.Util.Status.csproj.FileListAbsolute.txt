@@ -1,5 +1,4 @@
 C:\Source\Repos\MPDW\Utilities\Quest.Util.Status\bin\Debug\Quest.Util.Status.dll
 C:\Source\Repos\MPDW\Utilities\Quest.Util.Status\bin\Debug\Quest.Util.Status.pdb
-C:\Source\Repos\MPDW\Utilities\Quest.Util.Status\obj\Debug\Quest.Util.Status.csprojResolveAssemblyReference.cache
 C:\Source\Repos\MPDW\Utilities\Quest.Util.Status\obj\Debug\Quest.Util.Status.dll
 C:\Source\Repos\MPDW\Utilities\Quest.Util.Status\obj\Debug\Quest.Util.Status.pdb

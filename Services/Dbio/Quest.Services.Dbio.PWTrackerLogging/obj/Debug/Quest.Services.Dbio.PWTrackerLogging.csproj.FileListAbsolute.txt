@@ -5,6 +5,5 @@ C:\Source\Repos\MPDW\Services\Dbio\Quest.Services.Dbio.PWTrackerLogging\bin\Debu
 C:\Source\Repos\MPDW\Services\Dbio\Quest.Services.Dbio.PWTrackerLogging\bin\Debug\EntityFramework.SqlServer.dll
 C:\Source\Repos\MPDW\Services\Dbio\Quest.Services.Dbio.PWTrackerLogging\bin\Debug\EntityFramework.xml
 C:\Source\Repos\MPDW\Services\Dbio\Quest.Services.Dbio.PWTrackerLogging\bin\Debug\EntityFramework.SqlServer.xml
-C:\Source\Repos\MPDW\Services\Dbio\Quest.Services.Dbio.PWTrackerLogging\obj\Debug\Quest.Services.Dbio.PWTrackerLogging.csprojResolveAssemblyReference.cache
 C:\Source\Repos\MPDW\Services\Dbio\Quest.Services.Dbio.PWTrackerLogging\obj\Debug\Quest.Services.Dbio.PWTrackerLogging.dll
 C:\Source\Repos\MPDW\Services\Dbio\Quest.Services.Dbio.PWTrackerLogging\obj\Debug\Quest.Services.Dbio.PWTrackerLogging.pdb
