@@ -1,7 +1,0 @@
-C:\Source\Repos\MPDW\Utilities\Quest.Util.Data\bin\Debug\Quest.Util.Data.dll
-C:\Source\Repos\MPDW\Utilities\Quest.Util.Data\bin\Debug\Quest.Util.Data.pdb
-C:\Source\Repos\MPDW\Utilities\Quest.Util.Data\bin\Debug\Quest.Util.Status.dll
-C:\Source\Repos\MPDW\Utilities\Quest.Util.Data\bin\Debug\Quest.Util.Status.pdb
-C:\Source\Repos\MPDW\Utilities\Quest.Util.Data\obj\Debug\Quest.Util.Data.csprojResolveAssemblyReference.cache
-C:\Source\Repos\MPDW\Utilities\Quest.Util.Data\obj\Debug\Quest.Util.Data.dll
-C:\Source\Repos\MPDW\Utilities\Quest.Util.Data\obj\Debug\Quest.Util.Data.pdb

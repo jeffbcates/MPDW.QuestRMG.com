@@ -1,5 +1,0 @@
-C:\Source\Repos\MPDW\Utilities\Quest.Util.Buffer\bin\Debug\Quest.Util.Buffer.dll
-C:\Source\Repos\MPDW\Utilities\Quest.Util.Buffer\bin\Debug\Quest.Util.Buffer.pdb
-C:\Source\Repos\MPDW\Utilities\Quest.Util.Buffer\obj\Debug\Quest.Util.Buffer.csprojResolveAssemblyReference.cache
-C:\Source\Repos\MPDW\Utilities\Quest.Util.Buffer\obj\Debug\Quest.Util.Buffer.dll
-C:\Source\Repos\MPDW\Utilities\Quest.Util.Buffer\obj\Debug\Quest.Util.Buffer.pdb
