@@ -142,7 +142,7 @@ namespace Quest.MasterPricing.Services.Data.Filters
                                     try
                                     {
                                         string _textField = textField.Replace("[", "").Replace("]", "");
-                                        sbOptionText.Append(((IDictionary<string, object>)resultRow)[_textField].ToString());
+                                        sbOptionText.Append(((IDictionary<string, object>)resultRow)[_textField]);
                                         if (idx + 1 < textFieldList.Length)
                                         {
                                             sbOptionText.Append(" - ");
